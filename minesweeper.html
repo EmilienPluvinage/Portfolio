@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="minesweeper.css" />
+  </head>
+  <body>
+    <div id="main">
+      <h2>MINE SWEEPER</h2>
+      <form>
+        <p>
+          Rows (5-20) :
+          <input type="number" min="5" max="20" id="rows" value="10" />
+        </p>
+        <p>
+          Columns (5-20) :
+          <input type="number" min="5" max="20" id="columns" value="10" />
+        </p>
+        <p>Mines : <input type="number" min="0" id="mines" value="10" /></p>
+        <p id="error-msg"></p>
+        <p><input type="button" id="button" value="Start" /></p>
+      </form>
+      <table id="grid"></table>
+    </div>
+    <script type="text/javascript" src="minesweeper.js"></script>
+  </body>
+</html>
