@@ -1,0 +1,54 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="tetris.css" />
+  </head>
+  <body>
+    <div id="main">
+      <h2>TETRIS</h2>
+      <form>
+        <p>
+          Type de partie :
+          <input
+            type="radio"
+            id="classique"
+            name="type"
+            checked="checked"
+          />
+          <label for="classique">Classique</label>
+          <input type="radio" id="perso" name="type" />
+          <label for="perso">Personnalisée</label>
+        </p>
+        <div id="choixPerso" hidden>
+          <p>
+            Vitesse :
+            <select id="Vitesse">
+              <option value="Croissante">Croissante</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+          </p>
+          <p>Pièces:</p>
+            <p> I <input type="checkbox" id="piece0" checked="checked"></input>
+             Carré <input type="checkbox" id="piece1" checked="checked"></input>
+             T <input type="checkbox" id="piece2" checked="checked"></input></p>
+            <p> L <input type="checkbox" id="piece3" checked="checked"></input>
+             J <input type="checkbox" id="piece4" checked="checked"></input>
+             S <input type="checkbox" id="piece5" checked="checked"></input>
+             Z <input type="checkbox" id="piece6" checked="checked"></input></p>
+              
+
+          
+          </p>
+        </div>
+        <p><input type="button" id="button" value="Commencer" /></p>
+      </form>
+            <p>Score : <span id="points">0</span></p>
+
+      <table id="grid"></table>
+      <p id="log"></p>
+    </div>
+    <script type="text/javascript" src="tetris.js"></script>
+  </body>
+</html>
