@@ -2,6 +2,8 @@ let btn = document.getElementById("button");
 let pseudo = "";
 let ImageChargement =
   '<img src="chargement.gif" alt="Recherche d\'un adversaire..." width="30" height="30" />';
+let partieEnCours = false;
+let nIntervId = null;
 
 btn.addEventListener("click", function () {
   pseudo = document.getElementById("pseudo").value;
@@ -52,6 +54,8 @@ function retourNewGame(retour) {
   if (retour["error"] == "") {
     if (retour["partie"] != 0) {
       // alors c'est qu'on a débuté une partie
+      partieEnCours = true;
+      nIntervId = null;
       document.getElementById("result").innerText = "Bonne chance !";
       document.getElementById("chargement").innerHTML = "";
       document.getElementById("player1").innerText = pseudo;
@@ -62,6 +66,11 @@ function retourNewGame(retour) {
       } else {
         document.getElementById("player2").style.backgroundColor =
           "rgb(255,200,200)";
+      }
+    } else {
+      // la partie n'as pas débuté, on lance donc un interval qui va chercher à lancer la partie toutes les 5 secondes.
+      if (nIntervId == null) {
+        nIntervId = setInterval(newGame, 5000);
       }
     }
   } else {
