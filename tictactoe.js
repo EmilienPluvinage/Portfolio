@@ -80,7 +80,7 @@ function retourNewGame(retour) {
         CestMonTour = true;
       } else {
         document.getElementById("player2").style.backgroundColor =
-          "rgb(255,200,200)";
+          "rgb(200,200,255)";
         // ca n'est pas mon tour, donc je vérifie régulièrement si c'est mon tour ou toujours pas
         nIntervGetMove = setInterval(getMove, 1000);
       }
@@ -141,7 +141,7 @@ function retourNewMove(retour, x, y) {
     document.getElementById("R" + x + "C" + y).style.color = "red";
     document.getElementById("R" + x + "C" + y).className = "played";
     document.getElementById("player2").style.backgroundColor =
-      "rgb(255,200,200)";
+      "rgb(200,200,255)";
     document.getElementById("player1").style.backgroundColor =
       "rgb(240,240,240)";
     CestMonTour == false;
