@@ -1,4 +1,5 @@
 let btn = document.getElementById("button");
+let result = document.getElementById("result");
 let pseudo = "";
 let ImageChargement =
   '<img src="chargement.gif" alt="Recherche d\'un adversaire..." width="30" height="30" />';
@@ -22,8 +23,7 @@ btn.addEventListener("click", function (e) {
       .then((response) => retourNewPlayer(response))
       .catch((error) => alert("Erreur : " + error));
   } else {
-    document.getElementById("result").innerHTML =
-      "Your pseudo must be a least 3 characters.";
+    result.innerHTML = "Your pseudo must be a least 3 characters.";
   }
 });
 
@@ -31,9 +31,9 @@ clickInit();
 
 function retourNewPlayer(retour) {
   if (retour["error"]) {
-    document.getElementById("result").innerText = retour["text"];
+    result.innerText = retour["text"];
   } else {
-    document.getElementById("result").innerText =
+    result.innerText =
       "Welcome " + pseudo + ",\n we're searching for an opponent...";
     document.getElementById("pseudo").disabled = true;
     btn.disabled = true;
@@ -63,7 +63,7 @@ function retourNewGame(retour) {
       newGrid();
       idpartie = retour["partie"];
       nIntervId = null;
-      document.getElementById("result").innerText = "Bonne chance !";
+      result.innerText = "Bonne chance !";
       document.getElementById("chargement").innerHTML = "";
       document.getElementById("player1").innerText = pseudo;
       document.getElementById("player2").innerText = retour["adversaire"];
@@ -135,6 +135,6 @@ function retourNewMove(retour, x, y) {
       "rgb(240,240,240)";
     CestMonTour == false;
   } else {
-    document.getElementById("result").innerText = retour["error"];
+    result.innerText = retour["error"];
   }
 }
