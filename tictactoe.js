@@ -5,6 +5,7 @@ let ImageChargement =
   '<img src="chargement.gif" alt="Recherche d\'un adversaire..." width="30" height="30" />';
 let partieEnCours = false;
 let nIntervId = null;
+let nIntervGetMove = null;
 let idpartie = 0;
 let CestMonTour = false;
 
@@ -67,6 +68,7 @@ function retourNewGame(retour) {
       partieEnCours = true;
       newGrid();
       idpartie = retour["partie"];
+      clearInterval(nIntervId);
       nIntervId = null;
       result.innerText = "Bonne chance !";
       document.getElementById("chargement").innerHTML = "";
@@ -79,6 +81,8 @@ function retourNewGame(retour) {
       } else {
         document.getElementById("player2").style.backgroundColor =
           "rgb(255,200,200)";
+        // ca n'est pas mon tour, donc je vérifie régulièrement si c'est mon tour ou toujours pas
+        nIntervGetMove = setInterval(getMove, 1000);
       }
     } else {
       // la partie n'as pas débuté, on lance donc un interval qui va chercher à lancer la partie toutes les 5 secondes.
@@ -134,12 +138,81 @@ function retourNewMove(retour, x, y) {
   // si tout est bon, on affiche la case cliquée. par convention le joueur est X et l'adversaire est O
   if (retour["error"] == "") {
     document.getElementById("R" + x + "C" + y).innerText = "X";
+    document.getElementById("R" + x + "C" + y).style.color = "red";
+    document.getElementById("R" + x + "C" + y).className = "played";
     document.getElementById("player2").style.backgroundColor =
       "rgb(255,200,200)";
-    document.getElementById("player2").style.backgroundColor =
+    document.getElementById("player1").style.backgroundColor =
       "rgb(240,240,240)";
     CestMonTour == false;
+    // on lance un timer pour savoir si l'adversaire a joué
+    nIntervGetMove = setInterval(getMove, 1000);
   } else {
     result.innerText = retour["error"];
   }
+}
+
+function getMove() {
+  // fonction dont l'objectif est de vérifier si l'adversaire a joué son tour
+  // et si oui de récupérer les coordonnées de la case jouée, s'il a gagné, etc...
+  fetch("http://localhost:8888/getMove.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+    },
+    body: "pseudo=" + pseudo + "&partie=" + idpartie,
+  })
+    .then((response) => response.json())
+    .then((response) => retourGetMove(response))
+    .catch((error) => alert("Erreur : " + error));
+}
+
+function retourGetMove(retour) {
+  if (retour["defaite"]) {
+    // alors on a perdu
+    clearInterval(nIntervGetMove);
+    nIntervGetMove = null;
+    partieEnCours = false;
+    idpartie = 0;
+    result.innerText = "C'est perdu!";
+    // on affiche la case que l'adversaire a joué, on la désactive, on change la couleur des pseudos
+    x = retour["x"];
+    y = retour["y"];
+    document.getElementById("R" + x + "C" + y).innerText = "O";
+    document.getElementById("R" + x + "C" + y).style.color = "blue";
+    for (let i = 0; i <= 2; i++) {
+      for (let j = 0; j <= 2; j++) {
+        document.getElementById("R" + i + "C" + j).className = "played";
+      }
+    }
+  } else if (retour["victoire"]) {
+    //alors on a gagné
+    clearInterval(nIntervGetMove);
+    nIntervGetMove = null;
+    partieEnCours = false;
+    idpartie = 0;
+    result.innerHTML = "C'est gagn&eacute;!";
+    for (let i = 0; i <= 2; i++) {
+      for (let j = 0; j <= 2; j++) {
+        document.getElementById("R" + i + "C" + j).className = "played";
+      }
+    }
+  } else if (retour["prochainCoup"] != "adversaire") {
+    // alors c'est à nous, l'adversaire a joué.
+    CestMonTour = true;
+    clearInterval(nIntervGetMove);
+    nIntervGetMove = null;
+    // on affiche la case que l'adversaire a joué, on la désactive, on change la couleur des pseudos
+    x = retour["x"];
+    y = retour["y"];
+    document.getElementById("R" + x + "C" + y).innerText = "O";
+    document.getElementById("R" + x + "C" + y).style.color = "blue";
+    document.getElementById("R" + x + "C" + y).className = "played";
+    document.getElementById("player1").style.backgroundColor =
+      "rgb(255,200,200)";
+    document.getElementById("player2").style.backgroundColor =
+      "rgb(240,240,240)";
+  }
+
+  // sinon c'est toujours à l'adversaire, on ne fait rien.
 }
