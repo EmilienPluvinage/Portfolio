@@ -4,6 +4,8 @@ let ImageChargement =
   '<img src="chargement.gif" alt="Recherche d\'un adversaire..." width="30" height="30" />';
 let partieEnCours = false;
 let nIntervId = null;
+let idpartie = 0;
+let CestMonTour = false;
 
 btn.addEventListener("click", function () {
   pseudo = document.getElementById("pseudo").value;
@@ -23,6 +25,8 @@ btn.addEventListener("click", function () {
       "Your pseudo must be a least 3 characters.";
   }
 });
+
+clickInit();
 
 function retourNewPlayer(retour) {
   if (retour["error"]) {
@@ -55,6 +59,8 @@ function retourNewGame(retour) {
     if (retour["partie"] != 0) {
       // alors c'est qu'on a débuté une partie
       partieEnCours = true;
+      newGrid();
+      idpartie = retour["partie"];
       nIntervId = null;
       document.getElementById("result").innerText = "Bonne chance !";
       document.getElementById("chargement").innerHTML = "";
@@ -63,6 +69,7 @@ function retourNewGame(retour) {
       if (retour["prochainCoup"] == pseudo) {
         document.getElementById("player1").style.backgroundColor =
           "rgb(255, 200, 200)";
+        CestMonTour = true;
       } else {
         document.getElementById("player2").style.backgroundColor =
           "rgb(255,200,200)";
@@ -75,5 +82,58 @@ function retourNewGame(retour) {
     }
   } else {
     alert("Erreur : " + retour["error"]);
+  }
+}
+
+function newGrid() {
+  for (let i = 0; i <= 2; i++) {
+    for (let j = 0; j <= 2; j++) {
+      document.getElementById("R" + i + "C" + j).removeAttribute("class");
+    }
+  }
+}
+
+function clickInit() {
+  for (let i = 0; i <= 2; i++) {
+    for (let j = 0; j <= 2; j++) {
+      document
+        .getElementById("R" + i + "C" + j)
+        .addEventListener("click", function (e) {
+          newMove(i, j);
+        });
+    }
+  }
+}
+
+function newMove(x, y) {
+  // on commence par tester si la case a déjà été jouée ou pas, si oui, on ne fait rien
+  if (
+    document.getElementById("R" + x + "C" + y).className != "played" &&
+    CestMonTour == true
+  ) {
+    fetch("http://localhost:8888/newMove.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+      },
+      body: "pseudo=" + pseudo + "&partie=" + idpartie + "&x=" + x + "&y=" + y,
+    })
+      .then((response) => response.json())
+      .then((response) => retourNewMove(response, x, y))
+      .catch((error) => alert("Erreur : " + error));
+  }
+}
+
+function retourNewMove(retour, x, y) {
+  // si tout est bon, on affiche la case cliquée. par convention le joueur est X et l'adversaire est O
+  if (retour["error"] == "") {
+    document.getElementById("R" + x + "C" + y).innerText = "X";
+    document.getElementById("player2").style.backgroundColor =
+      "rgb(255,200,200)";
+    document.getElementById("player2").style.backgroundColor =
+      "rgb(240,240,240)";
+    CestMonTour == false;
+  } else {
+    document.getElementById("result").innerText = retour["error"];
   }
 }
