@@ -7,7 +7,8 @@ let nIntervId = null;
 let idpartie = 0;
 let CestMonTour = false;
 
-btn.addEventListener("click", function () {
+btn.addEventListener("click", function (e) {
+  e.preventDefault;
   pseudo = document.getElementById("pseudo").value;
   if (pseudo.length > 2) {
     fetch("http://localhost:8888/newPlayer.php", {
