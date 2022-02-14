@@ -10,18 +10,23 @@ let CestMonTour = false;
 
 btn.addEventListener("click", function (e) {
   e.preventDefault;
+  var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
   pseudo = document.getElementById("pseudo").value;
   if (pseudo.length > 2) {
-    fetch("http://localhost:8888/newPlayer.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-      },
-      body: "pseudo=" + pseudo,
-    })
-      .then((response) => response.json())
-      .then((response) => retourNewPlayer(response))
-      .catch((error) => alert("Erreur : " + error));
+    if (!format.test(pseudo)) {
+      fetch("http://localhost:8888/newPlayer.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        },
+        body: "pseudo=" + pseudo,
+      })
+        .then((response) => response.json())
+        .then((response) => retourNewPlayer(response))
+        .catch((error) => alert("Erreur : " + error));
+    } else {
+      result.innerHTML = "Your pseudo should contain only letters and numbers.";
+    }
   } else {
     result.innerHTML = "Your pseudo must be a least 3 characters.";
   }
