@@ -8,6 +8,7 @@ let nIntervId = null;
 let nIntervGetMove = null;
 let idpartie = 0;
 let CestMonTour = false;
+let timer = 30;
 
 btn.addEventListener("click", function (e) {
   e.preventDefault;
@@ -65,6 +66,7 @@ function retourNewGame(retour) {
   if (retour["error"] == "") {
     if (retour["partie"] != 0) {
       // alors c'est qu'on a débuté une partie
+      document.getElementById("timer").innerText = timer;
       partieEnCours = true;
       newGrid();
       idpartie = retour["partie"];
@@ -78,6 +80,7 @@ function retourNewGame(retour) {
         document.getElementById("player1").style.backgroundColor =
           "rgb(255, 200, 200)";
         CestMonTour = true;
+        nIntervTimer = setInterval(countdown, 1000);
       } else {
         document.getElementById("player2").style.backgroundColor =
           "rgb(200,200,255)";
@@ -92,6 +95,16 @@ function retourNewGame(retour) {
     }
   } else {
     alert("Erreur : " + retour["error"]);
+  }
+}
+
+function countdown() {
+  if (timer > 0) {
+    timer--;
+    document.getElementById("timer").innerText = timer;
+  } else {
+    defaite();
+    // appeler le service web qui va mettre à jour la BDD et prévenir l'adversaire qu'on a perdu
   }
 }
 
@@ -147,6 +160,9 @@ function retourNewMove(retour, x, y) {
     CestMonTour == false;
     // on lance un timer pour savoir si l'adversaire a joué
     nIntervGetMove = setInterval(getMove, 1000);
+    // on réinitialise le timer qui nous donnait 30 secondes pour jouer
+    clearInterval(nIntervTimer);
+    nIntervTimer = null;
   } else {
     result.innerText = retour["error"];
   }
@@ -169,22 +185,12 @@ function getMove() {
 
 function retourGetMove(retour) {
   if (retour["defaite"]) {
-    // alors on a perdu
-    clearInterval(nIntervGetMove);
-    nIntervGetMove = null;
-    partieEnCours = false;
-    idpartie = 0;
-    result.innerText = "C'est perdu!";
+    defaite();
     // on affiche la case que l'adversaire a joué, on la désactive, on change la couleur des pseudos
     x = retour["x"];
     y = retour["y"];
     document.getElementById("R" + x + "C" + y).innerText = "O";
     document.getElementById("R" + x + "C" + y).style.color = "blue";
-    for (let i = 0; i <= 2; i++) {
-      for (let j = 0; j <= 2; j++) {
-        document.getElementById("R" + i + "C" + j).className = "played";
-      }
-    }
   } else if (retour["victoire"]) {
     //alors on a gagné
     clearInterval(nIntervGetMove);
@@ -202,6 +208,9 @@ function retourGetMove(retour) {
     CestMonTour = true;
     clearInterval(nIntervGetMove);
     nIntervGetMove = null;
+    // on relance le timer
+    timer = 31;
+    nIntervTimer = setInterval(countdown, 1000);
     // on affiche la case que l'adversaire a joué, on la désactive, on change la couleur des pseudos
     x = retour["x"];
     y = retour["y"];
@@ -215,4 +224,18 @@ function retourGetMove(retour) {
   }
 
   // sinon c'est toujours à l'adversaire, on ne fait rien.
+}
+
+function defaite() {
+  // alors on a perdu
+  clearInterval(nIntervGetMove);
+  nIntervGetMove = null;
+  partieEnCours = false;
+  idpartie = 0;
+  result.innerText = "C'est perdu!";
+  for (let i = 0; i <= 2; i++) {
+    for (let j = 0; j <= 2; j++) {
+      document.getElementById("R" + i + "C" + j).className = "played";
+    }
+  }
 }
