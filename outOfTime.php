@@ -26,8 +26,8 @@ foreach ($resultsJoueurs as $joueur) {
      }
 
      // Ensuite on vérifie que c'est bien à lui de jouer le prochain coup
-$sqlquery = $db->prepare('SELECT id FROM partie WHERE prochainCoup = :joueur AND id= :partie');
-$sqlquery->execute([ 'partie' => $idpartie, 'joueur' => $idjoueur]);
+$sqlquery = $db->prepare('SELECT * FROM partie WHERE prochainCoup= :joueur AND id= :partie');
+$sqlquery->execute(['joueur' => $idjoueur, 'partie' => $idpartie]);
 $results = $sqlquery->fetchAll();
 
 if(sizeof($results) >1 )
@@ -35,7 +35,7 @@ if(sizeof($results) >1 )
     $return['error'] = true;
     $return['text'] = 'Error : Several games are being played at the same time with the same pseudo.';
 }
-else if(sizeof($results) == 0)
+elseif(sizeof($results) == 0)
 {
     $return['error'] = true;
     $return['text'] = "Error : It's not your turn to play.";
@@ -53,6 +53,9 @@ else
     }
 
     // on va maintenant vérifier que le delai de 30 secondes est effectivement dépassé
+
+    // cas particulier à prendre en compte : aucun coup n'a encore été joué
+
     $sqlquery = $db->prepare('SELECT timestamp FROM coup WHERE partie = :partie AND joueur= :adversaire ORDER BY id DESC LIMIT 1');
     $sqlquery->execute([ 'partie' => $idpartie, 'adversaire' => $idadversaire]);
     $resultsTime = $sqlquery->fetchAll();
@@ -78,6 +81,7 @@ else
     
 }
 
+$return['text'] = $return['text'] . " pseudo = " . $pseudo . " partie = " . $idpartie;
 echo json_encode($return);
 
  ?>

@@ -103,8 +103,9 @@ function countdown() {
     timer--;
     document.getElementById("timer").innerText = timer;
   } else {
-    defaite();
-    // appeler le service web qui va mettre à jour la BDD et prévenir l'adversaire qu'on a perdu
+    clearInterval(nIntervTimer);
+    nIntervTimer = false;
+    outOfTime();
   }
 }
 
@@ -165,6 +166,30 @@ function retourNewMove(retour, x, y) {
     nIntervTimer = null;
   } else {
     result.innerText = retour["error"];
+  }
+}
+
+function outOfTime() {
+  // on commence par tester si la case a déjà été jouée ou pas, si oui, on ne fait rien
+  if (CestMonTour == true) {
+    fetch("http://localhost:8888/outOfTime.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+      },
+      body: "pseudo=" + pseudo + "&partie=" + idpartie,
+    })
+      .then((response) => response.json())
+      .then((response) => retourOutOfTime(response))
+      .catch((error) => alert("Erreur : " + error));
+  }
+}
+
+function retourOutOfTime(retour) {
+  if (retour["error"]) {
+    result.innerText = retour["text"];
+  } else {
+    defaite();
   }
 }
 
@@ -232,7 +257,7 @@ function defaite() {
   nIntervGetMove = null;
   partieEnCours = false;
   idpartie = 0;
-  result.innerText = "C'est perdu!";
+  //result.innerText = "C'est perdu!";
   for (let i = 0; i <= 2; i++) {
     for (let j = 0; j <= 2; j++) {
       document.getElementById("R" + i + "C" + j).className = "played";
