@@ -54,13 +54,7 @@ $resultsParties = $sqlquery->fetchAll();
         // alors la partie n'est pas terminée, et c'est à nous de jouer, on récupère donc le dernier coup de l'adversaire.
         // d'abord on doit retrouver l'id de l'adversaire
 
-        $sqlquery = $db->prepare('SELECT joueur FROM estDansLaPartie WHERE joueur<> :joueur AND partie = :partie');
-            $sqlquery->execute([ 'joueur' => $idjoueur, 'partie'=>$idpartie ]);
-            $resultsAdversaires = $sqlquery->fetchAll();
-
-            foreach ($resultsAdversaires as $adversaire) {  
-                $idadversaire = $adversaire['joueur'];
-            }
+        $idadversaire = getOpponent($db,$idjoueur,$idpartie);
         
             // maintenant on récupère son dernier coup joué
             $sqlquery = $db->prepare('SELECT abscisse, ordonnee, timestamp FROM coup WHERE joueur= :joueur AND partie = :partie ORDER BY id DESC LIMIT 1');

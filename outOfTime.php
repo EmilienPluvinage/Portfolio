@@ -39,13 +39,7 @@ else
 {
     // d'abord on doit retrouver l'id de l'adversaire
 
-    $sqlquery = $db->prepare('SELECT joueur FROM estDansLaPartie WHERE joueur<> :joueur AND partie = :partie');
-    $sqlquery->execute([ 'joueur' => $idjoueur, 'partie'=>$idpartie ]);
-    $resultsAdversaires = $sqlquery->fetchAll();
-
-    foreach ($resultsAdversaires as $adversaire) {  
-        $idadversaire = $adversaire['joueur'];
-    }
+    $idadversaire = getOpponent($db,$idjoueur,$idpartie);
 
     // on va maintenant vérifier que le delai de 30 secondes est effectivement dépassé
 

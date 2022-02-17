@@ -110,13 +110,7 @@ $resultsParties = $sqlquery->fetchAll();
         else
         {
             // on met le prochainCoup à $idadversaire, qu'on ne connait pas... On va donc le chercher.
-            $sqlquery = $db->prepare('SELECT joueur FROM estDansLaPartie WHERE joueur<> :joueur AND partie = :partie');
-            $sqlquery->execute([ 'joueur' => $idjoueur, 'partie'=>$idpartie ]);
-            $resultsAdversaires = $sqlquery->fetchAll();
-
-            foreach ($resultsAdversaires as $adversaire) {  
-                $idadversaire = $adversaire['joueur'];
-            }
+            $idadversaire = getOpponent($db,$idjoueur,$idpartie);
             
             $sqlquery = $db->prepare('UPDATE partie SET prochainCoup= :adversaire WHERE id= :partie');
             $sqlquery->execute([ 'adversaire' => $idadversaire, 'partie' => $idpartie]);
