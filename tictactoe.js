@@ -76,11 +76,11 @@ function retourNewGame(retour) {
       document.getElementById("chargement").innerHTML = "";
       document.getElementById("player1").innerText = pseudo;
       document.getElementById("player2").innerText = retour["adversaire"];
+      nIntervTimer = setInterval(countdown, 1000);
       if (retour["prochainCoup"] == pseudo) {
         document.getElementById("player1").style.backgroundColor =
           "rgb(255, 200, 200)";
         CestMonTour = true;
-        nIntervTimer = setInterval(countdown, 1000);
       } else {
         document.getElementById("player2").style.backgroundColor =
           "rgb(200,200,255)";
@@ -105,7 +105,9 @@ function countdown() {
   } else {
     clearInterval(nIntervTimer);
     nIntervTimer = false;
-    outOfTime();
+    if (CestMonTour == true) {
+      outOfTime();
+    }
   }
 }
 
@@ -162,8 +164,7 @@ function retourNewMove(retour, x, y) {
     // on lance un timer pour savoir si l'adversaire a joué
     nIntervGetMove = setInterval(getMove, 1000);
     // on réinitialise le timer qui nous donnait 30 secondes pour jouer
-    clearInterval(nIntervTimer);
-    nIntervTimer = null;
+    timer = 31;
   } else {
     result.innerText = retour["error"];
   }
@@ -220,6 +221,8 @@ function retourGetMove(retour) {
     //alors on a gagné
     clearInterval(nIntervGetMove);
     nIntervGetMove = null;
+    clearInterval(nIntervTimer);
+    nIntervTimer = null;
     partieEnCours = false;
     idpartie = 0;
     result.innerHTML = "C'est gagn&eacute;!";
@@ -255,6 +258,8 @@ function defaite() {
   // alors on a perdu
   clearInterval(nIntervGetMove);
   nIntervGetMove = null;
+  clearInterval(nIntervTimer);
+  nIntervTimer = null;
   partieEnCours = false;
   idpartie = 0;
   result.innerText = "C'est perdu!";
