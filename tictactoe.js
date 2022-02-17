@@ -257,7 +257,7 @@ function defaite() {
   nIntervGetMove = null;
   partieEnCours = false;
   idpartie = 0;
-  //result.innerText = "C'est perdu!";
+  result.innerText = "C'est perdu!";
   for (let i = 0; i <= 2; i++) {
     for (let j = 0; j <= 2; j++) {
       document.getElementById("R" + i + "C" + j).className = "played";

@@ -63,6 +63,17 @@ else
         $timestamp = $time['timestamp'];
     }
     
+    if(sizeof($resultsTime) == 0){
+        // c'est qu'aucun coup de l'adversaire n'a été joué, il va falloir aller chercher le timestamp depuis le début de la partie
+    $sqlquery = $db->prepare('SELECT timestamp FROM partie WHERE id = :partie');
+    $sqlquery->execute([ 'partie' => $idpartie]);
+    $resultsTime2 = $sqlquery->fetchAll();
+    foreach ($resultsTime2 as $time2) {  
+        $timestamp = $time2['timestamp'];
+    }
+
+    }
+
     $delai = time() - $timestamp;
 
     if($delai < 30)
@@ -78,6 +89,7 @@ else
         $sqlquery->execute([ 'joueur' => $idadversaire, 'partie' => $idpartie]);
 
     }
+
     
 }
 

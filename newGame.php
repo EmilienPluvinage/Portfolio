@@ -80,8 +80,8 @@ if(sizeof($results) == 0 )
      }
 
     
-    $insertPartie= $db->prepare('INSERT INTO partie (prochainCoup,vainqueur) VALUES (?,0)');
-    $insertPartie->execute([$idjoueur]);
+    $insertPartie= $db->prepare('INSERT INTO partie (prochainCoup,vainqueur, timestamp) VALUES (?,0,?)');
+    $insertPartie->execute([$idjoueur,time()]);
 
     //on récupère l'id de notre partie, et ensuite on créé notre entrée dans estDansLaPartie;
     $sqlquery = $db->prepare('SELECT id FROM partie WHERE prochainCoup = :joueur');
