@@ -11,6 +11,7 @@ $y = $_POST['y'];
 error_reporting(E_ALL);
 ini_set('display_errors',1);
 include('config.php');
+include('functions.php');
 
 $db = new PDO(
     'mysql:host='.$host.';dbname=tictactoe;charset=utf8',
@@ -19,13 +20,8 @@ $db = new PDO(
 $db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
 // On commence par récupérer l'id du joueur
-$sqlquery = $db->prepare('SELECT id FROM joueur WHERE pseudo = :pseudo');
-$sqlquery->execute([ 'pseudo' => $pseudo ]);
-$resultsJoueurs = $sqlquery->fetchAll();
+$idjoueur = getId($db,$pseudo);
 
-    foreach ($resultsJoueurs as $joueur) {  
-         $idjoueur = $joueur['id'];
-     }
  // et vérifier que c'est bien à lui de jouer
 $sqlquery = $db->prepare('SELECT prochainCoup FROM partie WHERE id = :partie');
 $sqlquery->execute([ 'partie' => $idpartie ]);

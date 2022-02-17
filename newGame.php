@@ -3,6 +3,7 @@ header('Content-type: application/json');
 error_reporting(E_ALL);
 ini_set('display_errors',1);
 include('config.php');
+include('functions.php');
 
 $return = array("error" => '', 
 "partie" => 0,
@@ -71,14 +72,7 @@ if(sizeof($results) == 0 )
     {
      // Maintenant qu'on a trouvé un adversaire, il nous reste à créer une partie
      // on commence par récupérer l'id de notre joueur (pas de l'adversaire mais bien du joueur qui appelle le script)
-     $sqlquery = $db->prepare('SELECT id FROM joueur WHERE pseudo = :pseudo');
-    $sqlquery->execute([ 'pseudo' => $pseudo ]);
-    $resultsJoueurs = $sqlquery->fetchAll();
-
-    foreach ($resultsJoueurs as $joueur) {  
-         $idjoueur = $joueur['id'];
-     }
-
+     $idjoueur = getId($db,$pseudo);
     
     $insertPartie= $db->prepare('INSERT INTO partie (prochainCoup,vainqueur, timestamp) VALUES (?,0,?)');
     $insertPartie->execute([$idjoueur,time()]);
