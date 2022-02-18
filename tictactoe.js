@@ -12,25 +12,32 @@ let timer = 30;
 
 btn.addEventListener("click", function (e) {
   e.preventDefault;
-  var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-  pseudo = document.getElementById("pseudo").value;
-  if (pseudo.length > 2) {
-    if (!format.test(pseudo)) {
-      fetch("http://localhost:8888/newPlayer.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        },
-        body: "pseudo=" + pseudo,
-      })
-        .then((response) => response.json())
-        .then((response) => retourNewPlayer(response))
-        .catch((error) => alert("Erreur : " + error));
+  // Soit c'est la première fois qu'on clique, et il faut choisir un pseudo, newPlayer.php
+  // Soit on appelle restart.php
+  if (btn.value == "Start") {
+    var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    pseudo = document.getElementById("pseudo").value;
+    if (pseudo.length > 2) {
+      if (!format.test(pseudo)) {
+        fetch("http://localhost:8888/newPlayer.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          },
+          body: "pseudo=" + pseudo,
+        })
+          .then((response) => response.json())
+          .then((response) => retourNewPlayer(response))
+          .catch((error) => alert("Erreur : " + error));
+      } else {
+        result.innerHTML =
+          "Your pseudo should contain only letters and numbers.";
+      }
     } else {
-      result.innerHTML = "Your pseudo should contain only letters and numbers.";
+      result.innerHTML = "Your pseudo must be a least 3 characters.";
     }
-  } else {
-    result.innerHTML = "Your pseudo must be a least 3 characters.";
+  } else if (btn.value == "Restart") {
+    // appeler restart.php
   }
 });
 
@@ -231,6 +238,8 @@ function retourGetMove(retour) {
     clearInterval(nIntervTimer);
     nIntervTimer = null;
     partieEnCours = false;
+    btn.disabled = false;
+    btn.value = "Restart";
     idpartie = 0;
     result.innerHTML = "C'est gagn&eacute;!";
     for (let i = 0; i <= 2; i++) {
@@ -268,6 +277,8 @@ function defaite() {
   clearInterval(nIntervTimer);
   nIntervTimer = null;
   partieEnCours = false;
+  btn.disabled = false;
+  btn.value = "Restart";
   idpartie = 0;
   result.innerText = "C'est perdu!";
   for (let i = 0; i <= 2; i++) {
