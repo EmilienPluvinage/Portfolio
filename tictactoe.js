@@ -81,6 +81,13 @@ function retourNewGame(retour) {
         document.getElementById("player1").style.backgroundColor =
           "rgb(255, 200, 200)";
         CestMonTour = true;
+        // Si c'est mon tour, je dois d'abord vérifier si l'autre joueur à joué avant moi ou pas.
+        if (retour["abscisse"] != null) {
+          x = retour["abscisse"];
+          y = retour["ordonnee"];
+          document.getElementById("R" + x + "C" + y).innerText = "O";
+          document.getElementById("R" + x + "C" + y).style.color = "blue";
+        }
       } else {
         document.getElementById("player2").style.backgroundColor =
           "rgb(200,200,255)";

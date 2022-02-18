@@ -9,8 +9,8 @@ $return = array("error" => '',
 "partie" => 0,
 'adversaire' => '',
 'prochainCoup' => '',
-'abscisse' => 0,
-'ordonnee' => 0,
+'abscisse' => null,
+'ordonnee' => null,
 'timestamp' => 0
 );
 
@@ -123,8 +123,6 @@ elseif(sizeof($results) == 1)
 else{
     // On est dans plus d'une partie à la fois, donc c'est embêtant. On renvoie une erreur
     $return['error'] = 'Il y a un souci technique. Il semblerait que vous êtes dans plusieurs parties à la fois';
-    // on pourra rajouter une jointure pour vérifier si la partie a un vainqueur ou non pour éliminer les parties terminées
-
 }
 echo json_encode($return);
 
