@@ -22,6 +22,9 @@ $db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 // On commence par récupérer l'id du joueur
 $idjoueur = getId($db,$pseudo);
 
+// on met à jour le timestamp
+updateTimestamp($db,$pseudo);
+
  // et vérifier que c'est bien à lui de jouer
 $sqlquery = $db->prepare('SELECT prochainCoup FROM partie WHERE id = :partie');
 $sqlquery->execute([ 'partie' => $idpartie ]);

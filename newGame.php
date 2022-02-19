@@ -24,8 +24,7 @@ $db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
 
 // On commence par mettre à jour le timestamp
-$sqlquery = $db->prepare('UPDATE joueur SET timestamp= :timestamp WHERE pseudo= :pseudo');
-$sqlquery->execute([ 'pseudo' => $pseudo, 'timestamp' => time()]);
+updateTimestamp($db,$pseudo);
 
 // Ensuite on regarde si on est déjà dans une partie qui aurait été créée par quelqu'un d'autre
 $sqlquery = $db->prepare('SELECT estDansLaPartie.partie AS partie, estDansLaPartie.joueur AS joueur FROM joueur RIGHT JOIN estDansLaPartie ON joueur.id=estDansLaPartie.joueur 

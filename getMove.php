@@ -27,7 +27,10 @@ $db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 // On commence par récupérer l'id du joueur
 $idjoueur = getId($db,$pseudo);
 
- // et regarder si c'est à lui de jouer, ou bien si l'adversaire à gagné la partie.
+// on met à jour le timestamp
+updateTimestamp($db,$pseudo);
+
+// et regarder si c'est à lui de jouer, ou bien si l'adversaire à gagné la partie.
 $sqlquery = $db->prepare('SELECT prochainCoup, vainqueur FROM partie WHERE id = :partie');
 $sqlquery->execute([ 'partie' => $idpartie ]);
 $resultsParties = $sqlquery->fetchAll();

@@ -21,4 +21,8 @@ function getOpponent(PDO $db, $idjoueur, $idpartie) {
     return $idadversaire;
 }
 
+function updateTimestamp(PDO $db, $pseudo){
+$sqlquery = $db->prepare('UPDATE joueur SET timestamp= :timestamp WHERE pseudo= :pseudo');
+$sqlquery->execute([ 'pseudo' => $pseudo, 'timestamp' => time()]);
+}
  ?>
