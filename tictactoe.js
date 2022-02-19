@@ -39,10 +39,16 @@ btn.addEventListener("click", function (e) {
   } else if (btn.value == "Restart") {
     // on relance une partie
     result.innerText =
-      "One moment " + pseudo + ",\n we're searching for an opponent...";
+      "One moment please,\n we're searching for an new opponent...";
     document.getElementById("pseudo").disabled = true;
     btn.disabled = true;
     document.getElementById("chargement").innerHTML = ImageChargement;
+    timer = 30;
+    document.getElementById("player1").style.backgroundColor =
+      "rgb(240,240,240)";
+    document.getElementById("player2").style.backgroundColor =
+      "rgb(240,240,240)";
+    newGrid();
     newGame();
   }
 });
@@ -135,6 +141,7 @@ function newGrid() {
   for (let i = 0; i <= 2; i++) {
     for (let j = 0; j <= 2; j++) {
       document.getElementById("R" + i + "C" + j).removeAttribute("class");
+      document.getElementById("R" + i + "C" + j).innerText = "";
     }
   }
 }

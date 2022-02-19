@@ -26,45 +26,38 @@ $db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 // On commence par mettre à jour le timestamp
 updateTimestamp($db,$pseudo);
 
-// Ensuite on regarde si on est déjà dans une partie qui aurait été créée par quelqu'un d'autre
-$sqlquery = $db->prepare('SELECT estDansLaPartie.partie AS partie, estDansLaPartie.joueur AS joueur FROM joueur RIGHT JOIN estDansLaPartie ON joueur.id=estDansLaPartie.joueur 
-WHERE joueur.pseudo= :pseudo');
+// Ensuite on note qu'on est bien en recherche de partie
+$sqlquery = $db->prepare('UPDATE joueur SET recherche=1 WHERE pseudo= :pseudo');
+$sqlquery->execute([ 'pseudo' => $pseudo]);
+
+// Ensuite on regarde si on est déjà dans une partie qui aurait été créée par quelqu'un d'autre, et qui n'est pas terminée
+$sqlquery = $db->prepare('SELECT estDansLaPartie.partie AS partie, estDansLaPartie.joueur AS joueur 
+FROM estDansLaPartie 
+LEFT JOIN joueur ON joueur.id=estDansLaPartie.joueur 
+LEFT JOIN partie ON partie.id=estDansLaPartie.partie
+WHERE joueur.pseudo= :pseudo
+AND partie.vainqueur =0');
 $sqlquery->execute([ 'pseudo' => $pseudo ]);
 $results = $sqlquery->fetchAll();
 if(sizeof($results) == 0 )
 { // on est pas encore dans une partie, on va donc chercher un autre joueur pour en créer éventuellement une
-    // on commence par chercher tous les id joueurs d'une part, et tous les id joueurs qui sont dans une partie d'autre part
-    // on regardera ensuite si certain sont dans le premier tableau et pas dans le second
+    // on commence par chercher tous les id joueurs d'une part qui ont recherche sur true
 
-    $adversaireDisponible = false;
     $idadversaire = 0;
-    $adversare ="";
-    $resultsPartieEnCours=[];
+    $adversaire ="";
+    $adversaireDisponible=false;
 
-    $sqlquery = $db->prepare('SELECT estDansLaPartie.joueur  FROM estDansLaPartie 
-    LEFT JOIN partie ON partie.id = estDansLaPartie.partie');
-    $sqlquery->execute();
-    $qresults = $sqlquery->fetchAll();
-
-    foreach($qresults as $players)
-    {
-        $resultsPartieEnCours[] = $players['joueur'];
-    }
-    
-    // on a maintenant la liste des joueurs qui sont dans une partie, on boucle donc sur la liste de TOUS les joueurs
-    // et s'ils ne sont pas dans cette première liste, alors on créé une partie
-    $sqlquery = $db->prepare('SELECT id, pseudo FROM joueur WHERE pseudo <> :pseudo');
+    $sqlquery = $db->prepare('SELECT id, pseudo FROM joueur WHERE pseudo <> :pseudo AND recherche=1');
     $sqlquery->execute([ 'pseudo' => $pseudo ]);
     $resultsJoueurs = $sqlquery->fetchAll();
 
     foreach ($resultsJoueurs as $joueur) {  
-     if(in_array($joueur['id'],$resultsPartieEnCours) == false)
-     {
+     
          // alors on a trouvé un adversaire
          $adversaireDisponible = true;
          $idadversaire = $joueur['id'];
          $adversaire = $joueur['pseudo'];
-     }
+     
     }
 
     if($adversaireDisponible)
@@ -87,6 +80,10 @@ if(sizeof($results) == 0 )
     $insertDansPartie= $db->prepare('INSERT INTO estDansLaPartie (partie,joueur) VALUES (:partie,:joueur),(:partie,:adversaire)');    
     $insertDansPartie->execute([ 'partie' => $idpartie, 'joueur' => $idjoueur, 'adversaire' => $idadversaire]);
      
+     // on passe sur recherche=false puisqu'on est dans une partie désormais
+    $sqlquery = $db->prepare('UPDATE joueur SET recherche=0 WHERE pseudo= :pseudo');
+    $sqlquery->execute([ 'pseudo' => $pseudo]);
+
     // on complète maintenant le contenu de $return à renvoyer à notre API Fetch
      $return['partie'] = $idpartie;
      $return['adversaire'] = $adversaire;
@@ -114,9 +111,14 @@ elseif(sizeof($results) == 1)
     {$return['prochainCoup'] = $pseudo; }
     else
  {$return['prochainCoup'] = $results2[0]['pseudo']; }
+
     $return['abscisse'] = $results2[0]['abscisse'];
     $return['ordonnee'] = $results2[0]['ordonnee'];
     $return['timestamp'] = $results2[0]['timestamp'];    
+
+        // on passe sur recherche=false puisqu'on est dans une partie désormais
+    $sqlquery = $db->prepare('UPDATE joueur SET recherche=0 WHERE pseudo= :pseudo');
+    $sqlquery->execute([ 'pseudo' => $pseudo]);
     
 }
 else{

@@ -28,7 +28,7 @@ if(sizeof($results) >0 )
 else
 {
     // alors le pseudo n'existe pas, on va l'ajouter
-    $sqlinsert ='INSERT INTO joueur (pseudo,timestamp) VALUES (?,?)';
+    $sqlinsert ='INSERT INTO joueur (pseudo,timestamp,recherche) VALUES (?,?,1)';
     $insertPseudo= $db->prepare($sqlinsert);
     $insertPseudo->execute([$pseudo,time()]);
     

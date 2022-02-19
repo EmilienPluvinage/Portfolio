@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le :  jeu. 17 fév. 2022 à 16:48
+-- Généré le :  sam. 19 fév. 2022 à 16:33
 -- Version du serveur :  5.7.26
 -- Version de PHP :  7.4.2
 
@@ -50,7 +50,8 @@ CREATE TABLE `estDansLaPartie` (
 CREATE TABLE `joueur` (
   `id` int(11) NOT NULL,
   `pseudo` varchar(50) NOT NULL,
-  `timestamp` int(11) NOT NULL
+  `timestamp` int(11) NOT NULL,
+  `recherche` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
