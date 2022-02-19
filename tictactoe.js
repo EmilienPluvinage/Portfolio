@@ -37,7 +37,13 @@ btn.addEventListener("click", function (e) {
       result.innerHTML = "Your pseudo must be a least 3 characters.";
     }
   } else if (btn.value == "Restart") {
-    // appeler restart.php
+    // on relance une partie
+    result.innerText =
+      "One moment " + pseudo + ",\n we're searching for an opponent...";
+    document.getElementById("pseudo").disabled = true;
+    btn.disabled = true;
+    document.getElementById("chargement").innerHTML = ImageChargement;
+    newGame();
   }
 });
 
@@ -104,7 +110,7 @@ function retourNewGame(retour) {
     } else {
       // la partie n'as pas débuté, on lance donc un interval qui va chercher à lancer la partie toutes les 5 secondes.
       if (nIntervId == null) {
-        nIntervId = setInterval(newGame, 5000);
+        nIntervId = setInterval(newGame, 1000);
       }
     }
   } else {
@@ -118,7 +124,7 @@ function countdown() {
     document.getElementById("timer").innerText = timer;
   } else {
     clearInterval(nIntervTimer);
-    nIntervTimer = false;
+    nIntervTimer = null;
     if (CestMonTour == true) {
       outOfTime();
     }
@@ -178,7 +184,7 @@ function retourNewMove(retour, x, y) {
     // on lance un timer pour savoir si l'adversaire a joué
     nIntervGetMove = setInterval(getMove, 1000);
     // on réinitialise le timer qui nous donnait 30 secondes pour jouer
-    timer = 31;
+    timer = 30;
   } else {
     result.innerText = retour["error"];
   }
@@ -253,8 +259,7 @@ function retourGetMove(retour) {
     clearInterval(nIntervGetMove);
     nIntervGetMove = null;
     // on relance le timer
-    timer = 31;
-    nIntervTimer = setInterval(countdown, 1000);
+    timer = 30;
     // on affiche la case que l'adversaire a joué, on la désactive, on change la couleur des pseudos
     x = retour["x"];
     y = retour["y"];
