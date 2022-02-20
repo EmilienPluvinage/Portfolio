@@ -10,6 +10,10 @@ let idpartie = 0;
 let CestMonTour = false;
 let timer = 30;
 let nIntervTimestamp = null;
+let nIntervCleanDB = setInterval(cleanDatabase, 1000 * 10);
+
+cleanDatabase();
+clickInit();
 
 btn.addEventListener("click", function (e) {
   e.preventDefault;
@@ -54,8 +58,6 @@ btn.addEventListener("click", function (e) {
   }
 });
 
-clickInit();
-
 function retourNewPlayer(retour) {
   if (retour["error"]) {
     result.innerText = retour["text"];
@@ -65,8 +67,8 @@ function retourNewPlayer(retour) {
     document.getElementById("pseudo").disabled = true;
     btn.disabled = true;
     document.getElementById("chargement").innerHTML = ImageChargement;
-    // on met à jour le timestamp toutes les 5 minutes (partie en cours ou pas), pour indiquer que le joueur est toujours là.
-    nIntervTimestamp = setInterval(updateTimestamp, 1000 * 60 * 5);
+    // on met à jour le timestamp toutes les 10 secondes (partie en cours ou pas), pour indiquer que le joueur est toujours là.
+    nIntervTimestamp = setInterval(updateTimestamp, 1000 * 10);
     newGame();
   }
 }
@@ -310,6 +312,17 @@ function updateTimestamp() {
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
     },
     body: "pseudo=" + pseudo,
+  })
+    .then((response) => response.json())
+    .catch((error) => alert("Erreur : " + error));
+}
+
+function cleanDatabase() {
+  fetch("http://localhost:8888/cleanDatabase.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+    },
   })
     .then((response) => response.json())
     .catch((error) => alert("Erreur : " + error));
