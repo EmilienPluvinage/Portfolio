@@ -9,6 +9,7 @@ let nIntervGetMove = null;
 let idpartie = 0;
 let CestMonTour = false;
 let timer = 30;
+let nIntervTimestamp = null;
 
 btn.addEventListener("click", function (e) {
   e.preventDefault;
@@ -64,6 +65,8 @@ function retourNewPlayer(retour) {
     document.getElementById("pseudo").disabled = true;
     btn.disabled = true;
     document.getElementById("chargement").innerHTML = ImageChargement;
+    // on met à jour le timestamp toutes les 5 minutes (partie en cours ou pas), pour indiquer que le joueur est toujours là.
+    nIntervTimestamp = setInterval(updateTimestamp, 1000 * 60 * 5);
     newGame();
   }
 }
@@ -298,4 +301,16 @@ function defaite() {
       document.getElementById("R" + i + "C" + j).className = "played";
     }
   }
+}
+
+function updateTimestamp() {
+  fetch("http://localhost:8888/updateTimestamp.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+    },
+    body: "pseudo=" + pseudo,
+  })
+    .then((response) => response.json())
+    .catch((error) => alert("Erreur : " + error));
 }
