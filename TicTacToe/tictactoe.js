@@ -24,7 +24,7 @@ btn.addEventListener("click", function (e) {
     pseudo = document.getElementById("pseudo").value;
     if (pseudo.length > 2) {
       if (!format.test(pseudo)) {
-        fetch("http://localhost:8888/newPlayer.php", {
+        fetch("newPlayer.php", {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -74,7 +74,7 @@ function retourNewPlayer(retour) {
 }
 
 function newGame() {
-  fetch("http://localhost:8888/newGame.php", {
+  fetch("newGame.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -169,7 +169,7 @@ function newMove(x, y) {
     document.getElementById("R" + x + "C" + y).className != "played" &&
     CestMonTour == true
   ) {
-    fetch("http://localhost:8888/newMove.php", {
+    fetch("newMove.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -205,7 +205,7 @@ function retourNewMove(retour, x, y) {
 function outOfTime() {
   // on commence par tester si la case a déjà été jouée ou pas, si oui, on ne fait rien
   if (CestMonTour == true) {
-    fetch("http://localhost:8888/outOfTime.php", {
+    fetch("outOfTime.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -229,7 +229,7 @@ function retourOutOfTime(retour) {
 function getMove() {
   // fonction dont l'objectif est de vérifier si l'adversaire a joué son tour
   // et si oui de récupérer les coordonnées de la case jouée, s'il a gagné, etc...
-  fetch("http://localhost:8888/getMove.php", {
+  fetch("getMove.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -306,7 +306,7 @@ function defaite() {
 }
 
 function updateTimestamp() {
-  fetch("http://localhost:8888/updateTimestamp.php", {
+  fetch("updateTimestamp.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -318,7 +318,7 @@ function updateTimestamp() {
 }
 
 function cleanDatabase() {
-  fetch("http://localhost:8888/cleanDatabase.php", {
+  fetch("cleanDatabase.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
