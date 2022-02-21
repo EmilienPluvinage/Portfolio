@@ -1,0 +1,48 @@
+html {
+  scroll-behavior: smooth;
+}
+
+table {
+  border-collapse: collapse;
+  border: 2px solid rgb(200, 200, 200);
+  letter-spacing: 1px;
+  font-family: sans-serif;
+  font-size: 0.8rem;
+  width: auto;
+  margin: auto;
+}
+h2 {
+  text-align: center;
+  background-color: rgb(240, 240, 240);
+  margin: auto;
+  max-width: fit-content;
+  padding: 1rem;
+  border-radius: 0.2rem;
+}
+p {
+  text-align: center;
+}
+form {
+  width: 20%;
+  margin: auto;
+  text-align: center;
+  font-size: 0.8rem;
+}
+#main {
+  width: auto;
+  margin: auto;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+}
+
+td,
+th {
+  border: 1px solid rgb(190, 190, 190);
+  text-align: center;
+}
+
+td {
+  width: 30px;
+  height: 30px;
+  background-color: rgb(255, 255, 255);
+}
