@@ -30,6 +30,8 @@ if(isset($_POST['pseudo']))
     // On commence par mettre à jour le timestamp
     updateTimestamp($db,$pseudo);
 
+    $idjoueur = getId($db,$pseudo);
+
     // Ensuite on note qu'on est bien en recherche de partie
     $sqlquery = $db->prepare('UPDATE joueur SET recherche=1 WHERE pseudo= :pseudo');
     $sqlquery->execute([ 'pseudo' => $pseudo]);
@@ -68,7 +70,7 @@ if(isset($_POST['pseudo']))
         {
         // Maintenant qu'on a trouvé un adversaire, il nous reste à créer une partie
         // on commence par récupérer l'id de notre joueur (pas de l'adversaire mais bien du joueur qui appelle le script)
-        $idjoueur = getId($db,$pseudo);
+        
         
         $insertPartie= $db->prepare('INSERT INTO partie (prochainCoup,vainqueur, timestamp) VALUES (?,0,?)');
         $insertPartie->execute([$idjoueur,time()]);
@@ -85,8 +87,10 @@ if(isset($_POST['pseudo']))
         $insertDansPartie->execute([ 'partie' => $idpartie, 'joueur' => $idjoueur, 'adversaire' => $idadversaire]);
         
         // on passe sur recherche=false puisqu'on est dans une partie désormais
-        $sqlquery = $db->prepare('UPDATE joueur SET recherche=0 WHERE pseudo= :pseudo');
-        $sqlquery->execute([ 'pseudo' => $pseudo]);
+        $sqlquery = $db->prepare('UPDATE joueur SET recherche=0 WHERE pseudo= :pseudo OR pseudo = :adversaire');
+        $sqlquery->execute([ 'pseudo' => $pseudo, 'adversaire' => $idadversaire]);
+
+        
 
         // on complète maintenant le contenu de $return à renvoyer à notre API Fetch
         $return['partie'] = $idpartie;
@@ -120,9 +124,11 @@ if(isset($_POST['pseudo']))
         $return['ordonnee'] = $results2[0]['ordonnee'];
         $return['timestamp'] = $results2[0]['timestamp'];    
 
-            // on passe sur recherche=false puisqu'on est dans une partie désormais
-        $sqlquery = $db->prepare('UPDATE joueur SET recherche=0 WHERE pseudo= :pseudo');
-        $sqlquery->execute([ 'pseudo' => $pseudo]);
+  // on passe sur recherche=false puisqu'on est dans une partie désormais
+        $sqlquery = $db->prepare('UPDATE joueur SET recherche=0 WHERE pseudo= :pseudo OR pseudo = :adversaire');
+        $sqlquery->execute([ 'pseudo' => $pseudo, 'adversaire' => $return['adversaire']]);
+
+    
         
     }
     else{
