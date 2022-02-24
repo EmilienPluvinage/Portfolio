@@ -2,7 +2,7 @@ let btn = document.getElementById("button");
 let result = document.getElementById("result");
 let pseudo = "";
 let ImageChargement =
-  '<img src="chargement.gif" alt="Recherche d\'un adversaire..." width="30" height="30" />';
+  '<img src="chargement.gif" alt="Looking for an opponent..." width="30" height="30" />';
 let partieEnCours = false;
 let nIntervId = null;
 let nIntervGetMove = null;
@@ -83,7 +83,7 @@ function newGame() {
   })
     .then((response) => response.json())
     .then((response) => retourNewGame(response))
-    .catch((error) => alert("Erreur : " + error));
+    .catch((error) => alert("Error : " + error));
 }
 
 function retourNewGame(retour) {
@@ -96,7 +96,7 @@ function retourNewGame(retour) {
       idpartie = retour["partie"];
       clearInterval(nIntervId);
       nIntervId = null;
-      result.innerText = "Bonne chance !";
+      result.innerText = "A new game has started. Good luck !";
       document.getElementById("chargement").innerHTML = "";
       document.getElementById("player1").innerText = pseudo;
       document.getElementById("player2").innerText = retour["adversaire"];
@@ -178,7 +178,7 @@ function newMove(x, y) {
     })
       .then((response) => response.json())
       .then((response) => retourNewMove(response, x, y))
-      .catch((error) => alert("Erreur : " + error));
+      .catch((error) => alert("Error : " + error));
   }
 }
 
@@ -214,7 +214,7 @@ function outOfTime() {
     })
       .then((response) => response.json())
       .then((response) => retourOutOfTime(response))
-      .catch((error) => alert("Erreur : " + error));
+      .catch((error) => alert("Error : " + error));
   }
 }
 
@@ -238,7 +238,7 @@ function getMove() {
   })
     .then((response) => response.json())
     .then((response) => retourGetMove(response))
-    .catch((error) => alert("Erreur : " + error));
+    .catch((error) => alert("Error : " + error));
 }
 
 function retourGetMove(retour) {
@@ -259,7 +259,7 @@ function retourGetMove(retour) {
     btn.disabled = false;
     btn.value = "Restart";
     idpartie = 0;
-    result.innerHTML = "C'est gagn&eacute;!";
+    result.innerHTML = "You won!";
     for (let i = 0; i <= 2; i++) {
       for (let j = 0; j <= 2; j++) {
         document.getElementById("R" + i + "C" + j).className = "played";
@@ -297,7 +297,7 @@ function defaite() {
   btn.disabled = false;
   btn.value = "Restart";
   idpartie = 0;
-  result.innerText = "C'est perdu!";
+  result.innerText = "You lost!";
   for (let i = 0; i <= 2; i++) {
     for (let j = 0; j <= 2; j++) {
       document.getElementById("R" + i + "C" + j).className = "played";
@@ -314,7 +314,7 @@ function updateTimestamp() {
     body: "pseudo=" + pseudo,
   })
     .then((response) => response.json())
-    .catch((error) => alert("Erreur : " + error));
+    .catch((error) => alert("Error : " + error));
 }
 
 function cleanDatabase() {
@@ -325,5 +325,5 @@ function cleanDatabase() {
     },
   })
     .then((response) => response.json())
-    .catch((error) => alert("Erreur : " + error));
+    .catch((error) => alert("Error : " + error));
 }

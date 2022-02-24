@@ -38,7 +38,7 @@ if(isset($_POST['pseudo']))
         }
         if($prochainCoup != $idjoueur)
         {
-            $return['error'] = 'Erreur : Ce n\'est pas à vous de jouer!';
+            $return['error'] = 'Error : It\'s not your turn to play!';
         }
 
     // ensuite on vérifie que le coup n'as pas déjà été joué et fait bien partie de la grille
@@ -52,12 +52,12 @@ if(isset($_POST['pseudo']))
             if(sizeof($resultsCoups) != 0)
             {
                 // alors le coup a déjà été joué
-                $return['error'] = 'Erreur : Cette case a déjà été jouée.';
+                $return['error'] = 'Error : This square has already been played';
             }
         }
         else
         {
-            $return['error'] = 'Erreur : Les coordonnées sont incorrectes.';
+            $return['error'] = 'Error : Incorrect coordinates.';
         }
         
 
