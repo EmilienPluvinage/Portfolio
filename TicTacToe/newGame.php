@@ -127,7 +127,7 @@ if(isset($_POST['pseudo']))
     }
     else{
         // On est dans plus d'une partie à la fois, donc c'est embêtant. On renvoie une erreur
-        $return['error'] = 'Il y a un souci technique. Il semblerait que vous êtes dans plusieurs parties à la fois';
+        $return['error'] = 'There\'s a technical issue since you seem to be in several games simultaneously.';
     }
     echo json_encode($return);
 
