@@ -1,13 +1,16 @@
 let btn = document.getElementById("button");
-
+let numberOfFlasks = 4;
 // we start with 4 flasks, we'll change it later
-let data = new Array(4);
+let data = new Array(numberOfFlasks);
 
 btn.addEventListener("click", function (e) {
   e.preventDefault;
   btn.disabled = true;
   getData();
   console.log(hasWon());
+  for (let i = 0; i < 4; i++) {
+    console.log(topColor(i));
+  }
   solve();
   display();
   btn.disabled = false;
@@ -44,12 +47,11 @@ function display() {
 }
 
 function hasWon() {
-  // tell you whether the solve function has won, return true/false
+  // tell you whether the solve function has won, returns true/false
   let won = true;
   for (let i = 0; i < data.length; i++) {
     let color = data[i][0];
     for (let j = 0; j < 4; j++) {
-      console.log(data[i][j]);
       if (data[i][j] != color) {
         won = false;
       }
@@ -61,4 +63,16 @@ function hasWon() {
 
 function hasLost() {
   // tell you wheter the solve function has lost, return true/false
+  // for each flask,
+}
+
+function topColor(i) {
+  // returns the topColor of flask number i
+  let color = "white";
+  for (let j = 3; j >= 0; j--) {
+    if (data[i][j] != "white") {
+      color = data[i][j];
+    }
+  }
+  return color;
 }
