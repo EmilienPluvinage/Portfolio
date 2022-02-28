@@ -1,11 +1,28 @@
 let btn = document.getElementById("button");
 let numberOfFlasks = 4;
+let numberOfColors = 3; // + white
 let globalWon = false;
 let iter = 0;
-let maxIter = 5;
+let maxIter = 10;
 let listOfMoves = new Array();
+let nIntervId;
+let allColors = [
+  "white",
+  "gold",
+  "hotpink",
+  "lightgreen",
+  "darkcyan",
+  "mediumblue",
+  "darkslategray",
+  "mediumpurple",
+  "red",
+  "darkorange",
+];
 // we start with 4 flasks, we'll change it later
 let data = new Array(numberOfFlasks);
+let colors = allColors.slice(0, numberOfColors + 1);
+
+init();
 
 btn.addEventListener("click", function (e) {
   e.preventDefault;
@@ -17,9 +34,8 @@ btn.addEventListener("click", function (e) {
   iter = 0;
   solve(data, []);
   console.log(globalWon);
-  console.table(listOfMoves);
-  display();
-  btn.disabled = false;
+  // go through the moves and display them one by one 2 seconds
+  nIntervId = setInterval(walkThrough, 2000);
 });
 
 function getData() {
@@ -41,6 +57,28 @@ function getData() {
   }
 }
 
+function init() {
+  for (let i = 0; i < data.length; i++) {
+    var table = document.getElementById("flask" + i);
+    for (let x in table.rows) {
+      let row = table.rows[x];
+      //iterate through rows
+      for (let y in row.cells) {
+        //iterate through columns
+        let col = row.cells[y];
+        if (col?.style?.backgroundColor != null) {
+          col?.addEventListener("click", function (e) {
+            let currentColor = col?.style?.backgroundColor;
+            let index =
+              (colors.indexOf(currentColor) + 1) % (numberOfColors + 1);
+            col.style.backgroundColor = colors[index];
+          });
+        }
+      }
+    }
+  }
+}
+
 function display() {
   // display the content of data
   for (let i = 0; i < data.length; i++) {
@@ -56,6 +94,33 @@ function display() {
         }
       }
     }
+  }
+}
+
+function testregexp() {
+  coordinates = listOfMoves.shift();
+  console.table(listOfMoves);
+  var match = coordinates.match(/^\(([0-9]*)=>([0-9]*)\)$/);
+  console.table(match);
+}
+
+function walkThrough() {
+  // check that listOfMoves isn't empty. if it is we stop the walk through
+  if (listOfMoves.length > 0) {
+    // then we take the first move, do it, display it, and update list of moves
+    console.table(listOfMoves);
+    // get i and j with RegExp. ListOfMoves[0] looks like (i=>j)
+    coordinates = listOfMoves.shift();
+    var match = coordinates.match(/^\(([0-9]*)=>([0-9]*)\)$/);
+    i = match[1];
+    j = match[2];
+
+    move(data, i, j);
+    display();
+  } else {
+    clearInterval(nIntervId);
+    nIntervId = null;
+    btn.disabled = false;
   }
 }
 
@@ -88,7 +153,7 @@ function solve(varData, varMoves) {
       globalWon = true;
       console.table(varMoves);
       listOfMoves = varMoves.slice(0);
-      alert("TROUVE");
+      console.log("TROUVE");
       console.table(varData);
     }
   }
