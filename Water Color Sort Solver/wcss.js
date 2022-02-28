@@ -41,6 +41,24 @@ function getData() {
   }
 }
 
+function display() {
+  // display the content of data
+  for (let i = 0; i < data.length; i++) {
+    var table = document.getElementById("flask" + i);
+    for (let x in table.rows) {
+      let row = table.rows[x];
+      //iterate through rows
+      for (let y in row.cells) {
+        //iterate through columns
+        let col = row.cells[y];
+        if (col?.style?.backgroundColor != null) {
+          col.style.backgroundColor = data[i][x];
+        }
+      }
+    }
+  }
+}
+
 function solve(varData, varMoves) {
   iter++;
   console.log("Iteration numero " + iter);
@@ -52,9 +70,9 @@ function solve(varData, varMoves) {
       var tempMoves = new Array();
 
       // we loop on the flasks i, for each flask i we loop on the flasks j and check canMove, if so, we do.
-      recherche: for (let i = 0; i < varData.length; i++) {
+      research: for (let i = 0; i < varData.length; i++) {
         for (let j = 0; j < 4; j++) {
-          if (globalWon) break recherche;
+          if (globalWon) break research;
           if (canMove(varData, i, j)) {
             // as soon as we can move, we do it, and resolve the new array
             tempData = varData.slice(0);
@@ -74,10 +92,6 @@ function solve(varData, varMoves) {
       console.table(varData);
     }
   }
-}
-
-function display() {
-  // display the content of the array
 }
 
 function hasWon(tempData) {
