@@ -50,14 +50,16 @@ function solve(varData, varMoves) {
     if (!hasLost(varData) && !hasWon(varData) && !globalWon) {
       var tempData = new Array();
       var tempMoves = new Array();
-      tempData = varData.slice(0);
-      tempMoves = varMoves.slice(0);
+
       // we loop on the flasks i, for each flask i we loop on the flasks j and check canMove, if so, we do.
-      for (let i = 0; i < tempData.length; i++) {
+      recherche: for (let i = 0; i < varData.length; i++) {
         for (let j = 0; j < 4; j++) {
-          if (canMove(tempData, i, j)) {
+          if (globalWon) break recherche;
+          if (canMove(varData, i, j)) {
             // as soon as we can move, we do it, and resolve the new array
+            tempData = varData.slice(0);
             move(tempData, i, j);
+            tempMoves = varMoves.slice(0);
             tempMoves.push("(" + i + "=>" + j + ")");
             console.table(tempData);
             solve(tempData, tempMoves);
