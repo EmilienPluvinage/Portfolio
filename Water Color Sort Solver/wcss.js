@@ -36,8 +36,7 @@ btn.addEventListener("click", function (e) {
   console.log("Data :");
   console.table(data);
   console.log(globalWon);
-  // go through the moves and display them one by one 2 seconds
-  nIntervId = setInterval(walkThrough, 2000);
+  nIntervId = setInterval(walkThrough, 1000);
 });
 
 function getData() {
@@ -209,17 +208,36 @@ function canMove(tempData, i, j) {
   if (i != j) {
     topColori = topColor(tempData, i);
     topColorj = topColor(tempData, j);
-    // first, either they have the same top color or J is empty
-    //if (topColori[0] == topColorj[0] || topColorj[0] == "white") {
-    if (topColori[0] == topColorj[0]) {
-      // then we need to check whether there is enough free space in j, or if i is empty
-      if (topColori[1] <= freeSlots(tempData, j)) {
-        // the it's ok we can do the move
-        movePossible = true;
+    // first, either they have the same top color or J is empty and there's at least 2 colors in i
+    if (topColori[0] != "white") {
+      if (
+        topColori[0] == topColorj[0] ||
+        (topColorj[0] == "white" && howManyColors(tempData, i) >= 2)
+      ) {
+        // then we need to check whether there is enough free space in j, or if i is empty
+        if (topColori[1] <= freeSlots(tempData, j)) {
+          // the it's ok we can do the move
+          movePossible = true;
+        }
       }
     }
   }
   return movePossible;
+}
+
+function howManyColors(tempData, i) {
+  // returns the number of colors (except white) in flask number i
+  var tempColor = [];
+  count = 0;
+  for (let j = 0; j < 4; j++) {
+    if (tempData[i][j] != "white") {
+      if (!tempColor.includes(tempData[i][j])) {
+        count++;
+        tempColor.push(tempData[i][j]);
+      }
+    }
+  }
+  return count;
 }
 
 function move(tempData, i, j) {
