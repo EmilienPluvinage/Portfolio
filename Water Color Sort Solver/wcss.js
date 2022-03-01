@@ -20,6 +20,7 @@ let allColors = [
 ];
 // we start with 4 flasks, we'll change it later
 let data = new Array(numberOfFlasks);
+let data2 = new Array();
 let colors = allColors.slice(0, numberOfColors + 1);
 
 init();
@@ -28,11 +29,12 @@ btn.addEventListener("click", function (e) {
   e.preventDefault;
   btn.disabled = true;
   getData();
-  console.table(data);
   globalWon = false;
   console.log("Debut de la recursivite");
   iter = 0;
   solve(data, []);
+  console.log("Data :");
+  console.table(data);
   console.log(globalWon);
   // go through the moves and display them one by one 2 seconds
   nIntervId = setInterval(walkThrough, 2000);
@@ -97,13 +99,6 @@ function display() {
   }
 }
 
-function testregexp() {
-  coordinates = listOfMoves.shift();
-  console.table(listOfMoves);
-  var match = coordinates.match(/^\(([0-9]*)=>([0-9]*)\)$/);
-  console.table(match);
-}
-
 function walkThrough() {
   // check that listOfMoves isn't empty. if it is we stop the walk through
   if (listOfMoves.length > 0) {
@@ -140,7 +135,8 @@ function solve(varData, varMoves) {
           if (globalWon) break research;
           if (canMove(varData, i, j)) {
             // as soon as we can move, we do it, and resolve the new array
-            tempData = varData.slice(0);
+            tempData = [];
+            copyArray(varData, tempData);
             move(tempData, i, j);
             tempMoves = varMoves.slice(0);
             tempMoves.push("(" + i + "=>" + j + ")");
@@ -263,4 +259,16 @@ function freeSlots(tempData, i) {
     }
   }
   return numberOfSlots;
+}
+
+function copyArray(array1, array2) {
+  // copies the content of a 2-dimensionnal array array1 into array2 (empty array passed as a parameter)
+
+  for (let i = 0; i < array1.length; i++) {
+    array2[i] = new Array(array1[i].length);
+
+    for (let j = 0; j < array1[i].length; j++) {
+      array2[i][j] = array1[i][j];
+    }
+  }
 }
