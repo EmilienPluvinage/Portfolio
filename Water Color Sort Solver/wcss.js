@@ -252,9 +252,9 @@ function solve(varData, varMoves) {
       var tempMoves = new Array();
 
       // we loop on the flasks i, for each flask i we loop on the flasks j and check canMove, if so, we do.
-      research: for (let i = 0; i < varData.length; i++) {
+      search: for (let i = 0; i < varData.length; i++) {
         for (let j = 0; j < varData.length; j++) {
-          if (globalWon) break research;
+          if (globalWon) break search;
           if (canMove(varData, i, j)) {
             // we do one final check to make sure we're not doing the opposite move from previous one
             if (varMoves.length > 0) {
@@ -291,11 +291,12 @@ function solve(varData, varMoves) {
 function hasWon(tempData) {
   // tell you whether the solve function has won, returns true/false
   let won = true;
-  for (let i = 0; i < tempData.length; i++) {
+  search: for (let i = 0; i < tempData.length; i++) {
     let color = tempData[i][0];
     for (let j = 0; j < 4; j++) {
       if (tempData[i][j] != color) {
         won = false;
+        break search;
       }
       color = tempData[i][j];
     }
@@ -307,11 +308,12 @@ function hasLost(tempData) {
   // tell you whether the solve function has lost, returns true/false
   // for each flask, we check whether we can move its top content somewhere else
   var movePossible = false;
-  for (let i = 0; i < tempData.length; i++) {
+  searchMove: for (let i = 0; i < tempData.length; i++) {
     for (let j = 0; j < tempData.length; j++) {
       if (i != j) {
         if (canMove(tempData, i, j)) {
           movePossible = true;
+          break searchMove;
         }
       }
     }
