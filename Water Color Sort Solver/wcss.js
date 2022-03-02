@@ -5,8 +5,8 @@ let message = document.getElementById("message");
 let numberOfFlasks = 4;
 let numberOfColors = numberOfFlasks - 1; // + white
 let globalWon = false;
-let iter = 0;
-let maxIter = 2000;
+let timeOut = 30 * 1000; // if we don't find a solution after 30 secondes, we give up.
+let start = Date.now();
 let listOfMoves = new Array();
 let nIntervId;
 let allColors = [
@@ -47,7 +47,7 @@ btn.addEventListener("click", function (e) {
     getData();
     globalWon = false;
     iter = 0;
-    var start = Date.now();
+    start = Date.now();
     solve(data, []);
     var end = Date.now();
     var time = (end - start) / 1000;
@@ -300,10 +300,10 @@ function walkThrough() {
 }
 
 function solve(varData, varMoves) {
-  iter++;
   // find a way to make sure we don't fall into infinite loop, mostly because of the empty flasks.
   // So far I've disabled moving things into an empty flask for now
-  if (iter <= maxIter) {
+  var time = Date.now() - start;
+  if (time <= timeOut) {
     if (!hasLost(varData) && !hasWon(varData) && !globalWon) {
       var tempData = new Array();
       var tempMoves = new Array();
