@@ -1,12 +1,15 @@
 table {
   border-collapse: collapse;
-  border-radius: 20px;
-  border: 2px solid rgb(200, 200, 200);
+  border-radius: 0px 0px 30px 30px;
+  overflow: hidden;
+  box-shadow: 0 0 0 2px rgb(150, 150, 150);
+  border-top: 0;
   letter-spacing: 1px;
   font-size: 0.8rem;
   width: auto;
   margin: auto;
 }
+
 h2 {
   text-align: center;
   background-color: rgb(240, 240, 240);
@@ -38,13 +41,8 @@ form {
   display: flex;
   justify-content: center;
 }
-td,
-th {
-  text-align: center;
-}
 
 td {
   width: 50px;
   height: 50px;
-  background-color: rgb(255, 255, 255);
 }
