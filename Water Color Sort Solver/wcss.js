@@ -1,6 +1,8 @@
 let btn = document.getElementById("button");
+let plus = document.getElementById("plus");
+let minus = document.getElementById("minus");
 let numberOfFlasks = 4;
-let numberOfColors = 3; // + white
+let numberOfColors = numberOfFlasks - 1; // + white
 let globalWon = false;
 let iter = 0;
 let maxIter = 20;
@@ -18,6 +20,8 @@ let allColors = [
   "red",
   "darkorange",
 ];
+let minFlasks = 3;
+let maxFlasks = allColors.length;
 // we start with 4 flasks, we'll change it later
 let data = new Array(numberOfFlasks);
 let data2 = new Array();
@@ -30,14 +34,64 @@ btn.addEventListener("click", function (e) {
   btn.disabled = true;
   getData();
   globalWon = false;
-  console.log("Debut de la recursivite");
   iter = 0;
   solve(data, []);
-  console.log("Data :");
-  console.table(data);
-  console.log(globalWon);
   nIntervId = setInterval(walkThrough, 1000);
 });
+
+plus.addEventListener("click", function (e) {
+  e.preventDefault;
+  addOneFlask();
+});
+
+minus.addEventListener("click", function (e) {
+  e.preventDefault;
+  removeOneFlask();
+});
+
+function addOneFlask() {
+  if (numberOfFlasks < maxFlasks) {
+    numberOfFlasks++;
+    numberOfColors++;
+    data = new Array(numberOfFlasks);
+    colors = allColors.slice(0, numberOfColors + 1);
+    // we add one empty flask on the right
+    var parent = document.getElementById("flasks");
+    var id = numberOfFlasks - 1;
+    parent.innerHTML +=
+      '<table id="flask' +
+      id +
+      '" class="flask"><tr><td style="background-color: white;"></td></tr><tr><td style="background-color: white;"></td></tr><tr><td style="background-color: white;"></td></tr><tr><td style="background-color: white;"></td></tr></table>';
+  }
+}
+
+function removeOneFlask() {
+  if (numberOfFlasks > minFlasks) {
+    var removedColor = colors[colors.length - 1];
+    numberOfFlasks--;
+    numberOfColors--;
+    data = new Array(numberOfFlasks);
+    colors = allColors.slice(0, numberOfColors + 1);
+    // we remove the flask on the right
+    var element = document.getElementById("flask" + numberOfFlasks);
+    element.parentNode.removeChild(element);
+    // we also need to go through all the flask to remove the last color
+    for (let i = 0; i < data.length; i++) {
+      var table = document.getElementById("flask" + i);
+      for (let x in table.rows) {
+        let row = table.rows[x];
+        //iterate through rows
+        for (let y in row.cells) {
+          //iterate through columns
+          let col = row.cells[y];
+          if (col?.style?.backgroundColor == removedColor) {
+            col.style.backgroundColor = colors[colors.length - 1];
+          }
+        }
+      }
+    }
+  }
+}
 
 function getData() {
   // look at the colors in the flasks and put them in a array so that we can work
@@ -102,7 +156,6 @@ function walkThrough() {
   // check that listOfMoves isn't empty. if it is we stop the walk through
   if (listOfMoves.length > 0) {
     // then we take the first move, do it, display it, and update list of moves
-    console.table(listOfMoves);
     // get i and j with RegExp. ListOfMoves[0] looks like (i=>j)
     coordinates = listOfMoves.shift();
     var match = coordinates.match(/^\(([0-9]*)=>([0-9]*)\)$/);
@@ -120,7 +173,6 @@ function walkThrough() {
 
 function solve(varData, varMoves) {
   iter++;
-  console.log("Iteration numero " + iter);
   // find a way to make sure we don't fall into infinite loop, mostly because of the empty flasks.
   // So far I've disabled moving things into an empty flask for now
   if (iter <= maxIter) {
@@ -130,11 +182,12 @@ function solve(varData, varMoves) {
 
       // we loop on the flasks i, for each flask i we loop on the flasks j and check canMove, if so, we do.
       research: for (let i = 0; i < varData.length; i++) {
-        for (let j = 0; j < 4; j++) {
+        for (let j = 0; j < varData.length; j++) {
           if (globalWon) break research;
           if (canMove(varData, i, j)) {
-            // as soon as we can move, we do it, and resolve the new array
+            // we do one final check to make sure we're not doing the opposite move from previous one
             if (varMoves.length > 0) {
+              // if it's not the first move
               var lastMove = varMoves[varMoves.length - 1];
               var match = lastMove.match(/^\(([0-9]*)=>([0-9]*)\)$/);
               x = match[1];
@@ -143,14 +196,14 @@ function solve(varData, varMoves) {
               x = 0;
               y = 0;
             }
-            // we do one final check to make sure we're not doing the opposite move from previous one
+
             if (i != y || j != x || varMoves.length == 0) {
+              // as soon as we can move, we do it, and resolve the new array
               tempData = [];
               copyArray(varData, tempData);
               move(tempData, i, j);
               tempMoves = varMoves.slice(0);
               tempMoves.push("(" + i + "=>" + j + ")");
-              console.table(tempData);
               solve(tempData, tempMoves);
             }
           }
@@ -158,10 +211,8 @@ function solve(varData, varMoves) {
       }
     } else if (hasWon(varData)) {
       globalWon = true;
-      console.table(varMoves);
       listOfMoves = varMoves.slice(0);
       console.log("TROUVE");
-      console.table(varData);
     }
   }
 }
@@ -215,6 +266,7 @@ function topColor(tempData, i) {
 }
 
 function canMove(tempData, i, j) {
+  console.log("Can Move ? " + i + " => " + j);
   // check whether we can move the content of flask i into flask j and returns true/false
   movePossible = false;
   if (i != j) {
