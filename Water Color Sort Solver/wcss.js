@@ -33,11 +33,18 @@ btn.addEventListener("click", function (e) {
   e.preventDefault;
   btn.disabled = true;
   removesWhiteInTheMiddle(3);
-  getData();
-  globalWon = false;
-  iter = 0;
-  solve(data, []);
-  nIntervId = setInterval(walkThrough, 1000);
+  if (checkNumberOfEachColor()) {
+    getData();
+    globalWon = false;
+    iter = 0;
+    solve(data, []);
+    nIntervId = setInterval(walkThrough, 1000);
+  } else {
+    console.log(
+      "Not the right number of blocks for each color (either 0 or 4)"
+    );
+    btn.disabled = false;
+  }
 });
 
 plus.addEventListener("click", function (e) {
@@ -97,6 +104,36 @@ function removesWhiteInTheMiddle(iteration) {
       }
     }
   }
+}
+
+function checkNumberOfEachColor() {
+  // the point of this function is to check whether there is either 0 or 4 blocks of each colour
+  // otherwise the puzzle cannot be solved
+  // returns true or false
+  var numberOfColors = new Array(colors.length).fill(0);
+  var check = true;
+  for (let i = 0; i < data.length; i++) {
+    var table = document.getElementById("flask" + i);
+    for (let x in table.rows) {
+      let row = table.rows[x];
+      //iterate through rows
+      for (let y in row.cells) {
+        //iterate through columns
+        let col = row.cells[y];
+        if (col?.style?.backgroundColor != null) {
+          numberOfColors[colors.indexOf(col.style.backgroundColor)]++;
+        }
+      }
+    }
+  }
+  // we know want to check that there are only 0s and 4s in this table, apart from the whites which we don't care about
+  numberOfColors.shift();
+  for (let i = 0; i < numberOfColors.length; i++) {
+    if (numberOfColors[i] != 0 && numberOfColors[i] != 4) {
+      check = false;
+    }
+  }
+  return check;
 }
 
 function removeOneFlask() {
