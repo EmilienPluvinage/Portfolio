@@ -3,7 +3,7 @@ let numberOfFlasks = 4;
 let numberOfColors = 3; // + white
 let globalWon = false;
 let iter = 0;
-let maxIter = 10;
+let maxIter = 20;
 let listOfMoves = new Array();
 let nIntervId;
 let allColors = [
@@ -134,13 +134,25 @@ function solve(varData, varMoves) {
           if (globalWon) break research;
           if (canMove(varData, i, j)) {
             // as soon as we can move, we do it, and resolve the new array
-            tempData = [];
-            copyArray(varData, tempData);
-            move(tempData, i, j);
-            tempMoves = varMoves.slice(0);
-            tempMoves.push("(" + i + "=>" + j + ")");
-            console.table(tempData);
-            solve(tempData, tempMoves);
+            if (varMoves.length > 0) {
+              var lastMove = varMoves[varMoves.length - 1];
+              var match = lastMove.match(/^\(([0-9]*)=>([0-9]*)\)$/);
+              x = match[1];
+              y = match[2];
+            } else {
+              x = 0;
+              y = 0;
+            }
+            // we do one final check to make sure we're not doing the opposite move from previous one
+            if (i != y || j != x || varMoves.length == 0) {
+              tempData = [];
+              copyArray(varData, tempData);
+              move(tempData, i, j);
+              tempMoves = varMoves.slice(0);
+              tempMoves.push("(" + i + "=>" + j + ")");
+              console.table(tempData);
+              solve(tempData, tempMoves);
+            }
           }
         }
       }
