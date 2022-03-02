@@ -5,7 +5,7 @@ let numberOfFlasks = 4;
 let numberOfColors = numberOfFlasks - 1; // + white
 let globalWon = false;
 let iter = 0;
-let maxIter = 20;
+let maxIter = 200;
 let listOfMoves = new Array();
 let nIntervId;
 let allColors = [
@@ -24,6 +24,8 @@ let minFlasks = 3;
 let maxFlasks = allColors.length;
 // we start with 4 flasks, we'll change it later
 let data = new Array(numberOfFlasks);
+let savedData = new Array(numberOfFlasks);
+let savedNumberOfFlasks = numberOfFlasks;
 let data2 = new Array();
 let colors = allColors.slice(0, numberOfColors + 1);
 
@@ -57,7 +59,34 @@ minus.addEventListener("click", function (e) {
   removeOneFlask();
 });
 
+document.getElementById("save").addEventListener("click", function (e) {
+  e.preventDefault;
+  getData();
+  saveGame();
+});
+
+document.getElementById("reload").addEventListener("click", function (e) {
+  e.preventDefault;
+  reloadGame();
+});
+
+function saveGame() {
+  savedNumberOfFlasks = numberOfFlasks;
+  savedData = [];
+  copyArray(data, savedData);
+}
+
+function reloadGame() {
+  // we're going for a simple version of this one and assume that if the number of flasks has changed since the save, we can't reload it
+  if (numberOfFlasks == savedNumberOfFlasks) {
+    data = [];
+    copyArray(savedData, data);
+    display();
+  }
+}
+
 function addOneFlask() {
+  savedData = [];
   if (numberOfFlasks < maxFlasks) {
     numberOfFlasks++;
     numberOfColors++;
@@ -137,6 +166,7 @@ function checkNumberOfEachColor() {
 }
 
 function removeOneFlask() {
+  savedData = [];
   if (numberOfFlasks > minFlasks) {
     var removedColor = colors[colors.length - 1];
     numberOfFlasks--;
