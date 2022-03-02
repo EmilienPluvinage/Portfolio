@@ -32,6 +32,7 @@ init();
 btn.addEventListener("click", function (e) {
   e.preventDefault;
   btn.disabled = true;
+  removesWhiteInTheMiddle(3);
   getData();
   globalWon = false;
   iter = 0;
@@ -62,6 +63,39 @@ function addOneFlask() {
       '<table id="flask' +
       id +
       '" class="flask"><tr><td style="background-color: white;"></td></tr><tr><td style="background-color: white;"></td></tr><tr><td style="background-color: white;"></td></tr><tr><td style="background-color: white;"></td></tr></table>';
+    init();
+  }
+}
+
+function removesWhiteInTheMiddle(iteration) {
+  // we tend to run iteration = 3 because they are 4 levels in each flask (so potentially 3 blanks below one color)
+  for (let x = 0; x <= iteration; x++) {
+    var previousColor = "white";
+    var previousCell = null;
+    // if there's a white cell with color above, it moves the color down
+    for (let i = 0; i < data.length; i++) {
+      var table = document.getElementById("flask" + i);
+      previousColor = "white";
+      for (let x in table.rows) {
+        let row = table.rows[x];
+        //iterate through rows
+        for (let y in row.cells) {
+          //iterate through columns
+          let col = row.cells[y];
+          if (col?.style?.backgroundColor != null) {
+            if (
+              col?.style?.backgroundColor == "white" &&
+              previousColor != "white"
+            ) {
+              previousCell.style.backgroundColor = col.style.backgroundColor;
+              col.style.backgroundColor = previousColor;
+            }
+            previousColor = col.style.backgroundColor;
+            previousCell = col;
+          }
+        }
+      }
+    }
   }
 }
 
@@ -266,7 +300,6 @@ function topColor(tempData, i) {
 }
 
 function canMove(tempData, i, j) {
-  console.log("Can Move ? " + i + " => " + j);
   // check whether we can move the content of flask i into flask j and returns true/false
   movePossible = false;
   if (i != j) {
