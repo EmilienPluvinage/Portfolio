@@ -87,9 +87,6 @@ document.getElementById("reload").addEventListener("click", function (e) {
 
 function saveGame() {
   getData();
-  // savedNumberOfFlasks = numberOfFlasks;
-  // savedData = [];
-  // copyArray(data, savedData);
   localStorage.setItem("save", JSON.stringify(data));
   localStorage.setItem("numberOfFlasks", numberOfFlasks);
   message.innerText = "Game saved.";
@@ -99,8 +96,6 @@ function reloadGame() {
   // we're going for a simple version of this one and assume that if the number of flasks has changed since the save, we can't reload it
   var savedNumberOfFlasks = localStorage.getItem("numberOfFlasks");
   if (numberOfFlasks == savedNumberOfFlasks) {
-    // data = [];
-    // copyArray(savedData, data);
     data = JSON.parse(localStorage.getItem("save"));
     display();
     message.innerText = "Game reloaded.";
