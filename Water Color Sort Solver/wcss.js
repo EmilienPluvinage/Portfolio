@@ -1,11 +1,12 @@
 let btn = document.getElementById("button");
 let plus = document.getElementById("plus");
 let minus = document.getElementById("minus");
+let message = document.getElementById("message");
 let numberOfFlasks = 4;
 let numberOfColors = numberOfFlasks - 1; // + white
 let globalWon = false;
 let iter = 0;
-let maxIter = 200;
+let maxIter = 2000;
 let listOfMoves = new Array();
 let nIntervId;
 let allColors = [
@@ -19,6 +20,12 @@ let allColors = [
   "mediumpurple",
   "red",
   "darkorange",
+  "antiquewhite",
+  "saddlebrown",
+  "deepskyblue",
+  "forestgreen",
+  "indigo",
+  "lightcoral",
 ];
 let minFlasks = 3;
 let maxFlasks = allColors.length;
@@ -36,15 +43,24 @@ btn.addEventListener("click", function (e) {
   btn.disabled = true;
   removesWhiteInTheMiddle(3);
   if (checkNumberOfEachColor()) {
+    message.innerText = "Starting to resolve...";
     getData();
     globalWon = false;
     iter = 0;
+    var start = Date.now();
     solve(data, []);
-    nIntervId = setInterval(walkThrough, 1000);
+    var end = Date.now();
+    var time = (end - start) / 1000;
+    if (globalWon == true) {
+      message.innerText = "Solution found in " + time + " seconds.";
+      nIntervId = setInterval(walkThrough, 1000);
+    } else {
+      message.innerText = "Solution could not be found.";
+    }
   } else {
-    console.log(
-      "Not the right number of blocks for each color (either 0 or 4)"
-    );
+    message.innerText =
+      "Not the right number of blocks for each color (either 0 or 4).";
+
     btn.disabled = false;
   }
 });
@@ -61,7 +77,6 @@ minus.addEventListener("click", function (e) {
 
 document.getElementById("save").addEventListener("click", function (e) {
   e.preventDefault;
-  getData();
   saveGame();
 });
 
@@ -71,17 +86,29 @@ document.getElementById("reload").addEventListener("click", function (e) {
 });
 
 function saveGame() {
-  savedNumberOfFlasks = numberOfFlasks;
-  savedData = [];
-  copyArray(data, savedData);
+  getData();
+  // savedNumberOfFlasks = numberOfFlasks;
+  // savedData = [];
+  // copyArray(data, savedData);
+  localStorage.setItem("save", JSON.stringify(data));
+  localStorage.setItem("numberOfFlasks", numberOfFlasks);
+  message.innerText = "Game saved.";
 }
 
 function reloadGame() {
   // we're going for a simple version of this one and assume that if the number of flasks has changed since the save, we can't reload it
+  var savedNumberOfFlasks = localStorage.getItem("numberOfFlasks");
   if (numberOfFlasks == savedNumberOfFlasks) {
-    data = [];
-    copyArray(savedData, data);
+    // data = [];
+    // copyArray(savedData, data);
+    data = JSON.parse(localStorage.getItem("save"));
     display();
+    message.innerText = "Game reloaded.";
+  } else {
+    message.innerText =
+      "Your game had " +
+      savedNumberOfFlasks +
+      " flasks. \n Try changing the number of flasks before reloading.";
   }
 }
 
@@ -313,7 +340,6 @@ function solve(varData, varMoves) {
     } else if (hasWon(varData)) {
       globalWon = true;
       listOfMoves = varMoves.slice(0);
-      console.log("TROUVE");
     }
   }
 }
