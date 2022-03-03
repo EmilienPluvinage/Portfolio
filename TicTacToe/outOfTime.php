@@ -86,7 +86,6 @@ if(isset($_POST['pseudo']))
         
     }
 
-    $return['text'] = $return['text'] . " pseudo = " . $pseudo . " partie = " . $idpartie;
     echo json_encode($return);
 
 }
