@@ -7,10 +7,10 @@ include('functions.php');
 
 $return = array("error" => false, "text" => '');
 
-$db = new PDO(
-    'mysql:host='.$host.';dbname=tictactoe;charset=utf8',
-    $user,
-    $pwd);
+    $db = new PDO(
+        'mysql:host='.$host.';dbname='.$database.';charset=utf8',
+        $user,
+        $pwd);
 $db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
 // On supprime tout ce qui concerne les joueurs déconnectés depuis plus de 2 minutes
