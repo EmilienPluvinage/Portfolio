@@ -57,11 +57,11 @@ if(isset($_POST['pseudo']))
             }
         }
         
+        $idadversaire = getOpponent($db,$idjoueur,$idpartie);
+
         if($prochainCoup == $idjoueur || $return['defaite'] == true){
             // alors la partie n'est pas terminée, et c'est à nous de jouer, on récupère donc le dernier coup de l'adversaire.
-            // d'abord on doit retrouver l'id de l'adversaire
 
-            $idadversaire = getOpponent($db,$idjoueur,$idpartie);
             
                 // maintenant on récupère son dernier coup joué
                 $sqlquery = $db->prepare('SELECT abscisse, ordonnee, timestamp FROM coup WHERE joueur= :joueur AND partie = :partie ORDER BY id DESC LIMIT 1');
@@ -74,6 +74,33 @@ if(isset($_POST['pseudo']))
                     $return['timestamp'] = $coup['timestamp'];
                 }
                 $return['prochainCoup'] = $prochainCoup;
+
+        }
+        else{
+            // alors c'est que c'est toujours à l'adversaire de jouer
+
+            // on rajoute une vérification si jamais l'adversaire a dépassé les 30 secondes pour jouer.
+            // normalement si c'est le cas il aurait du lui même appeler le script outOfTime.php et passer la partie en perdu
+            // Mais s'il s'est déconnecté ca ne s'est pas fait donc on le rajoute ici
+            // maintenant on récupère notre dernier coup joué
+                $sqlquery = $db->prepare('SELECT timestamp FROM coup WHERE joueur= :joueur AND partie = :partie ORDER BY id DESC LIMIT 1');
+                $sqlquery->execute([ 'joueur' => $idjoueur, 'partie'=>$idpartie ]);
+                $resultsTimestamps = $sqlquery->fetchAll();
+        foreach ($resultsTimestamps as $timestamp) {  
+            $derniercoup = $timestamp['timestamp'];
+        }
+        $delai = time() - $derniercoup;
+        if($delai > 30)
+        {
+            // Alors c'est que l'adversaire est hors-délai, on lui fait perdre la partie
+            // on met le prochainCoup à 0 et le vainqueur à idjoueur
+            $sqlquery = $db->prepare('UPDATE partie SET prochainCoup=0, vainqueur= :joueur WHERE id= :partie');
+            $sqlquery->execute([ 'joueur' => $idjoueur, 'partie' => $idpartie]);
+            $return['victoire'] = true; 
+
+        }
+
+            
 
         }
         
