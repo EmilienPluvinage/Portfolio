@@ -50,12 +50,20 @@ btn.addEventListener("click", function (e) {
     start = Date.now();
     solve(data, []);
     var end = Date.now();
-    var time = (end - start) / 1000;
+    var time = end - start;
     if (globalWon == true) {
-      message.innerText = "Solution found in " + time + " seconds.";
+      message.innerText = "Solution found in " + time / 1000 + " seconds.";
       nIntervId = setInterval(walkThrough, 1000);
     } else {
-      message.innerText = "Solution could not be found.";
+      if (time < timeOut) {
+        message.innerText = "There doesn't seem to be a solution.";
+      } else {
+        message.innerText =
+          "Time Out : Solution could not be found within " +
+          timeOut / 1000 +
+          " seconds.";
+      }
+      btn.disabled = false;
     }
   } else {
     message.innerText =
@@ -99,6 +107,8 @@ function reloadGame() {
     data = JSON.parse(localStorage.getItem("save"));
     display();
     message.innerText = "Game reloaded.";
+  } else if (savedNumberOfFlasks == null) {
+    message.innerHTML = "No save found.";
   } else {
     message.innerText =
       "Your game had " +
