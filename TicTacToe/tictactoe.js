@@ -192,7 +192,7 @@ function retourNewMove(retour, x, y) {
       "rgb(200,200,255)";
     document.getElementById("player1").style.backgroundColor =
       "rgb(240,240,240)";
-    CestMonTour == false;
+    CestMonTour = false;
     // on lance un timer pour savoir si l'adversaire a joué
     nIntervGetMove = setInterval(getMove, 1000);
     // on réinitialise le timer qui nous donnait 30 secondes pour jouer
@@ -318,6 +318,7 @@ function updateTimestamp() {
 }
 
 function cleanDatabase() {
+  console.log(CestMonTour);
   fetch("cleanDatabase.php", {
     method: "POST",
     headers: {
