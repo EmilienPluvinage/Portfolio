@@ -53,8 +53,8 @@ if(isset($_POST['pseudo']))
         $adversaire ="";
         $adversaireDisponible=false;
 
-        $sqlquery = $db->prepare('SELECT id, pseudo FROM joueur WHERE pseudo <> :pseudo AND recherche=1');
-        $sqlquery->execute([ 'pseudo' => $pseudo ]);
+        $sqlquery = $db->prepare('SELECT id, pseudo FROM joueur WHERE pseudo <> :pseudo AND recherche=1 AND timestamp > :timestamp');
+        $sqlquery->execute([ 'pseudo' => $pseudo, 'timestamp' => time()-10 ]);
         $resultsJoueurs = $sqlquery->fetchAll();
 
         foreach ($resultsJoueurs as $joueur) {  
@@ -88,7 +88,7 @@ if(isset($_POST['pseudo']))
         
         // on passe sur recherche=false puisqu'on est dans une partie désormais
         $sqlquery = $db->prepare('UPDATE joueur SET recherche=0 WHERE pseudo= :pseudo OR pseudo = :adversaire');
-        $sqlquery->execute([ 'pseudo' => $pseudo, 'adversaire' => $idadversaire]);
+        $sqlquery->execute([ 'pseudo' => $pseudo, 'adversaire' => $adversaire]);
 
         
 

@@ -13,8 +13,8 @@ $db = new PDO(
     $pwd);
 $db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
-// On supprime tout ce qui concerne les joueurs déconnectés depuis plus d'une minute
-cleanDatabase($db,60);
+// On supprime tout ce qui concerne les joueurs déconnectés depuis plus de 2 minutes
+$return["text"] = cleanDatabase($db,120);
 
 echo json_encode($return);
 

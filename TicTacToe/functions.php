@@ -39,5 +39,9 @@ function cleanDatabase(PDO $db, $secondes){
     LEFT JOIN partie ON partie.id = estDansLaPartie.partie
     WHERE joueur.timestamp < :timeLimit'); 
     $sqlquery->execute([ 'timeLimit' => $timeLimit]);
+    $sqlquery = $db->prepare('DELETE FROM joueur
+    WHERE joueur.timestamp < :timeLimit'); 
+    $sqlquery->execute([ 'timeLimit' => $timeLimit]);
+    return $timeLimit;
 }
  ?>
