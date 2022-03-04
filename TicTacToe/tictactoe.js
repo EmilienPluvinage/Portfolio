@@ -318,7 +318,6 @@ function updateTimestamp() {
 }
 
 function cleanDatabase() {
-  console.log(CestMonTour);
   fetch("cleanDatabase.php", {
     method: "POST",
     headers: {

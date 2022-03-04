@@ -78,11 +78,13 @@ if(isset($_POST['pseudo']))
         }
         else{
             // alors c'est que c'est toujours à l'adversaire de jouer
-
+            
             // on rajoute une vérification si jamais l'adversaire a dépassé les 30 secondes pour jouer.
             // normalement si c'est le cas il aurait du lui même appeler le script outOfTime.php et passer la partie en perdu
             // Mais s'il s'est déconnecté ca ne s'est pas fait donc on le rajoute ici
             // maintenant on récupère notre dernier coup joué
+                
+                $derniercoup = time();
                 $sqlquery = $db->prepare('SELECT timestamp FROM coup WHERE joueur= :joueur AND partie = :partie ORDER BY id DESC LIMIT 1');
                 $sqlquery->execute([ 'joueur' => $idjoueur, 'partie'=>$idpartie ]);
                 $resultsTimestamps = $sqlquery->fetchAll();
