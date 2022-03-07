@@ -1,19 +1,29 @@
 import "../styles/receipt.css";
 
-function Receipt({ cart, updateCart }) {
+function Receipt({ cart, updateCart, ticket, updateTicket }) {
+  function initState() {
+    updateCart(0);
+    updateTicket([]);
+  }
   return (
     <div id="receipt">
       <h3>RECEIPT</h3>
       <ul>
-        <li>1,50 € Cookie</li>
-        <li>1 € Croissant</li>
-        <li>2,20 € Pain au chocolat x 2</li>
-        <li>1 € Baguette</li>
+        {ticket.map(({ name, price, quantity }) => (
+          <li key={name}>
+            {(Math.round(price * quantity * 100) / 100)
+              .toString()
+              .replace(".", ",")}{" "}
+            € {name} x {quantity}
+          </li>
+        ))}
       </ul>
-      <h3>{(Math.round(cart * 100) / 100).toString().replace(".", ",")} €</h3>
+      <h3>
+        TOTAL {(Math.round(cart * 100) / 100).toString().replace(".", ",")} €
+      </h3>
       <div id="totals">
-        <button onClick={() => updateCart(0)}>EAT IN</button>
-        <button onClick={() => updateCart(0)}>TAKE AWAY</button>
+        <button onClick={() => initState()}>EAT IN</button>
+        <button onClick={() => initState()}>TAKE AWAY</button>
       </div>
     </div>
   );

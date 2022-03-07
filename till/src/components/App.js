@@ -13,15 +13,26 @@ import { useState } from "react";
 function App() {
   const [cart, updateCart] = useState(0);
   const [menu, updateMenu] = useState("Viennoiserie");
-
+  const [ticket, updateTicket] = useState([]);
   return (
     <div id="parent">
       <Header />
       <LeftMenu />
-      <Receipt cart={cart} updateCart={updateCart} />
+      <Receipt
+        cart={cart}
+        updateCart={updateCart}
+        ticket={ticket}
+        updateTicket={updateTicket}
+      />
       <div id="main">
         <TopMenu menu={menu} updateMenu={updateMenu} />
-        <ItemsList category={menu} cart={cart} updateCart={updateCart} />
+        <ItemsList
+          category={menu}
+          cart={cart}
+          updateCart={updateCart}
+          ticket={ticket}
+          updateTicket={updateTicket}
+        />
       </div>
     </div>
   );
