@@ -1,6 +1,6 @@
 import "../styles/receipt.css";
 
-function Receipt() {
+function Receipt({ cart, updateCart }) {
   return (
     <div>
       <div id="receipt">
@@ -11,10 +11,10 @@ function Receipt() {
           <li>2,20 € Pain au chocolat x 2</li>
           <li>1 € Baguette</li>
         </ul>
-        <h3>5,70 €</h3>
+        <h3>{(Math.round(cart * 100) / 100).toString().replace(".", ",")} €</h3>
         <div id="totals">
-          <a>EAT IN</a>
-          <a>TAKE AWAY</a>
+          <button onClick={() => updateCart(0)}>EAT IN</button>
+          <button onClick={() => updateCart(0)}>TAKE AWAY</button>
         </div>
       </div>
     </div>

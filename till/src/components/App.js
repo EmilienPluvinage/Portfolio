@@ -7,17 +7,23 @@ import Header from "./Header";
 import LeftMenu from "./LeftMenu";
 import Receipt from "./Receipt";
 import TopMenu from "./TopMenu";
-import Item from "./Item";
+import ItemsList from "./ItemsList";
+import { useState } from "react";
 
 function App() {
+  const [cart, updateCart] = useState(0);
   return (
     <div>
       <Header />
       <LeftMenu />
-      <Receipt />
+      <Receipt cart={cart} updateCart={updateCart} />
       <div id="main">
         <TopMenu />
-        <Item />
+        <ItemsList
+          category="Viennoiserie"
+          cart={cart}
+          updateCart={updateCart}
+        />
       </div>
     </div>
   );

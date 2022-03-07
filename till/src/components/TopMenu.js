@@ -1,13 +1,17 @@
 import "../styles/topmenu.css";
+import { ItemData } from "../datas/ItemData";
 
 function TopMenu() {
+  const categories = ItemData.reduce(
+    (acc, item) =>
+      acc.includes(item.category) ? acc : acc.concat(item.category),
+    []
+  );
   return (
     <nav id="top-menu">
-      <a>Viennoiserie</a>
-      <a>Pâtisserie</a>
-      <a>Pain</a>
-      <a>Boissons</a>
-      <a>Snacking</a>
+      {categories.map((cat) => (
+        <a key={cat}>{cat}</a>
+      ))}
     </nav>
   );
 }
