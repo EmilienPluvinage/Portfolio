@@ -1,5 +1,8 @@
 html,
-body {
+body,
+#root,
+#parent {
+  margin: 0px;
   height: 100%;
   margin: auto;
   font-family: Arial, Helvetica, sans-serif;
