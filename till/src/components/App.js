@@ -12,18 +12,16 @@ import { useState } from "react";
 
 function App() {
   const [cart, updateCart] = useState(0);
+  const [menu, updateMenu] = useState("Viennoiserie");
+
   return (
     <div id="parent">
       <Header />
       <LeftMenu />
       <Receipt cart={cart} updateCart={updateCart} />
       <div id="main">
-        <TopMenu />
-        <ItemsList
-          category="Viennoiserie"
-          cart={cart}
-          updateCart={updateCart}
-        />
+        <TopMenu menu={menu} updateMenu={updateMenu} />
+        <ItemsList category={menu} cart={cart} updateCart={updateCart} />
       </div>
     </div>
   );
