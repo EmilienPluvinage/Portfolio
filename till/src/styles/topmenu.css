@@ -3,7 +3,7 @@
   padding: 20px;
   padding-top: 5px;
 }
-#top-menu a {
+#top-menu span {
   float: left;
   margin: 5px;
   background-color: rgb(46, 46, 46);
@@ -13,7 +13,11 @@
   font-size: 0.9em;
 }
 
-#top-menu a:hover {
+#top-menu span:hover {
   background-color: slategray;
   cursor: pointer;
+}
+
+#top-menu span.clicked {
+  background-color: skyblue;
 }
