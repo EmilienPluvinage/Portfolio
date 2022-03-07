@@ -20,7 +20,7 @@
   right: 0;
 }
 
-#totals a {
+#totals button {
   float: left;
   margin: 5px;
   background-color: skyblue;
@@ -31,7 +31,7 @@
   letter-spacing: 0.1em;
 }
 
-#totals a:hover {
+#totals button:hover {
   background-color: slategray;
   cursor: pointer;
 }

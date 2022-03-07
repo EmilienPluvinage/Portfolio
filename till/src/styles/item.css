@@ -21,3 +21,7 @@
   background-color: lightgray;
   cursor: pointer;
 }
+
+.price {
+  padding: 10px;
+}
