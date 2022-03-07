@@ -13,7 +13,7 @@ import { useState } from "react";
 function App() {
   const [cart, updateCart] = useState(0);
   return (
-    <div>
+    <div id="parent">
       <Header />
       <LeftMenu />
       <Receipt cart={cart} updateCart={updateCart} />
