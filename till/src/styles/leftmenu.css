@@ -1,0 +1,22 @@
+#left-menu {
+  float: left;
+  height: 100%;
+  min-width: 15%;
+  color: white;
+  background-color: rgb(46, 46, 46);
+}
+
+#left-menu ul {
+  padding: 20px;
+  list-style-type: none;
+}
+
+#left-menu li {
+  letter-spacing: 0.1em;
+  font-size: 0.9em;
+  margin-top: 20px;
+}
+#left-menu li:hover {
+  color: lightgray;
+  cursor: pointer;
+}
