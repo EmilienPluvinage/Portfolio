@@ -1,19 +1,38 @@
 #receipt {
+  padding-top: 10px;
   float: right;
   height: 100%;
   width: 25%;
+  min-width: fit-content;
   background-color: white;
   color: rgb(46, 46, 46);
+  text-align: center;
 }
 
 #receipt ul {
   list-style-type: none;
+  text-align: left;
 }
 
 #receipt h3 {
   text-align: center;
 }
-
+#receipt .receipt-top-button {
+  width: auto;
+  margin: 5px;
+  border-radius: 3px;
+  letter-spacing: 0.1em;
+  padding: 5px;
+  font-size: 0.7em;
+  border: 1px solid skyblue;
+  color: skyblue;
+  text-transform: uppercase;
+}
+#receipt .receipt-top-button:hover {
+  color: rgb(46, 46, 46);
+  border-color: rgb(46, 46, 46);
+  cursor: pointer;
+}
 #totals {
   position: fixed;
   bottom: 0;
