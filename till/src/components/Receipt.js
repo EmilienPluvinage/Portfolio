@@ -8,6 +8,11 @@ function Receipt({ cart, updateCart, ticket, updateTicket }) {
   }
   return (
     <div id="receipt">
+      <span className="receipt-top-button">Actions</span>
+      <span className="receipt-top-button" onClick={() => initState()}>
+        Cancel
+      </span>
+      <span className="receipt-top-button">Put on Hold</span>
       <h3>RECEIPT</h3>
       <ul>
         {ticket.map(({ name, price, quantity }) => (
