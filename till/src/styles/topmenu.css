@@ -11,11 +11,13 @@
   padding: 10px;
   border-radius: 5px;
   font-size: 0.9em;
+  transition: background-color 0.4s;
 }
 
 #top-menu span:hover {
   background-color: slategray;
   cursor: pointer;
+  transition: background-color 0.4s;
 }
 
 #top-menu span.clicked {
