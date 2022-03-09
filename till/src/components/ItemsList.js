@@ -1,5 +1,6 @@
 import "../styles/item.css";
 import { ItemData } from "../datas/ItemData";
+import { displayPrice } from "./Functions";
 
 function ItemsList(props) {
   function updateState(price, name) {
@@ -28,9 +29,7 @@ function ItemsList(props) {
               onClick={() => updateState(price, name)}
             >
               {name}
-              <div className="price">
-                {price.toString().replace(".", ",")} €
-              </div>
+              <div className="price">{displayPrice(price)} €</div>
             </div>
           )
       )}
