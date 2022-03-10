@@ -1,26 +1,19 @@
 import "../styles/leftmenu.css";
+import OnHold from "./OnHold";
+import Staff from "./Staff";
 
-function LeftMenu() {
+function LeftMenu({ ticketsOnHold, updateTicketsOnHold }) {
   return (
     <nav id="left-menu">
       <ul>
         <li>Configuration</li>
         <li>Statistics</li>
       </ul>
-      <div>RECEIPTS</div>
-      <div id="tickets-on-hold">
-        <div>Receipt 1</div>
-        <div>Receipt 2</div>
-        <div>Receipt 1</div>
-        <div>Receipt 2</div>
-        <div>Receipt 1</div>
-        <div>Receipt 2</div>
-      </div>
-      <div>EMPLOYEES</div>
-      <div id="tickets-on-hold">
-        <div>Employee 1</div>
-        <div>Employee 2</div>
-      </div>
+      <OnHold
+        ticketsOnHold={ticketsOnHold}
+        updateTicketsOnHold={updateTicketsOnHold}
+      />
+      <Staff />
     </nav>
   );
 }

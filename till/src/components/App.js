@@ -14,15 +14,22 @@ function App() {
   const [cart, updateCart] = useState(0);
   const [menu, updateMenu] = useState("Viennoiserie");
   const [ticket, updateTicket] = useState([]);
+  const [ticketsOnHold, updateTicketsOnHold] = useState([]);
+
   return (
     <div id="parent">
       <Header />
-      <LeftMenu />
+      <LeftMenu
+        ticketsOnHold={ticketsOnHold}
+        updateTicketsOnHold={updateTicketsOnHold}
+      />
       <Receipt
         cart={cart}
         updateCart={updateCart}
         ticket={ticket}
         updateTicket={updateTicket}
+        ticketsOnHold={ticketsOnHold}
+        updateTicketsOnHold={updateTicketsOnHold}
       />
       <div id="main">
         <TopMenu menu={menu} updateMenu={updateMenu} />
