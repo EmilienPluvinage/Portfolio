@@ -19,18 +19,23 @@ function App() {
   console.table(ticket);
 
   function putOnHold() {
-    console.log("PUTTING ON HOLD");
     // we're going to add a new ticket in local storage
-    // we need to make sure we don't do it if there's an empty ticket
-
     if (ticket.length !== 0) {
-      // changer la manière de définir l'id en prenant le plus grand id + 1 (plutôt que length);
-      var id = ticketsOnHold.length + 1;
+      var id = 0;
+      if (ticketsOnHold.length > 0) {
+        id =
+          Math.max.apply(
+            Math,
+            ticketsOnHold.map(function (e) {
+              return e.id;
+            })
+          ) + 1;
+      } else {
+        id = 1;
+      }
       ticketsOnHold.push({ ticket, id });
       updateCart(0);
       updateTicket([]);
-      console.log("ticket putOnHold");
-      console.table(ticket);
     }
   }
 
