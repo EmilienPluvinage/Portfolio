@@ -15,8 +15,6 @@ function App() {
   const [menu, updateMenu] = useState("Viennoiserie");
   const [ticket, updateTicket] = useState([]);
   const [ticketsOnHold, updateTicketsOnHold] = useState([]);
-  console.log("ticket App");
-  console.table(ticket);
 
   function putOnHold() {
     // we're going to add a new ticket in local storage
