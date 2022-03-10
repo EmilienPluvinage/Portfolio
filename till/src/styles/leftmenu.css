@@ -35,3 +35,8 @@
   overflow-y: scroll;
   overflow-x: hidden;
 }
+
+.ticket:hover {
+  background-color: lightgray;
+  cursor: pointer;
+}
