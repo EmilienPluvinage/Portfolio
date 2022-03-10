@@ -8,19 +8,13 @@ function Receipt({
   updateTicket,
   ticketsOnHold,
   updateTicketsOnHold,
+  putOnHold,
 }) {
   function initState() {
     updateCart(0);
     updateTicket([]);
   }
-  function putOnHold() {
-    // we're going to add a new ticket in local storage
 
-    // changer la manière de définir l'id en prenant le plus grand id + 1 (plutôt que length);
-    var id = ticketsOnHold.length + 1;
-    ticketsOnHold.push({ ticket, id });
-    initState();
-  }
   return (
     <div id="receipt">
       <span className="receipt-top-button">Actions</span>
