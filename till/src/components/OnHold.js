@@ -33,7 +33,7 @@ function OnHold({
       <div id="tickets-on-hold">
         {ticketsOnHold.map(({ id }) => (
           <div onClick={() => OffHold(id)} className="ticket" key={id}>
-            Ticket {id}
+            Receipt {id}
           </div>
         ))}
       </div>
