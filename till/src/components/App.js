@@ -16,7 +16,7 @@ function App() {
   const [menu, updateMenu] = useState("Viennoiserie");
   const [ticket, updateTicket] = useState([]);
   const [ticketsOnHold, updateTicketsOnHold] = useState([]);
-  const [user, updateUser] = useState("Emilien");
+  const [user, updateUser] = useState(EmployeeData[0].name);
 
   function putOnHold() {
     // we're going to add a new ticket in local storage

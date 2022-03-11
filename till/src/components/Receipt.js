@@ -1,5 +1,8 @@
 import "../styles/receipt.css";
 import { displayPrice } from "./Functions";
+// import Button from "react-bootstrap/Button";
+// import Dropdown from "react-bootstrap/Dropdown";
+// import DropdownButton from "react-bootstrap/DropdownButton";
 
 function Receipt({
   cart,
@@ -15,8 +18,38 @@ function Receipt({
     updateTicket([]);
   }
 
+  function removeItem(item, quantityToRemove) {
+    // removes "quantity" of "name" items on current ticket
+    var ItemToUpdate = ticket.find((e) => e.name === item);
+    var NewTicket = [];
+    if (ItemToUpdate.quantity <= quantityToRemove) {
+      // we remove it completely
+      NewTicket = ticket.filter((e) => e.name !== item);
+    } else {
+      NewTicket = ticket.map((line) => {
+        var temp = Object.assign({}, line);
+        if (temp.name === item) {
+          temp.quantity -= quantityToRemove;
+        }
+        return temp;
+      });
+    }
+    updateTicket(NewTicket);
+    // we finally need to update the cart based on the NewTicket
+    var total = 0;
+    for (let i = 0; i < NewTicket.length; i++) {
+      total += NewTicket[i].price * NewTicket[i].quantity;
+    }
+    updateCart(total);
+  }
+
   return (
     <div id="receipt">
+      {/* <DropdownButton id="dropdown-basic-button" title="Dropdown button">
+        <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+        <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+        <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+      </DropdownButton> */}
       <span className="receipt-top-button">Actions</span>
       <span className="receipt-top-button" onClick={() => initState()}>
         Cancel
@@ -27,7 +60,7 @@ function Receipt({
       <h3>RECEIPT</h3>
       <ul>
         {ticket.map(({ name, price, quantity }) => (
-          <li key={name}>
+          <li onClick={() => removeItem(name, 1)} key={name}>
             {displayPrice(price * quantity)} € {name} x {quantity}
           </li>
         ))}

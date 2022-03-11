@@ -14,6 +14,11 @@
   text-align: left;
 }
 
+#receipt li:hover {
+  cursor: pointer;
+  color: skyblue;
+}
+
 #receipt h3 {
   text-align: center;
 }
