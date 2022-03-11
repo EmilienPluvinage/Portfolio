@@ -27,6 +27,8 @@ function LeftMenu({
         ticketsOnHold={ticketsOnHold}
         updateTicketsOnHold={updateTicketsOnHold}
         putOnHold={putOnHold}
+        user={user}
+        updateUser={updateUser}
       />
       <Staff user={user} updateUser={updateUser} />
     </nav>
