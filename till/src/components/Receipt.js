@@ -43,6 +43,24 @@ function Receipt({
     updateCart(total);
   }
 
+  function reduceItem(item, ratio) {
+    var NewTicket = ticket.map((line) => {
+      var temp = Object.assign({}, line);
+      if (temp.name === item) {
+        temp.price *= 1 - ratio;
+      }
+      return temp;
+    });
+
+    updateTicket(NewTicket);
+    // we finally need to update the cart based on the NewTicket
+    var total = 0;
+    for (let i = 0; i < NewTicket.length; i++) {
+      total += NewTicket[i].price * NewTicket[i].quantity;
+    }
+    updateCart(total);
+  }
+
   return (
     <div id="receipt">
       {/* <DropdownButton id="dropdown-basic-button" title="Dropdown button">
@@ -60,8 +78,17 @@ function Receipt({
       <h3>RECEIPT</h3>
       <ul>
         {ticket.map(({ name, price, quantity }) => (
-          <li onClick={() => removeItem(name, 1)} key={name}>
-            {displayPrice(price * quantity)} € {name} x {quantity}
+          <li key={name}>
+            {displayPrice(price * quantity)} € {name} x {quantity}{" "}
+            <span className="action" onClick={() => removeItem(name, 1)}>
+              (-)
+            </span>{" "}
+            <span className="action" onClick={() => removeItem(name, quantity)}>
+              (X)
+            </span>{" "}
+            <span className="action" onClick={() => reduceItem(name, 0.5)}>
+              (-50)
+            </span>
           </li>
         ))}
       </ul>

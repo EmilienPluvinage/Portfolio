@@ -14,7 +14,7 @@
   text-align: left;
 }
 
-#receipt li:hover {
+#receipt li .action:hover {
   cursor: pointer;
   color: skyblue;
 }
