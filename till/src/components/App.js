@@ -40,6 +40,14 @@ function App() {
     }
   }
 
+  function totalOfReceipt(receipt) {
+    var total = 0;
+    for (let i = 0; i < receipt.length; i++) {
+      total += receipt[i].price * receipt[i].quantity;
+    }
+    updateCart(total);
+  }
+
   return (
     <div id="parent">
       <Header />
@@ -62,6 +70,7 @@ function App() {
         ticketsOnHold={ticketsOnHold}
         updateTicketsOnHold={updateTicketsOnHold}
         putOnHold={putOnHold}
+        totalOfReceipt={totalOfReceipt}
       />
       <div id="main">
         <TopMenu menu={menu} updateMenu={updateMenu} />
@@ -71,6 +80,7 @@ function App() {
           updateCart={updateCart}
           ticket={ticket}
           updateTicket={updateTicket}
+          totalOfReceipt={totalOfReceipt}
         />
       </div>
     </div>

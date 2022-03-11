@@ -4,19 +4,22 @@ import { displayPrice } from "./Functions";
 
 function ItemsList(props) {
   function updateState(price, name) {
-    props.updateCart(Math.round((props.cart + price) * 1e12) / 1e12);
+    var NewTicket = props.ticket;
+    // props.updateCart(Math.round((props.cart + price) * 1e12) / 1e12);
     // we check if the article is already on the ticket, in which case we update the quantity, otherwise we add it
-    var found = props.ticket.findIndex((e) => e.name === name);
+    var found = NewTicket.findIndex((e) => e.name === name);
     if (found !== -1) {
       // we found the article
-      props.ticket[found].quantity++;
+      NewTicket[found].quantity++;
     } else {
-      props.ticket.push({
+      NewTicket.push({
         name: name,
         price: price,
         quantity: 1,
       });
     }
+    props.updateTicket(NewTicket);
+    props.totalOfReceipt(NewTicket);
   }
   return (
     <div id="items">
