@@ -15,6 +15,7 @@ function App() {
   const [menu, updateMenu] = useState("Viennoiserie");
   const [ticket, updateTicket] = useState([]);
   const [ticketsOnHold, updateTicketsOnHold] = useState([]);
+  const [user, updateUser] = useState("Emilien");
 
   function putOnHold() {
     // we're going to add a new ticket in local storage
@@ -48,6 +49,8 @@ function App() {
         ticketsOnHold={ticketsOnHold}
         updateTicketsOnHold={updateTicketsOnHold}
         putOnHold={putOnHold}
+        user={user}
+        updateUser={updateUser}
       />
       <Receipt
         cart={cart}
