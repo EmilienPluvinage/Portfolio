@@ -4,7 +4,7 @@ import { EmployeeData } from "../datas/EmployeeData";
 function Staff({ user, updateUser }) {
   return (
     <div>
-      <div>EMPLOYEES</div>
+      <div>STAFF</div>
       <div id="tickets-on-hold">
         {EmployeeData.map(({ name, color }) => (
           <div

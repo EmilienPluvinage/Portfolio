@@ -9,6 +9,7 @@ import Receipt from "./Receipt";
 import TopMenu from "./TopMenu";
 import ItemsList from "./ItemsList";
 import { useState } from "react";
+import { EmployeeData } from "../datas/EmployeeData";
 
 function App() {
   const [cart, updateCart] = useState(0);
@@ -32,7 +33,8 @@ function App() {
       } else {
         id = 1;
       }
-      ticketsOnHold.push({ ticket, id });
+      var color = EmployeeData.find((e) => e.name === user).color;
+      ticketsOnHold.push({ ticket, id, color });
       updateCart(0);
       updateTicket([]);
     }
