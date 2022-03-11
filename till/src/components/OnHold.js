@@ -29,7 +29,7 @@ function OnHold({
   }
   return (
     <div>
-      <div>RECEIPTS</div>
+      <div>ON HOLD</div>
       <div id="tickets-on-hold">
         {ticketsOnHold.map(({ id }) => (
           <div onClick={() => OffHold(id)} className="ticket" key={id}>
