@@ -1,12 +1,25 @@
 import "../styles/leftmenu.css";
+import { EmployeeData } from "../datas/EmployeeData";
 
-function Staff() {
+function Staff({ user, updateUser }) {
   return (
     <div>
       <div>EMPLOYEES</div>
       <div id="tickets-on-hold">
-        <div>Employee 1</div>
-        <div>Employee 2</div>
+        {EmployeeData.map(({ name, color }) => (
+          <div
+            key={name}
+            style={
+              name === user
+                ? { color: color, backgroundColor: "lightgray" }
+                : { color: color }
+            }
+            className="ticket"
+            onClick={() => updateUser(name)}
+          >
+            {name}
+          </div>
+        ))}
       </div>
     </div>
   );

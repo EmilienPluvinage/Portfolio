@@ -10,6 +10,8 @@ function LeftMenu({
   ticketsOnHold,
   updateTicketsOnHold,
   putOnHold,
+  user,
+  updateUser,
 }) {
   return (
     <nav id="left-menu">
@@ -26,7 +28,7 @@ function LeftMenu({
         updateTicketsOnHold={updateTicketsOnHold}
         putOnHold={putOnHold}
       />
-      <Staff />
+      <Staff user={user} updateUser={updateUser} />
     </nav>
   );
 }
