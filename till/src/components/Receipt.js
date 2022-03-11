@@ -12,6 +12,7 @@ function Receipt({
   ticketsOnHold,
   updateTicketsOnHold,
   putOnHold,
+  totalOfReceipt,
 }) {
   function initState() {
     updateCart(0);
@@ -35,12 +36,7 @@ function Receipt({
       });
     }
     updateTicket(NewTicket);
-    // we finally need to update the cart based on the NewTicket
-    var total = 0;
-    for (let i = 0; i < NewTicket.length; i++) {
-      total += NewTicket[i].price * NewTicket[i].quantity;
-    }
-    updateCart(total);
+    totalOfReceipt(NewTicket);
   }
 
   function reduceItem(item, ratio) {
@@ -53,12 +49,7 @@ function Receipt({
     });
 
     updateTicket(NewTicket);
-    // we finally need to update the cart based on the NewTicket
-    var total = 0;
-    for (let i = 0; i < NewTicket.length; i++) {
-      total += NewTicket[i].price * NewTicket[i].quantity;
-    }
-    updateCart(total);
+    totalOfReceipt(NewTicket);
   }
 
   return (
