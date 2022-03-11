@@ -4,7 +4,7 @@ export function displayPrice(n) {
   var i = Math.round(n * 100).toString().length - 2;
   return n === 0
     ? 0
-    : (n * 100).toString().slice(0, i) +
+    : (i > 0 ? (n * 100).toString().slice(0, i) : "0") +
         "," +
         (n * 100).toString().slice(i, i + 2);
 }
