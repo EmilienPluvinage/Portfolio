@@ -1,8 +1,6 @@
 import "../styles/receipt.css";
 import { displayPrice } from "./Functions";
-// import Button from "react-bootstrap/Button";
-// import Dropdown from "react-bootstrap/Dropdown";
-// import DropdownButton from "react-bootstrap/DropdownButton";
+import DropdownMenu2 from "./DropdownMenu2";
 
 function Receipt({
   cart,
@@ -58,40 +56,56 @@ function Receipt({
     updateTicket(NewTicket);
     totalOfReceipt(NewTicket);
   }
+  const options = [
+    "Supprimer Ligne",
+    "Enlever 1",
+    "Changer Quantité",
+    "Réduction",
+  ];
+
+  function dropdownCallback(value, name, quantity) {
+    switch (value) {
+      case options[0]:
+        removeItem(name, quantity);
+        break;
+      case options[1]:
+        removeItem(name, 1);
+        break;
+      case options[2]:
+        changeQuantity(name, 3);
+        break;
+      case options[3]:
+        reduceItem(name, 0.5);
+        break;
+      default:
+        alert(5);
+    }
+  }
 
   return (
     <div id="receipt">
-      {/* <DropdownButton id="dropdown-basic-button" title="Dropdown button">
-        <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-        <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-        <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-      </DropdownButton> */}
       <span className="receipt-top-button" onClick={() => initState()}>
         Cancel
       </span>
       <span className="receipt-top-button" onClick={() => putOnHold()}>
         Put on Hold
       </span>
-      <h3>RECEIPT</h3>
-      <ul>
+      <h3 id="receipt-h3">RECEIPT</h3>
+      <div id="receipt-content">
         {ticket.map(({ name, price, quantity }) => (
-          <li key={name}>
-            {displayPrice(price * quantity)} € {name} x {quantity}{" "}
-            <span className="action" onClick={() => removeItem(name, 1)}>
-              (-)
-            </span>{" "}
-            <span className="action" onClick={() => removeItem(name, quantity)}>
-              (X)
-            </span>{" "}
-            <span className="action" onClick={() => reduceItem(name, 0.5)}>
-              (-50)
-            </span>
-            <span className="action" onClick={() => changeQuantity(name, 3)}>
-              (3)
-            </span>
-          </li>
+          <div className="receipt-item" key={name}>
+            <DropdownMenu2
+              options={options}
+              callback={dropdownCallback}
+              name={name}
+              quantity={quantity}
+              text={
+                displayPrice(price * quantity) + " € " + name + " x " + quantity
+              }
+            />
+          </div>
         ))}
-      </ul>
+      </div>
       <h3>TOTAL {displayPrice(cart)} €</h3>
       <div id="totals">
         <button onClick={() => initState()}>EAT IN</button>

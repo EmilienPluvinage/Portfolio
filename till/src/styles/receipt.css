@@ -9,12 +9,11 @@
   text-align: center;
 }
 
-#receipt ul {
-  list-style-type: none;
+#receipt-content {
   text-align: left;
 }
 
-#receipt li .action:hover {
+.action:hover {
   cursor: pointer;
   color: skyblue;
 }
