@@ -97,6 +97,7 @@ function Receipt({
         <span className="receipt-top-button" onClick={() => putOnHold()}>
           Put on Hold
         </span>
+
         <h3 id="receipt-h3">RECEIPT</h3>
         <div id="receipt-content">
           {ticket.map(({ name, price, quantity }) => (
@@ -117,7 +118,7 @@ function Receipt({
             </div>
           ))}
         </div>
-        <h3>TOTAL {displayPrice(cart)} €</h3>
+        <h3>TOTAL {displayPrice(Math.round(cart))} €</h3>
       </div>
       <div id="totals-parent">
         <div id="totals1"></div>

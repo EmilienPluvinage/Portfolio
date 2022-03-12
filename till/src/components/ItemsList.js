@@ -5,7 +5,6 @@ import { displayPrice } from "./Functions";
 function ItemsList(props) {
   function updateState(price, name) {
     var NewTicket = props.ticket;
-    // props.updateCart(Math.round((props.cart + price) * 1e12) / 1e12);
     // we check if the article is already on the ticket, in which case we update the quantity, otherwise we add it
     var found = NewTicket.findIndex((e) => e.name === name);
     if (found !== -1) {
@@ -14,7 +13,7 @@ function ItemsList(props) {
     } else {
       NewTicket.push({
         name: name,
-        price: price,
+        price: Math.round(price),
         quantity: 1,
       });
     }
@@ -29,7 +28,7 @@ function ItemsList(props) {
             <div
               key={id}
               className="item"
-              onClick={() => updateState(price, name)}
+              onClick={() => updateState(Math.round(price), name)}
             >
               <div className="item-content">
                 {name}

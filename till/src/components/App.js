@@ -43,7 +43,9 @@ function App() {
   function totalOfReceipt(receipt) {
     var total = 0;
     for (let i = 0; i < receipt.length; i++) {
-      total += receipt[i].price * receipt[i].quantity;
+      total =
+        Math.round(total) +
+        Math.round(receipt[i].price) * Math.round(receipt[i].quantity);
     }
     updateCart(total);
   }

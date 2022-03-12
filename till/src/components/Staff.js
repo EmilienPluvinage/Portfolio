@@ -7,7 +7,7 @@ function Staff({ user, updateUser }) {
       <div>STAFF</div>
       <div id="tickets-on-hold">
         {EmployeeData.map(({ name, color }) => (
-          <div>
+          <div key={name + "parent"}>
             <div
               key={name}
               style={
@@ -20,7 +20,11 @@ function Staff({ user, updateUser }) {
             >
               &nbsp;{name}
             </div>
-            <div className="staff-color" style={{ backgroundColor: color }}>
+            <div
+              className="staff-color"
+              key={color}
+              style={{ backgroundColor: color }}
+            >
               &nbsp;
             </div>
             <div style={{ clear: "both" }}></div>
