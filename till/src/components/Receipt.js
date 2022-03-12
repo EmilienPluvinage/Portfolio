@@ -52,6 +52,19 @@ function Receipt({
     totalOfReceipt(NewTicket);
   }
 
+  function changeQuantity(item, newQuantity) {
+    // we assume that the value of newQuantity has already been checked before calling the function
+    var NewTicket = ticket.map((line) => {
+      var temp = Object.assign({}, line);
+      if (temp.name === item) {
+        temp.quantity = newQuantity;
+      }
+      return temp;
+    });
+    updateTicket(NewTicket);
+    totalOfReceipt(NewTicket);
+  }
+
   return (
     <div id="receipt">
       {/* <DropdownButton id="dropdown-basic-button" title="Dropdown button">
@@ -59,7 +72,6 @@ function Receipt({
         <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
         <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
       </DropdownButton> */}
-      <span className="receipt-top-button">Actions</span>
       <span className="receipt-top-button" onClick={() => initState()}>
         Cancel
       </span>
@@ -79,6 +91,9 @@ function Receipt({
             </span>{" "}
             <span className="action" onClick={() => reduceItem(name, 0.5)}>
               (-50)
+            </span>
+            <span className="action" onClick={() => changeQuantity(name, 3)}>
+              (3)
             </span>
           </li>
         ))}
