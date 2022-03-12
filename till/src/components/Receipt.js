@@ -26,17 +26,11 @@ function Receipt({
     if (ItemToUpdate.quantity <= quantityToRemove) {
       // we remove it completely
       NewTicket = ticket.filter((e) => e.name !== item);
+      updateTicket(NewTicket);
+      totalOfReceipt(NewTicket);
     } else {
-      NewTicket = ticket.map((line) => {
-        var temp = Object.assign({}, line);
-        if (temp.name === item) {
-          temp.quantity -= quantityToRemove;
-        }
-        return temp;
-      });
+      changeQuantity(item, ItemToUpdate.quantity - quantityToRemove);
     }
-    updateTicket(NewTicket);
-    totalOfReceipt(NewTicket);
   }
 
   function reduceItem(item, ratio) {
