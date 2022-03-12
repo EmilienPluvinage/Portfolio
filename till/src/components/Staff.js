@@ -7,17 +7,23 @@ function Staff({ user, updateUser }) {
       <div>STAFF</div>
       <div id="tickets-on-hold">
         {EmployeeData.map(({ name, color }) => (
-          <div
-            key={name}
-            style={
-              name === user
-                ? { color: color, backgroundColor: "lightgray" }
-                : { color: color }
-            }
-            className="ticket"
-            onClick={() => updateUser(name)}
-          >
-            {name}
+          <div>
+            <div
+              key={name}
+              style={
+                name === user
+                  ? { color: "white", backgroundColor: color, fontWeight: 300 }
+                  : { fontWeight: 300 }
+              }
+              className="staff-member"
+              onClick={() => updateUser(name)}
+            >
+              &nbsp;{name}
+            </div>
+            <div className="staff-color" style={{ backgroundColor: color }}>
+              &nbsp;
+            </div>
+            <div style={{ clear: "both" }}></div>
           </div>
         ))}
       </div>

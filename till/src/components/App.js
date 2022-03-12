@@ -71,6 +71,7 @@ function App() {
         updateTicketsOnHold={updateTicketsOnHold}
         putOnHold={putOnHold}
         totalOfReceipt={totalOfReceipt}
+        user={user}
       />
       <div id="main">
         <TopMenu menu={menu} updateMenu={updateMenu} />

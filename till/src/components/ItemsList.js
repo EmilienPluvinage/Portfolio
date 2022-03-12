@@ -31,8 +31,10 @@ function ItemsList(props) {
               className="item"
               onClick={() => updateState(price, name)}
             >
-              {name}
-              <div className="price">{displayPrice(price)} €</div>
+              <div className="item-content">
+                {name}
+                <div className="price">{displayPrice(price)} €</div>
+              </div>
             </div>
           )
       )}

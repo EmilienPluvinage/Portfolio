@@ -1,6 +1,7 @@
 import "../styles/receipt.css";
 import { displayPrice } from "./Functions";
 import DropdownMenu2 from "./DropdownMenu2";
+import { EmployeeData } from "../datas/EmployeeData";
 
 function Receipt({
   cart,
@@ -11,7 +12,10 @@ function Receipt({
   updateTicketsOnHold,
   putOnHold,
   totalOfReceipt,
+  user,
 }) {
+  const color = EmployeeData.find((e) => e.name === user).color;
+
   function initState() {
     updateCart(0);
     updateTicket([]);
@@ -86,32 +90,53 @@ function Receipt({
 
   return (
     <div id="receipt">
-      <span className="receipt-top-button" onClick={() => initState()}>
-        Cancel
-      </span>
-      <span className="receipt-top-button" onClick={() => putOnHold()}>
-        Put on Hold
-      </span>
-      <h3 id="receipt-h3">RECEIPT</h3>
-      <div id="receipt-content">
-        {ticket.map(({ name, price, quantity }) => (
-          <div className="receipt-item" key={name}>
-            <DropdownMenu2
-              options={options}
-              callback={dropdownCallback}
-              name={name}
-              quantity={quantity}
-              text={
-                displayPrice(price * quantity) + " € " + name + " x " + quantity
-              }
-            />
-          </div>
-        ))}
+      <div id="receipt-main">
+        <span className="receipt-top-button" onClick={() => initState()}>
+          Cancel
+        </span>
+        <span className="receipt-top-button" onClick={() => putOnHold()}>
+          Put on Hold
+        </span>
+        <h3 id="receipt-h3">RECEIPT</h3>
+        <div id="receipt-content">
+          {ticket.map(({ name, price, quantity }) => (
+            <div className="receipt-item" key={name}>
+              <DropdownMenu2
+                options={options}
+                callback={dropdownCallback}
+                name={name}
+                quantity={quantity}
+                text={
+                  displayPrice(price * quantity) +
+                  " € " +
+                  name +
+                  " x " +
+                  quantity
+                }
+              />
+            </div>
+          ))}
+        </div>
+        <h3>TOTAL {displayPrice(cart)} €</h3>
       </div>
-      <h3>TOTAL {displayPrice(cart)} €</h3>
-      <div id="totals">
-        <button onClick={() => initState()}>EAT IN</button>
-        <button onClick={() => initState()}>TAKE AWAY</button>
+      <div id="totals-parent">
+        <div id="totals1"></div>
+        <div id="totals2">
+          <div
+            className="total-btn"
+            style={{ backgroundColor: color }}
+            onClick={() => initState()}
+          >
+            EAT IN
+          </div>
+          <div
+            className="total-btn"
+            style={{ backgroundColor: color }}
+            onClick={() => initState()}
+          >
+            TAKE AWAY
+          </div>
+        </div>
       </div>
     </div>
   );
