@@ -80,6 +80,8 @@ function Receipt({
       default:
         alert(5);
     }
+    // Removes focus so that we can re-open the menu
+    document.activeElement.blur();
   }
 
   return (
