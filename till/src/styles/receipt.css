@@ -1,7 +1,6 @@
 #receipt {
-  padding-top: 10px;
   float: right;
-  height: 85%;
+  height: 100%;
   width: 25%;
   min-width: fit-content;
   background-color: white;
@@ -25,6 +24,19 @@
 #receipt h3 {
   text-align: center;
 }
+#receipt-main {
+  margin-top: 10px;
+}
+#receipt-user-name {
+  height: fit-content;
+  background-color: black;
+  color: white;
+}
+#receipt-user-name h3 {
+  font-size: 1.5em;
+  font-weight: 200;
+}
+
 #receipt .receipt-top-button {
   width: auto;
   margin: 5px;
@@ -60,7 +72,7 @@
 
 .total-btn {
   float: left;
-  margin: 5px;
+  margin: 10px;
   color: white;
   padding: 20px;
   border-radius: 5px;

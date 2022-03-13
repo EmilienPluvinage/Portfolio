@@ -3,7 +3,6 @@ import "../styles/item.css";
 import "../styles/leftmenu.css";
 import "../styles/receipt.css";
 import "../styles/topmenu.css";
-import Header from "./Header";
 import LeftMenu from "./LeftMenu";
 import Receipt from "./Receipt";
 import TopMenu from "./TopMenu";
@@ -52,7 +51,6 @@ function App() {
 
   return (
     <div id="parent">
-      <Header />
       <LeftMenu
         cart={cart}
         updateCart={updateCart}

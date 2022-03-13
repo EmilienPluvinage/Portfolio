@@ -64,12 +64,7 @@ function Receipt({
     updateTicket(NewTicket);
     totalOfReceipt(NewTicket);
   }
-  const options = [
-    "Supprimer Ligne",
-    "Enlever 1",
-    "Changer Quantité",
-    "Réduction",
-  ];
+  const options = ["Remove Row", "Remove One", "Change Quantity", "Discount"];
 
   function dropdownCallback(value, name, quantity) {
     switch (value) {
@@ -105,6 +100,9 @@ function Receipt({
         setExpanded={updateOpenInputDialog}
         name={nameInputDialog}
       />
+      <div id="receipt-user-name" style={{ backgroundColor: color }}>
+        <h3>{user}</h3>
+      </div>
       <div id="receipt-main">
         <span className="receipt-top-button" onClick={() => initState()}>
           Cancel

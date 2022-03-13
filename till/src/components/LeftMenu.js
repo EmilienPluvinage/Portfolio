@@ -15,6 +15,7 @@ function LeftMenu({
 }) {
   return (
     <nav id="left-menu">
+      <h2>Till App</h2>
       <ul>
         <li>Configuration</li>
         <li>Statistics</li>
