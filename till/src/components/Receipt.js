@@ -56,6 +56,17 @@ function Receipt({
     totalOfReceipt(NewTicket);
   }
 
+  function reduceTicket(item, ratio) {
+    var NewTicket = ticket.map((line) => {
+      var temp = Object.assign({}, line);
+      temp.price *= 1 - ratio / 100;
+      return temp;
+    });
+
+    updateTicket(NewTicket);
+    totalOfReceipt(NewTicket);
+  }
+
   function changeQuantity(item, newQuantity) {
     if (newQuantity <= 0) {
       removeItem(item, ticket.find((e) => e.name === item).quantity);
@@ -71,7 +82,13 @@ function Receipt({
       totalOfReceipt(NewTicket);
     }
   }
-  const options = ["Remove Row", "Remove One", "Change Quantity", "Discount"];
+  const options = [
+    "Remove Row",
+    "Remove One",
+    "Change Quantity",
+    "Discount",
+    "Discount All",
+  ];
 
   function dropdownCallback(value, name, quantity) {
     switch (value) {
@@ -97,8 +114,16 @@ function Receipt({
           callback: reduceItem,
         });
         break;
+      case options[4]:
+        updateInputDialog({
+          open: true,
+          name: name,
+          text: "Please enter a discount between 0% and 100% :",
+          callback: reduceTicket,
+        });
+        break;
       default:
-        alert(5);
+        alert("Error");
     }
     // Removes focus so that we can re-open the menu
     document.activeElement.blur();
