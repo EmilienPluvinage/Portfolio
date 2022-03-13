@@ -3,6 +3,7 @@ import React, { useState } from "react";
 
 function InputDialog(props) {
   const [value, setValue] = useState("");
+
   function close() {
     props.setExpanded(false);
   }
@@ -12,22 +13,22 @@ function InputDialog(props) {
   }
   function handleSubmit(event) {
     close();
-    props.callback(value, props.name);
+    props.options.callback(props.options.name, value);
     event.preventDefault();
   }
 
-  return props.expanded ? (
+  return props.options.open ? (
     <div className="dialog">
       <div className="dialog-content">
         <form onSubmit={handleSubmit}>
           <label>
-            <p>Please enter a number:</p>
+            <p>{props.options.text}</p>
             <p>
               <input
                 id="number"
                 className="input"
                 type={"number"}
-                placeholder={"1"}
+                placeholder={"50"}
                 onChange={handleChange}
               />
             </p>

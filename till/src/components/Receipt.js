@@ -17,8 +17,12 @@ function Receipt({
   user,
 }) {
   const color = EmployeeData.find((e) => e.name === user).color;
-  const [openInputDialog, updateOpenInputDialog] = useState(false);
-  const [nameInputDialog, updateNameInputDialog] = useState("");
+  const [inputDialog, updateInputDialog] = useState({
+    open: false,
+    name: "",
+    text: "",
+    callback: null,
+  });
 
   function initState() {
     updateCart(0);
@@ -43,7 +47,7 @@ function Receipt({
     var NewTicket = ticket.map((line) => {
       var temp = Object.assign({}, line);
       if (temp.name === item) {
-        temp.price *= 1 - ratio;
+        temp.price *= 1 - ratio / 100;
       }
       return temp;
     });
@@ -56,7 +60,6 @@ function Receipt({
     if (newQuantity <= 0) {
       removeItem(item, ticket.find((e) => e.name === item).quantity);
     } else {
-      // we assume that the value of newQuantity has already been checked before calling the function
       var NewTicket = ticket.map((line) => {
         var temp = Object.assign({}, line);
         if (temp.name === item) {
@@ -79,11 +82,20 @@ function Receipt({
         removeItem(name, 1);
         break;
       case options[2]:
-        updateNameInputDialog(name);
-        updateOpenInputDialog(true);
+        updateInputDialog({
+          open: true,
+          name: name,
+          text: "Please enter the quantity you'd like :",
+          callback: changeQuantity,
+        });
         break;
       case options[3]:
-        reduceItem(name, 0.5);
+        updateInputDialog({
+          open: true,
+          name: name,
+          text: "Please enter a discount between 0% and 100% :",
+          callback: reduceItem,
+        });
         break;
       default:
         alert(5);
@@ -92,18 +104,18 @@ function Receipt({
     document.activeElement.blur();
   }
 
-  function DialogCallback(value, name) {
-    changeQuantity(name, value);
+  function setExpanded(bool) {
+    updateInputDialog({
+      open: bool,
+      name: inputDialog.name,
+      text: inputDialog.text,
+      callback: inputDialog.callback,
+    });
   }
 
   return (
     <div id="receipt">
-      <InputDialog
-        callback={DialogCallback}
-        expanded={openInputDialog}
-        setExpanded={updateOpenInputDialog}
-        name={nameInputDialog}
-      />
+      <InputDialog options={inputDialog} setExpanded={setExpanded} />
       <div id="receipt-user-name" style={{ backgroundColor: color }}>
         <h3>{user}</h3>
       </div>
