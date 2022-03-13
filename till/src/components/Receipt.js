@@ -1,7 +1,9 @@
 import "../styles/receipt.css";
 import { displayPrice } from "./Functions";
 import DropdownMenu from "./DropdownMenu";
+import InputDialog from "./InputDialog";
 import { EmployeeData } from "../datas/EmployeeData";
+import { useState } from "react";
 
 function Receipt({
   cart,
@@ -15,6 +17,8 @@ function Receipt({
   user,
 }) {
   const color = EmployeeData.find((e) => e.name === user).color;
+  const [openInputDialog, updateOpenInputDialog] = useState(false);
+  const [nameInputDialog, updateNameInputDialog] = useState("");
 
   function initState() {
     updateCart(0);
@@ -76,7 +80,8 @@ function Receipt({
         removeItem(name, 1);
         break;
       case options[2]:
-        changeQuantity(name, 3);
+        updateNameInputDialog(name);
+        updateOpenInputDialog(true);
         break;
       case options[3]:
         reduceItem(name, 0.5);
@@ -88,8 +93,18 @@ function Receipt({
     document.activeElement.blur();
   }
 
+  function DialogCallback(value, name) {
+    changeQuantity(name, value);
+  }
+
   return (
     <div id="receipt">
+      <InputDialog
+        callback={DialogCallback}
+        expanded={openInputDialog}
+        setExpanded={updateOpenInputDialog}
+        name={nameInputDialog}
+      />
       <div id="receipt-main">
         <span className="receipt-top-button" onClick={() => initState()}>
           Cancel
