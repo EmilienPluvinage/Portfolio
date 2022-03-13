@@ -2,6 +2,7 @@ import "../styles/receipt.css";
 import { displayPrice } from "./Functions";
 import DropdownMenu from "./DropdownMenu";
 import InputDialog from "./InputDialog";
+import PayementScreen from "./PayementScreen";
 import { EmployeeData } from "../datas/EmployeeData";
 import { useState } from "react";
 
@@ -21,6 +22,10 @@ function Receipt({
     open: false,
     name: "",
     text: "",
+    callback: null,
+  });
+  const [payementOptions, updatePayementOptions] = useState({
+    open: false,
     callback: null,
   });
 
@@ -138,9 +143,22 @@ function Receipt({
     });
   }
 
+  function setExpandedPayement(bool) {
+    updatePayementOptions({
+      open: bool,
+      callback: payementOptions.callback,
+    });
+  }
+
   return (
     <div id="receipt">
       <InputDialog options={inputDialog} setExpanded={setExpanded} />
+      <PayementScreen
+        options={payementOptions}
+        setExpanded={setExpandedPayement}
+        ticket={ticket}
+        cart={cart}
+      />
       <div id="receipt-user-name" style={{ backgroundColor: color }}>
         <h3>{user}</h3>
       </div>
@@ -180,14 +198,14 @@ function Receipt({
           <div
             className="total-btn"
             style={{ backgroundColor: color }}
-            onClick={() => initState()}
+            onClick={() => setExpandedPayement(true)}
           >
             EAT IN
           </div>
           <div
             className="total-btn"
             style={{ backgroundColor: color }}
-            onClick={() => initState()}
+            onClick={() => setExpandedPayement(true)()}
           >
             TAKE AWAY
           </div>
