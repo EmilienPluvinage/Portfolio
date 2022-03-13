@@ -1,6 +1,6 @@
 import "../styles/receipt.css";
 import { displayPrice } from "./Functions";
-import DropdownMenu2 from "./DropdownMenu2";
+import DropdownMenu from "./DropdownMenu";
 import { EmployeeData } from "../datas/EmployeeData";
 
 function Receipt({
@@ -102,7 +102,7 @@ function Receipt({
         <div id="receipt-content">
           {ticket.map(({ name, price, quantity }) => (
             <div className="receipt-item" key={name}>
-              <DropdownMenu2
+              <DropdownMenu
                 options={options}
                 callback={dropdownCallback}
                 name={name}

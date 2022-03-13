@@ -1,7 +1,7 @@
-import "../styles/dropdownMenu2.css";
+import "../styles/dropdownMenu.css";
 import React, { useState } from "react";
 
-export default function DropdownMenu2({
+export default function DropdownMenu({
   options,
   callback,
   name,
