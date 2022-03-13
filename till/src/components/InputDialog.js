@@ -3,7 +3,6 @@ import React, { useState } from "react";
 
 function InputDialog(props) {
   const [value, setValue] = useState("");
-
   function close() {
     props.setExpanded(false);
   }
@@ -18,7 +17,7 @@ function InputDialog(props) {
   }
 
   return props.expanded ? (
-    <div className="dialog" tabIndex={0}>
+    <div className="dialog">
       <div className="dialog-content">
         <form onSubmit={handleSubmit}>
           <label>
@@ -34,6 +33,13 @@ function InputDialog(props) {
             </p>
           </label>
           <p>
+            <input
+              className="btn"
+              type="button"
+              value="Cancel"
+              onClick={close}
+            />
+            &nbsp;
             <input className="btn" type="submit" value="Submit" />
           </p>
         </form>

@@ -53,16 +53,20 @@ function Receipt({
   }
 
   function changeQuantity(item, newQuantity) {
-    // we assume that the value of newQuantity has already been checked before calling the function
-    var NewTicket = ticket.map((line) => {
-      var temp = Object.assign({}, line);
-      if (temp.name === item) {
-        temp.quantity = newQuantity;
-      }
-      return temp;
-    });
-    updateTicket(NewTicket);
-    totalOfReceipt(NewTicket);
+    if (newQuantity <= 0) {
+      removeItem(item, ticket.find((e) => e.name === item).quantity);
+    } else {
+      // we assume that the value of newQuantity has already been checked before calling the function
+      var NewTicket = ticket.map((line) => {
+        var temp = Object.assign({}, line);
+        if (temp.name === item) {
+          temp.quantity = newQuantity;
+        }
+        return temp;
+      });
+      updateTicket(NewTicket);
+      totalOfReceipt(NewTicket);
+    }
   }
   const options = ["Remove Row", "Remove One", "Change Quantity", "Discount"];
 
