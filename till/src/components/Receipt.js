@@ -26,6 +26,7 @@ function Receipt({
   });
   const [payementOptions, updatePayementOptions] = useState({
     open: false,
+    vat: "", // in or out
     callback: null,
   });
 
@@ -146,6 +147,15 @@ function Receipt({
   function setExpandedPayement(bool) {
     updatePayementOptions({
       open: bool,
+      vat: payementOptions.vat,
+      callback: payementOptions.callback,
+    });
+  }
+
+  function goToCheckout(inOrOut) {
+    updatePayementOptions({
+      open: true,
+      vat: inOrOut,
       callback: payementOptions.callback,
     });
   }
@@ -198,14 +208,14 @@ function Receipt({
           <div
             className="total-btn"
             style={{ backgroundColor: color }}
-            onClick={() => setExpandedPayement(true)}
+            onClick={() => cart !== 0 && goToCheckout("in")}
           >
             EAT IN
           </div>
           <div
             className="total-btn"
             style={{ backgroundColor: color }}
-            onClick={() => setExpandedPayement(true)()}
+            onClick={() => cart !== 0 && goToCheckout("out")}
           >
             TAKE AWAY
           </div>
