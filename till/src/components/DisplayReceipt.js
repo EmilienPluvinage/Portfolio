@@ -109,22 +109,26 @@ function DisplayReceipt({ ticket, cart, eatIn }) {
         <div className="receipt-right-side">{displayPrice(cart)} €</div>
       </div>
       <table style={{ margin: "auto", minWidth: "50%" }}>
-        <tr>
-          <td style={{ textAlign: "left" }}>VAT %</td>
-          <td style={{ textAlign: "right" }}>VAT €</td>
-        </tr>
-        <tr>
-          <td style={{ textAlign: "left" }}>TOTAL</td>
-          <td style={{ textAlign: "right" }}>
-            {displayPrice(calculateVAT(ticket))} €
-          </td>
-        </tr>
-        {VAT.map(({ rate, total }) => (
+        <thead>
           <tr>
-            <td style={{ textAlign: "left" }}>{displayPercentage(rate)}</td>
-            <td style={{ textAlign: "right" }}>{displayPrice(total)} €</td>
+            <td style={{ textAlign: "left" }}>VAT %</td>
+            <td style={{ textAlign: "right" }}>VAT €</td>
           </tr>
-        ))}
+        </thead>
+        <tbody>
+          <tr>
+            <td style={{ textAlign: "left" }}>TOTAL</td>
+            <td style={{ textAlign: "right" }}>
+              {displayPrice(calculateVAT(ticket))} €
+            </td>
+          </tr>
+          {VAT.map(({ rate, total }) => (
+            <tr key={rate}>
+              <td style={{ textAlign: "left" }}>{displayPercentage(rate)}</td>
+              <td style={{ textAlign: "right" }}>{displayPrice(total)} €</td>
+            </tr>
+          ))}
+        </tbody>
       </table>
       <p>Thanks for your visit.</p>
     </div>
