@@ -6,6 +6,7 @@ export function displayPrice(priceInCents) {
       ? 0
       : (i > 0 ? priceInCents.toString().slice(0, i) : "0") +
         "," +
+        (i === -1 ? "0" : "") +
         priceInCents.toString().slice(i, i + 2);
   return result;
 }
