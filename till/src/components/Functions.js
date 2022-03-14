@@ -9,3 +9,7 @@ export function displayPrice(priceInCents) {
         priceInCents.toString().slice(i, i + 2);
   return result;
 }
+
+export function displayPercentage(value) {
+  return (value * 100).toString() + " %";
+}

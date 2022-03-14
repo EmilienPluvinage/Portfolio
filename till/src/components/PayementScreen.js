@@ -1,5 +1,5 @@
 import "../styles/payementScreen.css";
-import { displayPrice } from "./Functions";
+import { displayPercentage, displayPrice } from "./Functions";
 import React, { useState } from "react";
 import { ItemData } from "../datas/ItemData";
 
@@ -96,7 +96,22 @@ function PayementScreen(props) {
             ))}
           </div>
           <p>Total : {displayPrice(props.cart)} €</p>
-          <p>VAT : {displayPrice(calculateVAT(props.ticket))} €</p>
+          <table style={{ margin: "auto" }}>
+            <tr>
+              <td>VAT %</td>
+              <td>VAT €</td>
+            </tr>
+            <tr>
+              <td>TOTAL</td>
+              <td>{displayPrice(calculateVAT(props.ticket))} €</td>
+            </tr>
+            {VAT.map(({ rate, total }) => (
+              <tr>
+                <td>{displayPercentage(rate)}</td>
+                <td>{displayPrice(total)} €</td>
+              </tr>
+            ))}
+          </table>
           <p>Thanks for your visit.</p>
         </div>
       </div>
