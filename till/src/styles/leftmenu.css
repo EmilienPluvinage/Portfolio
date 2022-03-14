@@ -20,12 +20,25 @@
   margin-top: 20px;
   transition: color 0.4s;
 }
+
 #left-menu li:hover {
   color: skyblue;
   cursor: pointer;
   transition: color 0.4s;
 }
-
+.receipt-summary {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+.receipt-left-side {
+  flex: 1;
+  text-align: left;
+}
+.receipt-right-side {
+  text-align: right;
+}
 #tickets-on-hold {
   background-color: rgb(240, 240, 240);
   color: rgb(46, 46, 46);

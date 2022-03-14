@@ -79,6 +79,7 @@
   font-size: 1.1em;
   letter-spacing: 0.1em;
   box-shadow: 2px 2px 5px rgb(230, 230, 230);
+  flex: 1;
 }
 
 .total-btn:hover {
