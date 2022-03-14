@@ -22,6 +22,26 @@ function PayementScreen(props) {
     return VATratesBoth;
   }
 
+  function displayDate() {
+    var today = new Date();
+    var month = today.getMonth() + 1;
+
+    var date =
+      today.getDate() +
+      "-" +
+      (month.toString().length === 1 ? "0" + month : month) +
+      "-" +
+      today.getFullYear() +
+      " " +
+      today.getHours() +
+      ":" +
+      (today.getMinutes().toString().length === 1
+        ? "0" + today.getMinutes()
+        : today.getMinutes());
+
+    return date;
+  }
+
   function initVAT() {
     // inits the sum of VAT to 0 for each VAT rate
     var initVAT = [];
@@ -67,7 +87,7 @@ function PayementScreen(props) {
       <div className="payement-content">
         <div className="billing">
           <div className="final-price">
-            Total {props.options.vat} : {displayPrice(props.cart)} €
+            Total : {displayPrice(props.cart)} €
           </div>
           <div className="payement-options">
             <div className="payement-option">Cash</div>
@@ -83,7 +103,7 @@ function PayementScreen(props) {
           <p>RECEIPT</p>
           <p>Adress</p>
           <p>Phone Number</p>
-          <p> Date and Time</p>
+          <p>{displayDate()}</p>
           <div style={{ textAlign: "left" }}>
             {props.ticket.map(({ name, price, quantity }) => (
               <p key={name}>
