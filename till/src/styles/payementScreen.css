@@ -18,7 +18,7 @@
   letter-spacing: 0.05em;
   background-color: lightgray;
   min-width: 60%;
-  min-height: 90%;
+  height: 90%;
   margin: auto;
   border-radius: 20px;
   border: 1px solid grey;
@@ -92,4 +92,5 @@
   justify-content: center;
   margin-left: auto;
   font-family: Consolas, monaco, monospace;
+  overflow-y: scroll;
 }
