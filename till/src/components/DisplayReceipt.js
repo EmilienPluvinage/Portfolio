@@ -91,7 +91,7 @@ function DisplayReceipt({ ticket, cart, eatIn }) {
       >
         <div className="receipt-left-side">
           {ticket.map(({ name, quantity, discount }) => (
-            <span>
+            <span key={"displayreceiptleft" + name}>
               <span key={name + "left"}>
                 {quantity} x {name}
                 <br />
@@ -111,7 +111,7 @@ function DisplayReceipt({ ticket, cart, eatIn }) {
         </div>
         <div className="receipt-right-side">
           {ticket.map(({ name, price, quantity, discount }) => (
-            <span>
+            <span key={"displayreceiptright" + name}>
               <span key={name + "right"}>
                 {displayPrice(Math.round(price * quantity * discount)) + " € "}
                 <br />
