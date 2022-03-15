@@ -12,5 +12,5 @@ export function displayPrice(priceInCents) {
 }
 
 export function displayPercentage(value) {
-  return (value * 100).toString() + "%";
+  return (Math.round(value * 10000) / 100).toString() + "%";
 }

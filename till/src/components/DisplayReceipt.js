@@ -90,18 +90,46 @@ function DisplayReceipt({ ticket, cart, eatIn }) {
         style={{ borderBottom: "1px solid black" }}
       >
         <div className="receipt-left-side">
-          {ticket.map(({ name, quantity }) => (
-            <span key={name + "left"}>
-              {quantity} x {name}
-              <br />
+          {ticket.map(({ name, quantity, discount }) => (
+            <span>
+              <span key={name + "left"}>
+                {quantity} x {name}
+                <br />
+              </span>
+              {discount !== 1 ? (
+                <span
+                  key={discount + name + "left"}
+                  style={{ fontStyle: "oblique" }}
+                >
+                  Discount <br />
+                </span>
+              ) : (
+                ""
+              )}
             </span>
           ))}
         </div>
         <div className="receipt-right-side">
           {ticket.map(({ name, price, quantity, discount }) => (
-            <span key={name + "right"}>
-              {displayPrice(price * quantity * discount) + " € "}
-              <br />
+            <span>
+              <span key={name + "right"}>
+                {displayPrice(Math.round(price * quantity * discount)) + " € "}
+                <br />
+              </span>
+              {discount !== 1 ? (
+                <span
+                  key={discount + name + "right"}
+                  style={{ fontStyle: "oblique" }}
+                >
+                  -
+                  {displayPercentage(
+                    Math.round((1 - discount) * 10000) / 10000
+                  )}{" "}
+                  <br />
+                </span>
+              ) : (
+                ""
+              )}
             </span>
           ))}
         </div>

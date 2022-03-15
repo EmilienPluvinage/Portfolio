@@ -190,7 +190,7 @@ function Receipt({
                 name={name}
                 quantity={quantity}
                 text={
-                  displayPrice(price * quantity * discount) +
+                  displayPrice(Math.round(price * quantity * discount)) +
                   " € " +
                   name +
                   " x " +
