@@ -95,4 +95,20 @@ export const ItemData = [
     vatIn: 0.1,
     vatOut: 0.055,
   },
+  {
+    name: "Eclair au chocolat",
+    category: "Pâtisserie",
+    price: 280,
+    id: "13",
+    vatIn: 0.1,
+    vatOut: 0.055,
+  },
+  {
+    name: "Flan",
+    category: "Pâtisserie",
+    price: 280,
+    id: "14",
+    vatIn: 0.1,
+    vatOut: 0.055,
+  },
 ];
