@@ -53,7 +53,7 @@ function Receipt({
     var NewTicket = ticket.map((line) => {
       var temp = Object.assign({}, line);
       if (temp.name === item) {
-        temp.price *= 1 - ratio / 100;
+        temp.discount *= 1 - ratio / 100;
       }
       return temp;
     });
@@ -65,7 +65,7 @@ function Receipt({
   function reduceTicket(item, ratio) {
     var NewTicket = ticket.map((line) => {
       var temp = Object.assign({}, line);
-      temp.price *= 1 - ratio / 100;
+      temp.discount *= 1 - ratio / 100;
       return temp;
     });
 
@@ -182,7 +182,7 @@ function Receipt({
 
         <h3 id="receipt-h3">RECEIPT</h3>
         <div id="receipt-content">
-          {ticket.map(({ name, price, quantity }) => (
+          {ticket.map(({ name, price, quantity, discount }) => (
             <div className="receipt-item" key={name}>
               <DropdownMenu
                 options={options}
@@ -190,7 +190,7 @@ function Receipt({
                 name={name}
                 quantity={quantity}
                 text={
-                  displayPrice(price * quantity) +
+                  displayPrice(price * quantity * discount) +
                   " € " +
                   name +
                   " x " +

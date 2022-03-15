@@ -44,7 +44,9 @@ function App() {
     for (let i = 0; i < receipt.length; i++) {
       total =
         Math.round(total) +
-        Math.round(receipt[i].price) * Math.round(receipt[i].quantity);
+        Math.round(
+          receipt[i].price * receipt[i].discount * receipt[i].quantity
+        );
     }
     updateCart(total);
   }

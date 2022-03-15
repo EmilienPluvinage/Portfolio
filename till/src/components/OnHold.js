@@ -24,7 +24,11 @@ function OnHold({
     // we calculate the cart total before displaying anything based on the current ticket
     var total = 0;
     for (let i = 0; i < ticketToReload.length; i++) {
-      total += ticketToReload[i].price * ticketToReload[i].quantity;
+      total += Math.round(
+        ticketToReload[i].price *
+          ticketToReload[i].quantity *
+          ticketToReload[i].discount
+      );
     }
     updateCart(total);
 

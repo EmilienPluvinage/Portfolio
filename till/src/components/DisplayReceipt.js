@@ -67,11 +67,13 @@ function DisplayReceipt({ ticket, cart, eatIn }) {
           : ItemData.find((e) => e.name === receipt[i].name).vatOut;
       total =
         Math.round(total) +
-        Math.round(receipt[i].price * receipt[i].quantity * vat);
+        Math.round(
+          receipt[i].price * receipt[i].quantity * receipt[i].discount * vat
+        );
 
       x = newVAT.findIndex((e) => e.rate === vat);
       newVAT[x].total += Math.round(
-        receipt[i].price * receipt[i].quantity * vat
+        receipt[i].price * receipt[i].quantity * receipt[i].discount * vat
       );
     }
     return total;
@@ -96,9 +98,9 @@ function DisplayReceipt({ ticket, cart, eatIn }) {
           ))}
         </div>
         <div className="receipt-right-side">
-          {ticket.map(({ name, price, quantity }) => (
+          {ticket.map(({ name, price, quantity, discount }) => (
             <span key={name + "right"}>
-              {displayPrice(price * quantity) + " € "}
+              {displayPrice(price * quantity * discount) + " € "}
               <br />
             </span>
           ))}

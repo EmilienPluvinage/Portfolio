@@ -15,6 +15,7 @@ function ItemsList(props) {
         name: name,
         price: Math.round(price),
         quantity: 1,
+        discount: 1,
       });
     }
     props.updateTicket(NewTicket);
