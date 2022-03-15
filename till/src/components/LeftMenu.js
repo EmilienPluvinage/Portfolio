@@ -1,4 +1,5 @@
 import "../styles/leftmenu.css";
+import "../styles/switch.css";
 import OnHold from "./OnHold";
 import Staff from "./Staff";
 
@@ -32,6 +33,10 @@ function LeftMenu({
         updateUser={updateUser}
       />
       <Staff user={user} updateUser={updateUser} />
+      <div style={{ textAlign: "center" }}>DARK MODE</div>
+      <div id="dark-mode-switch">
+        <input className="toggle" type="checkbox" />
+      </div>
     </nav>
   );
 }
