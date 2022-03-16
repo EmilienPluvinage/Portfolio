@@ -28,7 +28,7 @@ function ItemsList(props) {
           props.category === category && (
             <div
               key={id}
-              className="item"
+              className={"item " + props.darkmode}
               onClick={() => updateState(Math.round(price), name)}
             >
               <div className="item-content">

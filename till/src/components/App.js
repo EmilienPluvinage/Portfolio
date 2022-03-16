@@ -1,8 +1,4 @@
 import "../styles/style.css";
-import "../styles/item.css";
-import "../styles/leftmenu.css";
-import "../styles/receipt.css";
-import "../styles/topmenu.css";
 import LeftMenu from "./LeftMenu";
 import Receipt from "./Receipt";
 import TopMenu from "./TopMenu";
@@ -16,6 +12,7 @@ function App() {
   const [ticket, updateTicket] = useState([]);
   const [ticketsOnHold, updateTicketsOnHold] = useState([]);
   const [user, updateUser] = useState(EmployeeData[0].name);
+  const [darkmode, updateDarkMode] = useState("light");
 
   function putOnHold() {
     // we're going to add a new ticket in local storage
@@ -63,6 +60,8 @@ function App() {
         putOnHold={putOnHold}
         user={user}
         updateUser={updateUser}
+        darkmode={darkmode}
+        updateDarkMode={updateDarkMode}
       />
       <Receipt
         cart={cart}
@@ -74,9 +73,10 @@ function App() {
         putOnHold={putOnHold}
         totalOfReceipt={totalOfReceipt}
         user={user}
+        darkmode={darkmode}
       />
-      <div id="main">
-        <TopMenu menu={menu} updateMenu={updateMenu} />
+      <div id="main" className={darkmode}>
+        <TopMenu menu={menu} updateMenu={updateMenu} darkmode={darkmode} />
         <ItemsList
           category={menu}
           cart={cart}
@@ -84,6 +84,7 @@ function App() {
           ticket={ticket}
           updateTicket={updateTicket}
           totalOfReceipt={totalOfReceipt}
+          darkmode={darkmode}
         />
       </div>
     </div>

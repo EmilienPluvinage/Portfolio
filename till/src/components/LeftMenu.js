@@ -13,7 +13,16 @@ function LeftMenu({
   putOnHold,
   user,
   updateUser,
+  darkmode,
+  updateDarkMode,
 }) {
+  function setDarkMode(event) {
+    if (event.target.checked) {
+      updateDarkMode("dark");
+    } else {
+      updateDarkMode("light");
+    }
+  }
   return (
     <nav id="left-menu">
       <h2>Till App</h2>
@@ -35,7 +44,12 @@ function LeftMenu({
       <Staff user={user} updateUser={updateUser} />
       <div style={{ textAlign: "center" }}>DARK MODE</div>
       <div id="dark-mode-switch">
-        <input className="toggle" type="checkbox" />
+        <input
+          className="toggle"
+          checked={darkmode === "dark" && "checked"}
+          type="checkbox"
+          onChange={setDarkMode}
+        />
       </div>
     </nav>
   );

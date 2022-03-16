@@ -13,6 +13,10 @@
   font-size: 0.9em;
   transition: background-color 0.4s;
 }
+#top-menu span.dark {
+  background-color: grey;
+  color: white;
+}
 
 #top-menu span:hover {
   background-color: slategray;

@@ -10,9 +10,9 @@ function PayementScreen(props) {
 
   return props.options.open ? (
     <div className="payement-screen">
-      <div className="payement-content">
+      <div className={"payement-content " + props.darkmode}>
         <div className="billing">
-          <div className="final-price">
+          <div className={"final-price " + props.darkmode}>
             Total : {displayPrice(props.cart)} €
           </div>
           <div className="payement-options">

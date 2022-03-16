@@ -1,7 +1,7 @@
 import "../styles/topmenu.css";
 import { ItemData } from "../datas/ItemData";
 
-function TopMenu({ menu, updateMenu }) {
+function TopMenu({ menu, updateMenu, darkmode }) {
   const categories = ItemData.reduce(
     (acc, item) =>
       acc.includes(item.category) ? acc : acc.concat(item.category),
@@ -15,7 +15,7 @@ function TopMenu({ menu, updateMenu }) {
             {cat}
           </span>
         ) : (
-          <span onClick={() => updateMenu(cat)} key={cat}>
+          <span className={darkmode} onClick={() => updateMenu(cat)} key={cat}>
             {cat}
           </span>
         )

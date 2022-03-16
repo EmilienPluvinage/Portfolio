@@ -7,11 +7,21 @@
   z-index: 1;
   border-radius: 10px;
   overflow: hidden;
+  transition: all 500ms;
+  transition-property: color, background-color, box-shadow, border-color;
+}
+
+.dropdown-content.dark {
+  background-color: rgb(50, 50, 50);
+  color: white;
+  box-shadow: 2px 2px 5px black;
+  border-color: grey;
+  transition: all 500ms;
+  transition-property: color, background-color, box-shadow, border-color;
 }
 
 /* Links inside the dropdown */
 .dropdown-content span {
-  color: black;
   padding: 10px;
   text-decoration: none;
   display: block;
@@ -21,4 +31,8 @@
 .dropdown-content span:hover {
   background-color: lightgray;
   cursor: pointer;
+}
+
+.dropdown-content.dark span:hover {
+  background-color: rgb(70, 70, 70);
 }

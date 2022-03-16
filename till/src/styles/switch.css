@@ -23,7 +23,7 @@
   content: "on off";
   display: block;
   position: absolute;
-  z-index: 2;
+  z-index: 1;
   width: 28px;
   height: 28px;
   background: white;

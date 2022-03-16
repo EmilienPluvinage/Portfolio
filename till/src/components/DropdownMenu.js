@@ -7,6 +7,7 @@ export default function DropdownMenu({
   name,
   quantity,
   text,
+  darkmode,
 }) {
   const [expanded, setExpanded] = useState(false);
   function expand() {
@@ -27,7 +28,7 @@ export default function DropdownMenu({
     <div className="dropdown" tabIndex={0} onFocus={expand} onBlur={close}>
       <div className="action">{text}</div>
       {expanded ? (
-        <div className={"dropdown-content"}>
+        <div className={"dropdown-content " + darkmode}>
           {options.map((O) => (
             <span onClick={select} key={O}>
               {O}

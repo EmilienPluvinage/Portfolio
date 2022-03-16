@@ -16,6 +16,7 @@ function Receipt({
   putOnHold,
   totalOfReceipt,
   user,
+  darkmode,
 }) {
   const color = EmployeeData.find((e) => e.name === user).color;
   const [inputDialog, updateInputDialog] = useState({
@@ -161,22 +162,33 @@ function Receipt({
   }
 
   return (
-    <div id="receipt">
+    <div id="receipt" className={darkmode}>
       <InputDialog options={inputDialog} setExpanded={setExpanded} />
       <PayementScreen
         options={payementOptions}
         setExpanded={setExpandedPayement}
         ticket={ticket}
         cart={cart}
+        darkmode={darkmode}
       />
-      <div id="receipt-user-name" style={{ backgroundColor: color }}>
+      <div
+        id={"receipt-user-name"}
+        className={darkmode}
+        style={{ backgroundColor: color }}
+      >
         <h3>{user}</h3>
       </div>
       <div id="receipt-main">
-        <span className="receipt-top-button" onClick={() => initState()}>
+        <span
+          className={"receipt-top-button " + darkmode}
+          onClick={() => initState()}
+        >
           Cancel
         </span>
-        <span className="receipt-top-button" onClick={() => putOnHold()}>
+        <span
+          className={"receipt-top-button " + darkmode}
+          onClick={() => putOnHold()}
+        >
           Put on Hold
         </span>
 
@@ -196,6 +208,7 @@ function Receipt({
                   " x " +
                   quantity
                 }
+                darkmode={darkmode}
               />
             </div>
           ))}
@@ -206,14 +219,14 @@ function Receipt({
         <div id="totals1"></div>
         <div id="totals2">
           <div
-            className="total-btn"
+            className={"total-btn " + darkmode}
             style={{ backgroundColor: color }}
             onClick={() => cart !== 0 && goToCheckout("in")}
           >
             EAT IN
           </div>
           <div
-            className="total-btn"
+            className={"total-btn " + darkmode}
             style={{ backgroundColor: color }}
             onClick={() => cart !== 0 && goToCheckout("out")}
           >
