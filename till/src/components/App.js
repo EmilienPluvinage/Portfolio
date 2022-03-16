@@ -5,6 +5,7 @@ import TopMenu from "./TopMenu";
 import ItemsList from "./ItemsList";
 import { useState } from "react";
 import { EmployeeData } from "../datas/EmployeeData";
+import React from "react";
 
 function App() {
   const [cart, updateCart] = useState(0);
@@ -12,7 +13,13 @@ function App() {
   const [ticket, updateTicket] = useState([]);
   const [ticketsOnHold, updateTicketsOnHold] = useState([]);
   const [user, updateUser] = useState(EmployeeData[0].name);
-  const [darkmode, updateDarkMode] = useState("light");
+  const [darkmode, updateDarkMode] = React.useState(
+    localStorage.getItem("darkmode") || "light"
+  );
+
+  React.useEffect(() => {
+    localStorage.setItem("darkmode", darkmode);
+  }, [darkmode]);
 
   function putOnHold() {
     // we're going to add a new ticket in local storage
