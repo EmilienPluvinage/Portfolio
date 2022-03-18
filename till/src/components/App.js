@@ -21,6 +21,27 @@ function App() {
     localStorage.setItem("darkmode", darkmode);
   }, [darkmode]);
 
+  React.useEffect(() => {
+    fetch(`http://localhost:3003/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .then((actualData) => console.log(actualData))
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }, []);
+
   function putOnHold() {
     // we're going to add a new ticket in local storage
     if (ticket.length !== 0) {
