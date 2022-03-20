@@ -29,6 +29,7 @@ function PayementScreen(props) {
           ticket={props.ticket}
           cart={props.cart}
           eatIn={props.options.vat === "in"}
+          ItemData={props.ItemData}
         />
       </div>
     </div>

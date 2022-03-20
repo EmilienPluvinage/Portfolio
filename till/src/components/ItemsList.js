@@ -1,5 +1,4 @@
 import "../styles/item.css";
-import { ItemData } from "../datas/ItemData";
 import { displayPrice } from "./Functions";
 import { useState } from "react";
 import InputDialog from "./InputDialog";
@@ -61,7 +60,7 @@ function ItemsList(props) {
       <div style={{ textAlign: "center" }}>
         <InputDialog options={inputDialog} setExpanded={setExpanded} />
       </div>
-      {ItemData.map(
+      {props.ItemData.map(
         ({ name, category, price, id }) =>
           props.category === category && (
             <div

@@ -15,6 +15,7 @@ function App() {
     localStorage.getItem("darkmode") || "light"
   );
   const [EmployeeData, setEmployeeData] = useState([]);
+  const [ItemData, setItemData] = useState([]);
   const [user, updateUser] = useState([]);
 
   useEffect(() => {
@@ -22,7 +23,7 @@ function App() {
   }, [darkmode]);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/`, {
+    fetch(`http://localhost:3001/Staff`, {
       method: "GET",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -37,6 +38,27 @@ function App() {
         return response.json();
       })
       .then((actualData) => initEmployeeData(actualData))
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetch(`http://localhost:3001/Items`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .then((actualData) => setItemData(actualData))
       .catch((err) => {
         console.log(err.message);
       });
@@ -109,6 +131,7 @@ function App() {
         user={user}
         darkmode={darkmode}
         EmployeeData={EmployeeData}
+        ItemData={ItemData}
       />
       <div id="main" className={darkmode}>
         <TopMenu menu={menu} updateMenu={updateMenu} darkmode={darkmode} />
@@ -120,6 +143,7 @@ function App() {
           updateTicket={updateTicket}
           totalOfReceipt={totalOfReceipt}
           darkmode={darkmode}
+          ItemData={ItemData}
         />
       </div>
     </div>

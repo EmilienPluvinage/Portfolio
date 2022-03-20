@@ -17,6 +17,7 @@ function Receipt({
   user,
   darkmode,
   EmployeeData,
+  ItemData,
 }) {
   const color = EmployeeData.find((e) => e.name === user)?.color;
   const [inputDialog, updateInputDialog] = useState({
@@ -170,6 +171,7 @@ function Receipt({
         ticket={ticket}
         cart={cart}
         darkmode={darkmode}
+        ItemData={ItemData}
       />
       <div
         id={"receipt-user-name"}

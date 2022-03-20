@@ -1,9 +1,8 @@
 import "../styles/payementScreen.css";
 import { displayPercentage, displayPrice } from "./Functions";
 import React, { useState } from "react";
-import { ItemData } from "../datas/ItemData";
 
-function DisplayReceipt({ ticket, cart, eatIn }) {
+function DisplayReceipt({ ticket, cart, eatIn, ItemData }) {
   const VATrates = getVATrates();
   const [VAT, updateVAT] = useState(initVAT());
 
