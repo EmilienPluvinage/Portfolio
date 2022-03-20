@@ -2,6 +2,7 @@ import "../styles/style.css";
 import LeftMenu from "./LeftMenu";
 import Receipt from "./Receipt";
 import TopMenu from "./TopMenu";
+import ConfigurationMenu from "./ConfigurationMenu";
 import ItemsList from "./ItemsList";
 import { useState, useEffect } from "react";
 import React from "react";
@@ -9,6 +10,7 @@ import React from "react";
 function App() {
   const [cart, updateCart] = useState(0);
   const [menu, updateMenu] = useState("Viennoiserie");
+  const [configMenu, updateConfigMenu] = useState("Staff");
   const [ticket, updateTicket] = useState([]);
   const [ticketsOnHold, updateTicketsOnHold] = useState([]);
   const [darkmode, updateDarkMode] = useState(
@@ -143,7 +145,12 @@ function App() {
       <div id="main" className={darkmode}>
         {page === "Main" && (
           <div>
-            <TopMenu menu={menu} updateMenu={updateMenu} darkmode={darkmode} />
+            <TopMenu
+              menu={menu}
+              updateMenu={updateMenu}
+              darkmode={darkmode}
+              ItemData={ItemData}
+            />
             <ItemsList
               category={menu}
               cart={cart}
@@ -155,6 +162,14 @@ function App() {
               ItemData={ItemData}
             />
           </div>
+        )}
+        {page === "Configuration" && (
+          <ConfigurationMenu
+            configMenu={configMenu}
+            updateConfigMenu={updateConfigMenu}
+            darkmode={darkmode}
+            ItemData={ItemData}
+          />
         )}
       </div>
     </div>
