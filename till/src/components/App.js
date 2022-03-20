@@ -11,12 +11,15 @@ function App() {
   const [menu, updateMenu] = useState("Viennoiserie");
   const [ticket, updateTicket] = useState([]);
   const [ticketsOnHold, updateTicketsOnHold] = useState([]);
-  const [darkmode, updateDarkMode] = React.useState(
+  const [darkmode, updateDarkMode] = useState(
     localStorage.getItem("darkmode") || "light"
   );
   const [EmployeeData, setEmployeeData] = useState([]);
   const [ItemData, setItemData] = useState([]);
   const [user, updateUser] = useState([]);
+  // user is defaulted to the first person in EmployeeData
+  const [page, setPage] = useState("Main");
+  // page can take 3 Values so far: Main, Configuration, Statistics.
 
   useEffect(() => {
     localStorage.setItem("darkmode", darkmode);
@@ -118,6 +121,8 @@ function App() {
         darkmode={darkmode}
         updateDarkMode={updateDarkMode}
         EmployeeData={EmployeeData}
+        page={page}
+        setPage={setPage}
       />
       <Receipt
         cart={cart}
@@ -134,17 +139,21 @@ function App() {
         ItemData={ItemData}
       />
       <div id="main" className={darkmode}>
-        <TopMenu menu={menu} updateMenu={updateMenu} darkmode={darkmode} />
-        <ItemsList
-          category={menu}
-          cart={cart}
-          updateCart={updateCart}
-          ticket={ticket}
-          updateTicket={updateTicket}
-          totalOfReceipt={totalOfReceipt}
-          darkmode={darkmode}
-          ItemData={ItemData}
-        />
+        {page === "Main" ? (
+          <div>
+            <TopMenu menu={menu} updateMenu={updateMenu} darkmode={darkmode} />
+            <ItemsList
+              category={menu}
+              cart={cart}
+              updateCart={updateCart}
+              ticket={ticket}
+              updateTicket={updateTicket}
+              totalOfReceipt={totalOfReceipt}
+              darkmode={darkmode}
+              ItemData={ItemData}
+            />
+          </div>
+        ) : null}
       </div>
     </div>
   );

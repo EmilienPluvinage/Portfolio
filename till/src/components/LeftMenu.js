@@ -16,6 +16,8 @@ function LeftMenu({
   darkmode,
   updateDarkMode,
   EmployeeData,
+  page,
+  setPage,
 }) {
   function setDarkMode(event) {
     if (event.target.checked) {
@@ -28,8 +30,11 @@ function LeftMenu({
     <nav id="left-menu">
       <h2>Till App</h2>
       <ul>
-        <li>Configuration</li>
-        <li>Statistics</li>
+        <li onClick={() => setPage("Configuration")}>Configuration</li>
+        <li onClick={() => setPage("Statistics")}>Statistics</li>
+        {page !== "Main" && (
+          <li onClick={() => setPage("Main")}>Main Screen</li>
+        )}
       </ul>
       <OnHold
         cart={cart}
