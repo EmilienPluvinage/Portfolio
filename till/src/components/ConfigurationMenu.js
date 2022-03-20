@@ -3,7 +3,7 @@ import "../styles/topmenu.css";
 function ConfigurationMenu({ configMenu, updateConfigMenu, darkmode }) {
   const categories = ["Staff", "Items"];
   return (
-    <nav id="top-menu">
+    <nav className="top-menu">
       {categories.map((cat) =>
         cat === configMenu ? (
           <span className="clicked" key={cat}>

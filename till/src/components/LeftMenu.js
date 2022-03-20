@@ -32,9 +32,7 @@ function LeftMenu({
       <ul>
         <li onClick={() => setPage("Configuration")}>Configuration</li>
         <li onClick={() => setPage("Statistics")}>Statistics</li>
-        {page !== "Main" && (
-          <li onClick={() => setPage("Main")}>Main Screen</li>
-        )}
+        <li onClick={() => setPage("Main")}>Main Screen</li>
       </ul>
       <OnHold
         cart={cart}

@@ -7,7 +7,7 @@ function TopMenu({ menu, updateMenu, darkmode, ItemData }) {
     []
   );
   return (
-    <nav id="top-menu">
+    <nav className="top-menu">
       {categories.map((cat) =>
         cat === menu ? (
           <span className="clicked" key={cat}>

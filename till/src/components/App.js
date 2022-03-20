@@ -3,6 +3,7 @@ import LeftMenu from "./LeftMenu";
 import Receipt from "./Receipt";
 import TopMenu from "./TopMenu";
 import ConfigurationMenu from "./ConfigurationMenu";
+import StaffConfig from "./StaffConfig";
 import ItemsList from "./ItemsList";
 import { useState, useEffect } from "react";
 import React from "react";
@@ -164,12 +165,19 @@ function App() {
           </div>
         )}
         {page === "Configuration" && (
-          <ConfigurationMenu
-            configMenu={configMenu}
-            updateConfigMenu={updateConfigMenu}
-            darkmode={darkmode}
-            ItemData={ItemData}
-          />
+          <div>
+            <ConfigurationMenu
+              configMenu={configMenu}
+              updateConfigMenu={updateConfigMenu}
+              darkmode={darkmode}
+            />
+            <StaffConfig
+              configMenu={configMenu}
+              updateConfigMenu={updateConfigMenu}
+              darkmode={darkmode}
+              EmployeeData={EmployeeData}
+            />
+          </div>
         )}
       </div>
     </div>
