@@ -60,10 +60,15 @@ function DisplayReceipt({ ticket, cart, eatIn, ItemData }) {
       newVAT[i].total = 0;
     }
     for (let i = 0; i < receipt.length; i++) {
-      var vat =
-        eatIn === true
-          ? ItemData.find((e) => e.name === receipt[i].name).vatIn
-          : ItemData.find((e) => e.name === receipt[i].name).vatOut;
+      var vat;
+      if (receipt[i].name !== "Vente Directe") {
+        vat =
+          eatIn === true
+            ? ItemData.find((e) => e.name === receipt[i].name).vatIn
+            : ItemData.find((e) => e.name === receipt[i].name).vatOut;
+      } else {
+        vat = eatIn === true ? 0.1 : 0.055;
+      }
       total =
         Math.round(total) +
         Math.round(
