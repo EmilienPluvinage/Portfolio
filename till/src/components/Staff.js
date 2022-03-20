@@ -5,7 +5,7 @@ function Staff({ user, updateUser, EmployeeData }) {
     <div>
       <div>STAFF</div>
       <div id="tickets-on-hold">
-        {EmployeeData.map(({ name, color }) => (
+        {EmployeeData.map(({ _id, name, color }) => (
           <div key={name + "parent"}>
             <div
               key={name}
