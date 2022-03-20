@@ -124,22 +124,24 @@ function App() {
         page={page}
         setPage={setPage}
       />
-      <Receipt
-        cart={cart}
-        updateCart={updateCart}
-        ticket={ticket}
-        updateTicket={updateTicket}
-        ticketsOnHold={ticketsOnHold}
-        updateTicketsOnHold={updateTicketsOnHold}
-        putOnHold={putOnHold}
-        totalOfReceipt={totalOfReceipt}
-        user={user}
-        darkmode={darkmode}
-        EmployeeData={EmployeeData}
-        ItemData={ItemData}
-      />
+      {page === "Main" && (
+        <Receipt
+          cart={cart}
+          updateCart={updateCart}
+          ticket={ticket}
+          updateTicket={updateTicket}
+          ticketsOnHold={ticketsOnHold}
+          updateTicketsOnHold={updateTicketsOnHold}
+          putOnHold={putOnHold}
+          totalOfReceipt={totalOfReceipt}
+          user={user}
+          darkmode={darkmode}
+          EmployeeData={EmployeeData}
+          ItemData={ItemData}
+        />
+      )}
       <div id="main" className={darkmode}>
-        {page === "Main" ? (
+        {page === "Main" && (
           <div>
             <TopMenu menu={menu} updateMenu={updateMenu} darkmode={darkmode} />
             <ItemsList
@@ -153,7 +155,7 @@ function App() {
               ItemData={ItemData}
             />
           </div>
-        ) : null}
+        )}
       </div>
     </div>
   );
