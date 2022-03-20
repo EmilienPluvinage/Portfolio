@@ -15,6 +15,7 @@ function LeftMenu({
   updateUser,
   darkmode,
   updateDarkMode,
+  EmployeeData,
 }) {
   function setDarkMode(event) {
     if (event.target.checked) {
@@ -40,8 +41,9 @@ function LeftMenu({
         putOnHold={putOnHold}
         user={user}
         updateUser={updateUser}
+        EmployeeData={EmployeeData}
       />
-      <Staff user={user} updateUser={updateUser} />
+      <Staff user={user} updateUser={updateUser} EmployeeData={EmployeeData} />
       <div style={{ textAlign: "center" }}>DARK MODE</div>
       <div id="dark-mode-switch">
         <input

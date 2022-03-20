@@ -1,7 +1,6 @@
 import "../styles/leftmenu.css";
-import { EmployeeData } from "../datas/EmployeeData";
 
-function Staff({ user, updateUser }) {
+function Staff({ user, updateUser, EmployeeData }) {
   return (
     <div>
       <div>STAFF</div>
@@ -30,7 +29,7 @@ function Staff({ user, updateUser }) {
             <div style={{ clear: "both" }}></div>
           </div>
         ))}
-      </div>
+      </div>{" "}
     </div>
   );
 }

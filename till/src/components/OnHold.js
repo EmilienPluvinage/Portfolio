@@ -1,5 +1,4 @@
 import "../styles/leftmenu.css";
-import { EmployeeData } from "../datas/EmployeeData";
 
 function OnHold({
   cart,
@@ -11,6 +10,7 @@ function OnHold({
   putOnHold,
   user,
   updateUser,
+  EmployeeData,
 }) {
   function OffHold(n) {
     // we put on hold the current receipt if there is one

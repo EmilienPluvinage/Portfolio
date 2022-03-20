@@ -3,7 +3,6 @@ import { displayPrice } from "./Functions";
 import DropdownMenu from "./DropdownMenu";
 import InputDialog from "./InputDialog";
 import PayementScreen from "./PayementScreen";
-import { EmployeeData } from "../datas/EmployeeData";
 import { useState } from "react";
 
 function Receipt({
@@ -17,8 +16,9 @@ function Receipt({
   totalOfReceipt,
   user,
   darkmode,
+  EmployeeData,
 }) {
-  const color = EmployeeData.find((e) => e.name === user).color;
+  const color = EmployeeData.find((e) => e.name === user)?.color;
   const [inputDialog, updateInputDialog] = useState({
     open: false,
     name: "",

@@ -3,8 +3,7 @@ import LeftMenu from "./LeftMenu";
 import Receipt from "./Receipt";
 import TopMenu from "./TopMenu";
 import ItemsList from "./ItemsList";
-import { useState } from "react";
-import { EmployeeData } from "../datas/EmployeeData";
+import { useState, useEffect } from "react";
 import React from "react";
 
 function App() {
@@ -12,17 +11,18 @@ function App() {
   const [menu, updateMenu] = useState("Viennoiserie");
   const [ticket, updateTicket] = useState([]);
   const [ticketsOnHold, updateTicketsOnHold] = useState([]);
-  const [user, updateUser] = useState(EmployeeData[0].name);
   const [darkmode, updateDarkMode] = React.useState(
     localStorage.getItem("darkmode") || "light"
   );
+  const [EmployeeData, setEmployeeData] = useState([]);
+  const [user, updateUser] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     localStorage.setItem("darkmode", darkmode);
   }, [darkmode]);
 
-  React.useEffect(() => {
-    fetch(`http://localhost:3003/`, {
+  useEffect(() => {
+    fetch(`http://localhost:3001/`, {
       method: "GET",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -36,11 +36,16 @@ function App() {
         }
         return response.json();
       })
-      .then((actualData) => console.log(actualData))
+      .then((actualData) => initEmployeeData(actualData))
       .catch((err) => {
         console.log(err.message);
       });
   }, []);
+
+  function initEmployeeData(data) {
+    setEmployeeData(data);
+    updateUser(data[0].name);
+  }
 
   function putOnHold() {
     // we're going to add a new ticket in local storage
@@ -90,6 +95,7 @@ function App() {
         updateUser={updateUser}
         darkmode={darkmode}
         updateDarkMode={updateDarkMode}
+        EmployeeData={EmployeeData}
       />
       <Receipt
         cart={cart}
@@ -102,6 +108,7 @@ function App() {
         totalOfReceipt={totalOfReceipt}
         user={user}
         darkmode={darkmode}
+        EmployeeData={EmployeeData}
       />
       <div id="main" className={darkmode}>
         <TopMenu menu={menu} updateMenu={updateMenu} darkmode={darkmode} />
