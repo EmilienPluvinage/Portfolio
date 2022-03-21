@@ -3,7 +3,14 @@ import "../styles/config.css";
 import { useState } from "react";
 import InputDialog from "./InputDialog";
 
-function StaffConfig({ configMenu, updateConfigMenu, darkmode, EmployeeData }) {
+function StaffConfig({
+  configMenu,
+  updateConfigMenu,
+  darkmode,
+  EmployeeData,
+  staffUpdates,
+  setStaffUpdates,
+}) {
   const [inputDialog, updateInputDialog] = useState({
     open: false,
     name: "",
@@ -45,6 +52,7 @@ function StaffConfig({ configMenu, updateConfigMenu, darkmode, EmployeeData }) {
       .catch((err) => {
         console.log(err.message);
       });
+    setStaffUpdates(staffUpdates + 1);
   }
 
   function addStaff() {
@@ -76,6 +84,7 @@ function StaffConfig({ configMenu, updateConfigMenu, darkmode, EmployeeData }) {
       .catch((err) => {
         console.log(err.message);
       });
+    setStaffUpdates(staffUpdates + 1);
   }
   return (
     configMenu === "Staff" && (

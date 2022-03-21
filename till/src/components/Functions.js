@@ -14,3 +14,24 @@ export function displayPrice(priceInCents) {
 export function displayPercentage(value) {
   return (Math.round(value * 10000) / 100).toString() + "%";
 }
+
+export function queryEmployeeData(initEmployeeData) {
+  fetch(`http://localhost:3001/Staff`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(
+          `This is an HTTP error: The status is ${response.status}`
+        );
+      }
+      return response.json();
+    })
+    .then((actualData) => initEmployeeData(actualData))
+    .catch((err) => {
+      console.log(err.message);
+    });
+}

@@ -7,6 +7,7 @@ import StaffConfig from "./StaffConfig";
 import ItemsList from "./ItemsList";
 import { useState, useEffect } from "react";
 import React from "react";
+import { queryEmployeeData } from "./Functions";
 
 function App() {
   const [cart, updateCart] = useState(0);
@@ -18,36 +19,21 @@ function App() {
     localStorage.getItem("darkmode") || "light"
   );
   const [EmployeeData, setEmployeeData] = useState([]);
+  const [staffUpdates, setStaffUpdates] = useState(0);
   const [ItemData, setItemData] = useState([]);
   const [user, updateUser] = useState([]);
   // user is defaulted to the first person in EmployeeData
   const [page, setPage] = useState("Main");
   // page can take 3 Values so far: Main, Configuration, Statistics.
 
+  console.log(staffUpdates);
   useEffect(() => {
     localStorage.setItem("darkmode", darkmode);
   }, [darkmode]);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/Staff`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(
-            `This is an HTTP error: The status is ${response.status}`
-          );
-        }
-        return response.json();
-      })
-      .then((actualData) => initEmployeeData(actualData))
-      .catch((err) => {
-        console.log(err.message);
-      });
-  }, []);
+    queryEmployeeData(initEmployeeData);
+  }, [staffUpdates]);
 
   useEffect(() => {
     fetch(`http://localhost:3001/Items`, {
@@ -176,6 +162,8 @@ function App() {
               updateConfigMenu={updateConfigMenu}
               darkmode={darkmode}
               EmployeeData={EmployeeData}
+              staffUpdates={staffUpdates}
+              setStaffUpdates={setStaffUpdates}
             />
           </div>
         )}
