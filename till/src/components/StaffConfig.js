@@ -30,7 +30,6 @@ function StaffConfig({
   }
 
   function updateStaff(id, name, color) {
-    console.log(JSON.stringify({ id: id, name: name, color: color }));
     fetch("http://localhost:3001/Staff/" + id, {
       method: "PUT",
       headers: {
@@ -53,9 +52,8 @@ function StaffConfig({
     setStaffUpdates(staffUpdates + 1);
   }
 
-  function deleteStaff(name) {
-    console.log("supprimer " + name);
-    fetch("http://localhost:3001/Staff-" + name, {
+  function deleteStaff(id) {
+    fetch("http://localhost:3001/Staff-" + id, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -116,7 +114,6 @@ function StaffConfig({
   }
 
   function addStaffMember(v, name) {
-    console.log("Ajouter de " + name);
     fetch("http://localhost:3001/Staff", {
       method: "POST",
       headers: {
@@ -170,7 +167,7 @@ function StaffConfig({
                 </div>
                 <div
                   className={"config-btn " + darkmode}
-                  onClick={() => deleteStaff(name)}
+                  onClick={() => deleteStaff(_id)}
                 >
                   Delete
                 </div>
