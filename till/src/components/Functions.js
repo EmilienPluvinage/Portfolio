@@ -15,8 +15,8 @@ export function displayPercentage(value) {
   return (Math.round(value * 10000) / 100).toString() + "%";
 }
 
-export function queryEmployeeData(initEmployeeData) {
-  fetch(`http://localhost:3001/Staff`, {
+export function queryData(callback, collection) {
+  fetch("http://localhost:3001/" + collection, {
     method: "GET",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -30,28 +30,7 @@ export function queryEmployeeData(initEmployeeData) {
       }
       return response.json();
     })
-    .then((actualData) => initEmployeeData(actualData))
-    .catch((err) => {
-      console.log(err.message);
-    });
-}
-
-export function queryItemData(initItemData) {
-  fetch(`http://localhost:3001/Items`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-    },
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(
-          `This is an HTTP error: The status is ${response.status}`
-        );
-      }
-      return response.json();
-    })
-    .then((actualData) => initItemData(actualData))
+    .then((actualData) => callback(actualData))
     .catch((err) => {
       console.log(err.message);
     });
