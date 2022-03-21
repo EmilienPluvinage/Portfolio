@@ -1,7 +1,7 @@
 import "../styles/topmenu.css";
 
 function ConfigurationMenu({ configMenu, updateConfigMenu, darkmode }) {
-  const categories = ["Staff", "Items"];
+  const categories = ["Staff", "Items", "Categories"];
   return (
     <nav className="top-menu">
       {categories.map((cat) =>

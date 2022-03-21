@@ -29,12 +29,28 @@ function StaffConfig({
     });
   }
 
-  function updateStaffName(name) {
-    alert("Modifier nom de " + name);
-  }
-
-  function updateStaffColor(name) {
-    alert("Modifier couleur de " + name);
+  function updateStaff(id, name, color) {
+    console.log(JSON.stringify({ id: id, name: name, color: color }));
+    fetch("http://localhost:3001/Staff/" + id, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: name, color: color }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+    setStaffUpdates(staffUpdates + 1);
   }
 
   function deleteStaff(name) {
@@ -69,13 +85,45 @@ function StaffConfig({
     });
   }
 
+  function updateStaffName(id, name) {
+    updateInputDialog({
+      open: true,
+      name: id,
+      type: "text",
+      text: "Set new name for " + name + ":",
+      callback: callbackUpdateStaffName,
+    });
+  }
+
+  function updateStaffColor(id, name) {
+    updateInputDialog({
+      open: true,
+      name: id,
+      type: "text",
+      text: "Set new color for " + name + ":",
+      callback: callbackUpdateStaffColor,
+    });
+  }
+
+  function callbackUpdateStaffName(id, newName) {
+    var color = EmployeeData.find((e) => e._id === id)?.color;
+    updateStaff(id, newName, color);
+  }
+
+  function callbackUpdateStaffColor(id, newColor) {
+    var name = EmployeeData.find((e) => e._id === id)?.name;
+    updateStaff(id, name, newColor);
+  }
+
   function addStaffMember(v, name) {
     console.log("Ajouter de " + name);
-    fetch("http://localhost:3001/Staff/" + name + "/skyblue", {
-      method: "GET",
+    fetch("http://localhost:3001/Staff", {
+      method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify({ name: name, color: "skyblue" }),
     })
       .then((response) => {
         if (!response.ok) {
@@ -110,13 +158,13 @@ function StaffConfig({
               <div className="config-buttons">
                 <div
                   className={"config-btn " + darkmode}
-                  onClick={() => updateStaffName(name)}
+                  onClick={() => updateStaffName(_id, name)}
                 >
                   Change Name
                 </div>
                 <div
                   className={"config-btn " + darkmode}
-                  onClick={() => updateStaffColor(name)}
+                  onClick={() => updateStaffColor(_id, name)}
                 >
                   Change Color
                 </div>
