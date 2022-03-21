@@ -24,6 +24,7 @@ function Receipt({
     open: false,
     name: "",
     text: "",
+    type: "number",
     callback: null,
   });
   const [payementOptions, updatePayementOptions] = useState({
@@ -110,6 +111,7 @@ function Receipt({
         updateInputDialog({
           open: true,
           name: name,
+          type: "number",
           text: "Please enter the quantity you'd like :",
           callback: changeQuantity,
         });
@@ -118,6 +120,7 @@ function Receipt({
         updateInputDialog({
           open: true,
           name: name,
+          type: "number",
           text: "Please enter a discount between 0% and 100% :",
           callback: reduceItem,
         });
@@ -126,6 +129,7 @@ function Receipt({
         updateInputDialog({
           open: true,
           name: name,
+          type: "number",
           text: "Please enter a discount between 0% and 100% :",
           callback: reduceTicket,
         });
@@ -141,6 +145,7 @@ function Receipt({
     updateInputDialog({
       open: bool,
       name: inputDialog.name,
+      type: inputDialog.type,
       text: inputDialog.text,
       callback: inputDialog.callback,
     });
