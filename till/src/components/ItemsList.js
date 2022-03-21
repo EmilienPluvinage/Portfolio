@@ -61,10 +61,10 @@ function ItemsList(props) {
         <InputDialog options={inputDialog} setExpanded={setExpanded} />
       </div>
       {props.ItemData.map(
-        ({ name, category, price, id }) =>
+        ({ name, category, price, _id }) =>
           props.category === category && (
             <div
-              key={id}
+              key={_id}
               className={"item " + props.darkmode}
               onClick={() => updateState(name, Math.round(price), false)}
             >

@@ -35,3 +35,24 @@ export function queryEmployeeData(initEmployeeData) {
       console.log(err.message);
     });
 }
+
+export function queryItemData(initItemData) {
+  fetch(`http://localhost:3001/Items`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(
+          `This is an HTTP error: The status is ${response.status}`
+        );
+      }
+      return response.json();
+    })
+    .then((actualData) => initItemData(actualData))
+    .catch((err) => {
+      console.log(err.message);
+    });
+}

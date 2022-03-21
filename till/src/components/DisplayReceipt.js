@@ -3,6 +3,7 @@ import { displayPercentage, displayPrice } from "./Functions";
 import React, { useState } from "react";
 
 function DisplayReceipt({ ticket, cart, eatIn, ItemData }) {
+  console.table(ItemData);
   const VATrates = getVATrates();
   const [VAT, updateVAT] = useState(initVAT());
 
@@ -72,12 +73,14 @@ function DisplayReceipt({ ticket, cart, eatIn, ItemData }) {
       total =
         Math.round(total) +
         Math.round(
-          receipt[i].price * receipt[i].quantity * receipt[i].discount * vat
+          (receipt[i].price * receipt[i].quantity * receipt[i].discount * vat) /
+            1000
         );
 
       x = newVAT.findIndex((e) => e.rate === vat);
       newVAT[x].total += Math.round(
-        receipt[i].price * receipt[i].quantity * receipt[i].discount * vat
+        (receipt[i].price * receipt[i].quantity * receipt[i].discount * vat) /
+          1000
       );
     }
     return total;
@@ -158,7 +161,9 @@ function DisplayReceipt({ ticket, cart, eatIn, ItemData }) {
           </tr>
           {VAT.map(({ rate, total }) => (
             <tr key={rate}>
-              <td style={{ textAlign: "left" }}>{displayPercentage(rate)}</td>
+              <td style={{ textAlign: "left" }}>
+                {displayPercentage(rate / 1000)}
+              </td>
               <td style={{ textAlign: "right" }}>{displayPrice(total)} €</td>
             </tr>
           ))}

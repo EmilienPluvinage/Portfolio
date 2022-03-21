@@ -4,14 +4,15 @@ import Receipt from "./Receipt";
 import TopMenu from "./TopMenu";
 import ConfigurationMenu from "./ConfigurationMenu";
 import StaffConfig from "./StaffConfig";
+import ItemConfig from "./ItemConfig";
 import ItemsList from "./ItemsList";
 import { useState, useEffect } from "react";
 import React from "react";
-import { queryEmployeeData } from "./Functions";
+import { queryEmployeeData, queryItemData } from "./Functions";
 
 function App() {
   const [cart, updateCart] = useState(0);
-  const [menu, updateMenu] = useState("Viennoiserie");
+  const [menu, updateMenu] = useState("");
   const [configMenu, updateConfigMenu] = useState("Staff");
   const [ticket, updateTicket] = useState([]);
   const [ticketsOnHold, updateTicketsOnHold] = useState([]);
@@ -20,6 +21,7 @@ function App() {
   );
   const [EmployeeData, setEmployeeData] = useState([]);
   const [staffUpdates, setStaffUpdates] = useState(0);
+  const [itemUpdates, setItemUpdates] = useState(0);
   const [ItemData, setItemData] = useState([]);
   const [user, updateUser] = useState([]);
   // user is defaulted to the first person in EmployeeData
@@ -33,6 +35,10 @@ function App() {
   useEffect(() => {
     queryEmployeeData(initEmployeeData);
   }, [staffUpdates]);
+
+  useEffect(() => {
+    queryItemData(initItemData);
+  }, [itemUpdates]);
 
   useEffect(() => {
     fetch(`http://localhost:3001/Items`, {
@@ -58,6 +64,11 @@ function App() {
   function initEmployeeData(data) {
     setEmployeeData(data);
     updateUser(data[0].name);
+  }
+
+  function initItemData(data) {
+    setItemData(data);
+    updateMenu(data[0].category);
   }
 
   function putOnHold() {
@@ -163,6 +174,14 @@ function App() {
               EmployeeData={EmployeeData}
               staffUpdates={staffUpdates}
               setStaffUpdates={setStaffUpdates}
+            />
+            <ItemConfig
+              configMenu={configMenu}
+              updateConfigMenu={updateConfigMenu}
+              darkmode={darkmode}
+              EmployeeData={EmployeeData}
+              itemUpdates={itemUpdates}
+              setItemUpdates={setItemUpdates}
             />
           </div>
         )}
