@@ -29,8 +29,12 @@ function StaffConfig({
     });
   }
 
-  function updateStaff(name) {
-    alert("Modifier " + name);
+  function updateStaffName(name) {
+    alert("Modifier nom de " + name);
+  }
+
+  function updateStaffColor(name) {
+    alert("Modifier couleur de " + name);
   }
 
   function deleteStaff(name) {
@@ -106,9 +110,15 @@ function StaffConfig({
               <div className="config-buttons">
                 <div
                   className={"config-btn " + darkmode}
-                  onClick={() => updateStaff(name)}
+                  onClick={() => updateStaffName(name)}
                 >
-                  Modify
+                  Change Name
+                </div>
+                <div
+                  className={"config-btn " + darkmode}
+                  onClick={() => updateStaffColor(name)}
+                >
+                  Change Color
                 </div>
                 <div
                   className={"config-btn " + darkmode}

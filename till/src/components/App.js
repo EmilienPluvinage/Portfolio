@@ -26,7 +26,6 @@ function App() {
   const [page, setPage] = useState("Main");
   // page can take 3 Values so far: Main, Configuration, Statistics.
 
-  console.log(staffUpdates);
   useEffect(() => {
     localStorage.setItem("darkmode", darkmode);
   }, [darkmode]);
