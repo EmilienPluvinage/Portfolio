@@ -9,6 +9,7 @@ import ItemsList from "./ItemsList";
 import { useState, useEffect } from "react";
 import React from "react";
 import { queryData } from "./Functions";
+import Statistics from "./Statistics";
 
 function App() {
   const [cart, updateCart] = useState(0);
@@ -186,6 +187,7 @@ function App() {
             />
           </div>
         )}
+        {page === "Statistics" && <Statistics />}
       </div>
     </div>
   );

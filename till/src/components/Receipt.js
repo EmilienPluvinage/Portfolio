@@ -177,6 +177,7 @@ function Receipt({
         cart={cart}
         darkmode={darkmode}
         ItemData={ItemData}
+        Clear={initState}
       />
       <div
         id={"receipt-user-name"}

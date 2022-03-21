@@ -3,7 +3,6 @@ import { displayPercentage, displayPrice } from "./Functions";
 import React, { useState } from "react";
 
 function DisplayReceipt({ ticket, cart, eatIn, ItemData }) {
-  console.table(ItemData);
   const VATrates = getVATrates();
   const [VAT, updateVAT] = useState(initVAT());
 
