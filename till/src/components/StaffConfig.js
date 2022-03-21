@@ -142,7 +142,7 @@ function StaffConfig({
           <InputDialog options={inputDialog} setExpanded={setExpanded} />
         </div>
         <div className={"item " + darkmode} onClick={() => addStaff()}>
-          <div className="item-content">+ Add</div>
+          <div className="item-content add-new">+</div>
         </div>
         {EmployeeData.map(({ _id, name, color }) => (
           <div
@@ -167,7 +167,9 @@ function StaffConfig({
                 </div>
                 <div
                   className={"config-btn " + darkmode}
-                  onClick={() => deleteStaff(_id)}
+                  onClick={() =>
+                    window.confirm("Are you sure?") && deleteStaff(_id)
+                  }
                 >
                   Delete
                 </div>
