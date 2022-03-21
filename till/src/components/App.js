@@ -8,7 +8,7 @@ import ItemConfig from "./ItemConfig";
 import ItemsList from "./ItemsList";
 import { useState, useEffect } from "react";
 import React from "react";
-import { queryEmployeeData, queryItemData } from "./Functions";
+import { queryData } from "./Functions";
 
 function App() {
   const [cart, updateCart] = useState(0);
@@ -33,11 +33,11 @@ function App() {
   }, [darkmode]);
 
   useEffect(() => {
-    queryEmployeeData(initEmployeeData);
+    queryData(initEmployeeData, "Staff");
   }, [staffUpdates]);
 
   useEffect(() => {
-    queryItemData(initItemData);
+    queryData(initItemData, "Items");
   }, [itemUpdates]);
 
   useEffect(() => {
@@ -182,6 +182,7 @@ function App() {
               EmployeeData={EmployeeData}
               itemUpdates={itemUpdates}
               setItemUpdates={setItemUpdates}
+              ItemData={ItemData}
             />
           </div>
         )}

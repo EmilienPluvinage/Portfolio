@@ -3,11 +3,11 @@ import React, { useState } from "react";
 
 function NewItemDialog(props) {
   const [value, setValue] = useState({
-    name: "",
-    category: "",
-    price: 0,
-    vatIn: 0,
-    vatOut: 0,
+    name: props?.options?.defaultValues?.name,
+    category: props?.options?.defaultValues?.category,
+    price: props?.options?.defaultValues?.price,
+    vatIn: props?.options?.defaultValues?.vatIn,
+    vatOut: props?.options?.defaultValues?.vatOut,
   });
 
   function close() {
@@ -37,7 +37,11 @@ function NewItemDialog(props) {
 
   function handleSubmit(event) {
     close();
-    props.options.callback(value);
+    if (props.options.id === 0) {
+      props.options.callback(value);
+    } else {
+      props.options.callback(value, props.options.id);
+    }
     event.preventDefault();
   }
 
