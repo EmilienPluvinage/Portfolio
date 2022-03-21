@@ -7,6 +7,7 @@ function StaffConfig({ configMenu, updateConfigMenu, darkmode, EmployeeData }) {
   const [inputDialog, updateInputDialog] = useState({
     open: false,
     name: "",
+    type: "text",
     text: "",
     callback: null,
   });
@@ -15,6 +16,7 @@ function StaffConfig({ configMenu, updateConfigMenu, darkmode, EmployeeData }) {
     updateInputDialog({
       open: bool,
       name: inputDialog.name,
+      type: inputDialog.type,
       text: inputDialog.text,
       callback: inputDialog.callback,
     });
@@ -46,7 +48,34 @@ function StaffConfig({ configMenu, updateConfigMenu, darkmode, EmployeeData }) {
   }
 
   function addStaff() {
-    alert("Ajouter");
+    updateInputDialog({
+      open: true,
+      name: "",
+      type: "text",
+      text: "Select employee name :",
+      callback: addStaffMember,
+    });
+  }
+
+  function addStaffMember(v, name) {
+    console.log("Ajouter de " + name);
+    fetch("http://localhost:3001/Staff/" + name + "/skyblue", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   }
   return (
     configMenu === "Staff" && (
@@ -58,7 +87,11 @@ function StaffConfig({ configMenu, updateConfigMenu, darkmode, EmployeeData }) {
           <div className="item-content">+ Add</div>
         </div>
         {EmployeeData.map(({ _id, name, color }) => (
-          <div key={_id} className={"config-item " + darkmode}>
+          <div
+            key={_id}
+            className={"config-item " + darkmode}
+            style={{ borderColor: color }}
+          >
             <div className="config-item-content">
               {name}
               <div className="config-buttons">

@@ -28,7 +28,7 @@ function InputDialog(props) {
                 id="number"
                 className="input"
                 type={props.options.type}
-                placeholder={"0"}
+                placeholder={props.options.type === "number" ? "0" : "text"}
                 onChange={handleChange}
               />
             </p>
