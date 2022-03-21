@@ -1,0 +1,21 @@
+#statistics {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#statistics-header {
+  min-height: 10%;
+  background-color: rgb(46, 46, 46);
+  color: white;
+}
+#statistics-main {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+}
+.statistics-third {
+  flex: 1;
+  margin: 10px;
+  background-color: white;
+}
