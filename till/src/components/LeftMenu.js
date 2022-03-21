@@ -30,9 +30,24 @@ function LeftMenu({
     <nav id="left-menu">
       <h2>Till App</h2>
       <ul>
-        <li onClick={() => setPage("Configuration")}>Configuration</li>
-        <li onClick={() => setPage("Statistics")}>Statistics</li>
-        <li onClick={() => setPage("Main")}>Main Screen</li>
+        <li
+          style={page === "Configuration" ? { color: "skyblue" } : null}
+          onClick={() => setPage("Configuration")}
+        >
+          Configuration
+        </li>
+        <li
+          style={page === "Statistics" ? { color: "skyblue" } : null}
+          onClick={() => setPage("Statistics")}
+        >
+          Statistics
+        </li>
+        <li
+          style={page === "Main" ? { color: "skyblue" } : null}
+          onClick={() => setPage("Main")}
+        >
+          Main Screen
+        </li>
       </ul>
       <OnHold
         cart={cart}
