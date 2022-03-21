@@ -38,12 +38,14 @@
 #receipt-user-name {
   height: fit-content;
   color: white;
-  transition: color 500ms;
+  transition: all 500ms;
+  transition-property: color, background-color;
 }
 
 #receipt-user-name.dark {
   color: rgb(46, 46, 46);
-  transition: color 500ms;
+  transition: all 500ms;
+  transition-property: color, background-color;
 }
 
 #receipt-user-name h3 {
