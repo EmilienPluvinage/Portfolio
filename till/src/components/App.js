@@ -35,10 +35,12 @@ function App() {
   }, [darkmode]);
 
   useEffect(() => {
+    console.log("QUERY DATA STAFF");
     queryData(initEmployeeData, "Staff");
   }, [staffUpdates]);
 
   useEffect(() => {
+    console.log("QUERY DATA ITEMS");
     queryData(initItemData, "Items");
   }, [itemUpdates]);
 
@@ -182,7 +184,6 @@ function App() {
               updateConfigMenu={updateConfigMenu}
               darkmode={darkmode}
               EmployeeData={EmployeeData}
-              itemUpdates={itemUpdates}
               setItemUpdates={setItemUpdates}
               ItemData={ItemData}
             />

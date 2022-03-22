@@ -44,12 +44,13 @@ function StaffConfig({
             `This is an HTTP error: The status is ${response.status}`
           );
         }
+        setStaffUpdates((prevStaffUpdates) => prevStaffUpdates + 1);
+        console.log("staffUpdates++");
         return response.json();
       })
       .catch((err) => {
         console.log(err.message);
       });
-    setStaffUpdates(staffUpdates + 1);
   }
 
   function deleteStaff(id) {
@@ -65,12 +66,13 @@ function StaffConfig({
             `This is an HTTP error: The status is ${response.status}`
           );
         }
+        setStaffUpdates((prevStaffUpdates) => prevStaffUpdates + 1);
+        console.log("staffUpdates++");
         return response.json();
       })
       .catch((err) => {
         console.log(err.message);
       });
-    setStaffUpdates(staffUpdates + 1);
   }
 
   function addStaff() {
@@ -128,12 +130,13 @@ function StaffConfig({
             `This is an HTTP error: The status is ${response.status}`
           );
         }
+        setStaffUpdates((prevStaffUpdates) => prevStaffUpdates + 1);
+        console.log("staffUpdates++");
         return response.json();
       })
       .catch((err) => {
         console.log(err.message);
       });
-    setStaffUpdates(staffUpdates + 1);
   }
   return (
     configMenu === "Staff" && (

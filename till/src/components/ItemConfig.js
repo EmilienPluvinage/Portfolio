@@ -9,7 +9,6 @@ function ItemConfig({
   updateConfigMenu,
   darkmode,
   EmployeeData,
-  ItemUpdates,
   setItemUpdates,
   ItemData,
 }) {
@@ -61,7 +60,8 @@ function ItemConfig({
             `This is an HTTP error: The status is ${response.status}`
           );
         }
-        setItemUpdates(ItemUpdates + 1);
+        setItemUpdates((prevItemUpdates) => prevItemUpdates + 1);
+        console.log("itemUpdates++");
         return response.json();
       })
       .catch((err) => {
@@ -96,7 +96,8 @@ function ItemConfig({
             `This is an HTTP error: The status is ${response.status}`
           );
         }
-        setItemUpdates(ItemUpdates + 1);
+        setItemUpdates((prevItemUpdates) => prevItemUpdates + 1);
+        console.log("itemUpdates++");
         return response.json();
       })
       .catch((err) => {
