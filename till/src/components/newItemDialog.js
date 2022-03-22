@@ -10,6 +10,12 @@ function NewItemDialog(props) {
     vatOut: "",
   });
 
+  const categories = props.ItemData.reduce(
+    (acc, item) =>
+      acc.includes(item.category) ? acc : acc.concat(item.category),
+    []
+  );
+
   useEffect(() => {
     // we prefill the fields if it's an update, leave them empty if it's an addition
     if (props?.options?.id === 0) {
@@ -109,18 +115,27 @@ function NewItemDialog(props) {
               />
             </p>
           </label>
-          <label>
-            <p>Item Category</p>
-            <p>
-              <input
-                className="input"
-                type="text"
-                placeholder="category"
-                onChange={(e) => handleChange(e, "category")}
-                value={value.category}
-              />
-            </p>
+          <label htmlFor="category-select">
+            <p>Choose a category:</p>
           </label>
+
+          <p>
+            <select
+              name="category"
+              id="category-select"
+              value={value.category}
+              onChange={(e) => handleChange(e, "category")}
+            >
+              <option value="">Please choose an option</option>
+
+              {categories.map((e) => (
+                <option key={e} value={e}>
+                  {e}
+                </option>
+              ))}
+            </select>
+          </p>
+
           <label>
             <p>Item Price (in euros) :</p>
             <p>
@@ -129,6 +144,7 @@ function NewItemDialog(props) {
                 type="number"
                 placeholder="0"
                 step="0.01"
+                min="0"
                 onChange={(e) => handleChange(e, "price")}
                 value={value.price}
               />
@@ -141,6 +157,8 @@ function NewItemDialog(props) {
                 className="input"
                 type="number"
                 placeholder="0.1"
+                min="0"
+                max="1"
                 step="0.001"
                 onChange={(e) => handleChange(e, "vatIn")}
                 value={value.vatIn}
@@ -154,6 +172,8 @@ function NewItemDialog(props) {
                 className="input"
                 type="number"
                 placeholder="0.1"
+                min="0"
+                max="1"
                 step="0.001"
                 onChange={(e) => handleChange(e, "vatOut")}
                 value={value.vatOut}

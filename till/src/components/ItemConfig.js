@@ -111,6 +111,7 @@ function ItemConfig({
           <NewItemDialog
             options={itemDialog}
             setExpanded={setExpandedNewItem}
+            ItemData={ItemData}
           />
         </div>
         <div className={"item " + darkmode} onClick={() => addItem()}>
