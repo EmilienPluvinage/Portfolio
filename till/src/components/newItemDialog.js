@@ -26,8 +26,8 @@ function NewItemDialog(props) {
         name: propsValue?.name,
         category: propsValue?.category,
         price: propsValue?.price,
-        vatIn: propsValue?.price,
-        vatOut: propsValue?.vatOut,
+        vatIn: propsValue?.vatIn / 1000,
+        vatOut: propsValue?.vatOut / 1000,
       });
     }
   }, [props?.options]);
@@ -89,11 +89,7 @@ function NewItemDialog(props) {
 
   function handleSubmit(event) {
     close();
-    if (props.options.id === 0) {
-      props.options.callback(value);
-    } else {
-      props.options.callback(value, props.options.id);
-    }
+    props.options.callback(value, props.options.id);
     event.preventDefault();
   }
 

@@ -34,33 +34,18 @@ function ItemConfig({
       open: true,
       id: 0,
       defaultValues: {},
-      callback: newItem,
+      callback: addOrUpdateItem,
     });
   }
 
-  function newItem(item) {
-    item.vatIn *= 1000;
-    item.vatOut *= 1000;
-    fetch("http://localhost:3001/Item", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(item),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(
-            `This is an HTTP error: The status is ${response.status}`
-          );
-        }
-        setItemUpdates(ItemUpdates + 1);
-        return response.json();
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  function updateItem(id) {
+    var defaultValues = ItemData.find((e) => e._id === id);
+    updateItemDialog({
+      open: true,
+      id: id,
+      defaultValues: defaultValues,
+      callback: addOrUpdateItem,
+    });
   }
 
   function deleteItem(id) {
@@ -84,18 +69,40 @@ function ItemConfig({
       });
   }
 
-  function updateItem(id, name) {
-    var defaultValues = ItemData.find((e) => e._id === id);
-    updateItemDialog({
-      open: true,
-      id: id,
-      defaultValues: defaultValues,
-      callback: callbackUpdateItem,
-    });
-  }
-
-  function callbackUpdateItem(value, id) {
-    console.log(value);
+  function addOrUpdateItem(item, id) {
+    console.log(id);
+    console.table(item);
+    item.vatIn *= 1000;
+    item.vatOut *= 1000;
+    var method = "";
+    var link = "";
+    if (id === 0) {
+      method = "POST";
+      link = "http://localhost:3001/Item";
+    } else {
+      method = "PUT";
+      link = "http://localhost:3001/Item/" + id;
+    }
+    fetch(link, {
+      method: method,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(item),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        setItemUpdates(ItemUpdates + 1);
+        return response.json();
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   }
 
   return (
@@ -119,7 +126,7 @@ function ItemConfig({
               <div className="config-buttons">
                 <div
                   className={"config-btn " + darkmode}
-                  onClick={() => updateItem(_id, name)}
+                  onClick={() => updateItem(_id)}
                 >
                   Update
                 </div>
