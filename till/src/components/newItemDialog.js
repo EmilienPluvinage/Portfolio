@@ -1,14 +1,36 @@
 import "../styles/inputDialog.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function NewItemDialog(props) {
   const [value, setValue] = useState({
-    name: props?.options?.defaultValues?.name,
-    category: props?.options?.defaultValues?.category,
-    price: props?.options?.defaultValues?.price,
-    vatIn: props?.options?.defaultValues?.vatIn,
-    vatOut: props?.options?.defaultValues?.vatOut,
+    name: "",
+    category: "",
+    price: "",
+    vatIn: "",
+    vatOut: "",
   });
+
+  useEffect(() => {
+    // we prefill the fields if it's an update, leave them empty if it's an addition
+    if (props?.options?.id === 0) {
+      setValue({
+        name: "",
+        category: "",
+        price: "",
+        vatIn: "",
+        vatOut: "",
+      });
+    } else {
+      var propsValue = props?.options?.defaultValues;
+      setValue({
+        name: propsValue?.name,
+        category: propsValue?.category,
+        price: propsValue?.price,
+        vatIn: propsValue?.price,
+        vatOut: propsValue?.vatOut,
+      });
+    }
+  }, [props?.options]);
 
   function close() {
     props.setExpanded(false);
@@ -17,19 +39,49 @@ function NewItemDialog(props) {
   function handleChange(event, name) {
     switch (name) {
       case "name":
-        value.name = event.target.value;
+        setValue({
+          name: event.target.value,
+          category: value.category,
+          price: value.price,
+          vatIn: value.vatIn,
+          vatOut: value.vatOut,
+        });
         break;
       case "category":
-        value.category = event.target.value;
+        setValue({
+          name: value.name,
+          category: event.target.value,
+          price: value.price,
+          vatIn: value.vatIn,
+          vatOut: value.vatOut,
+        });
         break;
       case "price":
-        value.price = event.target.value;
+        setValue({
+          name: value.name,
+          category: value.category,
+          price: event.target.value,
+          vatIn: value.vatIn,
+          vatOut: value.vatOut,
+        });
         break;
       case "vatIn":
-        value.vatIn = event.target.value;
+        setValue({
+          name: value.name,
+          category: value.category,
+          price: value.price,
+          vatIn: event.target.value,
+          vatOut: value.vatOut,
+        });
         break;
       case "vatOut":
-        value.vatOut = event.target.value;
+        setValue({
+          name: value.name,
+          category: value.category,
+          price: value.price,
+          vatIn: value.vatIn,
+          vatOut: event.target.value,
+        });
         break;
       default:
     }
@@ -57,6 +109,7 @@ function NewItemDialog(props) {
                 type="text"
                 placeholder="name"
                 onChange={(e) => handleChange(e, "name")}
+                value={value.name}
               />
             </p>
           </label>
@@ -68,6 +121,7 @@ function NewItemDialog(props) {
                 type="text"
                 placeholder="category"
                 onChange={(e) => handleChange(e, "category")}
+                value={value.category}
               />
             </p>
           </label>
@@ -79,6 +133,7 @@ function NewItemDialog(props) {
                 type="number"
                 placeholder="0"
                 onChange={(e) => handleChange(e, "price")}
+                value={value.price}
               />
             </p>
           </label>
@@ -91,6 +146,7 @@ function NewItemDialog(props) {
                 placeholder="0.1"
                 step="0.001"
                 onChange={(e) => handleChange(e, "vatIn")}
+                value={value.vatIn}
               />
             </p>
           </label>
@@ -103,6 +159,7 @@ function NewItemDialog(props) {
                 placeholder="0.1"
                 step="0.001"
                 onChange={(e) => handleChange(e, "vatOut")}
+                value={value.vatOut}
               />
             </p>
           </label>
