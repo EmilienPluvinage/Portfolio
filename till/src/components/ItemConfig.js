@@ -70,10 +70,9 @@ function ItemConfig({
   }
 
   function addOrUpdateItem(item, id) {
-    console.log(id);
-    console.table(item);
     item.vatIn *= 1000;
     item.vatOut *= 1000;
+    item.price *= 100;
     var method = "";
     var link = "";
     if (id === 0) {

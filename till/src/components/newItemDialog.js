@@ -25,7 +25,7 @@ function NewItemDialog(props) {
       setValue({
         name: propsValue?.name,
         category: propsValue?.category,
-        price: propsValue?.price,
+        price: propsValue?.price / 100,
         vatIn: propsValue?.vatIn / 1000,
         vatOut: propsValue?.vatOut / 1000,
       });
@@ -122,12 +122,13 @@ function NewItemDialog(props) {
             </p>
           </label>
           <label>
-            <p>Item Price (in cents) :</p>
+            <p>Item Price (in euros) :</p>
             <p>
               <input
                 className="input"
                 type="number"
                 placeholder="0"
+                step="0.01"
                 onChange={(e) => handleChange(e, "price")}
                 value={value.price}
               />
