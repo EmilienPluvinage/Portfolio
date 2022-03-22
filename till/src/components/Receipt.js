@@ -178,6 +178,7 @@ function Receipt({
         darkmode={darkmode}
         ItemData={ItemData}
         Clear={initState}
+        user={user}
       />
       <div
         id={"receipt-user-name"}

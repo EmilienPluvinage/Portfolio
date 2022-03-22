@@ -15,8 +15,8 @@ function PayementScreen(props) {
       time: Date.now(),
       eatIn: props.options.vat === "in",
       payement: payement,
+      user: props.user,
     };
-    console.table(ReceiptToStore);
     fetch("http://localhost:3001/Receipt", {
       method: "POST",
       headers: {
