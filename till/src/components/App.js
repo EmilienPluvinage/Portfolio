@@ -23,6 +23,7 @@ function App() {
   const [EmployeeData, setEmployeeData] = useState([]);
   const [staffUpdates, setStaffUpdates] = useState(0);
   const [itemUpdates, setItemUpdates] = useState(0);
+  const [receiptsUpdates, setReceiptsUpdates] = useState(0);
   const [ItemData, setItemData] = useState([]);
   const [user, updateUser] = useState([]);
   // user is defaulted to the first person in EmployeeData
@@ -187,7 +188,9 @@ function App() {
             />
           </div>
         )}
-        {page === "Statistics" && <Statistics />}
+        {page === "Statistics" && (
+          <Statistics receiptsUpdates={receiptsUpdates} ItemData={ItemData} />
+        )}
       </div>
     </div>
   );
