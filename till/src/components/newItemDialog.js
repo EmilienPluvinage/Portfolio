@@ -112,6 +112,7 @@ function NewItemDialog(props) {
                 placeholder="name"
                 onChange={(e) => handleChange(e, "name")}
                 value={value.name}
+                required
               />
             </p>
           </label>
@@ -125,6 +126,7 @@ function NewItemDialog(props) {
               id="category-select"
               value={value.category}
               onChange={(e) => handleChange(e, "category")}
+              required
             >
               <option value="">Please choose an option</option>
 
@@ -147,6 +149,7 @@ function NewItemDialog(props) {
                 min="0"
                 onChange={(e) => handleChange(e, "price")}
                 value={value.price}
+                required
               />
             </p>
           </label>
@@ -162,6 +165,7 @@ function NewItemDialog(props) {
                 step="0.001"
                 onChange={(e) => handleChange(e, "vatIn")}
                 value={value.vatIn}
+                required
               />
             </p>
           </label>
@@ -177,6 +181,7 @@ function NewItemDialog(props) {
                 step="0.001"
                 onChange={(e) => handleChange(e, "vatOut")}
                 value={value.vatOut}
+                required
               />
             </p>
           </label>

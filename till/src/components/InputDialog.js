@@ -30,6 +30,7 @@ function InputDialog(props) {
                 type={props.options.type}
                 placeholder={props.options.type === "number" ? "0" : "text"}
                 onChange={handleChange}
+                required
               />
             </p>
           </label>
