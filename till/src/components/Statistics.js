@@ -1,5 +1,5 @@
 import "../styles/statistics.css";
-import { displayPrice } from "./Functions";
+import { displayPrice, displayDate, datesAreOnSameDay } from "./Functions";
 import { useState, useEffect } from "react";
 import { queryData } from "./Functions";
 import DisplayReceipt from "./DisplayReceipt";
@@ -62,7 +62,8 @@ function Statistics(props) {
           </div>
           {Receipts.map(
             ({ total, time, _id, payement, user }) =>
-              (payement === payementMethod || payementMethod === "") && (
+              (payement === payementMethod || payementMethod === "") &&
+              datesAreOnSameDay(new Date(), new Date(time)) && (
                 <div
                   style={
                     _id === displayedReceipt
@@ -73,7 +74,8 @@ function Statistics(props) {
                   className="individual-receipts"
                   onClick={() => setDisplayedReceipt(_id)}
                 >
-                  {displayPrice(total)} € {user} {time} {payement.toUpperCase()}
+                  {displayPrice(total)} € {user} {displayDate(new Date(time))}{" "}
+                  {payement.toUpperCase()}
                 </div>
               )
           )}
@@ -94,6 +96,7 @@ function Statistics(props) {
               )}
               eatIn={Receipts.find((e) => e._id === displayedReceipt).eatIn}
               ItemData={props.ItemData}
+              date={Receipts.find((e) => e._id === displayedReceipt).time}
             />
           )}
         </div>
