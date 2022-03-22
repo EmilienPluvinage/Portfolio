@@ -15,6 +15,30 @@ export function displayPercentage(value) {
   return (Math.round(value * 10000) / 100).toString() + "%";
 }
 
+export function displayDate(today) {
+  var month = today.getMonth() + 1;
+
+  var date =
+    today.getDate() +
+    "-" +
+    (month.toString().length === 1 ? "0" + month : month) +
+    "-" +
+    today.getFullYear() +
+    " " +
+    today.getHours() +
+    ":" +
+    (today.getMinutes().toString().length === 1
+      ? "0" + today.getMinutes()
+      : today.getMinutes());
+
+  return date;
+}
+
+export const datesAreOnSameDay = (first, second) =>
+  first.getFullYear() === second.getFullYear() &&
+  first.getMonth() === second.getMonth() &&
+  first.getDate() === second.getDate();
+
 export function queryData(callback, collection) {
   fetch("http://localhost:3001/" + collection, {
     method: "GET",

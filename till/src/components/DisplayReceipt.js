@@ -1,8 +1,8 @@
 import "../styles/payementScreen.css";
-import { displayPercentage, displayPrice } from "./Functions";
+import { displayPercentage, displayPrice, displayDate } from "./Functions";
 import React, { useState } from "react";
 
-function DisplayReceipt({ ticket, cart, eatIn, ItemData }) {
+function DisplayReceipt({ ticket, cart, eatIn, ItemData, date }) {
   const VATrates = getVATrates();
   const [VAT, updateVAT] = useState(initVAT());
 
@@ -27,26 +27,6 @@ function DisplayReceipt({ ticket, cart, eatIn, ItemData }) {
       initVAT.push({ rate: VATrates[i], total: 0 });
     }
     return initVAT;
-  }
-
-  function displayDate() {
-    var today = new Date();
-    var month = today.getMonth() + 1;
-
-    var date =
-      today.getDate() +
-      "-" +
-      (month.toString().length === 1 ? "0" + month : month) +
-      "-" +
-      today.getFullYear() +
-      " " +
-      today.getHours() +
-      ":" +
-      (today.getMinutes().toString().length === 1
-        ? "0" + today.getMinutes()
-        : today.getMinutes());
-
-    return date;
   }
 
   function calculateVAT(receipt) {
@@ -89,7 +69,11 @@ function DisplayReceipt({ ticket, cart, eatIn, ItemData }) {
     <div className="print">
       <p>Adress</p>
       <p>Phone Number</p>
-      <p>{displayDate()}</p>
+      <p>
+        {date !== undefined
+          ? displayDate(new Date(date))
+          : displayDate(new Date())}
+      </p>
       <p>{eatIn ? "EAT IN" : "TAKE AWAY"}</p>
       <div
         className="receipt-summary"
