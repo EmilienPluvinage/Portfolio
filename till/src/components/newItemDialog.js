@@ -2,6 +2,7 @@ import "../styles/inputDialog.css";
 import React, { useState, useEffect } from "react";
 
 function NewItemDialog(props) {
+  const [errorMessage, setErrorMessage] = useState("");
   const [value, setValue] = useState({
     name: "",
     category: "",
@@ -17,6 +18,7 @@ function NewItemDialog(props) {
   );
 
   useEffect(() => {
+    setErrorMessage("");
     // we prefill the fields if it's an update, leave them empty if it's an addition
     if (props?.options?.id === 0) {
       setValue({
@@ -75,6 +77,13 @@ function NewItemDialog(props) {
           vatIn: value.vatIn,
           vatOut: value.vatOut,
         });
+        if (event.target.value === "0") {
+          setErrorMessage(
+            "The new category's name can't be 0. Just any other name will do, but not this one. Sorry mate."
+          );
+        } else {
+          setErrorMessage("");
+        }
         break;
       case "price":
         setValue({
@@ -111,8 +120,10 @@ function NewItemDialog(props) {
   }
 
   function handleSubmit(event) {
-    close();
-    props.options.callback(value, props.options.id);
+    if (errorMessage === "") {
+      close();
+      props.options.callback(value, props.options.id);
+    }
     event.preventDefault();
   }
 
@@ -121,6 +132,7 @@ function NewItemDialog(props) {
       <div className="dialog-content">
         <form onSubmit={handleSubmit}>
           <label>
+            <p>{errorMessage}</p>
             <p>Item Name</p>
             <p>
               <input
