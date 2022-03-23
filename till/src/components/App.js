@@ -5,6 +5,7 @@ import TopMenu from "./TopMenu";
 import ConfigurationMenu from "./ConfigurationMenu";
 import StaffConfig from "./StaffConfig";
 import ItemConfig from "./ItemConfig";
+import CategoryConfig from "./CategoryConfig";
 import ItemsList from "./ItemsList";
 import { useState, useEffect } from "react";
 import React from "react";
@@ -186,6 +187,14 @@ function App() {
               EmployeeData={EmployeeData}
               setItemUpdates={setItemUpdates}
               ItemData={ItemData}
+            />
+            <CategoryConfig
+              configMenu={configMenu}
+              updateConfigMenu={updateConfigMenu}
+              darkmode={darkmode}
+              ItemData={ItemData}
+              itemUpdates={itemUpdates}
+              setItemUpdates={setItemUpdates}
             />
           </div>
         )}
