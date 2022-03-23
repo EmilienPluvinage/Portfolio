@@ -22,6 +22,7 @@ function NewItemDialog(props) {
       setValue({
         name: "",
         category: "",
+        newCategory: "",
         price: "",
         vatIn: "",
         vatOut: "",
@@ -31,6 +32,7 @@ function NewItemDialog(props) {
       setValue({
         name: propsValue?.name,
         category: propsValue?.category,
+        newCategory: "",
         price: propsValue?.price / 100,
         vatIn: propsValue?.vatIn / 1000,
         vatOut: propsValue?.vatOut / 1000,
@@ -48,6 +50,7 @@ function NewItemDialog(props) {
         setValue({
           name: event.target.value,
           category: value.category,
+          newCategory: value.newCategory,
           price: value.price,
           vatIn: value.vatIn,
           vatOut: value.vatOut,
@@ -57,6 +60,17 @@ function NewItemDialog(props) {
         setValue({
           name: value.name,
           category: event.target.value,
+          newCategory: value.newCategory,
+          price: value.price,
+          vatIn: value.vatIn,
+          vatOut: value.vatOut,
+        });
+        break;
+      case "newCategory":
+        setValue({
+          name: value.name,
+          category: value.category,
+          newCategory: event.target.value,
           price: value.price,
           vatIn: value.vatIn,
           vatOut: value.vatOut,
@@ -66,6 +80,7 @@ function NewItemDialog(props) {
         setValue({
           name: value.name,
           category: value.category,
+          newCategory: value.newCategory,
           price: event.target.value,
           vatIn: value.vatIn,
           vatOut: value.vatOut,
@@ -75,6 +90,7 @@ function NewItemDialog(props) {
         setValue({
           name: value.name,
           category: value.category,
+          newCategory: value.newCategory,
           price: value.price,
           vatIn: event.target.value,
           vatOut: value.vatOut,
@@ -84,6 +100,7 @@ function NewItemDialog(props) {
         setValue({
           name: value.name,
           category: value.category,
+          newCategory: value.newCategory,
           price: value.price,
           vatIn: value.vatIn,
           vatOut: event.target.value,
@@ -135,8 +152,24 @@ function NewItemDialog(props) {
                   {e}
                 </option>
               ))}
+              <option value="0">New Category</option>
             </select>
           </p>
+          {value.category === "0" && (
+            <div id="new-category">
+              <p>New category name:</p>
+              <p>
+                <input
+                  className="input"
+                  type="text"
+                  placeholder="category"
+                  onChange={(e) => handleChange(e, "newCategory")}
+                  value={value.newCategory}
+                  required
+                />
+              </p>
+            </div>
+          )}
 
           <label>
             <p>Item Price (in euros) :</p>

@@ -73,6 +73,12 @@ function ItemConfig({
     item.vatIn *= 1000;
     item.vatOut *= 1000;
     item.price *= 100;
+    if (item.category === "0") {
+      // then it's a new category
+      item.category = item.newCategory;
+    }
+    // we removed the newCategory before uploading
+    delete item.newCategory;
     var method = "";
     var link = "";
     if (id === 0) {
