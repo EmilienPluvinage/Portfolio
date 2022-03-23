@@ -186,6 +186,7 @@ function Receipt({
         style={{ backgroundColor: color }}
       >
         <h3>{user}</h3>
+        <h2 className={darkmode}>{displayPrice(Math.round(cart))} €</h2>
       </div>
       <div id="receipt-main">
         <span
@@ -200,29 +201,37 @@ function Receipt({
         >
           Put on Hold
         </span>
-
-        <h3 id="receipt-h3">RECEIPT</h3>
         <div id="receipt-content">
-          {ticket.map(({ name, price, quantity, discount }) => (
-            <div className="receipt-item" key={name}>
-              <DropdownMenu
-                options={options}
-                callback={dropdownCallback}
-                name={name}
-                quantity={quantity}
-                text={
-                  displayPrice(Math.round(price * quantity * discount)) +
-                  " € " +
-                  name +
-                  " x " +
-                  quantity
-                }
-                darkmode={darkmode}
-              />
-            </div>
-          ))}
+          <div className="receipt-left">
+            {ticket.map(({ quantity, name }) => (
+              <div className="receipt-item" key={name + "left"}>
+                {quantity}
+              </div>
+            ))}
+          </div>
+          <div className="receipt-center">
+            {ticket.map(({ name, quantity }) => (
+              <div className="receipt-item" key={name}>
+                <DropdownMenu
+                  options={options}
+                  callback={dropdownCallback}
+                  name={name}
+                  quantity={quantity}
+                  text={name}
+                  darkmode={darkmode}
+                />
+              </div>
+            ))}
+          </div>
+          <div className="receipt-right">
+            {" "}
+            {ticket.map(({ name, price, quantity, discount }) => (
+              <div className="receipt-item" key={name + "right"}>
+                {displayPrice(Math.round(price * quantity * discount))} €
+              </div>
+            ))}
+          </div>
         </div>
-        <h3>TOTAL {displayPrice(Math.round(cart))} €</h3>
       </div>
       <div id="totals-parent">
         <div id="totals1"></div>
