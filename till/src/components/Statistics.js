@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { queryData } from "./Functions";
 import DisplayReceipt from "./DisplayReceipt";
 import StatisticsMenu from "./StatisticsMenu";
+import DropdownMenu from "./DropdownMenu";
 
 function Statistics(props) {
   const [Receipts, updateReceipts] = useState([]);
@@ -23,21 +24,47 @@ function Statistics(props) {
 
   function initReceiptsData(data) {
     updateReceipts(data.reverse());
-    setDisplayedReceipt(data[0]._id);
   }
 
-  function cart(receipt) {
+  function cart(receipt, payementMethod) {
     var total = 0;
     for (let i = 0; i < receipt.length; i++) {
-      total =
-        Math.round(total) +
-        Math.round(
-          receipt[i].price * receipt[i].discount * receipt[i].quantity
-        );
+      if (payementMethod === undefined || receipt.payement === payementMethod) {
+        total =
+          Math.round(total) +
+          Math.round(
+            receipt[i].price * receipt[i].discount * receipt[i].quantity
+          );
+      }
     }
     return total;
   }
-  // basically we need to get all the receipts for today, and then display them
+
+  function dropdownCallback(value, param1, param2) {
+    fetch("http://localhost:3001/Receipt/Payement/" + param1, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ payement: value }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        props.setReceiptsUpdates((prev) => prev + 1);
+        console.log("ReceiptUpdates++");
+        return response.json();
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+    document.activeElement.blur();
+  }
+
   return (
     <div id="statistics">
       <StatisticsMenu
@@ -93,19 +120,34 @@ function Statistics(props) {
           style={{ textAlign: "center", flex: 0 }}
         >
           {displayedReceipt !== 0 && (
-            <DisplayReceipt
-              ticket={JSON.parse(
-                Receipts.find((e) => e._id === displayedReceipt).ticket
-              )}
-              cart={cart(
-                JSON.parse(
+            <div>
+              <DisplayReceipt
+                ticket={JSON.parse(
                   Receipts.find((e) => e._id === displayedReceipt).ticket
-                )
-              )}
-              eatIn={Receipts.find((e) => e._id === displayedReceipt).eatIn}
-              ItemData={props.ItemData}
-              date={Receipts.find((e) => e._id === displayedReceipt).time}
-            />
+                )}
+                cart={cart(
+                  JSON.parse(
+                    Receipts.find((e) => e._id === displayedReceipt).ticket
+                  )
+                )}
+                eatIn={Receipts.find((e) => e._id === displayedReceipt).eatIn}
+                ItemData={props.ItemData}
+                date={Receipts.find((e) => e._id === displayedReceipt).time}
+              />
+
+              <DropdownMenu
+                options={payementMethods}
+                callback={dropdownCallback}
+                name={displayedReceipt}
+                param2={""}
+                text={
+                  <div className="payement-filter">Change Payement Method</div>
+                }
+                darkmode={props.darkmode}
+              />
+
+              <div className="payement-filter">Send Receipt By E-Mail</div>
+            </div>
           )}
         </div>
         <div className="statistics-third">aggregate of the day</div>

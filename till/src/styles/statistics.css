@@ -35,16 +35,16 @@
 }
 .statistics-third {
   flex: 1;
-  margin: 10px;
+  margin: 5px;
   background-color: white;
   display: flex;
   flex-direction: column;
+  box-shadow: 0px 8px 8px 0px rgba(0, 0, 0, 0.2);
 }
 .individual-receipts {
   margin: 2px;
   padding: 5px;
   border: 1px solid lightgrey;
-  border-radius: 5px;
   transition: background-color 200ms;
 }
 
@@ -62,14 +62,14 @@
 .payement-filter {
   flex: 1;
   padding: 10px;
-  border: 1px solid skyblue;
+  border: 1px solid grey;
+  color: grey;
   margin: 2px;
-  border-radius: 5px;
   text-align: center;
   text-transform: uppercase;
 }
 
 .payement-filter:hover {
   cursor: pointer;
-  background-color: rgb(220, 245, 255);
+  background-color: rgb(240, 240, 240);
 }

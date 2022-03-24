@@ -199,7 +199,11 @@ function App() {
           </div>
         )}
         {page === "Statistics" && (
-          <Statistics receiptsUpdates={receiptsUpdates} ItemData={ItemData} />
+          <Statistics
+            receiptsUpdates={receiptsUpdates}
+            setReceiptsUpdates={setReceiptsUpdates}
+            ItemData={ItemData}
+          />
         )}
       </div>
     </div>
