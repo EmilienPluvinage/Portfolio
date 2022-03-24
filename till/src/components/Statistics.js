@@ -23,6 +23,7 @@ function Statistics(props) {
 
   function initReceiptsData(data) {
     updateReceipts(data.reverse());
+    setDisplayedReceipt(data[0]._id);
   }
 
   function cart(receipt) {
@@ -89,7 +90,7 @@ function Statistics(props) {
         </div>
         <div
           className="statistics-third"
-          style={{ textAlign: "center", padding: "20px" }}
+          style={{ textAlign: "center", flex: 0 }}
         >
           {displayedReceipt !== 0 && (
             <DisplayReceipt

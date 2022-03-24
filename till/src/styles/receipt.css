@@ -62,18 +62,6 @@
   transition-property: color, background-color;
 }
 
-#receipt-user-name h2.dark {
-  color: rgb(46, 46, 46);
-  transition: all 500ms;
-  transition-property: color, background-color;
-}
-
-#receipt-user-name.dark {
-  color: rgb(46, 46, 46);
-  transition: all 500ms;
-  transition-property: color, background-color;
-}
-
 #receipt-user-name h3 {
   font-size: 1.5em;
   font-weight: 200;
@@ -132,10 +120,9 @@
 }
 
 .total-btn.dark {
-  color: rgb(46, 46, 46);
   box-shadow: 2px 2px 5px black;
   transition: all 500ms;
-  transition-property: color, background-color;
+  transition-property: box-shadow;
 }
 
 .total-btn:hover {
