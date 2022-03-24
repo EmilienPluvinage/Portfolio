@@ -21,19 +21,20 @@ function Statistics(props) {
   );
 
   function ListOfItemsSold() {
-    var index = 0;
     var list = [];
     var ticket = [];
+    var index = function (j) {
+      return list.findIndex((e) => e.name === ticket[j].name);
+    };
     var ReceiptsOfTheDay = Receipts.filter((receipt) =>
       datesAreOnSameDay(new Date(today), new Date(receipt.time))
     );
     for (let i = 0; i < ReceiptsOfTheDay.length; i++) {
       ticket = JSON.parse(ReceiptsOfTheDay[i].ticket);
       for (let j = 0; j < ticket.length; j++) {
-        index = list.findIndex((e) => e.name === ticket[j].name);
-        if (index !== -1) {
+        if (index(j) !== -1) {
           // we increment
-          list[index].quantity += ticket[j].quantity;
+          list[index(j)].quantity += ticket[j].quantity;
         } else {
           // we add it
           list.push({ name: ticket[j].name, quantity: ticket[j].quantity });

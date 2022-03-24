@@ -34,7 +34,9 @@ function DisplayReceipt({ ticket, cart, eatIn, ItemData, date }) {
     // then returns the total
     var total = 0;
     var newVAT = [];
-    var x = 0;
+    var x = function (vat) {
+      return newVAT.findIndex((e) => e.rate === vat);
+    };
     newVAT = VAT;
     for (let i = 0; i < newVAT.length; i++) {
       newVAT[i].total = 0;
@@ -55,9 +57,7 @@ function DisplayReceipt({ ticket, cart, eatIn, ItemData, date }) {
           (receipt[i].price * receipt[i].quantity * receipt[i].discount * vat) /
             1000
         );
-
-      x = newVAT.findIndex((e) => e.rate === vat);
-      newVAT[x].total += Math.round(
+      newVAT[x(vat)].total += Math.round(
         (receipt[i].price * receipt[i].quantity * receipt[i].discount * vat) /
           1000
       );
