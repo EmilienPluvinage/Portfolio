@@ -34,7 +34,6 @@
   flex-direction: row;
 }
 .statistics-third {
-  flex: 1;
   margin: 5px;
   background-color: white;
   display: flex;

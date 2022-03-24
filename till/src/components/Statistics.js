@@ -5,6 +5,7 @@ import { queryData } from "./Functions";
 import DisplayReceipt from "./DisplayReceipt";
 import StatisticsMenu from "./StatisticsMenu";
 import DropdownMenu from "./DropdownMenu";
+import StatisticsOfTheDay from "./StatisticsOfTheDay";
 
 function Statistics(props) {
   const [Receipts, updateReceipts] = useState([]);
@@ -24,20 +25,6 @@ function Statistics(props) {
 
   function initReceiptsData(data) {
     updateReceipts(data.reverse());
-  }
-
-  function cart(receipt, payementMethod) {
-    var total = 0;
-    for (let i = 0; i < receipt.length; i++) {
-      if (payementMethod === undefined || receipt.payement === payementMethod) {
-        total =
-          Math.round(total) +
-          Math.round(
-            receipt[i].price * receipt[i].discount * receipt[i].quantity
-          );
-      }
-    }
-    return total;
   }
 
   function dropdownCallback(value, param1, param2) {
@@ -107,7 +94,11 @@ function Statistics(props) {
                   }
                   key={_id}
                   className="individual-receipts"
-                  onClick={() => setDisplayedReceipt(_id)}
+                  onClick={() =>
+                    displayedReceipt !== _id
+                      ? setDisplayedReceipt(_id)
+                      : setDisplayedReceipt(0)
+                  }
                 >
                   {displayPrice(total)} € {user} {displayDate(new Date(time))}{" "}
                   {payement.toUpperCase()}
@@ -125,11 +116,7 @@ function Statistics(props) {
                 ticket={JSON.parse(
                   Receipts.find((e) => e._id === displayedReceipt).ticket
                 )}
-                cart={cart(
-                  JSON.parse(
-                    Receipts.find((e) => e._id === displayedReceipt).ticket
-                  )
-                )}
+                cart={Receipts.find((e) => e._id === displayedReceipt).total}
                 eatIn={Receipts.find((e) => e._id === displayedReceipt).eatIn}
                 ItemData={props.ItemData}
                 date={Receipts.find((e) => e._id === displayedReceipt).time}
@@ -150,7 +137,16 @@ function Statistics(props) {
             </div>
           )}
         </div>
-        <div className="statistics-third">aggregate of the day</div>
+        <div className="statistics-third">
+          <StatisticsOfTheDay
+            darkmode={props.darkmode}
+            today={today}
+            ReceiptsOfTheDay={Receipts.filter((r) =>
+              datesAreOnSameDay(new Date(today), new Date(r.time))
+            )}
+            EmployeeData={props.EmployeeData}
+          />
+        </div>
       </div>
     </div>
   );

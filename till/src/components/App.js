@@ -203,6 +203,7 @@ function App() {
             receiptsUpdates={receiptsUpdates}
             setReceiptsUpdates={setReceiptsUpdates}
             ItemData={ItemData}
+            EmployeeData={EmployeeData}
           />
         )}
       </div>
