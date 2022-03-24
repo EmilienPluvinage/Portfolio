@@ -15,7 +15,7 @@ export function displayPercentage(value) {
   return (Math.round(value * 10000) / 100).toString() + "%";
 }
 
-export function displayDate(today) {
+export function displayDate(today, dateOnly) {
   var month = today.getMonth() + 1;
 
   var date =
@@ -24,12 +24,14 @@ export function displayDate(today) {
     (month.toString().length === 1 ? "0" + month : month) +
     "-" +
     today.getFullYear() +
-    " " +
-    today.getHours() +
-    ":" +
-    (today.getMinutes().toString().length === 1
-      ? "0" + today.getMinutes()
-      : today.getMinutes());
+    (!dateOnly
+      ? " " +
+        today.getHours() +
+        ":" +
+        (today.getMinutes().toString().length === 1
+          ? "0" + today.getMinutes()
+          : today.getMinutes())
+      : "");
 
   return date;
 }

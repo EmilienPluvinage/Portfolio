@@ -8,6 +8,23 @@
   min-height: 10%;
   background-color: rgb(46, 46, 46);
   color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+}
+#statistics-header .stats-menu {
+  margin-top: auto;
+  margin-bottom: auto;
+  padding: 10px;
+}
+
+#statistics-header .stats-menu .action:hover {
+  color: skyblue;
+  cursor: pointer;
+}
+
+#statistics-header .stats-menu .dropdown-content {
+  color: black;
 }
 #statistics-main {
   flex: 1;

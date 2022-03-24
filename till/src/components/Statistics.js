@@ -3,11 +3,13 @@ import { displayPrice, displayDate, datesAreOnSameDay } from "./Functions";
 import { useState, useEffect } from "react";
 import { queryData } from "./Functions";
 import DisplayReceipt from "./DisplayReceipt";
+import StatisticsMenu from "./StatisticsMenu";
 
 function Statistics(props) {
   const [Receipts, updateReceipts] = useState([]);
   const [displayedReceipt, setDisplayedReceipt] = useState(0);
   const [payementMethod, setPayementMethod] = useState("");
+  const [today, setToday] = useState(new Date());
 
   const payementMethods = Receipts.reduce(
     (acc, item) =>
@@ -37,7 +39,12 @@ function Statistics(props) {
   // basically we need to get all the receipts for today, and then display them
   return (
     <div id="statistics">
-      <div id="statistics-header"></div>
+      <StatisticsMenu
+        today={today}
+        setToday={setToday}
+        darkmode={props.darkmode}
+        Receipts={Receipts}
+      />
       <div id="statistics-main">
         <div className="statistics-third">
           <div className="payement-filters">
@@ -63,7 +70,7 @@ function Statistics(props) {
           {Receipts.map(
             ({ total, time, _id, payement, user }) =>
               (payement === payementMethod || payementMethod === "") &&
-              datesAreOnSameDay(new Date(), new Date(time)) && (
+              datesAreOnSameDay(new Date(today), new Date(time)) && (
                 <div
                   style={
                     _id === displayedReceipt
