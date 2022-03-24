@@ -2,7 +2,14 @@ import "../styles/statistics.css";
 import { displayDate } from "./Functions";
 import DropdownMenu from "./DropdownMenu";
 
-function StatisticsMenu({ today, setToday, darkmode, Receipts }) {
+function StatisticsMenu({
+  today,
+  setToday,
+  darkmode,
+  Receipts,
+  salesDetails,
+  setSalesDetails,
+}) {
   const dropdownMaxSize = 10;
   const dates = Receipts.reduce(
     (acc, item) =>
@@ -34,7 +41,11 @@ function StatisticsMenu({ today, setToday, darkmode, Receipts }) {
           darkmode={darkmode}
         />
       </div>
-      <div className="stats-menu">Sales details</div>
+      <div className="stats-menu">
+        <span onClick={() => setSalesDetails((current) => !current)}>
+          Sales details
+        </span>
+      </div>
     </div>
   );
 }

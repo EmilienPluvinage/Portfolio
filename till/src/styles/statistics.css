@@ -72,3 +72,8 @@
   cursor: pointer;
   background-color: rgb(240, 240, 240);
 }
+
+.stats-menu span:hover {
+  cursor: pointer;
+  color: skyblue;
+}

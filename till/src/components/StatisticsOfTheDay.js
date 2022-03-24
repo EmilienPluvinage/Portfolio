@@ -44,21 +44,21 @@ function StatisticsOfTheDay({
     <div className="print" style={{ textAlign: "center" }}>
       <p>{displayDate(today, true)}</p>
       <p>Breakdown by Payement Method</p>
-      <p>
+      <div>
         {totalByPayementMethods.map((e) => (
-          <div>
+          <p key={"breakdownbymethod" + e.method}>
             {e.method} : {displayPrice(e.total)} €
-          </div>
+          </p>
         ))}
-      </p>
+      </div>
       <p>Breakdown by Staff Member</p>
-      <p>
+      <div>
         {totalByStaffMembers.map((e) => (
-          <div>
+          <p key={"breakdownbystaff" + e.user}>
             {e.user} : {displayPrice(e.total)} €
-          </div>
+          </p>
         ))}
-      </p>
+      </div>
     </div>
   );
 }

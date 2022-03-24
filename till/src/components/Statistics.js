@@ -12,12 +12,36 @@ function Statistics(props) {
   const [displayedReceipt, setDisplayedReceipt] = useState(0);
   const [payementMethod, setPayementMethod] = useState("");
   const [today, setToday] = useState(new Date());
+  const [salesDetails, setSalesDetails] = useState(false);
 
   const payementMethods = Receipts.reduce(
     (acc, item) =>
       acc.includes(item.payement) ? acc : acc.concat(item.payement),
     []
   );
+
+  function ListOfItemsSold() {
+    var index = 0;
+    var list = [];
+    var ticket = [];
+    var ReceiptsOfTheDay = Receipts.filter((receipt) =>
+      datesAreOnSameDay(new Date(today), new Date(receipt.time))
+    );
+    for (let i = 0; i < ReceiptsOfTheDay.length; i++) {
+      ticket = JSON.parse(ReceiptsOfTheDay[i].ticket);
+      for (let j = 0; j < ticket.length; j++) {
+        index = list.findIndex((e) => e.name === ticket[j].name);
+        if (index !== -1) {
+          // we increment
+          list[index].quantity += ticket[j].quantity;
+        } else {
+          // we add it
+          list.push({ name: ticket[j].name, quantity: ticket[j].quantity });
+        }
+      }
+    }
+    return list;
+  }
 
   useEffect(() => {
     queryData(initReceiptsData, "Receipts");
@@ -59,6 +83,8 @@ function Statistics(props) {
         setToday={setToday}
         darkmode={props.darkmode}
         Receipts={Receipts}
+        salesDetails={salesDetails}
+        setSalesDetails={setSalesDetails}
       />
       <div id="statistics-main">
         <div className="statistics-third">
@@ -106,11 +132,12 @@ function Statistics(props) {
               )
           )}
         </div>
-        <div
-          className="statistics-third"
-          style={{ textAlign: "center", flex: 0 }}
-        >
-          {displayedReceipt !== 0 && (
+
+        {displayedReceipt !== 0 && (
+          <div
+            className="statistics-third"
+            style={{ textAlign: "center", flex: 0 }}
+          >
             <div>
               <DisplayReceipt
                 ticket={JSON.parse(
@@ -135,8 +162,25 @@ function Statistics(props) {
 
               <div className="payement-filter">Send Receipt By E-Mail</div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
+
+        {salesDetails && (
+          <div className="statistics-third">
+            <div className="print">
+              <p style={{ textAlign: "center" }}>{displayDate(today, true)}</p>
+              <p style={{ textAlign: "center" }}>List of the items sold</p>
+              <div>
+                {ListOfItemsSold().map(({ name, quantity }) => (
+                  <p key={"sold " + name}>
+                    {quantity} x {name}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="statistics-third">
           <StatisticsOfTheDay
             darkmode={props.darkmode}
