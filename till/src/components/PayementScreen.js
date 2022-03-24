@@ -1,9 +1,12 @@
 import "../styles/payementScreen.css";
 import { displayPrice } from "./Functions";
-import React from "react";
+import React, { useState } from "react";
 import DisplayReceipt from "./DisplayReceipt";
 
 function PayementScreen(props) {
+  const [vatTable, setVatTable] = useState([]);
+
+  console.table(vatTable);
   function close() {
     props.setExpanded(false);
   }
@@ -16,6 +19,7 @@ function PayementScreen(props) {
       eatIn: props.options.vat === "in",
       payement: payement,
       user: props.user,
+      vatTable: JSON.stringify(vatTable),
     };
     fetch("http://localhost:3001/Receipt", {
       method: "POST",
@@ -73,6 +77,7 @@ function PayementScreen(props) {
           cart={props.cart}
           eatIn={props.options.vat === "in"}
           ItemData={props.ItemData}
+          setVatTable={setVatTable}
         />
       </div>
     </div>
