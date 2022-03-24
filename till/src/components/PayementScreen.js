@@ -6,7 +6,6 @@ import DisplayReceipt from "./DisplayReceipt";
 function PayementScreen(props) {
   const [vatTable, setVatTable] = useState([]);
 
-  console.table(vatTable);
   function close() {
     props.setExpanded(false);
   }

@@ -20,6 +20,28 @@ function Statistics(props) {
     []
   );
 
+  function sendEmail() {
+    fetch("http://localhost:3001/Email", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ text: "text" }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }
+
   function ListOfItemsSold() {
     var list = [];
     var ticket = [];
@@ -90,6 +112,9 @@ function Statistics(props) {
       <div id="statistics-main">
         <div className="statistics-third">
           <div className="payement-filters">
+            <div onClick={() => sendEmail()} className="payement-filter">
+              E-MAIL
+            </div>
             {payementMethods.map((method) => (
               <div
                 className="payement-filter"
@@ -165,7 +190,9 @@ function Statistics(props) {
                 darkmode={props.darkmode}
               />
 
-              <div className="payement-filter">Send Receipt By E-Mail</div>
+              <div onClick={() => sendEmail()} className="payement-filter">
+                Send Receipt By E-Mail
+              </div>
             </div>
           </div>
         )}
