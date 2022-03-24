@@ -2,7 +2,7 @@ import "../styles/payementScreen.css";
 import { displayPercentage, displayPrice, displayDate } from "./Functions";
 import React, { useState } from "react";
 
-function DisplayReceipt({ ticket, cart, eatIn, ItemData, date }) {
+function DisplayReceipt({ ticket, cart, eatIn, ItemData, date, setVatTable }) {
   const VATrates = getVATrates();
   const [VAT, updateVAT] = useState(initVAT());
 
@@ -62,6 +62,7 @@ function DisplayReceipt({ ticket, cart, eatIn, ItemData, date }) {
           1000
       );
     }
+    setVatTable(newVAT);
     return total;
   }
 

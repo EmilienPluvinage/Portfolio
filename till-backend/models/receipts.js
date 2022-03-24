@@ -7,6 +7,7 @@ const ReceiptsSchema = mongoose.Schema({
   eatIn: { type: Boolean, required: true },
   payement: { type: String, required: true },
   user: { type: String },
+  vatTable: { type: String },
 });
 
 module.exports = mongoose.model("Receipt", ReceiptsSchema);
