@@ -135,11 +135,15 @@ function Statistics(props) {
         </div>
 
         {displayedReceipt !== 0 && (
-          <div
-            className="statistics-third"
-            style={{ textAlign: "center", flex: 0 }}
-          >
-            <div>
+          <div className="statistics-third" style={{ flex: 0 }}>
+            <div
+              onClick={() => setDisplayedReceipt(0)}
+              className="closing-btn"
+              style={{ margin: "10px" }}
+            >
+              X
+            </div>
+            <div style={{ textAlign: "center" }}>
               <DisplayReceipt
                 ticket={JSON.parse(
                   Receipts.find((e) => e._id === displayedReceipt).ticket
@@ -169,6 +173,12 @@ function Statistics(props) {
         {salesDetails && (
           <div className="statistics-third">
             <div className="print">
+              <div
+                onClick={() => setSalesDetails(false)}
+                className="closing-btn"
+              >
+                X
+              </div>
               <p style={{ textAlign: "center" }}>{displayDate(today, true)}</p>
               <p style={{ textAlign: "center" }}>List of the items sold</p>
               <div>
