@@ -1,18 +1,10 @@
 import "../styles/payementScreen.css";
 import { displayPercentage, displayPrice, displayDate } from "./Functions";
-import React, { useState } from "react";
+import React from "react";
 
-function DisplayReceipt({
-  ticket,
-  cart,
-  eatIn,
-  ItemData,
-  date,
-  vatTable,
-  setVatTable,
-}) {
+function DisplayReceipt({ ticket, cart, eatIn, ItemData, date, vatTable }) {
   const VATrates = getVATrates();
-  const [VAT, updateVAT] = useState(initVAT());
+  const VAT = initVAT();
 
   function getVATrates() {
     // lists all the possible VAT rates based on the items data list
