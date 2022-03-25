@@ -6,6 +6,7 @@ import DisplayReceipt from "./DisplayReceipt";
 import StatisticsMenu from "./StatisticsMenu";
 import DropdownMenu from "./DropdownMenu";
 import StatisticsOfTheDay from "./StatisticsOfTheDay";
+import ReactDomServer from "react-dom/server";
 
 function Statistics(props) {
   const [Receipts, updateReceipts] = useState([]);
@@ -20,14 +21,31 @@ function Statistics(props) {
     []
   );
 
-  function sendEmail() {
+  function sendEmail(id) {
+    var receipt = Receipts.find((e) => (e._id = id));
+    var html = ReactDomServer.renderToStaticMarkup(
+      <DisplayReceipt
+        ticket={JSON.parse(receipt.ticket)}
+        cart={receipt.total}
+        eatIn={receipt.eatIn}
+        ItemData={props.ItemData}
+        date={receipt.time}
+      />
+    );
+    var subject = "Receipt " + displayDate(new Date(receipt.time));
+
     fetch("http://localhost:3001/Email", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ text: "text" }),
+      body: JSON.stringify({
+        address: "emilien.pluvinage@gmail.com",
+        subject: subject,
+        textcontent: "text",
+        htmlcontent: html,
+      }),
     })
       .then((response) => {
         if (!response.ok) {
@@ -112,9 +130,6 @@ function Statistics(props) {
       <div id="statistics-main">
         <div className="statistics-third">
           <div className="payement-filters">
-            <div onClick={() => sendEmail()} className="payement-filter">
-              E-MAIL
-            </div>
             {payementMethods.map((method) => (
               <div
                 className="payement-filter"
@@ -190,7 +205,10 @@ function Statistics(props) {
                 darkmode={props.darkmode}
               />
 
-              <div onClick={() => sendEmail()} className="payement-filter">
+              <div
+                onClick={() => sendEmail(displayedReceipt)}
+                className="payement-filter"
+              >
                 Send Receipt By E-Mail
               </div>
             </div>
