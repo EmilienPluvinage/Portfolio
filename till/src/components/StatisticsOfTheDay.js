@@ -1,6 +1,6 @@
 import "../styles/statistics.css";
 import "../styles/payementScreen.css";
-import { displayDate, displayPrice } from "./Functions";
+import { displayDate, displayPercentage, displayPrice } from "./Functions";
 
 function StatisticsOfTheDay({
   darkmode,
@@ -26,6 +26,11 @@ function StatisticsOfTheDay({
     };
   });
 
+  const total = totalByPayementMethods.reduce(
+    (acc, item) => (acc += item.total),
+    0
+  );
+
   // breakdown by staff members
 
   const StaffMembers = EmployeeData.map((e) => e.name);
@@ -39,6 +44,32 @@ function StatisticsOfTheDay({
       ),
     };
   });
+
+  // breakdown by VAT rates
+
+  const VATBreakdown = initBreakdown();
+
+  function initBreakdown() {
+    var breakdown = [];
+    var temp = [];
+    var index = function (j) {
+      return breakdown.findIndex((e) => e.rate === temp[j].rate);
+    };
+    for (let i = 0; i < ReceiptsOfTheDay.length; i++) {
+      temp = JSON.parse(ReceiptsOfTheDay[i].vatTable);
+      for (let j = 0; j < temp.length; j++) {
+        if (temp[j].total !== 0) {
+          if (index(j) === -1) {
+            breakdown.push({ rate: temp[j].rate, total: temp[j].total });
+          } else {
+            breakdown[index(j)].total += temp[j].total;
+          }
+        }
+      }
+    }
+    var total = breakdown.reduce((acc, item) => (acc += item.total), 0);
+    return { breakdown: breakdown, total: total };
+  }
 
   return (
     <div className="print" style={{ textAlign: "center" }}>
@@ -58,6 +89,18 @@ function StatisticsOfTheDay({
             {e.user} : {displayPrice(e.total)} €
           </p>
         ))}
+      </div>
+      <p>Breakdown by VAT Rates</p>
+      <div>
+        {VATBreakdown.breakdown.map((e) => (
+          <p key={"breakdownbyvat" + e.rate}>
+            {displayPercentage(e.rate / 1000)} : {displayPrice(e.total)} €
+          </p>
+        ))}
+
+        <p>Total VAT : {displayPrice(VATBreakdown.total)} €</p>
+        <p>Total excl tax : {displayPrice(total - VATBreakdown.total)} €</p>
+        <p>Total incl tax : {displayPrice(total)} €</p>
       </div>
     </div>
   );
