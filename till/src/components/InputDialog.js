@@ -1,8 +1,18 @@
 import "../styles/inputDialog.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function InputDialog(props) {
   const [value, setValue] = useState("");
+
+  useEffect(() => {
+    // we prefill the fields if it's an update, leave them empty if it's an addition
+    if (props?.options?.defaultValue === undefined) {
+      setValue("");
+    } else {
+      var propsValue = props?.options?.defaultValue;
+      setValue(propsValue);
+    }
+  }, [props?.options]);
 
   function close() {
     props.setExpanded(false);
@@ -30,6 +40,7 @@ function InputDialog(props) {
                 type={props.options.type}
                 placeholder={props.options.type === "number" ? "0" : "text"}
                 onChange={handleChange}
+                value={value}
                 required
               />
             </p>

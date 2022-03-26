@@ -14,6 +14,7 @@ function StaffConfig({
   const [inputDialog, updateInputDialog] = useState({
     open: false,
     name: "",
+    defaultValue: "",
     type: "text",
     text: "",
     callback: null,
@@ -23,6 +24,7 @@ function StaffConfig({
     updateInputDialog({
       open: bool,
       name: inputDialog.name,
+      defaultValue: inputDialog.defaultValue,
       type: inputDialog.type,
       text: inputDialog.text,
       callback: inputDialog.callback,
@@ -89,16 +91,18 @@ function StaffConfig({
     updateInputDialog({
       open: true,
       name: id,
+      defaultValue: name,
       type: "text",
       text: "Set new name for " + name + ":",
       callback: callbackUpdateStaffName,
     });
   }
 
-  function updateStaffColor(id, name) {
+  function updateStaffColor(id, name, color) {
     updateInputDialog({
       open: true,
       name: id,
+      defaultValue: color,
       type: "text",
       text: "Set new color for " + name + ":",
       callback: callbackUpdateStaffColor,
@@ -164,7 +168,7 @@ function StaffConfig({
                 </div>
                 <div
                   className={"config-btn " + darkmode}
-                  onClick={() => updateStaffColor(_id, name)}
+                  onClick={() => updateStaffColor(_id, name, color)}
                 >
                   Change Color
                 </div>
