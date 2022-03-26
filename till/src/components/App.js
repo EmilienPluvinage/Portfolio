@@ -154,6 +154,7 @@ function App() {
           darkmode={darkmode}
           EmployeeData={EmployeeData}
           ItemData={ItemData}
+          ContactData={ContactData}
         />
       )}
       <div id="main" className={darkmode}>
@@ -223,6 +224,7 @@ function App() {
             setReceiptsUpdates={setReceiptsUpdates}
             ItemData={ItemData}
             EmployeeData={EmployeeData}
+            ContactData={ContactData}
           />
         )}
       </div>

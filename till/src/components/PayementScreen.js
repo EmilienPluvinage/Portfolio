@@ -78,6 +78,7 @@ function PayementScreen(props) {
           eatIn={props.options.vat === "in"}
           ItemData={props.ItemData}
           vatTable={vatTable}
+          ContactData={props.ContactData}
         />
       </div>
     </div>

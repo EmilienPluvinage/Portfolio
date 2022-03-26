@@ -199,6 +199,7 @@ function Statistics(props) {
                 eatIn={Receipts.find((e) => e._id === displayedReceipt).eatIn}
                 ItemData={props.ItemData}
                 date={Receipts.find((e) => e._id === displayedReceipt).time}
+                ContactData={props.ContactData}
               />
 
               <DropdownMenu

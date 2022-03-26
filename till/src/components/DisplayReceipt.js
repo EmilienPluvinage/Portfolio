@@ -2,7 +2,15 @@ import "../styles/payementScreen.css";
 import { displayPercentage, displayPrice, displayDate } from "./Functions";
 import React from "react";
 
-function DisplayReceipt({ ticket, cart, eatIn, ItemData, date, vatTable }) {
+function DisplayReceipt({
+  ticket,
+  cart,
+  eatIn,
+  ItemData,
+  date,
+  vatTable,
+  ContactData,
+}) {
   const VATrates = getVATrates();
   const VAT = initVAT();
 
@@ -70,8 +78,10 @@ function DisplayReceipt({ ticket, cart, eatIn, ItemData, date, vatTable }) {
 
   return (
     <div className="print">
-      <p>Adress</p>
-      <p>Phone Number</p>
+      <div style={{ whiteSpace: "pre-line" }}>
+        <p>{ContactData[0].address}</p>
+      </div>
+      <p>{ContactData[0].phone}</p>
       <p>
         {date !== undefined
           ? displayDate(new Date(date))
