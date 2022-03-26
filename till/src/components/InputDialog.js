@@ -34,15 +34,26 @@ function InputDialog(props) {
           <label>
             <p>{props.options.text}</p>
             <p>
-              <input
-                id="number"
-                className="input"
-                type={props.options.type}
-                placeholder={props.options.type === "number" ? "0" : "text"}
-                onChange={handleChange}
-                value={value}
-                required
-              />
+              {props.options.type !== "textarea" ? (
+                <input
+                  id="number"
+                  className="input"
+                  type={props.options.type}
+                  placeholder={props.options.type === "number" ? "0" : "text"}
+                  onChange={handleChange}
+                  value={value}
+                  required
+                />
+              ) : (
+                <textarea
+                  id="number"
+                  className="input"
+                  placeholder="textarea"
+                  onChange={handleChange}
+                  value={value}
+                  required
+                ></textarea>
+              )}
             </p>
           </label>
           <p>
