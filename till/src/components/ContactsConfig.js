@@ -30,8 +30,50 @@ function ContactsConfig({
     });
   }
   function update(id, value, type) {
-    console.log(type + ": " + value);
+    updateInputDialog({
+      open: true,
+      name: id,
+      defaultValue: value,
+      type: type === "Phone" ? "text" : "textarea",
+      text: "Set new name for " + type + ":",
+      callback: type === "Phone" ? callbackPhone : callbackAddress,
+    });
   }
+
+  function updateContacts(id, phone, address) {
+    fetch("http://localhost:3001/Contact/" + id, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ address: address, phone: phone }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        setContactDataUpdates((prev) => prev + 1);
+        console.log("ContactDataUpdates++");
+        return response.json();
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }
+
+  function callbackPhone(id, value) {
+    var address = ContactData.find((e) => e._id === id).address;
+    updateContacts(id, value, address);
+  }
+
+  function callbackAddress(id, value) {
+    var phone = ContactData.find((e) => e._id === id).phone;
+    updateContacts(id, phone, value);
+  }
+
   return (
     configMenu === "Contact" && (
       <div id="items">
@@ -40,9 +82,14 @@ function ContactsConfig({
         </div>
 
         {ContactData.map(({ _id, address, phone }) => (
-          <div key={_id} className={"config-item " + darkmode}>
+          <div
+            key={_id}
+            className={"config-item " + darkmode}
+            style={{ width: "fit-content" }}
+          >
             <div className="config-item-content">
-              {address} <br /> {phone}
+              <div style={{ whiteSpace: "pre-line" }}>{address}</div>
+              {phone}
               <div className="config-buttons">
                 <div
                   className={"config-btn " + darkmode}
