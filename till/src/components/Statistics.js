@@ -39,7 +39,6 @@ function Statistics(props) {
       .then((text) => {
         style = '<div style="' + text + '">';
         var subject = "Receipt " + displayDate(new Date(receipt.time));
-        console.log(style + html + "</div>");
 
         fetch("http://localhost:3001/Email", {
           method: "POST",
