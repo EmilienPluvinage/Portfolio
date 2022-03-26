@@ -7,6 +7,7 @@ import StatisticsMenu from "./StatisticsMenu";
 import DropdownMenu from "./DropdownMenu";
 import StatisticsOfTheDay from "./StatisticsOfTheDay";
 import ReactDomServer from "react-dom/server";
+import raw from "../styles/EmailCSS.txt";
 
 function Statistics(props) {
   const [Receipts, updateReceipts] = useState([]);
@@ -32,31 +33,38 @@ function Statistics(props) {
         date={receipt.time}
       />
     );
-    var subject = "Receipt " + displayDate(new Date(receipt.time));
+    var style = "";
+    fetch(raw)
+      .then((r) => r.text())
+      .then((text) => {
+        style = '<div style="' + text + '">';
+        var subject = "Receipt " + displayDate(new Date(receipt.time));
+        console.log(style + html + "</div>");
 
-    fetch("http://localhost:3001/Email", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        address: "emilien.pluvinage@gmail.com",
-        subject: subject,
-        textcontent: "text",
-        htmlcontent: html,
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(
-            `This is an HTTP error: The status is ${response.status}`
-          );
-        }
-        return response.json();
-      })
-      .catch((err) => {
-        console.log(err.message);
+        fetch("http://localhost:3001/Email", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            address: "emilien.pluvinage@gmail.com",
+            subject: subject,
+            textcontent: "text",
+            htmlcontent: style + html + "</div>",
+          }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(
+                `This is an HTTP error: The status is ${response.status}`
+              );
+            }
+            return response.json();
+          })
+          .catch((err) => {
+            console.log(err.message);
+          });
       });
   }
 
