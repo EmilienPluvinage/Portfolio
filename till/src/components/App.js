@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import React from "react";
 import { queryData } from "./Functions";
 import Statistics from "./Statistics";
+import ContactsConfig from "./ContactsConfig";
 
 function App() {
   const [cart, updateCart] = useState(0);
@@ -25,6 +26,8 @@ function App() {
   const [staffUpdates, setStaffUpdates] = useState(0);
   const [itemUpdates, setItemUpdates] = useState(0);
   const [receiptsUpdates, setReceiptsUpdates] = useState(0);
+  const [ContactData, setContactData] = useState([]);
+  const [contactDataUpdates, setContactDataUpdates] = useState(0);
   const [ItemData, setItemData] = useState([]);
   const [user, updateUser] = useState([]);
   // user is defaulted to the first person in EmployeeData
@@ -44,6 +47,11 @@ function App() {
     console.log("QUERY DATA ITEMS");
     queryData(initItemData, "Items");
   }, [itemUpdates]);
+
+  useEffect(() => {
+    console.log("QUERY DATA CONTACT");
+    queryData(initContactData, "Contact");
+  }, [contactDataUpdates]);
 
   useEffect(() => {
     fetch(`http://localhost:3001/Items`, {
@@ -74,6 +82,10 @@ function App() {
   function initItemData(data) {
     setItemData(data);
     updateMenu(data[0].category);
+  }
+
+  function initContactData(data) {
+    setContactData(data);
   }
 
   function putOnHold() {
@@ -195,6 +207,13 @@ function App() {
               ItemData={ItemData}
               itemUpdates={itemUpdates}
               setItemUpdates={setItemUpdates}
+            />
+            <ContactsConfig
+              configMenu={configMenu}
+              darkmode={darkmode}
+              ContactData={ContactData}
+              contactDataUpdates={contactDataUpdates}
+              setContactDataUpdates={setContactDataUpdates}
             />
           </div>
         )}
