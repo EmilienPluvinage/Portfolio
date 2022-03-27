@@ -1,0 +1,5 @@
+/* Dropdown Content (Hidden by Default) */
+.color-picker {
+  position: absolute;
+  z-index: 1;
+}

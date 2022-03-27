@@ -2,6 +2,8 @@ import "../styles/item.css";
 import "../styles/config.css";
 import { useState } from "react";
 import InputDialog from "./InputDialog";
+import ColorPicker from "./ColorPicker";
+import { useEffect } from "react";
 
 function StaffConfig({
   configMenu,
@@ -19,6 +21,30 @@ function StaffConfig({
     text: "",
     callback: null,
   });
+
+  const [showColorPicker, setShowColorPicker] = useState([]);
+
+  useEffect(() => {
+    // inits showColorPicker to false for everyone
+    var temp = EmployeeData.map((e) => ({ id: e._id, show: false }));
+    setShowColorPicker(temp);
+  }, [EmployeeData]);
+
+  function CloseColorPicker() {
+    var temp = showColorPicker.map((e) => {
+      return { id: e.id, show: false };
+    });
+    setShowColorPicker(temp);
+  }
+
+  function OpenColorPicker(id) {
+    var temp = showColorPicker.map((e) => {
+      return { id: e.id, show: false };
+    });
+    var index = temp.findIndex((e) => e.id === id);
+    temp[index].show = true;
+    setShowColorPicker(temp);
+  }
 
   function setExpanded(bool) {
     updateInputDialog({
@@ -98,17 +124,6 @@ function StaffConfig({
     });
   }
 
-  function updateStaffColor(id, name, color) {
-    updateInputDialog({
-      open: true,
-      name: id,
-      defaultValue: color,
-      type: "text",
-      text: "Set new color for " + name + ":",
-      callback: callbackUpdateStaffColor,
-    });
-  }
-
   function callbackUpdateStaffName(id, newName) {
     var color = EmployeeData.find((e) => e._id === id)?.color;
     updateStaff(id, newName, color);
@@ -142,6 +157,7 @@ function StaffConfig({
         console.log(err.message);
       });
   }
+
   return (
     configMenu === "Staff" && (
       <div id="items">
@@ -168,10 +184,23 @@ function StaffConfig({
                 </div>
                 <div
                   className={"config-btn " + darkmode}
-                  onClick={() => updateStaffColor(_id, name, color)}
+                  onClick={() =>
+                    showColorPicker.find((e) => e.id === _id)?.show
+                      ? CloseColorPicker()
+                      : OpenColorPicker(_id)
+                  }
                 >
                   Change Color
                 </div>
+                {showColorPicker.find((e) => e.id === _id)?.show ? (
+                  <div>
+                    <ColorPicker
+                      initColor={color}
+                      callback={callbackUpdateStaffColor}
+                      id={_id}
+                    />
+                  </div>
+                ) : null}
                 <div
                   className={"config-btn " + darkmode}
                   onClick={() =>
