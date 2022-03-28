@@ -40,6 +40,7 @@ function CategoryConfig({
     updateInputDialog({
       open: true,
       name: e,
+      defaultValue: e,
       type: "text",
       text: "Update the name of category " + e + ".",
       callback: callbackUpdate,
