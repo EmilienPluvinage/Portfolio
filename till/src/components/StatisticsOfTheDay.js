@@ -72,35 +72,52 @@ function StatisticsOfTheDay({
   }
 
   return (
-    <div className="print" style={{ textAlign: "center" }}>
-      <p>{displayDate(today, true)}</p>
+    <div className="statistics-breakdown">
+      <p style={{ textAlign: "center", textDecoration: "underline" }}>
+        SUMMARY {displayDate(today, true)}
+      </p>
       <p>Breakdown by Payement Method</p>
       <div>
-        {totalByPayementMethods.map((e) => (
-          <p key={"breakdownbymethod" + e.method}>
-            {e.method} : {displayPrice(e.total)} €
-          </p>
-        ))}
+        <p>
+          {totalByPayementMethods.map((e) => (
+            <span key={"breakdownbymethod" + e.method}>
+              {e.method} : {displayPrice(e.total)} €
+              <br />
+            </span>
+          ))}
+        </p>
       </div>
       <p>Breakdown by Staff Member</p>
       <div>
-        {totalByStaffMembers.map((e) => (
-          <p key={"breakdownbystaff" + e.user}>
-            {e.user} : {displayPrice(e.total)} €
-          </p>
-        ))}
+        <p>
+          {totalByStaffMembers.map((e) => (
+            <span key={"breakdownbystaff" + e.user}>
+              {e.user} : {displayPrice(e.total)} €
+              <br />
+            </span>
+          ))}
+        </p>
       </div>
       <p>Breakdown by VAT Rates</p>
       <div>
-        {VATBreakdown.breakdown.map((e) => (
-          <p key={"breakdownbyvat" + e.rate}>
-            {displayPercentage(e.rate / 1000)} : {displayPrice(e.total)} €
-          </p>
-        ))}
+        <p>
+          {VATBreakdown.breakdown.map((e) => (
+            <span key={"breakdownbyvat" + e.rate}>
+              {displayPercentage(e.rate / 1000)} : {displayPrice(e.total)} €
+              <br />
+            </span>
+          ))}
 
-        <p>Total VAT : {displayPrice(VATBreakdown.total)} €</p>
-        <p>Total excl tax : {displayPrice(total - VATBreakdown.total)} €</p>
-        <p>Total incl tax : {displayPrice(total)} €</p>
+          <span>
+            Total VAT : {displayPrice(VATBreakdown.total)} €<br />
+          </span>
+          <span>
+            Total excl tax : {displayPrice(total - VATBreakdown.total)} €<br />
+          </span>
+          <span>
+            Total incl tax : {displayPrice(total)} €<br />
+          </span>
+        </p>
       </div>
     </div>
   );

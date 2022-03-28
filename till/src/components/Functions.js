@@ -36,6 +36,17 @@ export function displayDate(today, dateOnly) {
   return date;
 }
 
+export function displayTime(today) {
+  var date =
+    today.getHours() +
+    ":" +
+    (today.getMinutes().toString().length === 1
+      ? "0" + today.getMinutes()
+      : today.getMinutes());
+
+  return date;
+}
+
 export const datesAreOnSameDay = (first, second) =>
   first.getFullYear() === second.getFullYear() &&
   first.getMonth() === second.getMonth() &&

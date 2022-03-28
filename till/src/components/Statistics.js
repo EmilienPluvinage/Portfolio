@@ -1,5 +1,10 @@
 import "../styles/statistics.css";
-import { displayPrice, displayDate, datesAreOnSameDay } from "./Functions";
+import {
+  displayPrice,
+  displayDate,
+  datesAreOnSameDay,
+  displayTime,
+} from "./Functions";
 import { useState, useEffect } from "react";
 import { queryData } from "./Functions";
 import DisplayReceipt from "./DisplayReceipt";
@@ -8,6 +13,8 @@ import DropdownMenu from "./DropdownMenu";
 import StatisticsOfTheDay from "./StatisticsOfTheDay";
 import ReactDomServer from "react-dom/server";
 import raw from "../styles/EmailCSS.txt";
+import close from "../img/close.png";
+import closeHover from "../img/close-hover.png";
 
 function Statistics(props) {
   const [Receipts, updateReceipts] = useState([]);
@@ -155,7 +162,7 @@ function Statistics(props) {
                 }
                 style={
                   payementMethod === method
-                    ? { backgroundColor: "rgb(220, 245, 255)" }
+                    ? { backgroundColor: "rgb(240, 240, 240)" }
                     : null
                 }
               >
@@ -170,7 +177,7 @@ function Statistics(props) {
                 <div
                   style={
                     _id === displayedReceipt
-                      ? { backgroundColor: "rgb(220, 245, 255)" }
+                      ? { backgroundColor: "rgb(240, 240, 240)" }
                       : null
                   }
                   key={_id}
@@ -181,23 +188,44 @@ function Statistics(props) {
                       : setDisplayedReceipt(0)
                   }
                 >
-                  {displayPrice(total)} € {user} {displayDate(new Date(time))}{" "}
-                  {payement.toUpperCase()}
+                  <div className="receipts-parts">
+                    <div className="individual-other">
+                      {displayDate(new Date(time), true)} <br />
+                      {displayTime(new Date(time))}
+                    </div>
+                  </div>
+
+                  <div className="receipts-parts">
+                    <div className="individual-total">
+                      {displayPrice(total)} €
+                    </div>
+                  </div>
+
+                  <div className="receipts-parts">
+                    <div className="individual-other">
+                      {user}
+                      <br />
+                      {payement}
+                    </div>
+                  </div>
                 </div>
               )
           )}
         </div>
 
         {displayedReceipt !== 0 && (
-          <div className="statistics-third" style={{ flex: 0 }}>
-            <div
-              onClick={() => setDisplayedReceipt(0)}
-              className="closing-btn"
-              style={{ margin: "10px" }}
-            >
-              X
+          <div className="statistics-third" style={{ width: "max-content" }}>
+            <div onClick={() => setDisplayedReceipt(0)} className="closing-btn">
+              <img
+                src={close}
+                alt="close"
+                height="12px"
+                onMouseOver={(e) => (e.currentTarget.src = closeHover)}
+                onMouseOut={(e) => (e.currentTarget.src = close)}
+              />
             </div>
             <div style={{ textAlign: "center" }}>
+              {console.log(Receipts.find((e) => e._id === displayedReceipt))}
               <DisplayReceipt
                 ticket={JSON.parse(
                   Receipts.find((e) => e._id === displayedReceipt).ticket
@@ -206,6 +234,7 @@ function Statistics(props) {
                 eatIn={Receipts.find((e) => e._id === displayedReceipt).eatIn}
                 ItemData={props.ItemData}
                 date={Receipts.find((e) => e._id === displayedReceipt).time}
+                vatTable={undefined}
                 ContactData={props.ContactData}
               />
 
@@ -236,20 +265,16 @@ function Statistics(props) {
 
         {salesDetails && (
           <div className="statistics-third">
-            <div className="print">
-              <div
-                onClick={() => setSalesDetails(false)}
-                className="closing-btn"
-              >
-                X
-              </div>
-              <p style={{ textAlign: "center" }}>{displayDate(today, true)}</p>
-              <p style={{ textAlign: "center" }}>List of the items sold</p>
+            <div className="statistics-breakdown">
+              <p style={{ textAlign: "center", textDecoration: "underline" }}>
+                items sold on the {displayDate(today, true)}
+              </p>
               <div>
                 {ListOfItemsSold().map(({ name, quantity }) => (
-                  <p key={"sold " + name}>
-                    {quantity} x {name}
-                  </p>
+                  <span key={"sold " + name}>
+                    {quantity} {name}
+                    <br />
+                  </span>
                 ))}
               </div>
             </div>

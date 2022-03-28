@@ -21,7 +21,7 @@
 }
 
 #statistics-header .stats-menu .action:hover {
-  color: skyblue;
+  color: rgb(240, 240, 240);
   cursor: pointer;
 }
 .stats-menu img {
@@ -36,6 +36,7 @@
   flex: 1;
   display: flex;
   flex-direction: row;
+  overflow: hidden;
 }
 .statistics-third {
   margin: 5px;
@@ -43,17 +44,49 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0px 8px 8px 0px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  border: 1px solid rgb(230, 230, 230);
+  overflow-y: scroll;
+  height: auto;
+  width: fit-content;
 }
 .individual-receipts {
   margin: 2px;
   padding: 5px;
-  border: 1px solid lightgrey;
+  border: 1px solid lightgray;
+  border-radius: 5px;
   transition: background-color 200ms;
+  display: flex;
+  flex-direction: row;
+}
+
+.receipts-parts {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.individual-total {
+  font-size: 1.7em;
+  width: max-content;
+  margin: auto;
+  height: fit-content;
+  width: max-content;
+  padding: 5px;
+}
+.individual-other {
+  font-size: 0.8em;
+  text-align: center;
+  text-transform: capitalize;
+  margin: auto;
+  height: fit-content;
+  width: max-content;
+  padding: 5px;
 }
 
 .individual-receipts:hover {
   cursor: pointer;
-  background-color: rgb(220, 245, 255);
+  background-color: rgb(240, 240, 240);
   transition: background-color 200ms;
 }
 
@@ -64,12 +97,14 @@
 
 .payement-filter {
   flex: 1;
-  padding: 10px;
+  padding: 5px;
   border: 1px solid grey;
+  border-radius: 5px;
   color: grey;
   margin: 2px;
   text-align: center;
   text-transform: uppercase;
+  font-size: 0.8em;
 }
 
 .payement-filter:hover {
@@ -79,22 +114,29 @@
 
 .stats-menu span:hover {
   cursor: pointer;
-  color: skyblue;
+  color: rgb(50, 50, 50);
 }
 
-.closing-btn {
+.closing-btn img {
   border: 1px solid lightgray;
   color: lightgray;
   width: min-content;
-  padding: 8px;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 12pt;
   text-align: center;
   border-radius: 5px;
-  text-transform: uppercase;
+  padding: 5px;
+  margin: 5px;
+  float: left;
 }
-.closing-btn:hover {
+.closing-btn img:hover {
   cursor: pointer;
   border-color: gray;
   color: gray;
+}
+
+.statistics-breakdown {
+  padding: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-size: 0.9em;
+  text-transform: capitalize;
 }
