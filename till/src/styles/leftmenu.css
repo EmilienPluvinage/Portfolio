@@ -9,22 +9,27 @@
   padding-left: 10px;
 }
 
-#left-menu ul {
+#left-menu .ul {
   padding: 20px;
-  list-style-type: none;
 }
 
-#left-menu li {
+#left-menu .li {
   letter-spacing: 0.1em;
   font-size: 0.8em;
-  margin-top: 20px;
-  transition: color 0.4s;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  text-align: left;
 }
 
-#left-menu li:hover {
+#left-menu .li div {
+  margin-right: auto;
+  padding: 2px;
+}
+
+#left-menu .li:hover {
   color: skyblue;
   cursor: pointer;
-  transition: color 0.4s;
 }
 .receipt-summary {
   display: flex;

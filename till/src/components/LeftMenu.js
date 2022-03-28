@@ -2,6 +2,13 @@ import "../styles/leftmenu.css";
 import "../styles/switch.css";
 import OnHold from "./OnHold";
 import Staff from "./Staff";
+import PageLink from "./PageLink";
+import configLogo from "../img/config-logo.png";
+import configLogoHover from "../img/config-logo-hover.png";
+import statsLogo from "../img/stats-logo.png";
+import statsLogoHover from "../img/stats-logo-hover.png";
+import screenLogo from "../img/screen-logo.png";
+import screenLogoHover from "../img/screen-logo-hover.png";
 
 function LeftMenu({
   cart,
@@ -29,26 +36,29 @@ function LeftMenu({
   return (
     <nav id="left-menu">
       <h2>Till App</h2>
-      <ul>
-        <li
-          style={page === "Configuration" ? { color: "skyblue" } : null}
-          onClick={() => setPage("Configuration")}
-        >
-          Configuration
-        </li>
-        <li
-          style={page === "Statistics" ? { color: "skyblue" } : null}
-          onClick={() => setPage("Statistics")}
-        >
-          Statistics
-        </li>
-        <li
-          style={page === "Main" ? { color: "skyblue" } : null}
-          onClick={() => setPage("Main")}
-        >
-          Main Screen
-        </li>
-      </ul>
+      <div className="ul">
+        <PageLink
+          link="Main"
+          page={page}
+          setPage={setPage}
+          logo={screenLogo}
+          logoHover={screenLogoHover}
+        />
+        <PageLink
+          link="Statistics"
+          page={page}
+          setPage={setPage}
+          logo={statsLogo}
+          logoHover={statsLogoHover}
+        />
+        <PageLink
+          link="Configuration"
+          page={page}
+          setPage={setPage}
+          logo={configLogo}
+          logoHover={configLogoHover}
+        />
+      </div>
       <OnHold
         cart={cart}
         updateCart={updateCart}
