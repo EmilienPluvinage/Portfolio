@@ -31,6 +31,7 @@ function Statistics(props) {
         eatIn={receipt.eatIn}
         ItemData={props.ItemData}
         date={receipt.time}
+        ContactData={props.ContactData}
       />
     );
     var style = "";
