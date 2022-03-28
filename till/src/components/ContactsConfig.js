@@ -42,14 +42,20 @@ function ContactsConfig({
   }
 
   function updateContacts(id, phone, address) {
-    fetch("http://localhost:3001/Contact/" + id, {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ address: address, phone: phone }),
-    })
+    fetch(
+      "http://localhost:3001/Contact/" +
+        id +
+        "/" +
+        process.env.REACT_APP_API_KEY,
+      {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ address: address, phone: phone }),
+      }
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error(

@@ -41,7 +41,7 @@ function Statistics(props) {
         style = '<div style="' + text + '">';
         var subject = "Receipt " + displayDate(new Date(receipt.time));
 
-        fetch("http://localhost:3001/Email", {
+        fetch("http://localhost:3001/Email/" + process.env.REACT_APP_API_KEY, {
           method: "POST",
           headers: {
             Accept: "application/json",
@@ -101,14 +101,20 @@ function Statistics(props) {
   }
 
   function dropdownCallback(value, param1, param2) {
-    fetch("http://localhost:3001/Receipt/Payement/" + param1, {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ payement: value }),
-    })
+    fetch(
+      "http://localhost:3001/Receipt/Payement/" +
+        param1 +
+        "/" +
+        process.env.REACT_APP_API_KEY,
+      {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ payement: value }),
+      }
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error(

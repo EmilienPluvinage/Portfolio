@@ -59,14 +59,17 @@ function StaffConfig({
   }
 
   function updateStaff(id, name, color) {
-    fetch("http://localhost:3001/Staff/" + id, {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: name, color: color }),
-    })
+    fetch(
+      "http://localhost:3001/Staff/" + id + "/" + process.env.REACT_APP_API_KEY,
+      {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: name, color: color }),
+      }
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error(
@@ -82,12 +85,15 @@ function StaffConfig({
   }
 
   function deleteStaff(id) {
-    fetch("http://localhost:3001/Staff-" + id, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-      },
-    })
+    fetch(
+      "http://localhost:3001/Staff-" + id + "/" + process.env.REACT_APP_API_KEY,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        },
+      }
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error(
@@ -134,7 +140,7 @@ function StaffConfig({
   }
 
   function addStaffMember(v, name) {
-    fetch("http://localhost:3001/Staff", {
+    fetch("http://localhost:3001/Staff/" + process.env.REACT_APP_API_KEY, {
       method: "POST",
       headers: {
         Accept: "application/json",

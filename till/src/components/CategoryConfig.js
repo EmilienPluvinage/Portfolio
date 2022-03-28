@@ -48,14 +48,17 @@ function CategoryConfig({
   }
 
   function callbackUpdate(e, name) {
-    fetch("http://localhost:3001/Category/Update", {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ oldCategory: e, newCategory: name }),
-    })
+    fetch(
+      "http://localhost:3001/Category/Update/" + process.env.REACT_APP_API_KEY,
+      {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ oldCategory: e, newCategory: name }),
+      }
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error(

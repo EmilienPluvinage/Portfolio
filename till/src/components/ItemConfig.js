@@ -49,12 +49,15 @@ function ItemConfig({
   }
 
   function deleteItem(id) {
-    fetch("http://localhost:3001/Item-" + id, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-      },
-    })
+    fetch(
+      "http://localhost:3001/Item-" + id + "/" + process.env.REACT_APP_API_KEY,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        },
+      }
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error(
@@ -88,7 +91,7 @@ function ItemConfig({
       method = "PUT";
       link = "http://localhost:3001/Item/" + id;
     }
-    fetch(link, {
+    fetch(link + "/" + process.env.REACT_APP_API_KEY, {
       method: method,
       headers: {
         Accept: "application/json",

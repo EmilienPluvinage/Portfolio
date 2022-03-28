@@ -42,12 +42,15 @@ export const datesAreOnSameDay = (first, second) =>
   first.getDate() === second.getDate();
 
 export function queryData(callback, collection) {
-  fetch("http://localhost:3001/" + collection, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-    },
-  })
+  fetch(
+    "http://localhost:3001/" + collection + "/" + process.env.REACT_APP_API_KEY,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+      },
+    }
+  )
     .then((response) => {
       if (!response.ok) {
         throw new Error(

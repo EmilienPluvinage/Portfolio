@@ -21,7 +21,7 @@ function PayementScreen(props) {
       user: props.user,
       vatTable: JSON.stringify(vatTable.current),
     };
-    fetch("http://localhost:3001/Receipt", {
+    fetch("http://localhost:3001/Receipt/" + process.env.REACT_APP_API_KEY, {
       method: "POST",
       headers: {
         Accept: "application/json",
