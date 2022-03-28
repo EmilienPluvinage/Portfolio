@@ -12,6 +12,7 @@ function StaffConfig({
   EmployeeData,
   staffUpdates,
   setStaffUpdates,
+  demoMode,
 }) {
   const [inputDialog, updateInputDialog] = useState({
     open: false,
@@ -164,7 +165,12 @@ function StaffConfig({
         <div style={{ textAlign: "center" }}>
           <InputDialog options={inputDialog} setExpanded={setExpanded} />
         </div>
-        <div className={"item " + darkmode} onClick={() => addStaff()}>
+        <div
+          className={"item " + darkmode}
+          onClick={() =>
+            demoMode ? alert("Disabled in demonstration mode.") : addStaff()
+          }
+        >
           <div className="item-content add-new">+</div>
         </div>
         {EmployeeData.map(({ _id, name, color }) => (
@@ -204,7 +210,9 @@ function StaffConfig({
                 <div
                   className={"config-btn " + darkmode}
                   onClick={() =>
-                    window.confirm("Are you sure?") && deleteStaff(_id)
+                    demoMode
+                      ? alert("Disabled in demonstration mode.")
+                      : window.confirm("Are you sure?") && deleteStaff(_id)
                   }
                 >
                   Delete

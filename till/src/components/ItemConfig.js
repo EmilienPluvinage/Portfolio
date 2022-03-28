@@ -11,6 +11,7 @@ function ItemConfig({
   EmployeeData,
   setItemUpdates,
   ItemData,
+  demoMode,
 }) {
   const [itemDialog, updateItemDialog] = useState({
     open: false,
@@ -141,7 +142,9 @@ function ItemConfig({
                 <div
                   className={"config-btn " + darkmode}
                   onClick={() =>
-                    window.confirm("Are you sure?") && deleteItem(_id)
+                    demoMode
+                      ? alert("Disabled in demonstration mode.")
+                      : window.confirm("Are you sure?") && deleteItem(_id)
                   }
                 >
                   Delete

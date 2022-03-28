@@ -9,6 +9,7 @@ function ContactsConfig({
   ContactData,
   contactDataUpdates,
   setContactDataUpdates,
+  demoMode,
 }) {
   const [inputDialog, updateInputDialog] = useState({
     open: false,
@@ -93,13 +94,21 @@ function ContactsConfig({
               <div className="config-buttons">
                 <div
                   className={"config-btn " + darkmode}
-                  onClick={() => update(_id, address, "Address")}
+                  onClick={() =>
+                    demoMode
+                      ? alert("Disabled in demonstration mode.")
+                      : update(_id, address, "Address")
+                  }
                 >
                   Change Address
                 </div>
                 <div
                   className={"config-btn " + darkmode}
-                  onClick={() => update(_id, phone, "Phone")}
+                  onClick={() =>
+                    demoMode
+                      ? alert("Disabled in demonstration mode.")
+                      : update(_id, phone, "Phone")
+                  }
                 >
                   Change Phone Number
                 </div>

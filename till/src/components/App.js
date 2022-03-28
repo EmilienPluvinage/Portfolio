@@ -6,12 +6,12 @@ import ConfigurationMenu from "./ConfigurationMenu";
 import StaffConfig from "./StaffConfig";
 import ItemConfig from "./ItemConfig";
 import CategoryConfig from "./CategoryConfig";
+import ContactsConfig from "./ContactsConfig";
 import ItemsList from "./ItemsList";
 import { useState, useEffect } from "react";
 import React from "react";
 import { queryData } from "./Functions";
 import Statistics from "./Statistics";
-import ContactsConfig from "./ContactsConfig";
 
 function App() {
   const [cart, updateCart] = useState(0);
@@ -30,26 +30,22 @@ function App() {
   const [contactDataUpdates, setContactDataUpdates] = useState(0);
   const [ItemData, setItemData] = useState([]);
   const [user, updateUser] = useState([]);
-  // user is defaulted to the first person in EmployeeData
   const [page, setPage] = useState("Main");
-  // page can take 3 Values so far: Main, Configuration, Statistics.
+  const demoMode = true;
 
   useEffect(() => {
     localStorage.setItem("darkmode", darkmode);
   }, [darkmode]);
 
   useEffect(() => {
-    console.log("QUERY DATA STAFF");
     queryData(initEmployeeData, "Staff");
   }, [staffUpdates]);
 
   useEffect(() => {
-    console.log("QUERY DATA ITEMS");
     queryData(initItemData, "Items");
   }, [itemUpdates]);
 
   useEffect(() => {
-    console.log("QUERY DATA CONTACT");
     queryData(initContactData, "Contact");
   }, [contactDataUpdates]);
 
@@ -171,6 +167,7 @@ function App() {
               EmployeeData={EmployeeData}
               staffUpdates={staffUpdates}
               setStaffUpdates={setStaffUpdates}
+              demoMode={demoMode}
             />
             <ItemConfig
               configMenu={configMenu}
@@ -179,6 +176,7 @@ function App() {
               EmployeeData={EmployeeData}
               setItemUpdates={setItemUpdates}
               ItemData={ItemData}
+              demoMode={demoMode}
             />
             <CategoryConfig
               configMenu={configMenu}
@@ -187,6 +185,7 @@ function App() {
               ItemData={ItemData}
               itemUpdates={itemUpdates}
               setItemUpdates={setItemUpdates}
+              demoMode={demoMode}
             />
             <ContactsConfig
               configMenu={configMenu}
@@ -194,6 +193,7 @@ function App() {
               ContactData={ContactData}
               contactDataUpdates={contactDataUpdates}
               setContactDataUpdates={setContactDataUpdates}
+              demoMode={demoMode}
             />
           </div>
         )}

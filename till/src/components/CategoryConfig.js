@@ -10,6 +10,7 @@ function CategoryConfig({
   ItemData,
   itemUpdates,
   setItemUpdates,
+  demoMode,
 }) {
   const categories = ItemData.reduce(
     (acc, item) =>
@@ -83,7 +84,11 @@ function CategoryConfig({
               <div className="config-buttons">
                 <div
                   className={"config-btn " + darkmode}
-                  onClick={() => updateCategoryName(e)}
+                  onClick={() =>
+                    demoMode
+                      ? alert("Disabled in demonstration mode.")
+                      : updateCategoryName(e)
+                  }
                 >
                   Update
                 </div>
