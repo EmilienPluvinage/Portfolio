@@ -214,7 +214,11 @@ function Statistics(props) {
               />
 
               <div
-                onClick={() => sendEmail(displayedReceipt)}
+                onClick={() =>
+                  props.demoMode
+                    ? alert("Disabled in demonstration mode.")
+                    : sendEmail(displayedReceipt)
+                }
                 className="payement-filter"
               >
                 Send Receipt By E-Mail

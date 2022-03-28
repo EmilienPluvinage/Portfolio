@@ -204,6 +204,7 @@ function App() {
             ItemData={ItemData}
             EmployeeData={EmployeeData}
             ContactData={ContactData}
+            demoMode={demoMode}
           />
         )}
       </div>
