@@ -24,6 +24,10 @@
   color: skyblue;
   cursor: pointer;
 }
+.stats-menu img {
+  cursor: pointer;
+  margin-right: 10px;
+}
 
 #statistics-header .stats-menu .dropdown-content {
   color: black;

@@ -1,6 +1,10 @@
 import "../styles/statistics.css";
 import { displayDate } from "./Functions";
 import DropdownMenu from "./DropdownMenu";
+import salesLogo from "../img/sales-logo.png";
+import salesLogoHover from "../img/sales-logo-hover.png";
+import dateLogo from "../img/date-logo.png";
+import dateLogoHover from "../img/date-logo-hover.png";
 
 function StatisticsMenu({
   today,
@@ -37,14 +41,27 @@ function StatisticsMenu({
           callback={dropdownCallback}
           param1={""}
           param2={""}
-          text={displayDate(today, true)}
+          text={
+            <img
+              src={dateLogo}
+              onMouseOver={(e) => (e.currentTarget.src = dateLogoHover)}
+              onMouseOut={(e) => (e.currentTarget.src = dateLogo)}
+              alt="Date"
+              height="60px"
+            />
+          }
           darkmode={darkmode}
         />
       </div>
       <div className="stats-menu">
-        <span onClick={() => setSalesDetails((current) => !current)}>
-          Sales details
-        </span>
+        <img
+          src={salesLogo}
+          onMouseOver={(e) => (e.currentTarget.src = salesLogoHover)}
+          onMouseOut={(e) => (e.currentTarget.src = salesLogo)}
+          onClick={() => setSalesDetails((current) => !current)}
+          alt="Détails des Ventes"
+          height="50px"
+        />
       </div>
     </div>
   );
