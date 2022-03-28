@@ -31,7 +31,7 @@ function App() {
   const [ItemData, setItemData] = useState([]);
   const [user, updateUser] = useState([]);
   const [page, setPage] = useState("Main");
-  const demoMode = true;
+  const demoMode = false;
 
   useEffect(() => {
     localStorage.setItem("darkmode", darkmode);
