@@ -47,7 +47,6 @@ function CategoryConfig({
   }
 
   function callbackUpdate(e, name) {
-    console.log("change category " + e + " in " + name);
     fetch("http://localhost:3001/Category/Update", {
       method: "PUT",
       headers: {
@@ -63,7 +62,6 @@ function CategoryConfig({
           );
         }
         setItemUpdates((prevItemUpdates) => prevItemUpdates + 1);
-        console.log("itemUpdates++");
         return response.json();
       })
       .catch((err) => {

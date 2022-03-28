@@ -57,7 +57,6 @@ function ContactsConfig({
           );
         }
         setContactDataUpdates((prev) => prev + 1);
-        console.log("ContactDataUpdates++");
         return response.json();
       })
       .catch((err) => {

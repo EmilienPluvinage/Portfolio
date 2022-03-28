@@ -62,7 +62,6 @@ function ItemConfig({
           );
         }
         setItemUpdates((prevItemUpdates) => prevItemUpdates + 1);
-        console.log("itemUpdates++");
         return response.json();
       })
       .catch((err) => {
@@ -104,7 +103,6 @@ function ItemConfig({
           );
         }
         setItemUpdates((prevItemUpdates) => prevItemUpdates + 1);
-        console.log("itemUpdates++");
         return response.json();
       })
       .catch((err) => {

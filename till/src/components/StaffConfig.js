@@ -74,7 +74,6 @@ function StaffConfig({
           );
         }
         setStaffUpdates((prevStaffUpdates) => prevStaffUpdates + 1);
-        console.log("staffUpdates++");
         return response.json();
       })
       .catch((err) => {
@@ -96,7 +95,6 @@ function StaffConfig({
           );
         }
         setStaffUpdates((prevStaffUpdates) => prevStaffUpdates + 1);
-        console.log("staffUpdates++");
         return response.json();
       })
       .catch((err) => {
@@ -151,7 +149,6 @@ function StaffConfig({
           );
         }
         setStaffUpdates((prevStaffUpdates) => prevStaffUpdates + 1);
-        console.log("staffUpdates++");
         return response.json();
       })
       .catch((err) => {
