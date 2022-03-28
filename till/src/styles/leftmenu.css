@@ -9,6 +9,16 @@
   padding-left: 10px;
 }
 
+#title {
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+}
+
+#title img,
+#title h2 {
+  margin: auto;
+}
 #left-menu .ul {
   padding: 20px;
 }

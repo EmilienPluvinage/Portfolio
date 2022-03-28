@@ -35,7 +35,15 @@ function LeftMenu({
   }
   return (
     <nav id="left-menu">
-      <h2>Till App</h2>
+      <div id="title">
+        <img
+          width={"50px"}
+          height={"50px"}
+          src={screenLogoHover}
+          alt={"Logo"}
+        />
+        <h2>Till App</h2>
+      </div>
       <div className="ul">
         <PageLink
           link="Main"
