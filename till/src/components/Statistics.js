@@ -236,7 +236,6 @@ function Statistics(props) {
               />
             </div>
             <div style={{ textAlign: "center" }}>
-              {console.log(Receipts.find((e) => e._id === displayedReceipt))}
               <DisplayReceipt
                 ticket={JSON.parse(
                   Receipts.find((e) => e._id === displayedReceipt).ticket
