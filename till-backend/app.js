@@ -225,7 +225,7 @@ app.put("/Receipt/Payement/:id/:key", (req, res, next) => {
 //   DELETE   //
 ////////////////
 
-app.delete("/Staff-:id", (req, res, next) => {
+app.delete("/Staff-:id/:key", (req, res, next) => {
   if (req.params.key === process.env.API_KEY) {
     User.deleteOne({ _id: req.params.id })
       .then(() => res.status(200).json({ message: "User removed !" }))
@@ -235,10 +235,10 @@ app.delete("/Staff-:id", (req, res, next) => {
   }
 });
 
-app.delete("/Item-:id", (req, res, next) => {
+app.delete("/Item-:id/:key", (req, res, next) => {
   if (req.params.key === process.env.API_KEY) {
     Item.deleteOne({ _id: req.params.id })
-      .then(() => res.status(200).json({ message: "User removed !" }))
+      .then(() => res.status(200).json({ message: "Item removed !" }))
       .catch((error) => res.status(400).json({ error }));
   } else {
     res.status(400).json({ error: "Incorrect Key" });
