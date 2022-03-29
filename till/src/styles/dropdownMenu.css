@@ -9,6 +9,7 @@
   overflow: hidden;
   transition: all 500ms;
   transition-property: color, background-color, box-shadow, border-color;
+  text-transform: capitalize;
 }
 
 .dropdown-content.dark {
