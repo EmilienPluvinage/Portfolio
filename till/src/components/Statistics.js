@@ -149,21 +149,21 @@ function Statistics(props) {
         setSalesDetails={setSalesDetails}
       />
       <div id="statistics-main">
-        <div className="statistics-third">
+        <div className={"statistics-third " + props.darkmode}>
           <div className="payement-filters">
             {payementMethods.map((method) => (
               <div
-                className="payement-filter"
+                className={
+                  "payement-filter " +
+                  props.darkmode +
+                  " " +
+                  (payementMethod === method ? "clicked" : "")
+                }
                 key={method}
                 onClick={() =>
                   payementMethod !== method
                     ? setPayementMethod(method)
                     : setPayementMethod("")
-                }
-                style={
-                  payementMethod === method
-                    ? { backgroundColor: "rgb(240, 240, 240)" }
-                    : null
                 }
               >
                 {method}
@@ -175,13 +175,13 @@ function Statistics(props) {
               (payement === payementMethod || payementMethod === "") &&
               datesAreOnSameDay(new Date(today), new Date(time)) && (
                 <div
-                  style={
-                    _id === displayedReceipt
-                      ? { backgroundColor: "rgb(240, 240, 240)" }
-                      : null
-                  }
                   key={_id}
-                  className="individual-receipts"
+                  className={
+                    "individual-receipts " +
+                    props.darkmode +
+                    " " +
+                    (_id === displayedReceipt ? "clicked" : "")
+                  }
                   onClick={() =>
                     displayedReceipt !== _id
                       ? setDisplayedReceipt(_id)
@@ -214,7 +214,10 @@ function Statistics(props) {
         </div>
 
         {displayedReceipt !== 0 && (
-          <div className="statistics-third" style={{ width: "max-content" }}>
+          <div
+            className={"statistics-third " + props.darkmode}
+            style={{ width: "max-content" }}
+          >
             <div onClick={() => setDisplayedReceipt(0)} className="closing-btn">
               <img
                 src={close}
@@ -244,7 +247,9 @@ function Statistics(props) {
                 name={displayedReceipt}
                 param2={""}
                 text={
-                  <div className="payement-filter">Change Payement Method</div>
+                  <div className={"payement-filter " + props.darkmode}>
+                    Change Payement Method
+                  </div>
                 }
                 darkmode={props.darkmode}
               />
@@ -255,7 +260,7 @@ function Statistics(props) {
                     ? alert("Disabled in demonstration mode.")
                     : sendEmail(displayedReceipt)
                 }
-                className="payement-filter"
+                className={"payement-filter " + props.darkmode}
               >
                 Send Receipt By E-Mail
               </div>
@@ -264,7 +269,7 @@ function Statistics(props) {
         )}
 
         {salesDetails && (
-          <div className="statistics-third">
+          <div className={"statistics-third " + props.darkmode}>
             <div className="statistics-breakdown">
               <p style={{ textAlign: "center", textDecoration: "underline" }}>
                 items sold on the {displayDate(today, true)}
@@ -281,7 +286,7 @@ function Statistics(props) {
           </div>
         )}
 
-        <div className="statistics-third">
+        <div className={"statistics-third " + props.darkmode}>
           <StatisticsOfTheDay
             darkmode={props.darkmode}
             today={today}

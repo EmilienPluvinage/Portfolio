@@ -32,6 +32,10 @@
 #statistics-header .stats-menu .dropdown-content {
   color: black;
 }
+
+#statistics-header .stats-menu .dropdown-content.dark {
+  color: white;
+}
 #statistics-main {
   flex: 1;
   display: flex;
@@ -49,7 +53,18 @@
   overflow-y: scroll;
   height: auto;
   width: fit-content;
+  transition: all 200ms;
+  transition-property: color, background-color, border;
 }
+
+.statistics-third.dark {
+  background-color: rgb(46, 46, 46);
+  color: white;
+  border: 1px solid grey;
+  transition: all 200ms;
+  transition-property: color, background-color, border;
+}
+
 .individual-receipts {
   margin: 2px;
   padding: 5px;
@@ -58,6 +73,21 @@
   transition: background-color 200ms;
   display: flex;
   flex-direction: row;
+}
+
+.individual-receipts.dark {
+  border: 1px solid grey;
+  background-color: rgb(60, 60, 60);
+  transition: all 200ms;
+  transition-property: color, background-color, border;
+}
+
+.individual-receipts.clicked {
+  background-color: rgb(240, 240, 240);
+}
+
+.individual-receipts.dark.clicked {
+  background-color: rgb(100, 100, 100);
 }
 
 .receipts-parts {
@@ -90,6 +120,11 @@
   transition: background-color 200ms;
 }
 
+.individual-receipts.dark:hover {
+  background-color: rgb(100, 100, 100);
+  transition: background-color 200ms;
+}
+
 .payement-filters {
   display: flex;
   flex-direction: row;
@@ -106,15 +141,31 @@
   text-transform: uppercase;
   font-size: 0.8em;
 }
+.payement-filter.clicked {
+  background-color: rgb(240, 240, 240);
+  transition: background-color 200ms;
+}
+
+.payement-filter.dark {
+  color: rgb(240, 240, 240);
+  border: 1px solid rgb(240, 240, 240);
+}
+
+.payement-filter.clicked.dark {
+  background-color: rgb(100, 100, 100);
+  transition: background-color 200ms;
+}
 
 .payement-filter:hover {
   cursor: pointer;
   background-color: rgb(240, 240, 240);
+  transition: background-color 200ms;
 }
 
-.stats-menu span:hover {
-  cursor: pointer;
-  color: rgb(50, 50, 50);
+.payement-filter.dark:hover {
+  background-color: rgb(100, 100, 100);
+  transition: all 200ms;
+  transition-property: color, background-color, border;
 }
 
 .closing-btn img {

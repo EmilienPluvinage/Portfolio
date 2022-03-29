@@ -205,6 +205,7 @@ function App() {
             EmployeeData={EmployeeData}
             ContactData={ContactData}
             demoMode={demoMode}
+            darkmode={darkmode}
           />
         )}
       </div>

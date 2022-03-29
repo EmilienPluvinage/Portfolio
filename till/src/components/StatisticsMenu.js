@@ -35,7 +35,7 @@ function StatisticsMenu({
   }
   return (
     <div id="statistics-header">
-      <div className="stats-menu">
+      <div className={"stats-menu " + darkmode}>
         <DropdownMenu
           options={options}
           callback={dropdownCallback}
@@ -53,7 +53,7 @@ function StatisticsMenu({
           darkmode={darkmode}
         />
       </div>
-      <div className="stats-menu">
+      <div className={"stats-menu " + darkmode}>
         <img
           src={salesLogo}
           onMouseOver={(e) => (e.currentTarget.src = salesLogoHover)}
