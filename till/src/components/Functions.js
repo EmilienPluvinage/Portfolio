@@ -54,7 +54,11 @@ export const datesAreOnSameDay = (first, second) =>
 
 export function queryData(callback, collection) {
   fetch(
-    "http://localhost:3001/" + collection + "/" + process.env.REACT_APP_API_KEY,
+    process.env.REACT_APP_API_DOMAIN +
+      "/" +
+      collection +
+      "/" +
+      process.env.REACT_APP_API_KEY,
     {
       method: "GET",
       headers: {

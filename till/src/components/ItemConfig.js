@@ -50,7 +50,11 @@ function ItemConfig({
 
   function deleteItem(id) {
     fetch(
-      "http://localhost:3001/Item-" + id + "/" + process.env.REACT_APP_API_KEY,
+      process.env.REACT_APP_API_DOMAIN +
+        "/Item-" +
+        id +
+        "/" +
+        process.env.REACT_APP_API_KEY,
       {
         method: "DELETE",
         headers: {
@@ -86,10 +90,10 @@ function ItemConfig({
     var link = "";
     if (id === 0) {
       method = "POST";
-      link = "http://localhost:3001/Item";
+      link = process.env.REACT_APP_API_DOMAIN + "/Item";
     } else {
       method = "PUT";
-      link = "http://localhost:3001/Item/" + id;
+      link = process.env.REACT_APP_API_DOMAIN + "/Item/" + id;
     }
     fetch(link + "/" + process.env.REACT_APP_API_KEY, {
       method: method,

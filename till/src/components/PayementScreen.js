@@ -21,14 +21,19 @@ function PayementScreen(props) {
       user: props.user,
       vatTable: JSON.stringify(vatTable.current),
     };
-    fetch("http://localhost:3001/Receipt/" + process.env.REACT_APP_API_KEY, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(ReceiptToStore),
-    })
+    fetch(
+      process.env.REACT_APP_API_DOMAIN +
+        "/Receipt/" +
+        process.env.REACT_APP_API_KEY,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(ReceiptToStore),
+      }
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error(

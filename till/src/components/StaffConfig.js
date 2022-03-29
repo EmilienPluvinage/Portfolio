@@ -60,7 +60,11 @@ function StaffConfig({
 
   function updateStaff(id, name, color) {
     fetch(
-      "http://localhost:3001/Staff/" + id + "/" + process.env.REACT_APP_API_KEY,
+      process.env.REACT_APP_API_DOMAIN +
+        "/Staff/" +
+        id +
+        "/" +
+        process.env.REACT_APP_API_KEY,
       {
         method: "PUT",
         headers: {
@@ -86,7 +90,11 @@ function StaffConfig({
 
   function deleteStaff(id) {
     fetch(
-      "http://localhost:3001/Staff-" + id + "/" + process.env.REACT_APP_API_KEY,
+      process.env.REACT_APP_API_DOMAIN +
+        "/Staff-" +
+        id +
+        "/" +
+        process.env.REACT_APP_API_KEY,
       {
         method: "DELETE",
         headers: {
@@ -140,14 +148,19 @@ function StaffConfig({
   }
 
   function addStaffMember(v, name) {
-    fetch("http://localhost:3001/Staff/" + process.env.REACT_APP_API_KEY, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: name, color: "skyblue" }),
-    })
+    fetch(
+      process.env.REACT_APP_API_DOMAIN +
+        "/Staff/" +
+        process.env.REACT_APP_API_KEY,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: name, color: "skyblue" }),
+      }
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error(
