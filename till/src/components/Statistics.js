@@ -105,6 +105,8 @@ function Statistics(props) {
 
   function initReceiptsData(data) {
     updateReceipts(data.reverse());
+    // set today at the last date for which there was receipts
+    setToday(new Date(data[0]?.time));
   }
 
   function dropdownCallback(value, param1, param2) {
