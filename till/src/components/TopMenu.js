@@ -10,13 +10,17 @@ function TopMenu({ menu, updateMenu, darkmode, ItemData }) {
     <nav className="top-menu">
       {categories.map((cat) =>
         cat === menu ? (
-          <span className="clicked" key={cat}>
+          <div className="clicked btn" key={cat}>
             {cat}
-          </span>
+          </div>
         ) : (
-          <span className={darkmode} onClick={() => updateMenu(cat)} key={cat}>
+          <div
+            className={"btn " + darkmode}
+            onClick={() => updateMenu(cat)}
+            key={cat}
+          >
             {cat}
-          </span>
+          </div>
         )
       )}
     </nav>

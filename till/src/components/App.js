@@ -31,7 +31,7 @@ function App() {
   const [ItemData, setItemData] = useState([]);
   const [user, updateUser] = useState([]);
   const [page, setPage] = useState("Main");
-  const demoMode = false;
+  const demoMode = process.env.REACT_APP_DEMO_MODE;
 
   useEffect(() => {
     localStorage.setItem("darkmode", darkmode);
@@ -115,26 +115,10 @@ function App() {
         page={page}
         setPage={setPage}
       />
-      {page === "Main" && (
-        <Receipt
-          cart={cart}
-          updateCart={updateCart}
-          ticket={ticket}
-          updateTicket={updateTicket}
-          ticketsOnHold={ticketsOnHold}
-          updateTicketsOnHold={updateTicketsOnHold}
-          putOnHold={putOnHold}
-          totalOfReceipt={totalOfReceipt}
-          user={user}
-          darkmode={darkmode}
-          EmployeeData={EmployeeData}
-          ItemData={ItemData}
-          ContactData={ContactData}
-        />
-      )}
+
       <div id="main" className={darkmode}>
         {page === "Main" && (
-          <div>
+          <div style={{ height: "100%" }}>
             <TopMenu
               menu={menu}
               updateMenu={updateMenu}
@@ -154,7 +138,7 @@ function App() {
           </div>
         )}
         {page === "Configuration" && (
-          <div>
+          <div id="config">
             <ConfigurationMenu
               configMenu={configMenu}
               updateConfigMenu={updateConfigMenu}
@@ -209,6 +193,23 @@ function App() {
           />
         )}
       </div>
+      {page === "Main" && (
+        <Receipt
+          cart={cart}
+          updateCart={updateCart}
+          ticket={ticket}
+          updateTicket={updateTicket}
+          ticketsOnHold={ticketsOnHold}
+          updateTicketsOnHold={updateTicketsOnHold}
+          putOnHold={putOnHold}
+          totalOfReceipt={totalOfReceipt}
+          user={user}
+          darkmode={darkmode}
+          EmployeeData={EmployeeData}
+          ItemData={ItemData}
+          ContactData={ContactData}
+        />
+      )}
     </div>
   );
 }

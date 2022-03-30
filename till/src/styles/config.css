@@ -3,8 +3,10 @@
   border: 1px solid lightgray;
   border-radius: 10px;
   padding: 5px;
-  width: 100px;
+  min-width: 100px;
+  width: fit-content;
   min-height: 100px;
+  height: max-content;
   margin: 5px;
   text-align: center;
   vertical-align: middle;
@@ -34,9 +36,12 @@
   flex-direction: column;
 }
 .config-btn {
-  flex: 1;
+  width: fit-content;
   padding: 5px;
-  margin: 5px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 5px;
+  margin-bottom: 5px;
   background-color: lightgrey;
   transition: background-color 0.4s;
   border-radius: 5px;
@@ -50,4 +55,8 @@
   cursor: pointer;
   background-color: slategray;
   transition: background-color 0.4s;
+}
+
+.category-title {
+  border: 1px solid red;
 }

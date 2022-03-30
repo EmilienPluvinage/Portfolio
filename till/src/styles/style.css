@@ -9,6 +9,14 @@ body,
     sans-serif;
 }
 
+#config {
+  height: 100%;
+}
+
+#parent {
+  display: flex;
+  flex-direction: row;
+}
 h2 {
   font-size: 2rem;
   padding-left: 20px;
@@ -18,10 +26,15 @@ h2 {
 
 #main {
   letter-spacing: 0.05rem;
-  min-width: 65%;
+  flex: 1;
   height: 100%;
+  width: min-content;
   background-color: rgb(240, 240, 240);
   transition: background-color 500ms;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  overflow-y: scroll;
 }
 
 #main.dark {

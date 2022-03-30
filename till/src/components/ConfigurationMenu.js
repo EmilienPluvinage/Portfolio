@@ -6,17 +6,17 @@ function ConfigurationMenu({ configMenu, updateConfigMenu, darkmode }) {
     <nav className="top-menu">
       {categories.map((cat) =>
         cat === configMenu ? (
-          <span className="clicked" key={cat}>
+          <div className="clicked btn" key={cat}>
             {cat}
-          </span>
+          </div>
         ) : (
-          <span
-            className={darkmode}
+          <div
+            className={"btn " + darkmode}
             onClick={() => updateConfigMenu(cat)}
             key={cat}
           >
             {cat}
-          </span>
+          </div>
         )
       )}
     </nav>

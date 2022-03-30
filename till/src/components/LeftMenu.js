@@ -34,7 +34,7 @@ function LeftMenu({
     }
   }
   return (
-    <nav id="left-menu">
+    <div id="left-menu">
       <div id="title">
         <img
           width={"50px"}
@@ -89,7 +89,7 @@ function LeftMenu({
           onChange={setDarkMode}
         />
       </div>
-    </nav>
+    </div>
   );
 }
 

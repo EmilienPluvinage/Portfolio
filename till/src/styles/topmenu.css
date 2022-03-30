@@ -1,11 +1,14 @@
 .top-menu {
   text-align: left;
-  padding: 20px;
-  padding-top: 5px;
+  border: 1px solid green;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
-.top-menu span {
-  float: left;
+.top-menu .btn {
   margin: 5px;
+  margin-right: 10px;
   background-color: rgb(46, 46, 46);
   color: white;
   padding: 10px;
@@ -13,17 +16,17 @@
   font-size: 0.9em;
   transition: background-color 0.4s;
 }
-.top-menu span.dark {
+.top-menu .btn.dark {
   background-color: grey;
   color: white;
 }
 
-.top-menu span:hover {
+.top-menu .btn:hover {
   background-color: slategray;
   cursor: pointer;
   transition: background-color 0.4s;
 }
 
-.top-menu span.clicked {
+.top-menu .btn.clicked {
   background-color: skyblue;
 }
