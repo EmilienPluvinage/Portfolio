@@ -155,14 +155,16 @@ function DisplayReceipt({
               {displayPrice(calculateVAT(ticket))} €
             </td>
           </tr>
-          {VAT.map(({ rate, total }) => (
-            <tr key={rate}>
-              <td style={{ textAlign: "left" }}>
-                {displayPercentage(rate / 1000)}
-              </td>
-              <td style={{ textAlign: "right" }}>{displayPrice(total)} €</td>
-            </tr>
-          ))}
+          {VAT.sort((a, b) => (a.rate < b.rate ? -1 : 1)).map(
+            ({ rate, total }) => (
+              <tr key={rate}>
+                <td style={{ textAlign: "left" }}>
+                  {displayPercentage(rate / 1000)}
+                </td>
+                <td style={{ textAlign: "right" }}>{displayPrice(total)} €</td>
+              </tr>
+            )
+          )}
         </tbody>
       </table>
       <p>Thanks for your visit.</p>
