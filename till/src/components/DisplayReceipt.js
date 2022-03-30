@@ -111,7 +111,11 @@ function DisplayReceipt({
         <div className="receipt-left-side">
           {ticket.map(({ name, quantity, discount }) => (
             <span key={"displayreceiptleft" + name}>
-              <span key={name + "left"}>
+              <span
+                key={name + "left"}
+                style={{ whiteSpace: "nowrap", overflow: "hidden" }}
+              >
+                {" "}
                 {quantity} x {name}
                 <br />
               </span>
@@ -131,7 +135,10 @@ function DisplayReceipt({
         <div className="receipt-right-side">
           {ticket.map(({ name, price, quantity, discount }) => (
             <span key={"displayreceiptright" + name}>
-              <span key={name + "right"}>
+              <span
+                key={name + "right"}
+                style={{ whiteSpace: "nowrap", overflow: "hidden" }}
+              >
                 {displayPrice(Math.round(price * quantity * discount)) + " € "}
                 <br />
               </span>
