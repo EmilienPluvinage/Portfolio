@@ -77,6 +77,8 @@ function DisplayReceipt({
       );
     }
 
+    vatTable.current = newVAT;
+
     return total;
   }
 
