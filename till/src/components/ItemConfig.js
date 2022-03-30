@@ -20,6 +20,12 @@ function ItemConfig({
     callback: null,
   });
 
+  const categories = ItemData.reduce(
+    (acc, item) =>
+      acc.includes(item.category) ? acc : acc.concat(item.category),
+    []
+  );
+
   function setExpandedNewItem(bool) {
     updateItemDialog({
       open: bool,
@@ -116,51 +122,57 @@ function ItemConfig({
         console.log(err.message);
       });
   }
-
   return (
     configMenu === "Items" && (
-      <div id="items">
-        <div id="items-config">
-          <div style={{ textAlign: "center" }}>
-            <NewItemDialog
-              options={itemDialog}
-              setExpanded={setExpandedNewItem}
-              ItemData={ItemData}
-            />
-          </div>
-          <div className="category-title">category 1</div>
-          <div className={"item " + darkmode} onClick={() => addItem()}>
-            <div className="item-content add-new">+</div>
-          </div>
-          {ItemData.map(({ name, category, price, _id }) => (
-            <div key={_id} className={"config-item " + darkmode}>
-              <div className="config-item-content">
-                {category} <br />
-                {name}
-                <div className="price">{displayPrice(price)} €</div>
-                <div className="config-buttons">
-                  <div
-                    className={"config-btn " + darkmode}
-                    onClick={() => updateItem(_id)}
-                  >
-                    Update
-                  </div>
-
-                  <div
-                    className={"config-btn " + darkmode}
-                    onClick={() =>
-                      demoMode
-                        ? alert("Disabled in demonstration mode.")
-                        : window.confirm("Are you sure?") && deleteItem(_id)
-                    }
-                  >
-                    Delete
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+      <div>
+        <div style={{ textAlign: "center" }}>
+          <NewItemDialog
+            options={itemDialog}
+            setExpanded={setExpandedNewItem}
+            ItemData={ItemData}
+          />
         </div>
+        <div className={"item " + darkmode} onClick={() => addItem()}>
+          <div className="item-content add-new">+</div>
+        </div>
+        {categories.map((CurrentCategory) => (
+          <div key={CurrentCategory}>
+            <div className="category-title">{CurrentCategory}</div>
+            <div className="items-config">
+              {ItemData.map(
+                ({ name, category, price, _id }) =>
+                  category === CurrentCategory && (
+                    <div key={_id} className={"config-item " + darkmode}>
+                      <div className="config-item-content">
+                        {name}
+                        <div className="price">{displayPrice(price)} €</div>
+                        <div className="config-buttons">
+                          <div
+                            className={"config-btn " + darkmode}
+                            onClick={() => updateItem(_id)}
+                          >
+                            Update
+                          </div>
+
+                          <div
+                            className={"config-btn " + darkmode}
+                            onClick={() =>
+                              demoMode
+                                ? alert("Disabled in demonstration mode.")
+                                : window.confirm("Are you sure?") &&
+                                  deleteItem(_id)
+                            }
+                          >
+                            Delete
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+              )}
+            </div>
+          </div>
+        ))}
       </div>
     )
   );
