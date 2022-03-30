@@ -30,7 +30,7 @@ mongoose
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => console.log("Connexion à MongoDB réussie !"))
-  .catch(() => console.log("Connexion à MongoDB échouée !"));
+  .catch((error) => console.log("Connexion à MongoDB échouée !" + error));
 
 app.use(express.json());
 
@@ -118,6 +118,14 @@ app.post("/Email/:key", (req, res, next) => {
 //////////////
 //   READ   //
 //////////////
+
+// TEST SERVER
+
+app.get("/Test", (req, res, next) => {
+  console.log("Get request received");
+  res.end("Hello World\n");
+});
+//
 
 app.get("/Staff/:key", (req, res, next) => {
   if (req.params.key === process.env.API_KEY) {
