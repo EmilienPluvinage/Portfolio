@@ -70,7 +70,7 @@ function ItemsList(props) {
             >
               <div className="item-content">
                 {name}
-                <div className="price">{displayPrice(price)} €</div>
+                <div className="price">{displayPrice(Math.round(price))} €</div>
               </div>
             </div>
           )

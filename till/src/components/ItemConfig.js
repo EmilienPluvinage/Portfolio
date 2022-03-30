@@ -145,7 +145,9 @@ function ItemConfig({
                     <div key={_id} className={"config-item " + darkmode}>
                       <div className="config-item-content">
                         {name}
-                        <div className="price">{displayPrice(price)} €</div>
+                        <div className="price">
+                          {displayPrice(Math.round(price))} €
+                        </div>
                         <div className="config-buttons">
                           <div
                             className={"config-btn " + darkmode}
