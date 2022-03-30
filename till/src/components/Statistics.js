@@ -244,7 +244,9 @@ function Statistics(props) {
                 eatIn={Receipts.find((e) => e._id === displayedReceipt).eatIn}
                 ItemData={props.ItemData}
                 date={Receipts.find((e) => e._id === displayedReceipt).time}
-                vatTable={undefined}
+                vatTable={JSON.parse(
+                  Receipts.find((e) => e._id === displayedReceipt).vatTable
+                )}
                 ContactData={props.ContactData}
               />
 

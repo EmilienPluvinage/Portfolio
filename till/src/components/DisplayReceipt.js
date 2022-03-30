@@ -11,8 +11,11 @@ function DisplayReceipt({
   vatTable,
   ContactData,
 }) {
-  const VATrates = getVATrates();
-  const VAT = initVAT();
+  const origin = vatTable?.current === undefined ? "Statistics" : "Main Screen";
+
+  const VATrates =
+    origin === "Main Screen" ? getVATrates() : vatTable.map((a) => a.rate);
+  const VAT = origin === "Main Screen" ? initVAT() : vatTable;
 
   function getVATrates() {
     // lists all the possible VAT rates based on the items data list
@@ -37,11 +40,13 @@ function DisplayReceipt({
     return initVAT;
   }
 
-  function calculateVAT(receipt) {
+  function calculateVATfromMainScreen(receipt) {
     // we loop on the ticket, calculate the VAT for each item add populate the array VAT adequately
     // then returns the total
+
     var total = 0;
     var newVAT = [];
+
     var x = function (vat) {
       return newVAT.findIndex((e) => e.rate === vat);
     };
@@ -70,9 +75,20 @@ function DisplayReceipt({
           1000
       );
     }
-    if (vatTable !== undefined) {
-      vatTable.current = newVAT;
+
+    return total;
+  }
+
+  function calculateVATfromStatistics() {
+    // we loop on the ticket, calculate the VAT for each item add populate the array VAT adequately
+    // then returns the total
+
+    var total = 0;
+    var newVAT = VAT;
+    for (let i = 0; i < newVAT.length; i++) {
+      total += newVAT[i].total;
     }
+
     return total;
   }
 
@@ -152,7 +168,12 @@ function DisplayReceipt({
           <tr>
             <td style={{ textAlign: "left" }}>TOTAL</td>
             <td style={{ textAlign: "right" }}>
-              {displayPrice(calculateVAT(ticket))} €
+              {displayPrice(
+                origin === "Main Screen"
+                  ? calculateVATfromMainScreen(ticket)
+                  : calculateVATfromStatistics()
+              )}{" "}
+              €
             </td>
           </tr>
           {VAT.sort((a, b) => (a.rate < b.rate ? -1 : 1)).map(
