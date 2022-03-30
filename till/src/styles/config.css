@@ -66,8 +66,10 @@
 
 .category-title {
   font-size: 1.5em;
-  padding: 10px;
+  padding-top: 10px;
+  margin: 10px;
   color: rgb(50, 50, 50);
+  border-top: 1px solid lightgray;
 }
 .break {
   flex-basis: 100%;
