@@ -56,13 +56,14 @@ function DisplayReceipt({
     }
     for (let i = 0; i < receipt.length; i++) {
       var vat;
-      if (receipt[i].name !== "Vente Directe") {
+      if (receipt[i].name !== "Manual Input") {
         vat =
           eatIn === true
             ? ItemData.find((e) => e.name === receipt[i].name).vatIn
             : ItemData.find((e) => e.name === receipt[i].name).vatOut;
       } else {
-        vat = eatIn === true ? 0.1 : 0.055;
+        // really not clean way of doing it ... but for now it'll do
+        vat = eatIn === true ? 100 : 55;
       }
       total =
         Math.round(total) +

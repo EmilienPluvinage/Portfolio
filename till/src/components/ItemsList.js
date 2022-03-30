@@ -50,7 +50,8 @@ function ItemsList(props) {
   function ClickOnDirectSale() {
     updateInputDialog({
       open: true,
-      name: "Vente Directe",
+      name: "Manual Input",
+      type: "number",
       text: "Please enter a price in cents :",
       callback: directSale,
     });
@@ -80,7 +81,7 @@ function ItemsList(props) {
         className={"item " + props.darkmode}
         onClick={ClickOnDirectSale}
       >
-        <div className="item-content">Vente Directe</div>
+        <div className="item-content">Manual Input</div>
       </div>
     </div>
   );
