@@ -23,8 +23,6 @@ function LeftMenu({
   darkmode,
   updateDarkMode,
   EmployeeData,
-  page,
-  setPage,
 }) {
   function setDarkMode(event) {
     if (event.target.checked) {
@@ -45,24 +43,15 @@ function LeftMenu({
         <h2>Till App</h2>
       </div>
       <div className="ul">
-        <PageLink
-          link="Main"
-          page={page}
-          setPage={setPage}
-          logo={screenLogo}
-          logoHover={screenLogoHover}
-        />
+        <PageLink link="/" logo={screenLogo} logoHover={screenLogoHover} />
+
         <PageLink
           link="Statistics"
-          page={page}
-          setPage={setPage}
           logo={statsLogo}
           logoHover={statsLogoHover}
         />
         <PageLink
           link="Configuration"
-          page={page}
-          setPage={setPage}
           logo={configLogo}
           logoHover={configLogoHover}
         />

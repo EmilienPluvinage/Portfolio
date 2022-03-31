@@ -43,6 +43,7 @@
   color: skyblue;
   cursor: pointer;
 }
+
 .receipt-summary {
   display: flex;
   flex-direction: row;
@@ -89,4 +90,12 @@
   padding-bottom: 3px;
   width: 5%;
   float: left;
+}
+
+.text-link {
+  color: inherit;
+  text-decoration: inherit;
+  display: flex;
+  flex-direction: row;
+  text-align: left;
 }

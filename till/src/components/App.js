@@ -25,7 +25,6 @@ function App() {
   const [contactDataUpdates, setContactDataUpdates] = useState(0);
   const [ItemData, setItemData] = useState([]);
   const [user, updateUser] = useState([]);
-  const [page, setPage] = useState("Main");
   const demoMode = process.env.REACT_APP_DEMO_MODE;
 
   useEffect(() => {
@@ -94,23 +93,22 @@ function App() {
 
   return (
     <div id="parent">
-      <LeftMenu
-        cart={cart}
-        updateCart={updateCart}
-        ticket={ticket}
-        updateTicket={updateTicket}
-        ticketsOnHold={ticketsOnHold}
-        updateTicketsOnHold={updateTicketsOnHold}
-        putOnHold={putOnHold}
-        user={user}
-        updateUser={updateUser}
-        darkmode={darkmode}
-        updateDarkMode={updateDarkMode}
-        EmployeeData={EmployeeData}
-        page={page}
-        setPage={setPage}
-      />
       <Router>
+        <LeftMenu
+          cart={cart}
+          updateCart={updateCart}
+          ticket={ticket}
+          updateTicket={updateTicket}
+          ticketsOnHold={ticketsOnHold}
+          updateTicketsOnHold={updateTicketsOnHold}
+          putOnHold={putOnHold}
+          user={user}
+          updateUser={updateUser}
+          darkmode={darkmode}
+          updateDarkMode={updateDarkMode}
+          EmployeeData={EmployeeData}
+        />
+
         <Routes>
           <Route
             exact
@@ -136,7 +134,7 @@ function App() {
             }
           ></Route>
           <Route
-            path="/config"
+            path="/Configuration"
             element={
               <Config
                 configMenu={configMenu}

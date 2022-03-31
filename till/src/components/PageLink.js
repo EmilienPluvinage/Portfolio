@@ -1,31 +1,42 @@
 import "../styles/leftmenu.css";
 import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 
-function PageLink({ link, page, setPage, logo, logoHover }) {
+function PageLink({ link, logo, logoHover }) {
   const [LogoSrc, setLogoSrc] = useState("");
+  const location = useLocation().pathname;
 
   useEffect(() => {
-    if (page === link) {
+    if (location === link || location === "/" + link) {
       setLogoSrc(logoHover);
     } else {
       setLogoSrc(logo);
     }
-  }, [page, link, logo, logoHover]);
+  }, [location, link, logo, logoHover]);
 
   return (
     <div
       className="li"
-      style={page === link ? { color: "skyblue" } : null}
-      onClick={() => setPage(link)}
+      style={
+        location === link || location === "/" + link
+          ? { color: "skyblue" }
+          : null
+      }
       onMouseOver={() => setLogoSrc(logoHover)}
       onMouseOut={() =>
-        page !== link ? setLogoSrc(logo) : setLogoSrc(logoHover)
+        location !== link && location !== "/" + link
+          ? setLogoSrc(logo)
+          : setLogoSrc(logoHover)
       }
     >
-      <div>
-        <img width={"20px"} height={"20px"} src={LogoSrc} alt={link} />
-      </div>
-      <div style={{ flex: 1, paddingTop: "5px" }}>{link}</div>
+      <Link to={link} className="text-link">
+        <div>
+          <img width={"20px"} height={"20px"} src={LogoSrc} alt={link} />
+        </div>
+        <div style={{ flex: 1, paddingTop: "5px" }}>
+          {link === "/" ? "Main" : link}
+        </div>
+      </Link>
     </div>
   );
 }
