@@ -1,17 +1,12 @@
 import "../styles/style.css";
 import LeftMenu from "./LeftMenu";
-import Receipt from "./Receipt";
-import TopMenu from "./TopMenu";
-import ConfigurationMenu from "./ConfigurationMenu";
-import StaffConfig from "./StaffConfig";
-import ItemConfig from "./ItemConfig";
-import CategoryConfig from "./CategoryConfig";
-import ContactsConfig from "./ContactsConfig";
-import ItemsList from "./ItemsList";
+import Config from "./Config";
+import Main from "./Main";
 import { useState, useEffect } from "react";
 import React from "react";
 import { queryData } from "./Functions";
 import Statistics from "./Statistics";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   const [cart, updateCart] = useState(0);
@@ -115,101 +110,67 @@ function App() {
         page={page}
         setPage={setPage}
       />
-
-      <div id="main" className={darkmode}>
-        {page === "Main" && (
-          <div style={{ height: "100%" }}>
-            <TopMenu
-              menu={menu}
-              updateMenu={updateMenu}
-              darkmode={darkmode}
-              ItemData={ItemData}
-            />
-            <ItemsList
-              category={menu}
-              cart={cart}
-              updateCart={updateCart}
-              ticket={ticket}
-              updateTicket={updateTicket}
-              totalOfReceipt={totalOfReceipt}
-              darkmode={darkmode}
-              ItemData={ItemData}
-            />
-          </div>
-        )}
-        {page === "Configuration" && (
-          <div id="config">
-            <ConfigurationMenu
-              configMenu={configMenu}
-              updateConfigMenu={updateConfigMenu}
-              darkmode={darkmode}
-            />
-            <StaffConfig
-              configMenu={configMenu}
-              updateConfigMenu={updateConfigMenu}
-              darkmode={darkmode}
-              EmployeeData={EmployeeData}
-              staffUpdates={staffUpdates}
-              setStaffUpdates={setStaffUpdates}
-              demoMode={demoMode}
-            />
-            <ItemConfig
-              configMenu={configMenu}
-              updateConfigMenu={updateConfigMenu}
-              darkmode={darkmode}
-              EmployeeData={EmployeeData}
-              setItemUpdates={setItemUpdates}
-              ItemData={ItemData}
-              demoMode={demoMode}
-            />
-            <CategoryConfig
-              configMenu={configMenu}
-              updateConfigMenu={updateConfigMenu}
-              darkmode={darkmode}
-              ItemData={ItemData}
-              itemUpdates={itemUpdates}
-              setItemUpdates={setItemUpdates}
-              demoMode={demoMode}
-            />
-            <ContactsConfig
-              configMenu={configMenu}
-              darkmode={darkmode}
-              ContactData={ContactData}
-              contactDataUpdates={contactDataUpdates}
-              setContactDataUpdates={setContactDataUpdates}
-              demoMode={demoMode}
-            />
-          </div>
-        )}
-        {page === "Statistics" && (
-          <Statistics
-            receiptsUpdates={receiptsUpdates}
-            setReceiptsUpdates={setReceiptsUpdates}
-            ItemData={ItemData}
-            EmployeeData={EmployeeData}
-            ContactData={ContactData}
-            demoMode={demoMode}
-            darkmode={darkmode}
-          />
-        )}
-      </div>
-      {page === "Main" && (
-        <Receipt
-          cart={cart}
-          updateCart={updateCart}
-          ticket={ticket}
-          updateTicket={updateTicket}
-          ticketsOnHold={ticketsOnHold}
-          updateTicketsOnHold={updateTicketsOnHold}
-          putOnHold={putOnHold}
-          totalOfReceipt={totalOfReceipt}
-          user={user}
-          darkmode={darkmode}
-          EmployeeData={EmployeeData}
-          ItemData={ItemData}
-          ContactData={ContactData}
-        />
-      )}
+      <Router>
+        <Routes>
+          <Route
+            exact
+            path="/"
+            element={
+              <Main
+                menu={menu}
+                updateMenu={updateMenu}
+                darkmode={darkmode}
+                ItemData={ItemData}
+                cart={cart}
+                updateCart={updateCart}
+                ticket={ticket}
+                updateTicket={updateTicket}
+                totalOfReceipt={totalOfReceipt}
+                ticketsOnHold={ticketsOnHold}
+                updateTicketsOnHold={updateTicketsOnHold}
+                putOnHold={putOnHold}
+                user={user}
+                EmployeeData={EmployeeData}
+                ContactData={ContactData}
+              />
+            }
+          ></Route>
+          <Route
+            path="/config"
+            element={
+              <Config
+                configMenu={configMenu}
+                updateConfigMenu={updateConfigMenu}
+                darkmode={darkmode}
+                EmployeeData={EmployeeData}
+                staffUpdates={staffUpdates}
+                setStaffUpdates={setStaffUpdates}
+                demoMode={demoMode}
+                setItemUpdates={setItemUpdates}
+                ItemData={ItemData}
+                itemUpdates={itemUpdates}
+                ContactData={ContactData}
+                contactDataUpdates={contactDataUpdates}
+                setContactDataUpdates={setContactDataUpdates}
+              />
+            }
+          ></Route>
+          <Route
+            path="/statistics"
+            element={
+              <Statistics
+                receiptsUpdates={receiptsUpdates}
+                setReceiptsUpdates={setReceiptsUpdates}
+                ItemData={ItemData}
+                EmployeeData={EmployeeData}
+                ContactData={ContactData}
+                demoMode={demoMode}
+                darkmode={darkmode}
+              />
+            }
+          ></Route>
+        </Routes>
+      </Router>
     </div>
   );
 }

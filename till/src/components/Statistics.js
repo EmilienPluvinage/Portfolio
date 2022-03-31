@@ -147,163 +147,168 @@ function Statistics(props) {
   }
 
   return (
-    <div id="statistics">
-      <StatisticsMenu
-        today={today}
-        setToday={setToday}
-        darkmode={props.darkmode}
-        Receipts={Receipts}
-        salesDetails={salesDetails}
-        setSalesDetails={setSalesDetails}
-      />
-      <div id="statistics-main">
-        <div className={"statistics-third " + props.darkmode}>
-          <div className="payement-filters">
-            {payementMethods.map((method) => (
-              <div
-                className={
-                  "payement-filter " +
-                  props.darkmode +
-                  " " +
-                  (payementMethod === method ? "clicked" : "")
-                }
-                key={method}
-                onClick={() =>
-                  payementMethod !== method
-                    ? setPayementMethod(method)
-                    : setPayementMethod("")
-                }
-              >
-                {method}
-              </div>
-            ))}
-          </div>
-          {Receipts.map(
-            ({ total, time, _id, payement, user }) =>
-              (payement === payementMethod || payementMethod === "") &&
-              datesAreOnSameDay(new Date(today), new Date(time)) && (
+    <div id="main" className={props.darkmode}>
+      <div id="statistics">
+        <StatisticsMenu
+          today={today}
+          setToday={setToday}
+          darkmode={props.darkmode}
+          Receipts={Receipts}
+          salesDetails={salesDetails}
+          setSalesDetails={setSalesDetails}
+        />
+        <div id="statistics-main">
+          <div className={"statistics-third " + props.darkmode}>
+            <div className="payement-filters">
+              {payementMethods.map((method) => (
                 <div
-                  key={_id}
                   className={
-                    "individual-receipts " +
+                    "payement-filter " +
                     props.darkmode +
                     " " +
-                    (_id === displayedReceipt ? "clicked" : "")
+                    (payementMethod === method ? "clicked" : "")
                   }
+                  key={method}
                   onClick={() =>
-                    displayedReceipt !== _id
-                      ? setDisplayedReceipt(_id)
-                      : setDisplayedReceipt(0)
+                    payementMethod !== method
+                      ? setPayementMethod(method)
+                      : setPayementMethod("")
                   }
                 >
-                  <div className="receipts-parts">
-                    <div className="individual-other">
-                      {displayDate(new Date(time), true)} <br />
-                      {displayTime(new Date(time))}
-                    </div>
-                  </div>
-
-                  <div className="receipts-parts">
-                    <div className="individual-total">
-                      {displayPrice(total)} €
-                    </div>
-                  </div>
-
-                  <div className="receipts-parts">
-                    <div className="individual-other">
-                      {user}
-                      <br />
-                      {payement}
-                    </div>
-                  </div>
+                  {method}
                 </div>
-              )
-          )}
-        </div>
-
-        {displayedReceipt !== 0 && (
-          <div
-            className={"statistics-third " + props.darkmode}
-            style={{ width: "max-content" }}
-          >
-            <div onClick={() => setDisplayedReceipt(0)} className="closing-btn">
-              <img
-                src={close}
-                alt="close"
-                height="12px"
-                onMouseOver={(e) => (e.currentTarget.src = closeHover)}
-                onMouseOut={(e) => (e.currentTarget.src = close)}
-              />
+              ))}
             </div>
-            <div style={{ textAlign: "center" }}>
-              <DisplayReceipt
-                ticket={JSON.parse(
-                  Receipts.find((e) => e._id === displayedReceipt).ticket
-                )}
-                cart={Receipts.find((e) => e._id === displayedReceipt).total}
-                eatIn={Receipts.find((e) => e._id === displayedReceipt).eatIn}
-                ItemData={props.ItemData}
-                date={Receipts.find((e) => e._id === displayedReceipt).time}
-                vatTable={JSON.parse(
-                  Receipts.find((e) => e._id === displayedReceipt).vatTable
-                )}
-                ContactData={props.ContactData}
-              />
+            {Receipts.map(
+              ({ total, time, _id, payement, user }) =>
+                (payement === payementMethod || payementMethod === "") &&
+                datesAreOnSameDay(new Date(today), new Date(time)) && (
+                  <div
+                    key={_id}
+                    className={
+                      "individual-receipts " +
+                      props.darkmode +
+                      " " +
+                      (_id === displayedReceipt ? "clicked" : "")
+                    }
+                    onClick={() =>
+                      displayedReceipt !== _id
+                        ? setDisplayedReceipt(_id)
+                        : setDisplayedReceipt(0)
+                    }
+                  >
+                    <div className="receipts-parts">
+                      <div className="individual-other">
+                        {displayDate(new Date(time), true)} <br />
+                        {displayTime(new Date(time))}
+                      </div>
+                    </div>
 
-              <DropdownMenu
-                options={payementMethods}
-                callback={dropdownCallback}
-                name={displayedReceipt}
-                param2={""}
-                text={
-                  <div className={"payement-filter " + props.darkmode}>
-                    Change Payement Method
+                    <div className="receipts-parts">
+                      <div className="individual-total">
+                        {displayPrice(total)} €
+                      </div>
+                    </div>
+
+                    <div className="receipts-parts">
+                      <div className="individual-other">
+                        {user}
+                        <br />
+                        {payement}
+                      </div>
+                    </div>
                   </div>
-                }
-                darkmode={props.darkmode}
-              />
-
-              <div
-                onClick={() =>
-                  props.demoMode
-                    ? alert("Disabled in demonstration mode.")
-                    : sendEmail(displayedReceipt)
-                }
-                className={"payement-filter " + props.darkmode}
-              >
-                Send Receipt By E-Mail
-              </div>
-            </div>
-          </div>
-        )}
-
-        {salesDetails && (
-          <div className={"statistics-third " + props.darkmode}>
-            <div className="statistics-breakdown">
-              <p style={{ textAlign: "center", textDecoration: "underline" }}>
-                items sold on the {displayDate(today, true)}
-              </p>
-              <div>
-                {ListOfItemsSold().map(({ name, quantity }) => (
-                  <span key={"sold " + name}>
-                    {quantity} {name}
-                    <br />
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className={"statistics-third " + props.darkmode}>
-          <StatisticsOfTheDay
-            darkmode={props.darkmode}
-            today={today}
-            ReceiptsOfTheDay={Receipts.filter((r) =>
-              datesAreOnSameDay(new Date(today), new Date(r.time))
+                )
             )}
-            EmployeeData={props.EmployeeData}
-          />
+          </div>
+
+          {displayedReceipt !== 0 && (
+            <div
+              className={"statistics-third " + props.darkmode}
+              style={{ width: "max-content" }}
+            >
+              <div
+                onClick={() => setDisplayedReceipt(0)}
+                className="closing-btn"
+              >
+                <img
+                  src={close}
+                  alt="close"
+                  height="12px"
+                  onMouseOver={(e) => (e.currentTarget.src = closeHover)}
+                  onMouseOut={(e) => (e.currentTarget.src = close)}
+                />
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <DisplayReceipt
+                  ticket={JSON.parse(
+                    Receipts.find((e) => e._id === displayedReceipt).ticket
+                  )}
+                  cart={Receipts.find((e) => e._id === displayedReceipt).total}
+                  eatIn={Receipts.find((e) => e._id === displayedReceipt).eatIn}
+                  ItemData={props.ItemData}
+                  date={Receipts.find((e) => e._id === displayedReceipt).time}
+                  vatTable={JSON.parse(
+                    Receipts.find((e) => e._id === displayedReceipt).vatTable
+                  )}
+                  ContactData={props.ContactData}
+                />
+
+                <DropdownMenu
+                  options={payementMethods}
+                  callback={dropdownCallback}
+                  name={displayedReceipt}
+                  param2={""}
+                  text={
+                    <div className={"payement-filter " + props.darkmode}>
+                      Change Payement Method
+                    </div>
+                  }
+                  darkmode={props.darkmode}
+                />
+
+                <div
+                  onClick={() =>
+                    props.demoMode
+                      ? alert("Disabled in demonstration mode.")
+                      : sendEmail(displayedReceipt)
+                  }
+                  className={"payement-filter " + props.darkmode}
+                >
+                  Send Receipt By E-Mail
+                </div>
+              </div>
+            </div>
+          )}
+
+          {salesDetails && (
+            <div className={"statistics-third " + props.darkmode}>
+              <div className="statistics-breakdown">
+                <p style={{ textAlign: "center", textDecoration: "underline" }}>
+                  items sold on the {displayDate(today, true)}
+                </p>
+                <div>
+                  {ListOfItemsSold().map(({ name, quantity }) => (
+                    <span key={"sold " + name}>
+                      {quantity} {name}
+                      <br />
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className={"statistics-third " + props.darkmode}>
+            <StatisticsOfTheDay
+              darkmode={props.darkmode}
+              today={today}
+              ReceiptsOfTheDay={Receipts.filter((r) =>
+                datesAreOnSameDay(new Date(today), new Date(r.time))
+              )}
+              EmployeeData={props.EmployeeData}
+            />
+          </div>
         </div>
       </div>
     </div>

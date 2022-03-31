@@ -9,6 +9,13 @@ body,
     sans-serif;
 }
 
+#parent2 {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+
 #config {
   height: 100%;
 }
