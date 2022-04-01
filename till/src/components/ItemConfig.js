@@ -6,7 +6,6 @@ import { displayPrice } from "./Functions";
 
 function ItemConfig({
   configMenu,
-  updateConfigMenu,
   darkmode,
   EmployeeData,
   setItemUpdates,

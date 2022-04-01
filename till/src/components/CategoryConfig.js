@@ -5,7 +5,6 @@ import InputDialog from "./InputDialog";
 
 function CategoryConfig({
   configMenu,
-  updateConfigMenu,
   darkmode,
   ItemData,
   itemUpdates,

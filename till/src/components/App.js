@@ -11,7 +11,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 function App() {
   const [cart, updateCart] = useState(0);
   const [menu, updateMenu] = useState("");
-  const [configMenu, updateConfigMenu] = useState("Staff");
   const [ticket, updateTicket] = useState([]);
   const [ticketsOnHold, updateTicketsOnHold] = useState([]);
   const [darkmode, updateDarkMode] = useState(
@@ -134,11 +133,27 @@ function App() {
             }
           ></Route>
           <Route
+            path="/Configuration/:section"
+            element={
+              <Config
+                darkmode={darkmode}
+                EmployeeData={EmployeeData}
+                staffUpdates={staffUpdates}
+                setStaffUpdates={setStaffUpdates}
+                demoMode={demoMode}
+                setItemUpdates={setItemUpdates}
+                ItemData={ItemData}
+                itemUpdates={itemUpdates}
+                ContactData={ContactData}
+                contactDataUpdates={contactDataUpdates}
+                setContactDataUpdates={setContactDataUpdates}
+              />
+            }
+          ></Route>
+          <Route
             path="/Configuration"
             element={
               <Config
-                configMenu={configMenu}
-                updateConfigMenu={updateConfigMenu}
                 darkmode={darkmode}
                 EmployeeData={EmployeeData}
                 staffUpdates={staffUpdates}

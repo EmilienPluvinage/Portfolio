@@ -7,7 +7,6 @@ import { useEffect } from "react";
 
 function StaffConfig({
   configMenu,
-  updateConfigMenu,
   darkmode,
   EmployeeData,
   staffUpdates,
