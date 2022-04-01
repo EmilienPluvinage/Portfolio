@@ -2,6 +2,12 @@ import "../styles/leftmenu.css";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
+import styled from "styled-components";
+
+const ImgLogo = styled.img`
+  width: 20px;
+  height: 20px;
+`;
 
 function PageLink({ link, logo, logoHover }) {
   const location = useLocation().pathname.match(/^\/([^/]*)\/*/);
@@ -34,7 +40,7 @@ function PageLink({ link, logo, logoHover }) {
     >
       <Link to={link} className="text-link">
         <div>
-          <img width={"20px"} height={"20px"} src={LogoSrc} alt={link} />
+          <ImgLogo src={LogoSrc} alt={link} />
         </div>
         <div style={{ flex: 1, paddingTop: "5px" }}>
           {link === "/" ? "Main" : link}
