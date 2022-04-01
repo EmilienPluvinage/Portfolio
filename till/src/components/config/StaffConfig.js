@@ -1,8 +1,8 @@
-import "../styles/item.css";
-import "../styles/config.css";
+import "../../styles/item.css";
+import "../../styles/config.css";
 import { useState } from "react";
-import InputDialog from "./InputDialog";
-import ColorPicker from "./ColorPicker";
+import InputDialog from "../InputDialog";
+import ColorPicker from "../ColorPicker";
 import { useEffect } from "react";
 
 function StaffConfig({

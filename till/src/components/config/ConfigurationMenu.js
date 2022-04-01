@@ -1,5 +1,5 @@
-import "../styles/topmenu.css";
-import "../styles/leftmenu.css";
+import "../../styles/topmenu.css";
+import "../../styles/leftmenu.css";
 import { Link } from "react-router-dom";
 
 function ConfigurationMenu({ configMenu, darkmode }) {

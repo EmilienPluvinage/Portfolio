@@ -1,8 +1,8 @@
-import "../styles/item.css";
-import "../styles/config.css";
+import "../../styles/item.css";
+import "../../styles/config.css";
 import { useState } from "react";
-import NewItemDialog from "./newItemDialog";
-import { displayPrice } from "./Functions";
+import NewItemDialog from "../newItemDialog";
+import { displayPrice } from "../Functions";
 
 function ItemConfig({
   configMenu,

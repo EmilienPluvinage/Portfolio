@@ -1,7 +1,7 @@
-import "../styles/item.css";
-import "../styles/config.css";
+import "../../styles/item.css";
+import "../../styles/config.css";
 import { useState } from "react";
-import InputDialog from "./InputDialog";
+import InputDialog from "../InputDialog";
 
 function CategoryConfig({
   configMenu,
@@ -48,7 +48,9 @@ function CategoryConfig({
 
   function callbackUpdate(e, name) {
     fetch(
-      "http://localhost:3001/Category/Update/" + process.env.REACT_APP_API_KEY,
+      process.env.REACT_APP_API_DOMAIN +
+        "/Category/Update/" +
+        process.env.REACT_APP_API_KEY,
       {
         method: "PUT",
         headers: {

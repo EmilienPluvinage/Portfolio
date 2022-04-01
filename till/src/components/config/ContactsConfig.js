@@ -1,7 +1,7 @@
-import "../styles/item.css";
-import "../styles/config.css";
+import "../../styles/item.css";
+import "../../styles/config.css";
 import { useState } from "react";
-import InputDialog from "./InputDialog";
+import InputDialog from "../InputDialog";
 
 function ContactsConfig({
   configMenu,

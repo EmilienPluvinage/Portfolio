@@ -3,8 +3,8 @@ import StaffConfig from "./StaffConfig";
 import ItemConfig from "./ItemConfig";
 import CategoryConfig from "./CategoryConfig";
 import ContactsConfig from "./ContactsConfig";
-import "../styles/style.css";
-import "../styles/config.css";
+import "../../styles/style.css";
+import "../../styles/config.css";
 import { useParams } from "react-router-dom";
 
 function Config({
