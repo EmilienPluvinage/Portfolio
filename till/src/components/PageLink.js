@@ -3,11 +3,12 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 function PageLink({ link, logo, logoHover }) {
-  const [LogoSrc, setLogoSrc] = useState("");
-  const location = useLocation().pathname;
-
+  const location = useLocation().pathname.match(/^\/([^/]*)\/*/);
+  const [LogoSrc, setLogoSrc] = useState(
+    location[0] === link || location[1] === link ? logoHover : logo
+  );
   useEffect(() => {
-    if (location === link || location === "/" + link) {
+    if (location[0] === link || location[1] === link) {
       setLogoSrc(logoHover);
     } else {
       setLogoSrc(logo);
@@ -18,13 +19,13 @@ function PageLink({ link, logo, logoHover }) {
     <div
       className="li"
       style={
-        location === link || location === "/" + link
+        location[0] === link || location[1] === link
           ? { color: "skyblue" }
           : null
       }
       onMouseOver={() => setLogoSrc(logoHover)}
       onMouseOut={() =>
-        location !== link && location !== "/" + link
+        location[0] !== link && location[1] !== link
           ? setLogoSrc(logo)
           : setLogoSrc(logoHover)
       }

@@ -21,7 +21,6 @@ function Config({
   setContactDataUpdates,
 }) {
   const { section } = useParams();
-  console.log(section);
   return (
     <div id="main" className={darkmode}>
       <div id="config">
