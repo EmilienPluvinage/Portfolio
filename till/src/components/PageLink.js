@@ -1,6 +1,7 @@
 import "../styles/leftmenu.css";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
 
 function PageLink({ link, logo, logoHover }) {
   const location = useLocation().pathname.match(/^\/([^/]*)\/*/);
@@ -42,5 +43,11 @@ function PageLink({ link, logo, logoHover }) {
     </div>
   );
 }
+
+PageLink.propTypes = {
+  link: PropTypes.string,
+  logo: PropTypes.string,
+  logoHover: PropTypes.string,
+};
 
 export default PageLink;
