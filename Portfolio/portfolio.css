@@ -1,0 +1,126 @@
+#main {
+  width: auto;
+  margin: auto;
+  font-family: Segoe UI, Frutiger, Dejavu Sans, Helvetica Neue, Arial,
+    sans-serif;
+  font-weight: 100;
+  color: rgb(50, 50, 50);
+}
+
+header {
+  text-align: center;
+  background-color: rgb(245, 245, 245);
+  margin: auto;
+  width: auto;
+  display: flex;
+  flex-direction: row;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-top: 1rem;
+}
+
+h2 {
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: 1rem;
+  font-size: 1.3rem;
+  font-weight: 100;
+  text-transform: uppercase;
+  letter-spacing: 0.3rem;
+}
+
+#profession {
+  color: grey;
+}
+
+ul {
+  margin-right: 1rem;
+  margin-left: auto;
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+li {
+  text-transform: uppercase;
+  margin-left: 3rem;
+  letter-spacing: 0.2rem;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+  padding-bottom: 1rem;
+  transition: all 500ms;
+  transition-property: color, border-color;
+  border-bottom: 1px solid rgb(245, 245, 245);
+}
+
+li:hover {
+  cursor: pointer;
+  border-color: rgb(50, 50, 50);
+  transition: all 300ms;
+  transition-property: color, border-color;
+}
+
+#projects {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding-top: 1rem;
+}
+
+.project {
+  background-color: rgb(245, 245, 245);
+  border: 1px solid lightgray;
+  flex: 1 0 21%;
+  margin: 1rem;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  transition: all 300ms;
+  transition-property: box-shadow, border-color;
+  min-height: 300px;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.project img {
+  border: 1px solid lightgray;
+}
+
+.project:hover {
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.5);
+  transition: all 300ms;
+  transition-property: box-shadow, border-color;
+}
+
+p {
+  margin: auto;
+  margin-top: 0.5rem;
+  letter-spacing: 0.05rem;
+}
+
+.link-btn {
+  margin: auto;
+  width: fit-content;
+  height: fit-content;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+a {
+  text-transform: uppercase;
+  color: inherit;
+  text-decoration: none;
+  background-color: rgb(220, 220, 220);
+  width: fit-content;
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.1rem;
+  border-radius: 0.3rem;
+  transition: background-color 300ms;
+}
+
+a:hover {
+  cursor: pointer;
+  background-color: rgb(200, 200, 200);
+  transition: background-color 300ms;
+}
