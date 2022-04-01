@@ -45,9 +45,9 @@ function PageLink({ link, logo, logoHover }) {
 }
 
 PageLink.propTypes = {
-  link: PropTypes.string,
-  logo: PropTypes.string,
-  logoHover: PropTypes.string,
+  link: PropTypes.string.isRequired,
+  logo: PropTypes.string.isRequired,
+  logoHover: PropTypes.string.isRequired,
 };
 
 export default PageLink;
