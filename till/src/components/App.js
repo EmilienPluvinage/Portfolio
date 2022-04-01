@@ -1,6 +1,6 @@
 import "../styles/style.css";
 import LeftMenu from "./LeftMenu";
-import Config from "./Config";
+import Config from "./config/Config";
 import Main from "./Main";
 import { useState, useEffect } from "react";
 import React from "react";
