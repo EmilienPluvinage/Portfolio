@@ -7,13 +7,14 @@ function PageLink({ link, logo, logoHover }) {
   const [LogoSrc, setLogoSrc] = useState(
     location[0] === link || location[1] === link ? logoHover : logo
   );
-  useEffect(() => {
-    if (location[0] === link || location[1] === link) {
-      setLogoSrc(logoHover);
-    } else {
-      setLogoSrc(logo);
-    }
-  }, [location, link, logo, logoHover]);
+
+  // useEffect(() => {
+  //   if (location[0] === link || location[1] === link) {
+  //     setLogoSrc(logoHover);
+  //   } else {
+  //     setLogoSrc(logo);
+  //   }
+  // }, [location, link, logo, logoHover]);
 
   return (
     <div
