@@ -198,7 +198,7 @@ function nouveauTetrimino() {
     }
     if (perdu) {
       afficher();
-      alert("PERDU");
+      alert("You Lose");
       partieEnCours = false;
     }
     clearInterval(nIntervId);
@@ -538,11 +538,11 @@ function debug() {
   ) {
     log =
       log +
-      "\n BUG : pas le bon nombre de cases" +
+      "\n Error : Incorrect number of boxes" +
       coordonnees.length +
       ":" +
       tetriminos[currentTetrimino][currentPosition].length;
-    alert("BUG");
+    alert("Error");
     partieEnCours = false;
   }
 }
