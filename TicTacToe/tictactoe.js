@@ -109,8 +109,8 @@ function retourNewGame(retour) {
         if (retour["abscisse"] != null) {
           x = retour["abscisse"];
           y = retour["ordonnee"];
-          document.getElementById("R" + x + "C" + y).innerText = "O";
-          document.getElementById("R" + x + "C" + y).style.color = "blue";
+          document.getElementById("R" + x + "C" + y).innerHTML =
+            '<img src="./img/star.png” height=”90px” alt="O” />';
         }
       } else {
         document.getElementById("player2").style.backgroundColor =
@@ -185,8 +185,8 @@ function newMove(x, y) {
 function retourNewMove(retour, x, y) {
   // si tout est bon, on affiche la case cliquée. par convention le joueur est X et l'adversaire est O
   if (retour["error"] == "") {
-    document.getElementById("R" + x + "C" + y).innerText = "X";
-    document.getElementById("R" + x + "C" + y).style.color = "red";
+    document.getElementById("R" + x + "C" + y).innerHTML =
+      ' <img src="./img/heart.png" height="90px" alt="X" />';
     document.getElementById("R" + x + "C" + y).className = "played";
     document.getElementById("player2").style.backgroundColor =
       "rgb(200,200,255)";
@@ -247,8 +247,8 @@ function retourGetMove(retour) {
     // on affiche la case que l'adversaire a joué, on la désactive, on change la couleur des pseudos
     x = retour["x"];
     y = retour["y"];
-    document.getElementById("R" + x + "C" + y).innerText = "O";
-    document.getElementById("R" + x + "C" + y).style.color = "blue";
+    document.getElementById("R" + x + "C" + y).innerHTML =
+      '<img src="./img/star.png" height="90px" alt="O" />';
   } else if (retour["victoire"]) {
     //alors on a gagné
     clearInterval(nIntervGetMove);
@@ -275,8 +275,8 @@ function retourGetMove(retour) {
     // on affiche la case que l'adversaire a joué, on la désactive, on change la couleur des pseudos
     x = retour["x"];
     y = retour["y"];
-    document.getElementById("R" + x + "C" + y).innerText = "O";
-    document.getElementById("R" + x + "C" + y).style.color = "blue";
+    document.getElementById("R" + x + "C" + y).innerHTML =
+      '<img src="./img/star.png" height="90px" alt="O" />';
     document.getElementById("R" + x + "C" + y).className = "played";
     document.getElementById("player1").style.backgroundColor =
       "rgb(255,200,200)";
