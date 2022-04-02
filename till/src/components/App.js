@@ -92,7 +92,7 @@ function App() {
 
   return (
     <div id="parent">
-      <Router>
+      <Router basename={"/till"}>
         <LeftMenu
           cart={cart}
           updateCart={updateCart}
