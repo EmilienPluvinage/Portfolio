@@ -1,3 +1,5 @@
 login.js
 .env
 .prod.env
+key.pem
+cert.pem
