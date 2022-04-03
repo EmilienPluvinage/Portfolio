@@ -3,7 +3,7 @@ var fs = require("fs");
 
 var options = {
   key: fs.readFileSync("key.pem"),
-  cert: fs.readFileSync("/home/NodeJS/ssl.cert"),
+  cert: fs.readFileSync("cert.pem"),
 };
 
 const app = require("./app");
