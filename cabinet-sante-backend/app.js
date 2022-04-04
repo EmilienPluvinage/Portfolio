@@ -1,4 +1,16 @@
 require("dotenv").config();
+var mysql = require("mysql");
+
+var con = mysql.createConnection({
+  host: process.ENV.MYSQL_DB,
+  user: process.ENV.MYSQL_USER,
+  password: process.ENV.MYSQL_PWD,
+});
+
+con.connect(function (err) {
+  if (err) throw err;
+  console.log("Connected!");
+});
 
 const express = require("express");
 
