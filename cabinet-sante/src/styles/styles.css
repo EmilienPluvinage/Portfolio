@@ -22,15 +22,16 @@ body {
 header {
   height: fit-content;
   width: 100%;
-  background-color: #34354b;
+  background-color: rgb(50, 50, 50);
 }
-header h3 {
-  color: lightgray;
+header h1 {
+  color: #5fb0d1;
   text-transform: uppercase;
-  font-weight: 200;
+  font-weight: 300;
   padding: 20px;
   margin: 0;
   letter-spacing: 0.1rem;
+  font-size: 1.2rem;
 }
 
 #parent {
@@ -44,7 +45,7 @@ header h3 {
   width: fit-content;
   color: #474747;
   font-size: 0.8rem;
-  font-weight: 300;
+  font-weight: 400;
   padding-right: 20px;
   border: 1px solid lightgrey;
 }
@@ -55,11 +56,12 @@ header h3 {
 }
 
 #LeftMenu li {
-  padding: 20px;
+  padding: 15px;
+  padding-left: 20px;
   background-color: white;
-  margin-top: 5px;
-  margin-bottom: 5px;
   border-radius: 0 1rem 1rem 0;
+  padding-right: 30px;
+  letter-spacing: 0.05rem;
 }
 
 #LeftMenu li:hover {
@@ -68,8 +70,78 @@ header h3 {
   background-color: #f2f3f6;
 }
 
+#LeftMenu li.clicked {
+  background-color: #ebf9ff;
+  color: #5fb0d1;
+  font-weight: 500;
+}
+
 #Main {
   flex: 1;
-  background-color: #f4f6fe;
+  background-color: rgb(250, 250, 255);
   border-top: 1px solid lightgrey;
+}
+h2 {
+  color: gray;
+  margin-left: 30px;
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.05rem;
+}
+.main-content {
+  background-color: white;
+  border: 1px solid lightgray;
+  margin: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
+  padding: 20px;
+  border-radius: 0.5rem;
+}
+
+.text-link {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+#LoginScreen {
+  margin: auto;
+  min-width: 300px;
+  min-height: 200px;
+  padding: 10px;
+  background-color: rgb(250, 250, 250);
+  border: 1px solid lightgray;
+  border-radius: 0.5rem;
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2);
+  font-size: 00.8rem;
+  display: flex;
+}
+
+#LoginContent {
+  margin: auto;
+  text-align: center;
+}
+
+#LoginScreen p {
+  margin: 10px;
+}
+#LoginScreen .btn {
+  border: none;
+  margin: auto;
+  margin-top: 30px;
+  padding: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+  border-radius: 2rem;
+  background-color: skyblue;
+  text-transform: uppercase;
+  color: white;
+  letter-spacing: 0.1rem;
+  font-weight: 500;
+  font-size: 0.8rem;
+  width: min-content;
+}
+
+#LoginScreen .btn:hover {
+  cursor: pointer;
+  background-color: #ade5ff;
 }

@@ -3,7 +3,7 @@ import "../styles/styles.css";
 function Header() {
   return (
     <header>
-      <h3>Mon Cabinet Santé</h3>
+      <h1>Mon Cabinet Santé</h1>
     </header>
   );
 }
