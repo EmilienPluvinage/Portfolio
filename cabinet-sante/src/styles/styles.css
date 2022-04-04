@@ -1,0 +1,75 @@
+html,
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+#App {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+header {
+  height: fit-content;
+  width: 100%;
+  background-color: #34354b;
+}
+header h3 {
+  color: lightgray;
+  text-transform: uppercase;
+  font-weight: 200;
+  padding: 20px;
+  margin: 0;
+  letter-spacing: 0.1rem;
+}
+
+#parent {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 0;
+}
+
+#LeftMenu {
+  width: fit-content;
+  color: #474747;
+  font-size: 0.8rem;
+  font-weight: 300;
+  padding-right: 20px;
+  border: 1px solid lightgrey;
+}
+
+#LeftMenu ul {
+  list-style: none;
+  padding: 0;
+}
+
+#LeftMenu li {
+  padding: 20px;
+  background-color: white;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border-radius: 0 1rem 1rem 0;
+}
+
+#LeftMenu li:hover {
+  cursor: pointer;
+  color: #5fb0d1;
+  background-color: #f2f3f6;
+}
+
+#Main {
+  flex: 1;
+  background-color: #f4f6fe;
+  border-top: 1px solid lightgrey;
+}
