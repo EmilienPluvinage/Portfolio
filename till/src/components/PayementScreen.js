@@ -3,8 +3,11 @@ import { displayPrice } from "./Functions";
 import React from "react";
 import DisplayReceipt from "./DisplayReceipt";
 import { useRef } from "react";
+import { useTheme } from "./ThemeContext";
 
 function PayementScreen(props) {
+  const darkmode = useTheme();
+
   const vatTable = useRef([]);
 
   function close() {
@@ -52,9 +55,9 @@ function PayementScreen(props) {
 
   return props.options.open ? (
     <div className="payement-screen">
-      <div className={"payement-content " + props.darkmode}>
+      <div className={"payement-content " + darkmode}>
         <div className="billing">
-          <div className={"final-price " + props.darkmode}>
+          <div className={"final-price " + darkmode}>
             Total : {displayPrice(props.cart)} €
           </div>
           <div className="payement-options">

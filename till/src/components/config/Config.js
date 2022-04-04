@@ -6,9 +6,9 @@ import ContactsConfig from "./ContactsConfig";
 import "../../styles/style.css";
 import "../../styles/config.css";
 import { useParams } from "react-router-dom";
+import { useTheme } from "../ThemeContext";
 
 function Config({
-  darkmode,
   EmployeeData,
   staffUpdates,
   setStaffUpdates,
@@ -20,14 +20,14 @@ function Config({
   contactDataUpdates,
   setContactDataUpdates,
 }) {
+  const darkmode = useTheme();
   const { section } = useParams();
   return (
     <div id="main" className={darkmode}>
       <div id="config">
-        <ConfigurationMenu configMenu={section} darkmode={darkmode} />
+        <ConfigurationMenu configMenu={section} />
         <StaffConfig
           configMenu={section}
-          darkmode={darkmode}
           EmployeeData={EmployeeData}
           staffUpdates={staffUpdates}
           setStaffUpdates={setStaffUpdates}
@@ -35,7 +35,6 @@ function Config({
         />
         <ItemConfig
           configMenu={section}
-          darkmode={darkmode}
           EmployeeData={EmployeeData}
           setItemUpdates={setItemUpdates}
           ItemData={ItemData}
@@ -43,7 +42,6 @@ function Config({
         />
         <CategoryConfig
           configMenu={section}
-          darkmode={darkmode}
           ItemData={ItemData}
           itemUpdates={itemUpdates}
           setItemUpdates={setItemUpdates}
@@ -51,7 +49,6 @@ function Config({
         />
         <ContactsConfig
           configMenu={section}
-          darkmode={darkmode}
           ContactData={ContactData}
           contactDataUpdates={contactDataUpdates}
           setContactDataUpdates={setContactDataUpdates}

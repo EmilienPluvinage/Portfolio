@@ -2,8 +2,11 @@ import "../styles/item.css";
 import { displayPrice } from "./Functions";
 import { useState } from "react";
 import InputDialog from "./InputDialog";
+import { useTheme } from "./ThemeContext";
 
 function ItemsList(props) {
+  const darkmode = useTheme();
+
   const [inputDialog, updateInputDialog] = useState({
     open: false,
     name: "",
@@ -66,7 +69,7 @@ function ItemsList(props) {
           props.category === category && (
             <div
               key={_id}
-              className={"item " + props.darkmode}
+              className={"item " + darkmode}
               onClick={() => updateState(name, Math.round(price), false)}
             >
               <div className="item-content">
@@ -78,7 +81,7 @@ function ItemsList(props) {
       )}
       <div
         key="item-direct"
-        className={"item " + props.darkmode}
+        className={"item " + darkmode}
         onClick={ClickOnDirectSale}
       >
         <div className="item-content">Manual Input</div>

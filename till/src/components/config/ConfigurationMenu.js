@@ -1,8 +1,11 @@
 import "../../styles/topmenu.css";
 import "../../styles/leftmenu.css";
 import { Link } from "react-router-dom";
+import { useTheme } from "../ThemeContext";
 
-function ConfigurationMenu({ configMenu, darkmode }) {
+function ConfigurationMenu({ configMenu }) {
+  const darkmode = useTheme();
+
   const categories = ["Staff", "Items", "Categories", "Contact"];
   return (
     <nav className="top-menu">

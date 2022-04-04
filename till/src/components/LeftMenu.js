@@ -9,6 +9,7 @@ import statsLogo from "../img/stats-logo.png";
 import statsLogoHover from "../img/stats-logo-hover.png";
 import screenLogo from "../img/screen-logo.png";
 import screenLogoHover from "../img/screen-logo-hover.png";
+import { useTheme, useThemeUpdate } from "./ThemeContext";
 
 function LeftMenu({
   cart,
@@ -20,17 +21,11 @@ function LeftMenu({
   putOnHold,
   user,
   updateUser,
-  darkmode,
-  updateDarkMode,
   EmployeeData,
 }) {
-  function setDarkMode(event) {
-    if (event.target.checked) {
-      updateDarkMode("dark");
-    } else {
-      updateDarkMode("light");
-    }
-  }
+  const darkmode = useTheme();
+  const toggleTheme = useThemeUpdate();
+
   return (
     <div id="left-menu">
       <div id="title">
@@ -75,7 +70,7 @@ function LeftMenu({
           className="toggle"
           checked={darkmode === "dark" && "checked"}
           type="checkbox"
-          onChange={setDarkMode}
+          onChange={toggleTheme}
         />
       </div>
     </div>

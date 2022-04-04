@@ -4,15 +4,17 @@ import { useState } from "react";
 import InputDialog from "../InputDialog";
 import ColorPicker from "../ColorPicker";
 import { useEffect } from "react";
+import { useTheme } from "../ThemeContext";
 
 function StaffConfig({
   configMenu,
-  darkmode,
   EmployeeData,
   staffUpdates,
   setStaffUpdates,
   demoMode,
 }) {
+  const darkmode = useTheme();
+
   const [inputDialog, updateInputDialog] = useState({
     open: false,
     name: "",

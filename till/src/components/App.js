@@ -7,15 +7,13 @@ import React from "react";
 import { queryData } from "./Functions";
 import Statistics from "./Statistics";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "./ThemeContext";
 
 function App() {
   const [cart, updateCart] = useState(0);
   const [menu, updateMenu] = useState("");
   const [ticket, updateTicket] = useState([]);
   const [ticketsOnHold, updateTicketsOnHold] = useState([]);
-  const [darkmode, updateDarkMode] = useState(
-    localStorage.getItem("darkmode") || "light"
-  );
   const [EmployeeData, setEmployeeData] = useState([]);
   const [staffUpdates, setStaffUpdates] = useState(0);
   const [itemUpdates, setItemUpdates] = useState(0);
@@ -25,10 +23,6 @@ function App() {
   const [ItemData, setItemData] = useState([]);
   const [user, updateUser] = useState([]);
   const demoMode = process.env.REACT_APP_DEMO_MODE;
-
-  useEffect(() => {
-    localStorage.setItem("darkmode", darkmode);
-  }, [darkmode]);
 
   useEffect(() => {
     queryData(initEmployeeData, "Staff");
@@ -92,98 +86,94 @@ function App() {
 
   return (
     <div id="parent">
-      <Router basename={"/till"}>
-        <LeftMenu
-          cart={cart}
-          updateCart={updateCart}
-          ticket={ticket}
-          updateTicket={updateTicket}
-          ticketsOnHold={ticketsOnHold}
-          updateTicketsOnHold={updateTicketsOnHold}
-          putOnHold={putOnHold}
-          user={user}
-          updateUser={updateUser}
-          darkmode={darkmode}
-          updateDarkMode={updateDarkMode}
-          EmployeeData={EmployeeData}
-        />
+      <ThemeProvider>
+        <Router basename={"/till"}>
+          <LeftMenu
+            cart={cart}
+            updateCart={updateCart}
+            ticket={ticket}
+            updateTicket={updateTicket}
+            ticketsOnHold={ticketsOnHold}
+            updateTicketsOnHold={updateTicketsOnHold}
+            putOnHold={putOnHold}
+            user={user}
+            updateUser={updateUser}
+            EmployeeData={EmployeeData}
+          />
 
-        <Routes>
-          <Route
-            exact
-            path="/"
-            element={
-              <Main
-                menu={menu}
-                updateMenu={updateMenu}
-                darkmode={darkmode}
-                ItemData={ItemData}
-                cart={cart}
-                updateCart={updateCart}
-                ticket={ticket}
-                updateTicket={updateTicket}
-                totalOfReceipt={totalOfReceipt}
-                ticketsOnHold={ticketsOnHold}
-                updateTicketsOnHold={updateTicketsOnHold}
-                putOnHold={putOnHold}
-                user={user}
-                EmployeeData={EmployeeData}
-                ContactData={ContactData}
-              />
-            }
-          ></Route>
-          <Route
-            path="/Configuration/:section"
-            element={
-              <Config
-                darkmode={darkmode}
-                EmployeeData={EmployeeData}
-                staffUpdates={staffUpdates}
-                setStaffUpdates={setStaffUpdates}
-                demoMode={demoMode}
-                setItemUpdates={setItemUpdates}
-                ItemData={ItemData}
-                itemUpdates={itemUpdates}
-                ContactData={ContactData}
-                contactDataUpdates={contactDataUpdates}
-                setContactDataUpdates={setContactDataUpdates}
-              />
-            }
-          ></Route>
-          <Route
-            path="/Configuration"
-            element={
-              <Config
-                darkmode={darkmode}
-                EmployeeData={EmployeeData}
-                staffUpdates={staffUpdates}
-                setStaffUpdates={setStaffUpdates}
-                demoMode={demoMode}
-                setItemUpdates={setItemUpdates}
-                ItemData={ItemData}
-                itemUpdates={itemUpdates}
-                ContactData={ContactData}
-                contactDataUpdates={contactDataUpdates}
-                setContactDataUpdates={setContactDataUpdates}
-              />
-            }
-          ></Route>
-          <Route
-            path="/statistics"
-            element={
-              <Statistics
-                receiptsUpdates={receiptsUpdates}
-                setReceiptsUpdates={setReceiptsUpdates}
-                ItemData={ItemData}
-                EmployeeData={EmployeeData}
-                ContactData={ContactData}
-                demoMode={demoMode}
-                darkmode={darkmode}
-              />
-            }
-          ></Route>
-        </Routes>
-      </Router>
+          <Routes>
+            <Route
+              exact
+              path="/"
+              element={
+                <Main
+                  menu={menu}
+                  updateMenu={updateMenu}
+                  ItemData={ItemData}
+                  cart={cart}
+                  updateCart={updateCart}
+                  ticket={ticket}
+                  updateTicket={updateTicket}
+                  totalOfReceipt={totalOfReceipt}
+                  ticketsOnHold={ticketsOnHold}
+                  updateTicketsOnHold={updateTicketsOnHold}
+                  putOnHold={putOnHold}
+                  user={user}
+                  EmployeeData={EmployeeData}
+                  ContactData={ContactData}
+                />
+              }
+            ></Route>
+            <Route
+              path="/Configuration/:section"
+              element={
+                <Config
+                  EmployeeData={EmployeeData}
+                  staffUpdates={staffUpdates}
+                  setStaffUpdates={setStaffUpdates}
+                  demoMode={demoMode}
+                  setItemUpdates={setItemUpdates}
+                  ItemData={ItemData}
+                  itemUpdates={itemUpdates}
+                  ContactData={ContactData}
+                  contactDataUpdates={contactDataUpdates}
+                  setContactDataUpdates={setContactDataUpdates}
+                />
+              }
+            ></Route>
+            <Route
+              path="/Configuration"
+              element={
+                <Config
+                  EmployeeData={EmployeeData}
+                  staffUpdates={staffUpdates}
+                  setStaffUpdates={setStaffUpdates}
+                  demoMode={demoMode}
+                  setItemUpdates={setItemUpdates}
+                  ItemData={ItemData}
+                  itemUpdates={itemUpdates}
+                  ContactData={ContactData}
+                  contactDataUpdates={contactDataUpdates}
+                  setContactDataUpdates={setContactDataUpdates}
+                />
+              }
+            ></Route>
+            <Route
+              path="/statistics"
+              element={
+                <Statistics
+                  receiptsUpdates={receiptsUpdates}
+                  setReceiptsUpdates={setReceiptsUpdates}
+                  ItemData={ItemData}
+                  EmployeeData={EmployeeData}
+                  ContactData={ContactData}
+                  demoMode={demoMode}
+                />
+              }
+            ></Route>
+          </Routes>
+        </Router>
+      </ThemeProvider>
     </div>
   );
 }

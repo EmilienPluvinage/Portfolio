@@ -2,12 +2,7 @@ import "../styles/statistics.css";
 import "../styles/payementScreen.css";
 import { displayDate, displayPercentage, displayPrice } from "./Functions";
 
-function StatisticsOfTheDay({
-  darkmode,
-  today,
-  ReceiptsOfTheDay,
-  EmployeeData,
-}) {
+function StatisticsOfTheDay({ today, ReceiptsOfTheDay, EmployeeData }) {
   const payementMethods = ReceiptsOfTheDay.reduce(
     (acc, item) =>
       acc.includes(item.payement) ? acc : acc.concat(item.payement),

@@ -1,5 +1,6 @@
 import "../styles/dropdownMenu.css";
 import React, { useState } from "react";
+import { useTheme } from "./ThemeContext";
 
 export default function DropdownMenu({
   options,
@@ -7,8 +8,9 @@ export default function DropdownMenu({
   name,
   quantity,
   text,
-  darkmode,
 }) {
+  const darkmode = useTheme();
+
   const [expanded, setExpanded] = useState(false);
   function expand() {
     setExpanded(true);

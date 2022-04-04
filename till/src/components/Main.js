@@ -2,11 +2,12 @@ import TopMenu from "./TopMenu";
 import ItemsList from "./ItemsList";
 import Receipt from "./Receipt";
 import "../styles/style.css";
+import React from "react";
+import { useTheme } from "./ThemeContext";
 
 function Main({
   menu,
   updateMenu,
-  darkmode,
   ItemData,
   cart,
   updateCart,
@@ -20,16 +21,12 @@ function Main({
   EmployeeData,
   ContactData,
 }) {
+  const darkmode = useTheme();
   return (
     <div id="parent2">
       <div id="main" className={darkmode}>
         <div style={{ height: "100%" }}>
-          <TopMenu
-            menu={menu}
-            updateMenu={updateMenu}
-            darkmode={darkmode}
-            ItemData={ItemData}
-          />
+          <TopMenu menu={menu} updateMenu={updateMenu} ItemData={ItemData} />
           <ItemsList
             category={menu}
             cart={cart}
@@ -37,7 +34,6 @@ function Main({
             ticket={ticket}
             updateTicket={updateTicket}
             totalOfReceipt={totalOfReceipt}
-            darkmode={darkmode}
             ItemData={ItemData}
           />
         </div>
@@ -52,7 +48,6 @@ function Main({
         putOnHold={putOnHold}
         totalOfReceipt={totalOfReceipt}
         user={user}
-        darkmode={darkmode}
         EmployeeData={EmployeeData}
         ItemData={ItemData}
         ContactData={ContactData}

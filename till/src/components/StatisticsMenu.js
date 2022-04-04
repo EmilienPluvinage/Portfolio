@@ -5,15 +5,17 @@ import salesLogo from "../img/sales-logo.png";
 import salesLogoHover from "../img/sales-logo-hover.png";
 import dateLogo from "../img/date-logo.png";
 import dateLogoHover from "../img/date-logo-hover.png";
+import { useTheme } from "./ThemeContext";
 
 function StatisticsMenu({
   today,
   setToday,
-  darkmode,
   Receipts,
   salesDetails,
   setSalesDetails,
 }) {
+  const darkmode = useTheme();
+
   const dropdownMaxSize = 10;
   const dates = Receipts.reduce(
     (acc, item) =>
@@ -50,7 +52,6 @@ function StatisticsMenu({
               height="60px"
             />
           }
-          darkmode={darkmode}
         />
       </div>
       <div className={"stats-menu " + darkmode}>

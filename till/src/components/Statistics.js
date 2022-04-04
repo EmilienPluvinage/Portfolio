@@ -15,6 +15,7 @@ import ReactDomServer from "react-dom/server";
 import raw from "../styles/EmailCSS.txt";
 import close from "../img/close.png";
 import closeHover from "../img/close-hover.png";
+import { useTheme } from "./ThemeContext";
 
 function Statistics(props) {
   const [Receipts, updateReceipts] = useState([]);
@@ -22,7 +23,7 @@ function Statistics(props) {
   const [payementMethod, setPayementMethod] = useState("");
   const [today, setToday] = useState(new Date());
   const [salesDetails, setSalesDetails] = useState(false);
-
+  const darkmode = useTheme();
   const payementMethods = Receipts.reduce(
     (acc, item) =>
       acc.includes(item.payement) ? acc : acc.concat(item.payement),
@@ -147,24 +148,23 @@ function Statistics(props) {
   }
 
   return (
-    <div id="main" className={props.darkmode}>
+    <div id="main" className={darkmode}>
       <div id="statistics">
         <StatisticsMenu
           today={today}
           setToday={setToday}
-          darkmode={props.darkmode}
           Receipts={Receipts}
           salesDetails={salesDetails}
           setSalesDetails={setSalesDetails}
         />
         <div id="statistics-main">
-          <div className={"statistics-third " + props.darkmode}>
+          <div className={"statistics-third " + darkmode}>
             <div className="payement-filters">
               {payementMethods.map((method) => (
                 <div
                   className={
                     "payement-filter " +
-                    props.darkmode +
+                    darkmode +
                     " " +
                     (payementMethod === method ? "clicked" : "")
                   }
@@ -187,7 +187,7 @@ function Statistics(props) {
                     key={_id}
                     className={
                       "individual-receipts " +
-                      props.darkmode +
+                      darkmode +
                       " " +
                       (_id === displayedReceipt ? "clicked" : "")
                     }
@@ -224,7 +224,7 @@ function Statistics(props) {
 
           {displayedReceipt !== 0 && (
             <div
-              className={"statistics-third " + props.darkmode}
+              className={"statistics-third " + darkmode}
               style={{ width: "max-content" }}
             >
               <div
@@ -260,11 +260,10 @@ function Statistics(props) {
                   name={displayedReceipt}
                   param2={""}
                   text={
-                    <div className={"payement-filter " + props.darkmode}>
+                    <div className={"payement-filter " + darkmode}>
                       Change Payement Method
                     </div>
                   }
-                  darkmode={props.darkmode}
                 />
 
                 <div
@@ -273,7 +272,7 @@ function Statistics(props) {
                       ? alert("Disabled in demonstration mode.")
                       : sendEmail(displayedReceipt)
                   }
-                  className={"payement-filter " + props.darkmode}
+                  className={"payement-filter " + darkmode}
                 >
                   Send Receipt By E-Mail
                 </div>
@@ -282,7 +281,7 @@ function Statistics(props) {
           )}
 
           {salesDetails && (
-            <div className={"statistics-third " + props.darkmode}>
+            <div className={"statistics-third " + darkmode}>
               <div className="statistics-breakdown">
                 <p style={{ textAlign: "center", textDecoration: "underline" }}>
                   items sold on the {displayDate(today, true)}
@@ -299,9 +298,8 @@ function Statistics(props) {
             </div>
           )}
 
-          <div className={"statistics-third " + props.darkmode}>
+          <div className={"statistics-third " + darkmode}>
             <StatisticsOfTheDay
-              darkmode={props.darkmode}
               today={today}
               ReceiptsOfTheDay={Receipts.filter((r) =>
                 datesAreOnSameDay(new Date(today), new Date(r.time))

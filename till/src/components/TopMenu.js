@@ -1,6 +1,9 @@
 import "../styles/topmenu.css";
+import { useTheme } from "./ThemeContext";
 
-function TopMenu({ menu, updateMenu, darkmode, ItemData }) {
+function TopMenu({ menu, updateMenu, ItemData }) {
+  const darkmode = useTheme();
+
   const categories = ItemData.reduce(
     (acc, item) =>
       acc.includes(item.category) ? acc : acc.concat(item.category),

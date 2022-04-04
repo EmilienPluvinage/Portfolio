@@ -2,15 +2,17 @@ import "../../styles/item.css";
 import "../../styles/config.css";
 import { useState } from "react";
 import InputDialog from "../InputDialog";
+import { useTheme } from "../ThemeContext";
 
 function ContactsConfig({
   configMenu,
-  darkmode,
   ContactData,
   contactDataUpdates,
   setContactDataUpdates,
   demoMode,
 }) {
+  const darkmode = useTheme();
+
   const [inputDialog, updateInputDialog] = useState({
     open: false,
     name: "",

@@ -4,6 +4,7 @@ import DropdownMenu from "./DropdownMenu";
 import InputDialog from "./InputDialog";
 import PayementScreen from "./PayementScreen";
 import { useState } from "react";
+import { useTheme } from "./ThemeContext";
 
 function Receipt({
   cart,
@@ -15,11 +16,12 @@ function Receipt({
   putOnHold,
   totalOfReceipt,
   user,
-  darkmode,
   EmployeeData,
   ItemData,
   ContactData,
 }) {
+  const darkmode = useTheme();
+
   const color = EmployeeData.find((e) => e.name === user)?.color;
   const [inputDialog, updateInputDialog] = useState({
     open: false,
@@ -176,7 +178,6 @@ function Receipt({
         setExpanded={setExpandedPayement}
         ticket={ticket}
         cart={cart}
-        darkmode={darkmode}
         ItemData={ItemData}
         Clear={initState}
         user={user}
@@ -220,7 +221,6 @@ function Receipt({
                   name={name}
                   quantity={quantity}
                   text={name}
-                  darkmode={darkmode}
                 />
               </div>
             ))}

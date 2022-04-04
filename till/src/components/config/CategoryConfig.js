@@ -2,15 +2,17 @@ import "../../styles/item.css";
 import "../../styles/config.css";
 import { useState } from "react";
 import InputDialog from "../InputDialog";
+import { useTheme } from "../ThemeContext";
 
 function CategoryConfig({
   configMenu,
-  darkmode,
   ItemData,
   itemUpdates,
   setItemUpdates,
   demoMode,
 }) {
+  const darkmode = useTheme();
+
   const categories = ItemData.reduce(
     (acc, item) =>
       acc.includes(item.category) ? acc : acc.concat(item.category),

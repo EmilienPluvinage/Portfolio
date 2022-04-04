@@ -3,15 +3,17 @@ import "../../styles/config.css";
 import { useState } from "react";
 import NewItemDialog from "../newItemDialog";
 import { displayPrice } from "../Functions";
+import { useTheme } from "../ThemeContext";
 
 function ItemConfig({
   configMenu,
-  darkmode,
   EmployeeData,
   setItemUpdates,
   ItemData,
   demoMode,
 }) {
+  const darkmode = useTheme();
+
   const [itemDialog, updateItemDialog] = useState({
     open: false,
     id: 0,
