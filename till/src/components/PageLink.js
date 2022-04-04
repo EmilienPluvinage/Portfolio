@@ -15,13 +15,13 @@ function PageLink({ link, logo, logoHover }) {
     location[0] === link || location[1] === link ? logoHover : logo
   );
 
-  // useEffect(() => {
-  //   if (location[0] === link || location[1] === link) {
-  //     setLogoSrc(logoHover);
-  //   } else {
-  //     setLogoSrc(logo);
-  //   }
-  // }, [location, link, logo, logoHover]);
+  useEffect(() => {
+    if (location[0] === link || location[1] === link) {
+      setLogoSrc(logoHover);
+    } else {
+      setLogoSrc(logo);
+    }
+  }, [location, link, logo, logoHover]);
 
   return (
     <div
@@ -30,12 +30,6 @@ function PageLink({ link, logo, logoHover }) {
         location[0] === link || location[1] === link
           ? { color: "skyblue" }
           : null
-      }
-      onMouseOver={() => setLogoSrc(logoHover)}
-      onMouseOut={() =>
-        location[0] !== link && location[1] !== link
-          ? setLogoSrc(logo)
-          : setLogoSrc(logoHover)
       }
     >
       <Link to={link} className="text-link">
