@@ -2,7 +2,7 @@ let btn = document.getElementById("button");
 let result = document.getElementById("result");
 let pseudo = "";
 let ImageChargement =
-  '<img src="chargement.gif" alt="Looking for an opponent..." width="30" height="30" />';
+  '<img src="TicTacToe/chargement.gif" alt="Looking for an opponent..." width="30" height="30" />';
 let partieEnCours = false;
 let nIntervId = null;
 let nIntervGetMove = null;
@@ -24,7 +24,7 @@ btn.addEventListener("click", function (e) {
     pseudo = document.getElementById("pseudo").value;
     if (pseudo.length > 2) {
       if (!format.test(pseudo)) {
-        fetch("newPlayer.php", {
+        fetch("TicTacToe/newPlayer.php", {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -74,7 +74,7 @@ function retourNewPlayer(retour) {
 }
 
 function newGame() {
-  fetch("newGame.php", {
+  fetch("TicTacToe/newGame.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -110,7 +110,7 @@ function retourNewGame(retour) {
           x = retour["abscisse"];
           y = retour["ordonnee"];
           document.getElementById("R" + x + "C" + y).innerHTML =
-            '<img src="./img/star.png” height=”90px” alt="O” />';
+            '<img src="TicTacToe/img/star.png” height=”90px” alt="O” />';
         }
       } else {
         document.getElementById("player2").style.backgroundColor =
@@ -169,7 +169,7 @@ function newMove(x, y) {
     document.getElementById("R" + x + "C" + y).className != "played" &&
     CestMonTour == true
   ) {
-    fetch("newMove.php", {
+    fetch("TicTacToe/newMove.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -186,7 +186,7 @@ function retourNewMove(retour, x, y) {
   // si tout est bon, on affiche la case cliquée. par convention le joueur est X et l'adversaire est O
   if (retour["error"] == "") {
     document.getElementById("R" + x + "C" + y).innerHTML =
-      ' <img src="./img/heart.png" height="90px" alt="X" />';
+      ' <img src="TicTacToe/img/heart.png" height="90px" alt="X" />';
     document.getElementById("R" + x + "C" + y).className = "played";
     document.getElementById("player2").style.backgroundColor =
       "rgb(200,200,255)";
@@ -205,7 +205,7 @@ function retourNewMove(retour, x, y) {
 function outOfTime() {
   // on commence par tester si la case a déjà été jouée ou pas, si oui, on ne fait rien
   if (CestMonTour == true) {
-    fetch("outOfTime.php", {
+    fetch("TicTacToe/outOfTime.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -229,7 +229,7 @@ function retourOutOfTime(retour) {
 function getMove() {
   // fonction dont l'objectif est de vérifier si l'adversaire a joué son tour
   // et si oui de récupérer les coordonnées de la case jouée, s'il a gagné, etc...
-  fetch("getMove.php", {
+  fetch("TicTacToe/getMove.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -248,7 +248,7 @@ function retourGetMove(retour) {
     x = retour["x"];
     y = retour["y"];
     document.getElementById("R" + x + "C" + y).innerHTML =
-      '<img src="./img/star.png" height="90px" alt="O" />';
+      '<img src="TicTacToe/img/star.png" height="90px" alt="O" />';
   } else if (retour["victoire"]) {
     //alors on a gagné
     clearInterval(nIntervGetMove);
@@ -276,7 +276,7 @@ function retourGetMove(retour) {
     x = retour["x"];
     y = retour["y"];
     document.getElementById("R" + x + "C" + y).innerHTML =
-      '<img src="./img/star.png" height="90px" alt="O" />';
+      '<img src="TicTacToe/img/star.png" height="90px" alt="O" />';
     document.getElementById("R" + x + "C" + y).className = "played";
     document.getElementById("player1").style.backgroundColor =
       "rgb(255,200,200)";
@@ -306,7 +306,7 @@ function defaite() {
 }
 
 function updateTimestamp() {
-  fetch("updateTimestamp.php", {
+  fetch("TicTacToe/updateTimestamp.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -318,7 +318,7 @@ function updateTimestamp() {
 }
 
 function cleanDatabase() {
-  fetch("cleanDatabase.php", {
+  fetch("TicTacToe/cleanDatabase.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
