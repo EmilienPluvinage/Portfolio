@@ -136,7 +136,16 @@ function ItemConfig({
         </div>
         {categories.map((CurrentCategory) => (
           <div key={CurrentCategory}>
-            <div className="category-title">{CurrentCategory}</div>
+            <div
+              className="category-title"
+              style={
+                darkmode === "dark"
+                  ? { color: "white" }
+                  : { color: "rgb(50,50,50)" }
+              }
+            >
+              {CurrentCategory}
+            </div>
             <div className="items-config">
               {ItemData.map(
                 ({ name, category, price, _id }) =>
