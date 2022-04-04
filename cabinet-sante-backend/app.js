@@ -39,8 +39,10 @@ app.use((req, res, next) => {
 // TEST SERVER
 
 app.get("/Test", (req, res, next) => {
-  console.log("Get request received");
-  res.end("Hello World\n");
+  con.query("SELECT * FROM users", function (err, result, fields) {
+    if (err) throw err;
+    res.status(200).json(result);
+  });
 });
 //
 
