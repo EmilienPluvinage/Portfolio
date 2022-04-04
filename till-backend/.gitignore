@@ -3,3 +3,4 @@ login.js
 .prod.env
 key.pem
 cert.pem
+node_modules
