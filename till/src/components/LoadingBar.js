@@ -15,6 +15,7 @@ const Container = styled.div`
 const Color = styled.div`
   width: ${(props) => props.size}%;
   background: ${(props) => props.color};
+  transition: width 500ms;
 `;
 const Gray = styled.div`
   background-color: grey;
