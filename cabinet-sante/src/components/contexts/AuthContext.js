@@ -12,13 +12,21 @@ export function useLogging() {
 }
 
 export function AuthProvider({ children }) {
+  // True or False
   const [login, setLogin] = useState(false);
+  // Token to be passed to any SQL query and compared with the one in DB
+  const [token, setToken] = useState(null);
 
-  function logging(bool) {
+  function logging(bool, newToken) {
     setLogin(bool);
+    if (bool) {
+      setToken(newToken);
+    } else {
+      setToken(null);
+    }
   }
   return (
-    <LoginContext.Provider value={login}>
+    <LoginContext.Provider value={{ login: login, token: token }}>
       <LoggingContext.Provider value={logging}>
         {children}
       </LoggingContext.Provider>

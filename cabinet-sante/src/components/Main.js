@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { useLogin } from "./contexts/AuthContext";
 
 function Main({ menu }) {
-  const loggedIn = useLogin();
+  const loggedIn = useLogin().login;
   return (
     loggedIn && (
       <div id="Main">

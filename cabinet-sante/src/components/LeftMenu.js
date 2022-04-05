@@ -4,7 +4,7 @@ import { useLogin, useLogging } from "./contexts/AuthContext";
 
 function LeftMenu({ menu }) {
   const path = useLocation().pathname;
-  const loggedIn = useLogin();
+  const loggedIn = useLogin().login;
   const logging = useLogging();
 
   return (

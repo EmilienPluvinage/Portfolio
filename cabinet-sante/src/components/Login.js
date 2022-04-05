@@ -4,7 +4,7 @@ import { useLogin, useLogging } from "./contexts/AuthContext";
 import { useEffect } from "react";
 
 function Login() {
-  const loggedIn = useLogin();
+  const loggedIn = useLogin().login;
   const logging = useLogging();
   const [errorMessage, setErrorMessage] = useState("");
   const [value, setValue] = useState({
@@ -42,7 +42,7 @@ function Login() {
 
   function callback(data) {
     if (data.loggedIn) {
-      logging(true);
+      logging(true, data.token);
     } else {
       switch (data.error) {
         case "incorrect password":
