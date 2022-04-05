@@ -23,15 +23,46 @@ function Login({ logged, setLogged }) {
     }
   }
   function handleSubmit(event) {
-    if (
-      value.email.toLowerCase() === "email" &&
-      value.password.toLowerCase() === "password"
-    ) {
-      close();
-    } else {
-      setErrorMessage("Identifiant ou mot de passe incorrect.");
-    }
+    postLogin(
+      value.email.toLowerCase(),
+      value.password.toLowerCase(),
+      callback
+    );
     event.preventDefault();
+  }
+
+  function callback(data) {
+    if (data.loggedIn) {
+      // close();
+      console.log("OK");
+    } else {
+      setErrorMessage("Mot de passe incorrect.");
+    }
+  }
+
+  function postLogin(email, password, callback) {
+    fetch("http://localhost:3001/Login", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: email, password: password }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .then((actualData) => {
+        callback(actualData);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   }
 
   return (
