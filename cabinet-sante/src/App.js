@@ -5,6 +5,7 @@ import LeftMenu from "./components/LeftMenu";
 import Login from "./components/Login";
 import { BrowserRouter as Router } from "react-router-dom";
 import { useState } from "react";
+import { AuthProvider } from "./components/AuthContext";
 
 function App() {
   const menu = [
@@ -19,17 +20,16 @@ function App() {
 
   return (
     <div id="App">
-      <Header />
-      <div id="parent">
-        {logged ? (
+      <AuthProvider>
+        <Header />
+        <div id="parent">
           <Router>
             <LeftMenu menu={menu} />
             <Main menu={menu} />
           </Router>
-        ) : (
           <Login logged={logged} setLogged={setLogged} />
-        )}
-      </div>
+        </div>
+      </AuthProvider>
     </div>
   );
 }

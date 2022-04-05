@@ -1,7 +1,10 @@
 import "../styles/styles.css";
 import { useState } from "react";
+import { useLogin, useLoginUpdate } from "./AuthContext";
 
 function Login({ logged, setLogged }) {
+  const loggedIn = useLogin();
+  const loggingIn = useLoginUpdate();
   const [errorMessage, setErrorMessage] = useState("");
   const [value, setValue] = useState({
     email: "",
@@ -34,8 +37,7 @@ function Login({ logged, setLogged }) {
   function callback(data) {
     console.log(data);
     if (data.loggedIn) {
-      // close();
-      console.log("OK");
+      loggingIn();
     } else {
       switch (data.error) {
         case "incorrect password":
@@ -77,32 +79,34 @@ function Login({ logged, setLogged }) {
   }
 
   return (
-    <div id="LoginScreen">
-      <div id="LoginContent">
-        <form onSubmit={handleSubmit}>
-          <p>E-mail :</p>
-          <p>
-            <input
-              type="text"
-              name="email"
-              onChange={(e) => handleChange(e, "email")}
-              value={value.email}
-            />
-          </p>
-          <p>Mot de Passe :</p>
-          <p>
-            <input
-              type="password"
-              name="password"
-              onChange={(e) => handleChange(e, "password")}
-              value={value.password}
-            />
-          </p>
-          <p>{errorMessage}</p>
-          <input type="submit" className="btn" value="Login" />
-        </form>
+    !loggedIn && (
+      <div id="LoginScreen">
+        <div id="LoginContent">
+          <form onSubmit={handleSubmit}>
+            <p>E-mail :</p>
+            <p>
+              <input
+                type="text"
+                name="email"
+                onChange={(e) => handleChange(e, "email")}
+                value={value.email}
+              />
+            </p>
+            <p>Mot de Passe :</p>
+            <p>
+              <input
+                type="password"
+                name="password"
+                onChange={(e) => handleChange(e, "password")}
+                value={value.password}
+              />
+            </p>
+            <p>{errorMessage}</p>
+            <input type="submit" className="btn" value="Login" />
+          </form>
+        </div>
       </div>
-    </div>
+    )
   );
 }
 
