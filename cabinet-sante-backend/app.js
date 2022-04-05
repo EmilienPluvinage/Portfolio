@@ -1,21 +1,14 @@
 require("dotenv").config();
-var mysql = require("mysql");
+const express = require("express");
+const app = express();
+const mysql = require("mysql");
 
-var con = mysql.createConnection({
+const pool = mysql.createPool({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PWD,
   database: process.env.MYSQL_DB,
 });
-
-con.connect(function (err) {
-  if (err) throw err;
-  console.log("Connected!");
-});
-
-const express = require("express");
-
-const app = express();
 
 app.use(express.json());
 
@@ -39,11 +32,15 @@ app.use((req, res, next) => {
 // TEST SERVER
 
 app.get("/Test", (req, res, next) => {
-  con.query("SELECT * FROM users", function (err, result, fields) {
+  pool.getConnection((err, connection) => {
     if (err) throw err;
-    res.status(200).json(result);
+    console.log("connected as id " + connection.threadId);
+    connection.query("SELECT * FROM users", (err, rows) => {
+      connection.release(); // return the connection to pool
+      if (err) throw err;
+      console.log("The data from users table are: \n", rows);
+    });
   });
 });
-//
 
 module.exports = app;
