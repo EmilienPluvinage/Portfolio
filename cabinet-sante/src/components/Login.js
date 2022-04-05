@@ -32,11 +32,22 @@ function Login({ logged, setLogged }) {
   }
 
   function callback(data) {
+    console.log(data);
     if (data.loggedIn) {
       // close();
       console.log("OK");
     } else {
-      setErrorMessage("Mot de passe incorrect.");
+      switch (data.error) {
+        case "incorrect password":
+          setErrorMessage("Mot de passe incorrect.");
+          break;
+        case "incorrect e-mail":
+          setErrorMessage("Utilisateur non-reconnu.");
+          break;
+        default:
+          setErrorMessage("Erreur de connexion.");
+          break;
+      }
     }
   }
 

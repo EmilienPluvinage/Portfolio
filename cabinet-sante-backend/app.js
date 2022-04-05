@@ -55,23 +55,30 @@ app.post("/Login", (req, res, next) => {
         connection.release(); // return the connection to pool
         if (err) throw err;
         //var salt = crypto.randomBytes(16).toString("hex");
-        console.log(req.body.password);
-        var hash = crypto
-          .pbkdf2Sync(req.body.password, rows[0].salt, 1000, 64, `sha512`)
-          .toString(`hex`);
-        console.log(rows[0].password);
-        console.log(hash);
-        if (rows[0].password === hash) {
-          // right password, we generate a token a return it the the front-end
-          var token = crypto.randomBytes(64).toString("hex");
-          res.status(201).json({ loggedIn: true, token: token });
+        if (rows.length === 1) {
+          var hash = crypto
+            .pbkdf2Sync(req.body.password, rows[0].salt, 1000, 64, `sha512`)
+            .toString(`hex`);
+
+          if (rows[0].password === hash) {
+            // right password, we generate a token a return it the the front-end
+            var token = crypto.randomBytes(64).toString("hex");
+            res.status(201).json({ loggedIn: true, token: token });
+          } else {
+            // wrong password, we return -1
+            res
+              .status(201)
+              .json({ loggedIn: false, error: "incorrect password" });
+          }
+          // console.log("The data from users table are: \n", rows);
+        } else if (rows.length === 0) {
+          res.status(201).json({ loggedIn: false, error: "incorrect e-mail" });
         } else {
-          // wrong password, we return -1
-          res
-            .status(201)
-            .json({ loggedIn: false, error: "incorrect password" });
+          res.status(201).json({
+            loggedIn: false,
+            error: "multiple users with same e-mail",
+          });
         }
-        // console.log("The data from users table are: \n", rows);
       }
     );
   });
