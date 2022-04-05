@@ -4,8 +4,7 @@ import Main from "./components/Main";
 import LeftMenu from "./components/LeftMenu";
 import Login from "./components/Login";
 import { BrowserRouter as Router } from "react-router-dom";
-import { useState } from "react";
-import { AuthProvider } from "./components/AuthContext";
+import { AuthProvider } from "./components/contexts/AuthContext";
 
 function App() {
   const menu = [

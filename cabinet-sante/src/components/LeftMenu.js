@@ -1,6 +1,6 @@
 import "../styles/styles.css";
 import { Link, useLocation } from "react-router-dom";
-import { useLogin, useLogging } from "./AuthContext";
+import { useLogin, useLogging } from "./contexts/AuthContext";
 
 function LeftMenu({ menu }) {
   const path = useLocation().pathname;
