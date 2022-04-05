@@ -50,7 +50,8 @@ app.post("/Login", (req, res, next) => {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
     connection.query(
-      'SELECT password, salt FROM users WHERE email="' + req.body.email + '"',
+      "SELECT password, salt FROM users WHERE email= ?",
+      req.body.email,
       (err, rows) => {
         connection.release(); // return the connection to pool
         if (err) throw err;
@@ -59,7 +60,6 @@ app.post("/Login", (req, res, next) => {
           var hash = crypto
             .pbkdf2Sync(req.body.password, rows[0].salt, 1000, 64, `sha512`)
             .toString(`hex`);
-
           if (rows[0].password === hash) {
             // right password, we generate a token a return it the the front-end
             var token = crypto.randomBytes(64).toString("hex");
