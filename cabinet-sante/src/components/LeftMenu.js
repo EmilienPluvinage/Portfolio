@@ -1,11 +1,11 @@
 import "../styles/styles.css";
 import { Link, useLocation } from "react-router-dom";
-import { useLogin, useLoginUpdate } from "./AuthContext";
+import { useLogin, useLogging } from "./AuthContext";
 
 function LeftMenu({ menu }) {
   const path = useLocation().pathname;
   const loggedIn = useLogin();
-  const loggingOut = useLoginUpdate();
+  const logging = useLogging();
 
   return (
     loggedIn && (
@@ -18,7 +18,7 @@ function LeftMenu({ menu }) {
               </li>
             </Link>
           ))}
-          <li onClick={loggingOut}>Déconnexion</li>
+          <li onClick={() => logging(false)}>Déconnexion</li>
         </ul>
       </div>
     )

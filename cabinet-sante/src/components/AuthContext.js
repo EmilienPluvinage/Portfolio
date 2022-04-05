@@ -1,27 +1,27 @@
 import React, { useState, useContext } from "react";
 
 const LoginContext = React.createContext();
-const LoginUpdateContext = React.createContext();
+const LoggingContext = React.createContext();
 
 export function useLogin() {
   return useContext(LoginContext);
 }
 
-export function useLoginUpdate() {
-  return useContext(LoginUpdateContext);
+export function useLogging() {
+  return useContext(LoggingContext);
 }
 
 export function AuthProvider({ children }) {
   const [login, setLogin] = useState(false);
 
-  function toggleLogin() {
-    setLogin((prev) => !prev);
+  function logging(bool) {
+    setLogin(bool);
   }
   return (
     <LoginContext.Provider value={login}>
-      <LoginUpdateContext.Provider value={toggleLogin}>
+      <LoggingContext.Provider value={logging}>
         {children}
-      </LoginUpdateContext.Provider>
+      </LoggingContext.Provider>
     </LoginContext.Provider>
   );
 }

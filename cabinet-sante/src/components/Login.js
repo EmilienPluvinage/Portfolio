@@ -1,18 +1,24 @@
 import "../styles/styles.css";
 import { useState } from "react";
-import { useLogin, useLoginUpdate } from "./AuthContext";
+import { useLogin, useLogging } from "./AuthContext";
+import { useEffect } from "react";
 
-function Login({ logged, setLogged }) {
+function Login() {
   const loggedIn = useLogin();
-  const loggingIn = useLoginUpdate();
+  const logging = useLogging();
   const [errorMessage, setErrorMessage] = useState("");
   const [value, setValue] = useState({
     email: "",
     password: "",
   });
-  function close() {
-    setLogged(true);
-  }
+
+  useEffect(() => {
+    if (!loggedIn) {
+      setValue({ email: "", password: "" });
+      setErrorMessage("");
+    }
+  }, [loggedIn]);
+
   function handleChange(event, name) {
     switch (name) {
       case "email":
@@ -35,9 +41,8 @@ function Login({ logged, setLogged }) {
   }
 
   function callback(data) {
-    console.log(data);
     if (data.loggedIn) {
-      loggingIn();
+      logging(true);
     } else {
       switch (data.error) {
         case "incorrect password":

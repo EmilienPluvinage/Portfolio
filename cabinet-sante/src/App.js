@@ -16,7 +16,6 @@ function App() {
     { link: "/Comptabilite", name: "Comptabilité" },
     { link: "/Statistiques", name: "Statistiques" },
   ];
-  const [logged, setLogged] = useState(false);
 
   return (
     <div id="App">
@@ -27,7 +26,7 @@ function App() {
             <LeftMenu menu={menu} />
             <Main menu={menu} />
           </Router>
-          <Login logged={logged} setLogged={setLogged} />
+          <Login />
         </div>
       </AuthProvider>
     </div>
