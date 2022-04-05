@@ -58,21 +58,43 @@ app.post("/Login", (req, res, next) => {
       (err, rows) => {
         connection.release(); // return the connection to pool
         if (err) throw err;
-
+        var userId = rows[0].id;
+        var userPwd = rows[0].password;
+        var userSalt = rows[0].salt;
         if (rows.length === 1) {
           var hash = crypto
-            .pbkdf2Sync(req.body.password, rows[0].salt, 1000, 64, `sha512`)
+            .pbkdf2Sync(req.body.password, userSalt, 1000, 64, `sha512`)
             .toString(`hex`);
-          if (rows[0].password === hash) {
+          if (userPwd === hash) {
             // right password, we generate a token a return it the the front-end
             var token = crypto.randomBytes(64).toString("hex");
+            // we check if there is already a token for that user
             connection.query(
-              "INSERT INTO tokens(userId,token) VALUES (?,?)",
-              [rows[0].id, token],
-              function (err, result) {
+              "SELECT COUNT(*) as n FROM tokens WHERE userId= ?",
+              userId,
+              (err, rows) => {
                 if (err) throw err;
-                console.log("1 record inserted");
-                res.status(201).json({ loggedIn: true, token: token });
+                if (rows[0].n > 0) {
+                  // then we update the token
+                  connection.query(
+                    "UPDATE tokens SET token = ? WHERE userId=?",
+                    [token, userId],
+                    (err, result) => {
+                      if (err) throw err;
+                      res.status(201).json({ loggedIn: true, token: token });
+                    }
+                  );
+                } else {
+                  // then we add a new one
+                  connection.query(
+                    "INSERT INTO tokens(userId,token) VALUES (?,?)",
+                    [userId, token],
+                    (err, result) => {
+                      if (err) throw err;
+                      res.status(201).json({ loggedIn: true, token: token });
+                    }
+                  );
+                }
               }
             );
           } else {
