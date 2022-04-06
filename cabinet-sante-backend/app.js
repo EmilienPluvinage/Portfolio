@@ -58,10 +58,10 @@ app.post("/Login", (req, res, next) => {
       (err, rows) => {
         connection.release(); // return the connection to pool
         if (err) throw err;
-        var userId = rows[0].id;
-        var userPwd = rows[0].password;
-        var userSalt = rows[0].salt;
         if (rows.length === 1) {
+          var userId = rows[0].id;
+          var userPwd = rows[0].password;
+          var userSalt = rows[0].salt;
           var hash = crypto
             .pbkdf2Sync(req.body.password, userSalt, 1000, 64, `sha512`)
             .toString(`hex`);
