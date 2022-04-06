@@ -31,56 +31,49 @@ function Login() {
         break;
     }
   }
-  function handleSubmit(event) {
-    postLogin(
-      value.email.toLowerCase(),
-      value.password.toLowerCase(),
-      callback
-    );
-    event.preventDefault();
-  }
 
-  function callback(data) {
-    if (data.loggedIn) {
-      logging(true, data.token);
-    } else {
-      switch (data.error) {
-        case "incorrect password":
-          setErrorMessage("Mot de passe incorrect.");
-          break;
-        case "incorrect e-mail":
-          setErrorMessage("Utilisateur non-reconnu.");
-          break;
-        default:
-          setErrorMessage("Erreur de connexion.");
-          break;
+  async function handleSubmit(event) {
+    event.preventDefault();
+    try {
+      const data = await postLogin(
+        value.email.toLowerCase(),
+        value.password.toLowerCase()
+      );
+      if (data.loggedIn) {
+        logging(true, data.token);
+      } else {
+        switch (data.error) {
+          case "incorrect password":
+            setErrorMessage("Mot de passe incorrect.");
+            break;
+          case "incorrect e-mail":
+            setErrorMessage("Utilisateur non-reconnu.");
+            break;
+          default:
+            setErrorMessage("Erreur de connexion.");
+            break;
+        }
       }
+    } catch (e) {
+      return e;
     }
   }
 
-  function postLogin(email, password, callback) {
-    fetch("http://localhost:3001/Login", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email: email, password: password }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(
-            `This is an HTTP error: The status is ${response.status}`
-          );
-        }
-        return response.json();
-      })
-      .then((actualData) => {
-        callback(actualData);
-      })
-      .catch((err) => {
-        console.log(err.message);
+  async function postLogin(email, password) {
+    try {
+      const fetchResponse = await fetch("http://localhost:3001/Login", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email, password: password }),
       });
+      const data = await fetchResponse.json();
+      return data;
+    } catch (e) {
+      return e;
+    }
   }
 
   return (
