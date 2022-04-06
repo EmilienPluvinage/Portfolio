@@ -145,3 +145,39 @@ h2 {
   cursor: pointer;
   background-color: #ade5ff;
 }
+
+.new-patient {
+  display: flex;
+  flex-direction: row;
+}
+
+.new-patient table {
+  margin: 10px;
+}
+
+.td-input input {
+  width: max-content;
+  border: none;
+  border-bottom: 1px solid lightgray;
+  padding: 2px;
+}
+
+.td-input textarea {
+  width: max-content;
+  border: none;
+  border-bottom: 1px solid lightgray;
+  padding: 2px;
+  resize: none;
+  font: inherit;
+  font-size: 1rem;
+}
+.td-label {
+  text-align: right;
+  padding-right: 5px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
