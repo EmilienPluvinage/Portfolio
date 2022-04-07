@@ -5,6 +5,7 @@ import LeftMenu from "./components/LeftMenu";
 import Login from "./components/Login";
 import { BrowserRouter as Router } from "react-router-dom";
 import { AuthProvider } from "./components/contexts/AuthContext";
+import { PatientsProvider } from "./components/contexts/PatientsContext";
 
 function App() {
   const menu = [
@@ -19,14 +20,16 @@ function App() {
   return (
     <div id="App">
       <AuthProvider>
-        <Header />
-        <div id="parent">
-          <Router>
-            <LeftMenu menu={menu} />
-            <Main menu={menu} />
-          </Router>
-          <Login />
-        </div>
+        <PatientsProvider>
+          <Header />
+          <div id="parent">
+            <Router>
+              <LeftMenu menu={menu} />
+              <Main menu={menu} />
+            </Router>
+            <Login />
+          </div>
+        </PatientsProvider>
       </AuthProvider>
     </div>
   );
