@@ -19,8 +19,8 @@ function App() {
 
   return (
     <div id="App">
-      <AuthProvider>
-        <PatientsProvider>
+      <PatientsProvider>
+        <AuthProvider>
           <Header />
           <div id="parent">
             <Router>
@@ -29,8 +29,8 @@ function App() {
             </Router>
             <Login />
           </div>
-        </PatientsProvider>
-      </AuthProvider>
+        </AuthProvider>
+      </PatientsProvider>
     </div>
   );
 }
