@@ -1,14 +1,12 @@
 import "../styles/styles.css";
 import { useState } from "react";
 import { useLogin, useLogging } from "./contexts/AuthContext";
-import { useUpdatePatients } from "./contexts/PatientsContext";
-
 import { useEffect } from "react";
 
 function Login() {
+  const currentToken = localStorage.getItem("token");
   const loggedIn = useLogin().login;
   const logging = useLogging();
-  const getPatients = useUpdatePatients();
   const [errorMessage, setErrorMessage] = useState("");
   const [value, setValue] = useState({
     email: "",
@@ -21,6 +19,15 @@ function Login() {
       setErrorMessage("");
     }
   }, [loggedIn]);
+
+  useEffect(() => {
+    // if we're not logged in but there is an existing token in local storage
+    // it means the user is returning, so we log him in.
+    if (currentToken !== null && loggedIn === false) {
+      console.log("returning");
+      logging(true, currentToken);
+    }
+  }, [currentToken, loggedIn, logging]);
 
   function handleChange(event, name) {
     switch (name) {
@@ -44,7 +51,7 @@ function Login() {
       );
       if (data.loggedIn) {
         logging(true, data.token);
-        getPatients(data.token);
+        localStorage.setItem("token", data.token);
       } else {
         switch (data.error) {
           case "incorrect password":
