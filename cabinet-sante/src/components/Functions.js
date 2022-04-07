@@ -52,9 +52,21 @@ export const datesAreOnSameDay = (first, second) =>
   first.getMonth() === second.getMonth() &&
   first.getDate() === second.getDate();
 
-export function capitalize(string) {
-  if (string?.length > 0) {
-    const lower = string.toLowerCase();
+export function wordCapitalize(word) {
+  if (word?.length > 0) {
+    const lower = word.toLowerCase();
     return lower.charAt(0).toUpperCase() + lower.slice(1);
+  } else {
+    return "";
   }
+}
+
+export function capitalize(string) {
+  // we split the string and capitalize each word separately
+  const words = string.split("-");
+  var res = "";
+  for (let i = 0; i < words.length; i++) {
+    res += "-" + wordCapitalize(words[i]);
+  }
+  return res.slice(1);
 }
