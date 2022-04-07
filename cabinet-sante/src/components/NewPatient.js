@@ -2,9 +2,12 @@ import { useState } from "react";
 import "../styles/styles.css";
 import { capitalize } from "./Functions";
 import { useLogin } from "./contexts/AuthContext";
+import { useUpdatePatients } from "./contexts/PatientsContext";
 
 export default function NewPatient({ defaultValue }) {
   const token = useLogin().token;
+  const getPatients = useUpdatePatients();
+
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [birthday, setBirthday] = useState("");
@@ -82,7 +85,8 @@ export default function NewPatient({ defaultValue }) {
         }),
       });
       const res = await fetchResponse.json();
-      console.log(res);
+      getPatients(token);
+      console.log(res.success);
     } catch (e) {
       return e;
     }
