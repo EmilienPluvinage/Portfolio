@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "../styles/styles.css";
 import { capitalize } from "./Functions";
 import { useLogin } from "./contexts/AuthContext";
 
 export default function NewPatient({ defaultValue }) {
   const token = useLogin().token;
-  const [errorMessage, setErrorMessage] = useState("");
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [birthday, setBirthday] = useState("");
