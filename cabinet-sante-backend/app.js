@@ -118,33 +118,14 @@ app.post("/Login", (req, res, next) => {
           if (userPwd === hash) {
             // right password, we generate a token a return it the the front-end
             var token = crypto.randomBytes(64).toString("hex");
-            // we check if there is already a token for that user
+
+            // we add a new token
             connection.query(
-              "SELECT COUNT(*) as n FROM tokens WHERE userId= ?",
-              userId,
-              (err, rows) => {
+              "INSERT INTO tokens(userId,token) VALUES (?,?)",
+              [userId, token],
+              (err, result) => {
                 if (err) throw err;
-                if (rows[0].n > 0) {
-                  // then we update the token
-                  connection.query(
-                    "UPDATE tokens SET token = ? WHERE userId=?",
-                    [token, userId],
-                    (err, result) => {
-                      if (err) throw err;
-                      res.status(201).json({ loggedIn: true, token: token });
-                    }
-                  );
-                } else {
-                  // then we add a new one
-                  connection.query(
-                    "INSERT INTO tokens(userId,token) VALUES (?,?)",
-                    [userId, token],
-                    (err, result) => {
-                      if (err) throw err;
-                      res.status(201).json({ loggedIn: true, token: token });
-                    }
-                  );
-                }
+                res.status(201).json({ loggedIn: true, token: token });
               }
             );
           } else {
