@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { useUpdatePatients } from "./PatientsContext";
 
 const LoginContext = React.createContext();
 const LoggingContext = React.createContext();
@@ -12,6 +13,7 @@ export function useLogging() {
 }
 
 export function AuthProvider({ children }) {
+  const getPatients = useUpdatePatients();
   // True or False
   const [login, setLogin] = useState(false);
   // Token to be passed to any SQL query and compared with the one in DB
@@ -21,7 +23,9 @@ export function AuthProvider({ children }) {
     setLogin(bool);
     if (bool) {
       setToken(newToken);
+      getPatients(newToken);
     } else {
+      localStorage.removeItem("token");
       setToken(null);
     }
   }
