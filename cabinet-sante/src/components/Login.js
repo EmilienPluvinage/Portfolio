@@ -1,11 +1,14 @@
 import "../styles/styles.css";
 import { useState } from "react";
 import { useLogin, useLogging } from "./contexts/AuthContext";
+import { useUpdatePatients } from "./contexts/PatientsContext";
+
 import { useEffect } from "react";
 
 function Login() {
   const loggedIn = useLogin().login;
   const logging = useLogging();
+  const getPatients = useUpdatePatients();
   const [errorMessage, setErrorMessage] = useState("");
   const [value, setValue] = useState({
     email: "",
@@ -41,6 +44,7 @@ function Login() {
       );
       if (data.loggedIn) {
         logging(true, data.token);
+        getPatients(data.token);
       } else {
         switch (data.error) {
           case "incorrect password":
