@@ -67,7 +67,6 @@ export default function NewPatient({ defaultValue }) {
 
   async function submitForm(event) {
     event.preventDefault();
-    console.log("OK");
     try {
       const fetchResponse = await fetch("http://localhost:3001/NewPatient", {
         method: "POST",

@@ -48,6 +48,8 @@ app.get("/Test", (req, res, next) => {
   });
 });
 
+// LOGIN
+
 app.post("/Login", (req, res, next) => {
   pool.getConnection((err, connection) => {
     if (err) throw err;
@@ -110,6 +112,50 @@ app.post("/Login", (req, res, next) => {
             loggedIn: false,
             error: "multiple users with same e-mail",
           });
+        }
+      }
+    );
+  });
+});
+
+// ADD A NEW PATIENT
+
+app.post("/NewPatient", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          var userId = rows[0].userId;
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "INSERT INTO patients(userId, firstname, lastname, birthday, sex, mobilephone, landline, email, address, postcode, city, comments) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+            [
+              userId,
+              req.body.firstname,
+              req.body.lastname,
+              req.body.birthday,
+              req.body.sex,
+              req.body.mobilephone,
+              req.body.landline,
+              req.body.email,
+              req.body.address,
+              req.body.postcode,
+              req.body.city,
+              req.body.comments,
+            ],
+            (err, result) => {
+              if (err) throw err;
+              res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
         }
       }
     );
