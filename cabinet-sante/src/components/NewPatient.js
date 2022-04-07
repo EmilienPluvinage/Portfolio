@@ -18,13 +18,6 @@ export default function NewPatient({ defaultValue }) {
   const [city, setCity] = useState("");
   const [comments, setComments] = useState("");
 
-  useEffect(() => {
-    setFirstname("Emilien");
-    setLastname("Pluvinage");
-    setBirthday("1990-05-07");
-    setMobilePhone("0766277595");
-  }, []);
-
   function handleChange(event, name) {
     switch (name) {
       case "firstname":
