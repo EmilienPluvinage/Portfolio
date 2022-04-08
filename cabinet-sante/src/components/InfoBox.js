@@ -1,17 +1,16 @@
 import "../styles/styles.css";
 import React from "react";
 
-function InfoBox({ text, open, setOpen, setDisable }) {
+function InfoBox({ text, open, setOpen }) {
   function close() {
     setOpen(false);
-    setDisable(false);
   }
 
   return (
     open && (
       <div className="dialog" onClick={close}>
         <div className="dialog-content">
-          <div>{text}</div>
+          <div style={{ margin: "auto" }}>{text}</div>
         </div>
       </div>
     )
