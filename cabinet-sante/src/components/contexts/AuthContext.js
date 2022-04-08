@@ -19,12 +19,32 @@ export function AuthProvider({ children }) {
   // Token to be passed to any SQL query and compared with the one in DB
   const [token, setToken] = useState(null);
 
+  async function removeToken(token) {
+    try {
+      const fetchResponse = await fetch("http://localhost:3001/DeleteToken", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: token,
+        }),
+      });
+      const res = await fetchResponse.json();
+      return res;
+    } catch (e) {
+      return e;
+    }
+  }
+
   function logging(bool, newToken) {
     setLogin(bool);
     if (bool) {
       setToken(newToken);
       getPatients(newToken);
     } else {
+      removeToken(token);
       localStorage.removeItem("token");
       setToken(null);
     }

@@ -190,4 +190,24 @@ function updateTokenTime(connection, token) {
   );
 }
 
+////////////////
+//   DELETE   //
+////////////////
+
+app.post("/DeleteToken", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "DELETE FROM tokens WHERE token=?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        res.status(201).json({ success: true });
+      }
+    );
+  });
+});
+
 module.exports = app;
