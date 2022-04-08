@@ -4,8 +4,12 @@ import { capitalize } from "./Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { useParams } from "react-router-dom";
+import InfoBox from "./InfoBox";
 
 export default function NewPatient() {
+  const [disable, setDisable] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [infoText, setInfoText] = useState("");
   const token = useLogin().token;
   const PatientList = usePatients();
   const getPatients = useUpdatePatients();
@@ -42,7 +46,7 @@ export default function NewPatient() {
         setAddress(patient.address);
         setPostcode(patient.postcode);
         setCity(patient.city);
-        setComments(patient.city);
+        setComments(patient.comments);
       }
     }
   }, [params, PatientList]);
@@ -88,6 +92,7 @@ export default function NewPatient() {
   }
 
   async function submitForm(event) {
+    setDisable(true);
     event.preventDefault();
     var link =
       "http://localhost:3001/" + (id === 0 ? "NewPatient" : "UpdatePatient");
@@ -116,7 +121,14 @@ export default function NewPatient() {
       });
       const res = await fetchResponse.json();
       getPatients(token);
-      console.log(res.success);
+      if (res.success) {
+        setInfoText(
+          id === 0
+            ? "Patient ajouté avec succès."
+            : "Patient modifié avec succès."
+        );
+        setOpen(true);
+      }
     } catch (e) {
       return e;
     }
@@ -124,6 +136,12 @@ export default function NewPatient() {
 
   return (
     <div>
+      <InfoBox
+        text={infoText}
+        open={open}
+        setOpen={setOpen}
+        setDisable={setDisable}
+      />
       <form onSubmit={submitForm}>
         <h2>1 - État Civil du Patient</h2>
         <div className="main-content">
@@ -168,16 +186,14 @@ export default function NewPatient() {
                 </tr>
                 <tr>
                   <td className="td-label">Genre:</td>
-                  <td
-                    className="td-input"
-                    onChange={(e) => handleChange(e, "sex")}
-                  >
+                  <td className="td-input">
                     <label>H</label>
                     <input
                       type="radio"
                       name="sex"
                       value="homme"
                       checked={sex === "homme" && "checked"}
+                      onChange={(e) => handleChange(e, "sex")}
                       required
                     />
                     <label>F</label>
@@ -186,6 +202,7 @@ export default function NewPatient() {
                       name="sex"
                       value="femme"
                       checked={sex === "femme" && "checked"}
+                      onChange={(e) => handleChange(e, "sex")}
                     />
                     <label>Autre</label>
                     <input
@@ -193,6 +210,7 @@ export default function NewPatient() {
                       name="sex"
                       value="autre"
                       checked={sex === "autre" && "checked"}
+                      onChange={(e) => handleChange(e, "sex")}
                     />
                   </td>
                 </tr>
@@ -409,7 +427,7 @@ export default function NewPatient() {
         <h2>5 - Ajouter une consultation aujourd'hui</h2>
         <div className="main-content">5</div>
         <div className="form-btn">
-          <input type="submit" value="Ajouter" />
+          <input type="submit" value="Ajouter" disabled={disable} />
         </div>
       </form>
     </div>
