@@ -153,7 +153,7 @@ export default function NewPatient({ defaultValue }) {
                   <td className="td-input">
                     <input
                       type="phone"
-                      pattern="[0-9]{10}"
+                      pattern="0[0-9]{9}|\+[0-9]{11}"
                       name="mobilephone"
                       onChange={(e) => handleChange(e, "mobilephone")}
                       value={mobilephone}
@@ -165,7 +165,7 @@ export default function NewPatient({ defaultValue }) {
                   <td className="td-input">
                     <input
                       type="phone"
-                      pattern="[0-9]{10}"
+                      pattern="0[0-9]{9}|\+[0-9]{11}"
                       name="landline"
                       onChange={(e) => handleChange(e, "landline")}
                       value={landline}
