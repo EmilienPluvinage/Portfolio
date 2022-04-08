@@ -118,7 +118,6 @@ app.post("/Login", (req, res, next) => {
           if (userPwd === hash) {
             // right password, we generate a token a return it the the front-end
             var token = crypto.randomBytes(64).toString("hex");
-
             // we add a new token
             connection.query(
               "INSERT INTO tokens(userId,token,time) VALUES (?,?,?)",
@@ -188,6 +187,15 @@ function updateTokenTime(connection, token) {
       if (err) throw err;
     }
   );
+}
+
+async function doesTokenExist(connection, token) {
+  console.log(token);
+  connection.query("SELECT * FROM tokens WHERE token=?", token, (err, rows) => {
+    if (err) throw err;
+    console.log(rows.length);
+    return rows.length > 0;
+  });
 }
 
 ////////////////
