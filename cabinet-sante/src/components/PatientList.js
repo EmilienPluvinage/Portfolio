@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "../styles/styles.css";
 import { usePatients } from "./contexts/PatientsContext";
 
@@ -11,7 +12,8 @@ export default function PatientList() {
         {patients.map((patient) => (
           <p key={patient.id}>
             {patient.firstname} {patient.lastname} {patient.birthday}{" "}
-            {patient.sex} {patient.mobilephone}
+            {patient.sex} {patient.mobilephone}{" "}
+            <Link to={"/Nouveau-Patient/" + patient.id}>Modifier</Link>
           </p>
         ))}
       </div>
