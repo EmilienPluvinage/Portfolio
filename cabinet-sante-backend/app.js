@@ -121,8 +121,8 @@ app.post("/Login", (req, res, next) => {
 
             // we add a new token
             connection.query(
-              "INSERT INTO tokens(userId,token) VALUES (?,?)",
-              [userId, token],
+              "INSERT INTO tokens(userId,token,time) VALUES (?,?,?)",
+              [userId, token, Date.now()],
               (err, result) => {
                 if (err) throw err;
                 res.status(201).json({ loggedIn: true, token: token });
@@ -170,6 +170,8 @@ app.post("/GetPatients", (req, res, next) => {
               res.status(201).json({ success: true, data: rows });
             }
           );
+          // we also update the time of the token
+          updateTokenTime(connection, req.body.token);
         } else {
           res.status(201).json({ success: false, error: "not connected" });
         }
@@ -177,5 +179,15 @@ app.post("/GetPatients", (req, res, next) => {
     );
   });
 });
+
+function updateTokenTime(connection, token) {
+  connection.query(
+    "UPDATE tokens SET time=? WHERE token=?",
+    [Date.now(), token],
+    (err, rows) => {
+      if (err) throw err;
+    }
+  );
+}
 
 module.exports = app;
