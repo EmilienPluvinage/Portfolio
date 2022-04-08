@@ -4,7 +4,6 @@ import { capitalize } from "./Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { useParams } from "react-router-dom";
-import { unstable_renderSubtreeIntoContainer } from "react-dom";
 
 export default function NewPatient() {
   const token = useLogin().token;
@@ -90,8 +89,10 @@ export default function NewPatient() {
 
   async function submitForm(event) {
     event.preventDefault();
+    var link =
+      "http://localhost:3001/" + (id === 0 ? "NewPatient" : "UpdatePatient");
     try {
-      const fetchResponse = await fetch("http://localhost:3001/NewPatient", {
+      const fetchResponse = await fetch(link, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -110,6 +111,7 @@ export default function NewPatient() {
           city: city,
           comments: comments,
           token: token,
+          id: id,
         }),
       });
       const res = await fetchResponse.json();
