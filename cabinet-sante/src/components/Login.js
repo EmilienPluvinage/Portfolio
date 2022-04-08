@@ -24,7 +24,6 @@ function Login() {
     // if we're not logged in but there is an existing token in local storage
     // it means the user is returning, so we log him in.
     if (currentToken !== null && loggedIn === false) {
-      console.log("returning");
       logging(true, currentToken);
     }
   }, [currentToken, loggedIn, logging]);
