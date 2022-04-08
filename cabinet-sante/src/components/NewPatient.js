@@ -7,7 +7,6 @@ import { useParams } from "react-router-dom";
 import InfoBox from "./InfoBox";
 
 export default function NewPatient() {
-  const [disable, setDisable] = useState(false);
   const [open, setOpen] = useState(false);
   const [infoText, setInfoText] = useState("");
   const token = useLogin().token;
@@ -92,7 +91,6 @@ export default function NewPatient() {
   }
 
   async function submitForm(event) {
-    setDisable(true);
     event.preventDefault();
     var link =
       "http://localhost:3001/" + (id === 0 ? "NewPatient" : "UpdatePatient");
@@ -136,14 +134,16 @@ export default function NewPatient() {
 
   return (
     <div>
-      <InfoBox
-        text={infoText}
-        open={open}
-        setOpen={setOpen}
-        setDisable={setDisable}
-      />
+      <InfoBox text={infoText} open={open} setOpen={setOpen} />
       <form onSubmit={submitForm}>
-        <h2>1 - État Civil du Patient</h2>
+        <div className="nav-patient">
+          <div className="btn-patient" onClick={submitForm}>
+            Enregistrer
+          </div>
+          <div className="btn-patient">Consultation</div>
+          <div className="btn-patient">Paiement</div>
+        </div>
+        <h2>1 - État Civil du Patient{" " + firstname + " " + lastname}</h2>
         <div className="main-content">
           <div className="new-patient">
             <table>
@@ -426,9 +426,7 @@ export default function NewPatient() {
         </div>
         <h2>5 - Ajouter une consultation aujourd'hui</h2>
         <div className="main-content">5</div>
-        <div className="form-btn">
-          <input type="submit" value="Ajouter" disabled={disable} />
-        </div>
+        <div className="form-btn"></div>
       </form>
     </div>
   );
