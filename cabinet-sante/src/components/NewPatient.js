@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../styles/styles.css";
 import { capitalize } from "./Functions";
 import { useLogin } from "./contexts/AuthContext";
-import { useUpdatePatients } from "./contexts/PatientsContext";
+import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
+import { useParams } from "react-router-dom";
+import { unstable_renderSubtreeIntoContainer } from "react-dom";
 
-export default function NewPatient({ defaultValue }) {
+export default function NewPatient() {
   const token = useLogin().token;
+  const PatientList = usePatients();
   const getPatients = useUpdatePatients();
-
+  const [id, setId] = useState(0);
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [birthday, setBirthday] = useState("");
@@ -19,6 +22,31 @@ export default function NewPatient({ defaultValue }) {
   const [postcode, setPostcode] = useState("");
   const [city, setCity] = useState("");
   const [comments, setComments] = useState("");
+
+  const params = useParams();
+
+  useEffect(() => {
+    // we prefill the fields if it's an update, leave them empty if it's an addition
+    if (params?.id !== undefined && PatientList.length > 0) {
+      var patient = PatientList.find(
+        (e) => e.id.toString() === params.id.toString()
+      );
+      if (patient !== undefined) {
+        setId(patient.id);
+        setFirstname(patient.firstname);
+        setLastname(patient.lastname);
+        setBirthday(patient.birthday);
+        setSex(patient.sex);
+        setMobilePhone(patient.mobilephone);
+        setLandline(patient.landline);
+        setEmail(patient.email);
+        setAddress(patient.address);
+        setPostcode(patient.postcode);
+        setCity(patient.city);
+        setComments(patient.city);
+      }
+    }
+  }, [params, PatientList]);
 
   function handleChange(event, name) {
     switch (name) {

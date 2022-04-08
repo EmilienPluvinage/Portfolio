@@ -10,6 +10,7 @@ function Main({ menu }) {
     loggedIn && (
       <div id="Main">
         <Routes>
+          <Route exact path="/Nouveau-Patient/:id" element={<NewPatient />} />
           <Route exact path="/Nouveau-Patient" element={<NewPatient />} />
           <Route exact path="/Listing-Patients" element={<PatientList />} />
 
