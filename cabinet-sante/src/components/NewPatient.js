@@ -173,11 +173,27 @@ export default function NewPatient() {
                     onChange={(e) => handleChange(e, "sex")}
                   >
                     <label>H</label>
-                    <input type="radio" name="sex" value="homme" required />
+                    <input
+                      type="radio"
+                      name="sex"
+                      value="homme"
+                      checked={sex === "homme" && "checked"}
+                      required
+                    />
                     <label>F</label>
-                    <input type="radio" name="sex" value="femme" />
+                    <input
+                      type="radio"
+                      name="sex"
+                      value="femme"
+                      checked={sex === "femme" && "checked"}
+                    />
                     <label>Autre</label>
-                    <input type="radio" name="sex" value="autre" />
+                    <input
+                      type="radio"
+                      name="sex"
+                      value="autre"
+                      checked={sex === "autre" && "checked"}
+                    />
                   </td>
                 </tr>
                 <tr>
