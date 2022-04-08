@@ -108,6 +108,7 @@ export default function NewPatient({ defaultValue }) {
                       name="lastname"
                       value={lastname}
                       onChange={(e) => handleChange(e, "lastname")}
+                      autoComplete="new-password"
                       required
                     />
                   </td>
@@ -120,6 +121,7 @@ export default function NewPatient({ defaultValue }) {
                       name="firstname"
                       value={firstname}
                       onChange={(e) => handleChange(e, "firstname")}
+                      autoComplete="new-password"
                     />
                   </td>
                 </tr>
@@ -156,6 +158,7 @@ export default function NewPatient({ defaultValue }) {
                       pattern="0[0-9]{9}|\+[0-9]{11}"
                       name="mobilephone"
                       onChange={(e) => handleChange(e, "mobilephone")}
+                      autoComplete="new-password"
                       value={mobilephone}
                     />
                   </td>
@@ -168,6 +171,7 @@ export default function NewPatient({ defaultValue }) {
                       pattern="0[0-9]{9}|\+[0-9]{11}"
                       name="landline"
                       onChange={(e) => handleChange(e, "landline")}
+                      autoComplete="new-password"
                       value={landline}
                     />
                   </td>
@@ -183,6 +187,7 @@ export default function NewPatient({ defaultValue }) {
                       type="email"
                       name="email"
                       onChange={(e) => handleChange(e, "email")}
+                      autoComplete="new-password"
                       value={email}
                     />
                   </td>
@@ -193,6 +198,7 @@ export default function NewPatient({ defaultValue }) {
                     <textarea
                       name="address"
                       onChange={(e) => handleChange(e, "address")}
+                      autoComplete="new-password"
                       value={address}
                     />
                   </td>
@@ -205,6 +211,7 @@ export default function NewPatient({ defaultValue }) {
                       pattern="[0-9]{5}"
                       name="postcode"
                       onChange={(e) => handleChange(e, "postcode")}
+                      autoComplete="new-password"
                       value={postcode}
                     />
                   </td>
@@ -216,6 +223,7 @@ export default function NewPatient({ defaultValue }) {
                       type="text"
                       name="city"
                       onChange={(e) => handleChange(e, "city")}
+                      autoComplete="new-password"
                       value={city}
                     />
                   </td>
