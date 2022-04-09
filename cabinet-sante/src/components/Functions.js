@@ -70,7 +70,7 @@ export function weekNumber(date) {
   // if the first day of Jan was one a Friday, Saturday or Sunday, then is doesn't count as the first week of the year
   // and is still the last week of the previous year. As a consequence, we remove 1 to our result.
   // note that this is a European rule that doesn't apply in the US.
-  if (oneJanDay === 5 || oneJanDay === 6 || oneJanDay === 0) result--;
+  //if (oneJanDay === 5 || oneJanDay === 6 || oneJanDay === 0) result--;
   return result;
 }
 export function previousMonday(date) {
@@ -110,4 +110,87 @@ function stringToDate(string) {
   var date = new Date();
   date.setHours(array[0], array[1], 0);
   return date;
+}
+
+export function isInEvent(time, events, day) {
+  var result = false;
+  for (let i = 0; i < events.length; i++) {
+    if (
+      isBetween(time, events[i].start, events[i].end) &&
+      datesAreOnSameDay(events[i].day, day)
+    ) {
+      return true;
+    }
+  }
+  return result;
+}
+
+export function getEventId(time, events, day) {
+  var result = false;
+  for (let i = 0; i < events.length; i++) {
+    if (
+      isBetween(time, events[i].start, events[i].end) &&
+      datesAreOnSameDay(events[i].day, day)
+    ) {
+      return events[i].id;
+    }
+  }
+  return result;
+}
+
+export function isFirstSlotOfEvent(time, events, day) {
+  return (
+    isInEvent(time, events, day) && !isInEvent(RemoveOneStep(time), events, day)
+  );
+}
+
+export function AddOneStep(time) {
+  // adds 15 minutes to a "hh:mm" time format
+  const array = time.split(":");
+  var newHours = array[0];
+  var newMinutes = "00";
+  switch (array[1]) {
+    case "00":
+      newMinutes = "15";
+      break;
+    case "15":
+      newMinutes = "30";
+      break;
+    case "30":
+      newMinutes = "45";
+      break;
+    case "45":
+      newMinutes = "00";
+      newHours = (parseInt(newHours) + 1).toString();
+      break;
+    default:
+      break;
+  }
+  return newHours + ":" + newMinutes;
+}
+
+export function RemoveOneStep(time) {
+  // removes 15 minutes to a "hh:mm" time format
+  const array = time.split(":");
+  var newHours = array[0];
+  var newMinutes = "00";
+  switch (array[1]) {
+    case "00":
+      newMinutes = "45";
+      newHours = (parseInt(newHours) - 1).toString();
+      break;
+    case "15":
+      newMinutes = "00";
+      break;
+    case "30":
+      newMinutes = "15";
+      break;
+    case "45":
+      newMinutes = "30";
+
+      break;
+    default:
+      break;
+  }
+  return newHours + ":" + newMinutes;
 }

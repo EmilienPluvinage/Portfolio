@@ -32,11 +32,14 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  border-right: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
 }
 .MyCalendar-column-GMT {
   display: flex;
   flex-direction: column;
   text-align: right;
+  border-right: 1px solid lightgray;
 }
 
 .MyCalendar-columnTitle {
@@ -47,16 +50,9 @@
   padding: 10px;
 }
 
-.MyCalendar-step {
-  border: 1px dotted grey;
-}
 .MyCalendar-event {
-  background-color: lightblue;
-  border: 1px dotted grey;
-}
-
-.MyCalendar-step-GMT {
-  border: 1px solid white;
+  background-color: #e2f6ff;
+  cursor: pointer;
 }
 
 .MyCalendar-today {
@@ -66,11 +62,16 @@
   padding: 10px;
   border-radius: 20px;
   margin: auto;
-  width: fit-content;
+  width: max-content;
   margin-top: 5px;
 }
 
 .MyCalendar-nottoday {
+  margin: auto;
   padding: 10px;
   margin-top: 5px;
+  width: max-content;
+}
+.MyCalendar-step-GMT {
+  color: gray;
 }

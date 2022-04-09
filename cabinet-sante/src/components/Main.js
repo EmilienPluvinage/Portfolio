@@ -8,7 +8,27 @@ import MyCalendar from "./MyCalendar";
 
 function Main({ menu }) {
   const events = [
-    { day: new Date(Date.now()), start: "9:00", end: "10:00", title: "RDV" },
+    {
+      id: 34,
+      day: new Date(Date.now()),
+      start: "9:00",
+      end: "10:00",
+      title: "RDV",
+    },
+    {
+      id: 35,
+      day: new Date(Date.now()),
+      start: "11:00",
+      end: "11:30",
+      title: "RDV",
+    },
+    {
+      id: 36,
+      day: new Date(Date.now()),
+      start: "14:00",
+      end: "17:00",
+      title: "RDV",
+    },
   ];
   const loggedIn = useLogin().login;
   return (
