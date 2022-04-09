@@ -1,0 +1,32 @@
+.MyCalendar-main {
+}
+
+.MyCalendar-content {
+  display: flex;
+  flex-direction: row;
+  line-height: 75%;
+}
+
+.MyCalendar-column {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.MyCalendar-column-GMT {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.MyCalendar-columnTitle {
+  text-align: center;
+  padding: 10px;
+}
+
+.MyCalendar-step {
+  border: 1px dotted grey;
+}
+
+.MyCalendar-step-GMT {
+  border: 1px solid white;
+}
