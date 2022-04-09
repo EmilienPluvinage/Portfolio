@@ -93,3 +93,21 @@ export function addNdays(date, n) {
   newDate.setDate(newDate.getDate() + n);
   return newDate;
 }
+
+export function isBetween(time, start, end) {
+  // checks if time is between start and end, where all dates are formated with "hh:mm"
+
+  var timeDate = stringToDate(time);
+  var startDate = stringToDate(start);
+  var endDate = stringToDate(end);
+
+  return timeDate >= startDate && timeDate < endDate;
+}
+
+function stringToDate(string) {
+  // converts a string in format "hh:mm" into a date
+  const array = string.split(":");
+  var date = new Date();
+  date.setHours(array[0], array[1], 0);
+  return date;
+}
