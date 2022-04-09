@@ -1,4 +1,25 @@
 .MyCalendar-main {
+  padding: 5px;
+}
+
+.MyCalendar-nav {
+  display: flex;
+  flex-direction: row;
+}
+
+.MyCalendar-btn {
+  margin: 5px;
+  padding: 5px;
+  background-color: #dcdcdc;
+  border-radius: 0.3rem;
+  font-size: 0.7rem;
+  letter-spacing: 00.05rem;
+  border: 1px solid gray;
+}
+
+.MyCalendar-btn:hover {
+  cursor: pointer;
+  background-color: #e8e8e8;
 }
 
 .MyCalendar-content {

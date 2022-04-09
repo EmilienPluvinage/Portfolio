@@ -5,9 +5,11 @@ import { weekNumber } from "./Functions";
 
 export default function MyCalendar({ options }) {
   const today = Date.now();
+  const thisWeek = weekNumber(new Date(today));
   const dayOfTheWeek = new Date(today).getDay();
-  console.log(dayOfTheWeek);
-  const [displayedWeek, setdisplayWeek] = useState(weekNumber(new Date(today)));
+  const [displayedWeek, setDisplayedWeek] = useState(
+    weekNumber(new Date(today))
+  );
   console.log(displayedWeek);
   const daysOfTheWeek = [
     "Lundi",
@@ -35,7 +37,20 @@ export default function MyCalendar({ options }) {
 
   return (
     <div className="MyCalendar-main">
-      Calendar
+      <div className="MyCalendar-nav">
+        <div
+          className="MyCalendar-btn"
+          onClick={() => setDisplayedWeek((week) => week - 1)}
+        >
+          Prev
+        </div>
+        <div
+          className="MyCalendar-btn"
+          onClick={() => setDisplayedWeek((week) => week + 1)}
+        >
+          Next
+        </div>
+      </div>
       <div className="MyCalendar-content">
         <div className="MyCalendar-column-GMT" key={"GMT"}>
           <div className="MyCalendar-columnTitleGMT" key={"GMTtitle"}>
@@ -58,7 +73,7 @@ export default function MyCalendar({ options }) {
             <div className="MyCalendar-columnTitle" key={day + "title"}>
               <div
                 className={
-                  (index + 1) % 7 === dayOfTheWeek
+                  (index + 1) % 7 === dayOfTheWeek && thisWeek === displayedWeek
                     ? "MyCalendar-today"
                     : "MyCalendar-nottoday"
                 }
