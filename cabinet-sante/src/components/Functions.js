@@ -15,23 +15,14 @@ export function displayPercentage(value) {
   return (Math.round(value * 10000) / 100).toString() + "%";
 }
 
-export function displayDate(today, dateOnly) {
+export function displayDate(today) {
+  var day = today.getDate();
   var month = today.getMonth() + 1;
 
   var date =
-    today.getDate() +
-    "-" +
-    (month.toString().length === 1 ? "0" + month : month) +
-    "-" +
-    today.getFullYear() +
-    (!dateOnly
-      ? " " +
-        today.getHours() +
-        ":" +
-        (today.getMinutes().toString().length === 1
-          ? "0" + today.getMinutes()
-          : today.getMinutes())
-      : "");
+    (day.toString().length === 1 ? "0" + day : day) +
+    " / " +
+    (month.toString().length === 1 ? "0" + month : month);
 
   return date;
 }
@@ -81,4 +72,24 @@ export function weekNumber(date) {
   // note that this is a European rule that doesn't apply in the US.
   if (oneJanDay === 5 || oneJanDay === 6 || oneJanDay === 0) result--;
   return result;
+}
+export function previousMonday(date) {
+  // return the monday of the week "date" is in.
+  var day = date.getDay();
+  if (day !== 1) {
+    // if it's sunday we remove 6 days
+    var daysToRemove = 6;
+    if (day !== 0) {
+      // otherwise we remove day - 1
+      daysToRemove = day - 1;
+    }
+    date.setDate(date.getDate() - daysToRemove);
+  }
+  return date;
+}
+
+export function addNdays(date, n) {
+  var newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + n);
+  return newDate;
 }

@@ -1,16 +1,21 @@
 import React from "react";
 import { useState } from "react";
 import "../styles/MyCalendar.css";
-import { weekNumber } from "./Functions";
+import {
+  datesAreOnSameDay,
+  previousMonday,
+  displayDate,
+  addNdays,
+} from "./Functions";
 
 export default function MyCalendar({ options }) {
   const today = Date.now();
-  const thisWeek = weekNumber(new Date(today));
+  const thisMonday = previousMonday(new Date(today));
   const dayOfTheWeek = new Date(today).getDay();
-  const [displayedWeek, setDisplayedWeek] = useState(
-    weekNumber(new Date(today))
+  const [displayedMonday, setDisplayedMonday] = useState(
+    previousMonday(new Date(today))
   );
-  console.log(displayedWeek);
+
   const daysOfTheWeek = [
     "Lundi",
     "Mardi",
@@ -40,13 +45,13 @@ export default function MyCalendar({ options }) {
       <div className="MyCalendar-nav">
         <div
           className="MyCalendar-btn"
-          onClick={() => setDisplayedWeek((week) => week - 1)}
+          onClick={() => setDisplayedMonday((monday) => addNdays(monday, -7))}
         >
           Prev
         </div>
         <div
           className="MyCalendar-btn"
-          onClick={() => setDisplayedWeek((week) => week + 1)}
+          onClick={() => setDisplayedMonday((monday) => addNdays(monday, 7))}
         >
           Next
         </div>
@@ -54,7 +59,8 @@ export default function MyCalendar({ options }) {
       <div className="MyCalendar-content">
         <div className="MyCalendar-column-GMT" key={"GMT"}>
           <div className="MyCalendar-columnTitleGMT" key={"GMTtitle"}>
-            {"GMT"}
+            <div className="MyCalendar-nottoday">&nbsp;</div>
+            <div className="MyCalendar-nottoday">GMT</div>
           </div>
           <div className="MyCalendar-columContent" key={"GMTcontent"}>
             {hours.map((step) => (
@@ -73,12 +79,23 @@ export default function MyCalendar({ options }) {
             <div className="MyCalendar-columnTitle" key={day + "title"}>
               <div
                 className={
-                  (index + 1) % 7 === dayOfTheWeek && thisWeek === displayedWeek
+                  (index + 1) % 7 === dayOfTheWeek &&
+                  datesAreOnSameDay(thisMonday, displayedMonday)
                     ? "MyCalendar-today"
                     : "MyCalendar-nottoday"
                 }
               >
-                {day}{" "}
+                {day}
+              </div>
+              <div
+                className={
+                  (index + 1) % 7 === dayOfTheWeek &&
+                  datesAreOnSameDay(thisMonday, displayedMonday)
+                    ? "MyCalendar-today"
+                    : "MyCalendar-nottoday"
+                }
+              >
+                {displayDate(addNdays(displayedMonday, index))}
               </div>
             </div>
             <div className="MyCalendar-columContent" key={day + "content"}>

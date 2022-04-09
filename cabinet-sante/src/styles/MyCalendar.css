@@ -45,8 +45,6 @@
 }
 .MyCalendar-columnTitleGMT {
   padding: 10px;
-  padding-bottom: 20px;
-  padding-top: 20px;
 }
 
 .MyCalendar-step {
@@ -62,9 +60,13 @@
   color: white;
   font-weight: 500;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 20px;
+  margin: auto;
+  width: fit-content;
+  margin-top: 5px;
 }
 
 .MyCalendar-nottoday {
   padding: 10px;
+  margin-top: 5px;
 }
