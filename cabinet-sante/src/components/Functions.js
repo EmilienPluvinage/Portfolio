@@ -70,3 +70,15 @@ export function capitalize(string) {
   }
   return res.slice(1);
 }
+
+export function weekNumber(date) {
+  var oneJan = new Date(date.getFullYear(), 0, 1);
+  var oneJanDay = oneJan.getDay();
+  var numberOfDays = Math.floor((date - oneJan) / (24 * 60 * 60 * 1000));
+  var result = Math.ceil((date.getDay() + 1 + numberOfDays) / 7);
+  // if the first day of Jan was one a Friday, Saturday or Sunday, then is doesn't count as the first week of the year
+  // and is still the last week of the previous year. As a consequence, we remove 1 to our result.
+  // note that this is a European rule that doesn't apply in the US.
+  if (oneJanDay === 5 || oneJanDay === 6 || oneJanDay === 0) result--;
+  return result;
+}
