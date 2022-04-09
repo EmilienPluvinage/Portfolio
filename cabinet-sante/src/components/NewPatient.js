@@ -5,6 +5,7 @@ import { useLogin } from "./contexts/AuthContext";
 import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { useParams } from "react-router-dom";
 import InfoBox from "./InfoBox";
+import { Link } from "react-router-dom";
 
 export default function NewPatient() {
   const [open, setOpen] = useState(false);
@@ -29,23 +30,39 @@ export default function NewPatient() {
 
   useEffect(() => {
     // we prefill the fields if it's an update, leave them empty if it's an addition
-    if (params?.id !== undefined && PatientList.length > 0) {
-      var patient = PatientList.find(
-        (e) => e.id.toString() === params.id.toString()
-      );
-      if (patient !== undefined) {
-        setId(patient.id);
-        setFirstname(patient.firstname);
-        setLastname(patient.lastname);
-        setBirthday(patient.birthday);
-        setSex(patient.sex);
-        setMobilePhone(patient.mobilephone);
-        setLandline(patient.landline);
-        setEmail(patient.email);
-        setAddress(patient.address);
-        setPostcode(patient.postcode);
-        setCity(patient.city);
-        setComments(patient.comments);
+    console.log(params);
+    if (PatientList.length > 0) {
+      if (params?.id !== undefined) {
+        var patient = PatientList.find(
+          (e) => e.id.toString() === params.id.toString()
+        );
+        if (patient !== undefined) {
+          setId(patient.id);
+          setFirstname(patient.firstname);
+          setLastname(patient.lastname);
+          setBirthday(patient.birthday);
+          setSex(patient.sex);
+          setMobilePhone(patient.mobilephone);
+          setLandline(patient.landline);
+          setEmail(patient.email);
+          setAddress(patient.address);
+          setPostcode(patient.postcode);
+          setCity(patient.city);
+          setComments(patient.comments);
+        }
+      } else {
+        setId(0);
+        setFirstname("");
+        setLastname("");
+        setBirthday("");
+        setSex("");
+        setMobilePhone("");
+        setLandline("");
+        setEmail("");
+        setAddress("");
+        setPostcode("");
+        setCity("");
+        setComments("");
       }
     }
   }, [params, PatientList]);
@@ -142,6 +159,9 @@ export default function NewPatient() {
           </div>
           <div className="btn-patient">Consultation</div>
           <div className="btn-patient">Paiement</div>
+          <Link className="text-link" to="/Nouveau-patient">
+            <div className="btn-patient">Nouveau Patient</div>
+          </Link>
         </div>
         <h2>1 - État Civil du Patient{" " + firstname + " " + lastname}</h2>
         <div className="main-content">
@@ -424,8 +444,6 @@ export default function NewPatient() {
             </table>
           </div>
         </div>
-        <h2>5 - Ajouter une consultation aujourd'hui</h2>
-        <div className="main-content">5</div>
         <div className="form-btn"></div>
       </form>
     </div>
