@@ -7,6 +7,9 @@ import Calendar from "./Calendar";
 import MyCalendar from "./MyCalendar";
 
 function Main({ menu }) {
+  const events = [
+    { day: new Date(Date.now()), start: "9:00", end: "10:00", title: "RDV" },
+  ];
   const loggedIn = useLogin().login;
   return (
     loggedIn && (
@@ -21,7 +24,10 @@ function Main({ menu }) {
             path="/Agenda"
             element={
               <div className="main-content">
-                <MyCalendar options={{ dayStart: 8, dayEnd: 21 }} />
+                <MyCalendar
+                  options={{ dayStart: 8, dayEnd: 21 }}
+                  events={events}
+                />
               </div>
             }
           />

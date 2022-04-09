@@ -6,9 +6,10 @@ import {
   previousMonday,
   displayDate,
   addNdays,
+  isBetween,
 } from "./Functions";
 
-export default function MyCalendar({ options }) {
+export default function MyCalendar({ options, events }) {
   const today = Date.now();
   const thisMonday = previousMonday(new Date(today));
   const dayOfTheWeek = new Date(today).getDay();
@@ -47,13 +48,13 @@ export default function MyCalendar({ options }) {
           className="MyCalendar-btn"
           onClick={() => setDisplayedMonday((monday) => addNdays(monday, -7))}
         >
-          Prev
+          &lt;
         </div>
         <div
           className="MyCalendar-btn"
           onClick={() => setDisplayedMonday((monday) => addNdays(monday, 7))}
         >
-          Next
+          &gt;
         </div>
       </div>
       <div className="MyCalendar-content">
@@ -102,7 +103,15 @@ export default function MyCalendar({ options }) {
               {hours.map((step) => (
                 <div
                   key={step.start}
-                  className="MyCalendar-step"
+                  className={
+                    isBetween(step.start, events[0].start, events[0].end) &&
+                    datesAreOnSameDay(
+                      addNdays(displayedMonday, index),
+                      events[0].day
+                    )
+                      ? "MyCalendar-event"
+                      : "MyCalendar-step"
+                  }
                   style={step.j === 0 ? { borderTop: "1px solid grey" } : null}
                 >
                   &nbsp;

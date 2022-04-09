@@ -50,6 +50,10 @@
 .MyCalendar-step {
   border: 1px dotted grey;
 }
+.MyCalendar-event {
+  background-color: lightblue;
+  border: 1px dotted grey;
+}
 
 .MyCalendar-step-GMT {
   border: 1px solid white;
