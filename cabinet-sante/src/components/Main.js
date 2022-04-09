@@ -3,7 +3,6 @@ import { Routes, Route } from "react-router-dom";
 import { useLogin } from "./contexts/AuthContext";
 import NewPatient from "./NewPatient";
 import PatientList from "./PatientList";
-import Calendar from "./Calendar";
 import MyCalendar from "./MyCalendar";
 
 function Main({ menu }) {
@@ -38,7 +37,6 @@ function Main({ menu }) {
           <Route exact path="/Nouveau-Patient/:id" element={<NewPatient />} />
           <Route exact path="/Nouveau-Patient" element={<NewPatient />} />
           <Route exact path="/Listing-Patients" element={<PatientList />} />
-          <Route exact path="/Calendar" element={<Calendar />} />
           <Route
             exact
             path="/Agenda"
