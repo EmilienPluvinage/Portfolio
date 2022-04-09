@@ -22,6 +22,11 @@
   text-align: center;
   padding: 10px;
 }
+.MyCalendar-columnTitleGMT {
+  padding: 10px;
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
 
 .MyCalendar-step {
   border: 1px dotted grey;
@@ -29,4 +34,16 @@
 
 .MyCalendar-step-GMT {
   border: 1px solid white;
+}
+
+.MyCalendar-today {
+  background-color: skyblue;
+  color: white;
+  font-weight: 500;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.MyCalendar-nottoday {
+  padding: 10px;
 }

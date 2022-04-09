@@ -1,7 +1,14 @@
 import React from "react";
+import { useState } from "react";
 import "../styles/MyCalendar.css";
+import { weekNumber } from "./Functions";
 
 export default function MyCalendar({ options }) {
+  const today = Date.now();
+  const dayOfTheWeek = new Date(today).getDay();
+  console.log(dayOfTheWeek);
+  const [displayedWeek, setdisplayWeek] = useState(weekNumber(new Date(today)));
+  console.log(displayedWeek);
   const daysOfTheWeek = [
     "Lundi",
     "Mardi",
@@ -31,7 +38,7 @@ export default function MyCalendar({ options }) {
       Calendar
       <div className="MyCalendar-content">
         <div className="MyCalendar-column-GMT" key={"GMT"}>
-          <div className="MyCalendar-columnTitle" key={"GMTtitle"}>
+          <div className="MyCalendar-columnTitleGMT" key={"GMTtitle"}>
             {"GMT"}
           </div>
           <div className="MyCalendar-columContent" key={"GMTcontent"}>
@@ -46,10 +53,18 @@ export default function MyCalendar({ options }) {
             ))}
           </div>
         </div>
-        {daysOfTheWeek.map((day) => (
+        {daysOfTheWeek.map((day, index) => (
           <div className="MyCalendar-column" key={day}>
             <div className="MyCalendar-columnTitle" key={day + "title"}>
-              {day}
+              <div
+                className={
+                  (index + 1) % 7 === dayOfTheWeek
+                    ? "MyCalendar-today"
+                    : "MyCalendar-nottoday"
+                }
+              >
+                {day}{" "}
+              </div>
             </div>
             <div className="MyCalendar-columContent" key={day + "content"}>
               {hours.map((step) => (
