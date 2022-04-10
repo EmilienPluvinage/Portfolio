@@ -3,13 +3,27 @@ import "../styles/styles.css";
 import { capitalize } from "./Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
+import { useGovData } from "./contexts/GovDataContext";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Button } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { Autocomplete } from "@mantine/core";
+import { moveToFirst } from "./Functions";
 
 export default function NewPatient() {
+  var cities = useGovData().cities;
+  var autoCompleteCities = cities.map(function (a) {
+    return a.nom + " (" + a.codesPostaux[0] + ")";
+  });
+  moveToFirst(autoCompleteCities, "Saint-Clément-de-Rivière (34980)");
+  moveToFirst(autoCompleteCities, "Paris (75001)");
+  moveToFirst(autoCompleteCities, "Montpellier (34070)");
+  moveToFirst(autoCompleteCities, "Teyran (34820)");
+  moveToFirst(autoCompleteCities, "Assas (34820)");
+  moveToFirst(autoCompleteCities, "Prades-le-Lez (34730)");
+  moveToFirst(autoCompleteCities, "Saint-Vincent-de-Barbeyrargues (34730)");
+
   const token = useLogin().token;
   const PatientList = usePatients();
   const getPatients = useUpdatePatients();
@@ -25,7 +39,6 @@ export default function NewPatient() {
   const [postcode, setPostcode] = useState("");
   const [city, setCity] = useState("");
   const [comments, setComments] = useState("");
-
   const params = useParams();
 
   useEffect(() => {
@@ -110,7 +123,9 @@ export default function NewPatient() {
   async function submitForm(event) {
     event.preventDefault();
     var link =
-      "http://localhost:3001/" + (id === 0 ? "NewPatient" : "UpdatePatient");
+      process.env.REACT_APP_API_DOMAIN +
+      "/" +
+      (id === 0 ? "NewPatient" : "UpdatePatient");
     try {
       const fetchResponse = await fetch(link, {
         method: "POST",
@@ -285,6 +300,20 @@ export default function NewPatient() {
                     />
                   </td>
                 </tr>
+
+                <tr>
+                  <td className="td-label">Ville:</td>
+                  <td className="td-input">
+                    <Autocomplete placeholder="" data={autoCompleteCities} />
+                    {/* <input
+                      type="text"
+                      name="city"
+                      onChange={(e) => handleChange(e, "city")}
+                      autoComplete="new-password"
+                      value={city}
+                    /> */}
+                  </td>
+                </tr>
                 <tr>
                   <td className="td-label">Code postal:</td>
                   <td className="td-input">
@@ -296,38 +325,6 @@ export default function NewPatient() {
                       autoComplete="new-password"
                       value={postcode}
                     />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="td-label">Ville:</td>
-                  <td className="td-input">
-                    <Autocomplete
-                      placeholder=""
-                      data={[
-                        "React",
-                        "Angular",
-                        "Svelte",
-                        "Vue",
-                        "Angular2",
-                        "Svelte2",
-                        "Vue2",
-                        "React3",
-                        "Angular3",
-                        "Svelte3",
-                        "Vue3",
-                        "React4",
-                        "Angular4",
-                        "Svelte4",
-                        "Vue4",
-                      ]}
-                    />
-                    {/* <input
-                      type="text"
-                      name="city"
-                      onChange={(e) => handleChange(e, "city")}
-                      autoComplete="new-password"
-                      value={city}
-                    /> */}
                   </td>
                 </tr>
               </tbody>
