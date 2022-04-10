@@ -309,13 +309,6 @@ export default function NewPatient() {
                       data={autoCompleteCities}
                       size={"xs"}
                     />
-                    {/* <input
-                      type="text"
-                      name="city"
-                      onChange={(e) => handleChange(e, "city")}
-                      autoComplete="new-password"
-                      value={city}
-                    /> */}
                   </td>
                 </tr>
                 <tr>
