@@ -133,19 +133,23 @@ export function RemoveOneStep(time) {
 }
 
 export async function getEvents(token, start, end) {
+  console.log(process.env.REACT_APP_API_DOMAIN + "/GetEvents");
   try {
-    const fetchResponse = await fetch("http://localhost:3001/GetEvents", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        token: token,
-        start: start,
-        end: end,
-      }),
-    });
+    const fetchResponse = await fetch(
+      process.env.REACT_APP_API_DOMAIN + "/GetEvents",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: token,
+          start: start,
+          end: end,
+        }),
+      }
+    );
     const res = await fetchResponse.json();
     return res;
   } catch (e) {

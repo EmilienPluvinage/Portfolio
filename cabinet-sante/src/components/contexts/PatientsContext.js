@@ -17,16 +17,19 @@ export function PatientsProvider({ children }) {
 
   async function updatePatientsList(token) {
     try {
-      const fetchResponse = await fetch("http://localhost:3001/GetPatients", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          token: token,
-        }),
-      });
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/GetPatients",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+          }),
+        }
+      );
       const res = await fetchResponse.json();
       setPatients(res.data);
     } catch (e) {
