@@ -54,7 +54,7 @@ export function isInEvent(time, events, day) {
   for (let i = 0; i < events.length; i++) {
     if (
       isBetween(time, events[i].start, events[i].end) &&
-      datesAreOnSameDay(events[i].day, day)
+      datesAreOnSameDay(new Date(events[i].day), new Date(day))
     ) {
       return true;
     }
@@ -67,7 +67,7 @@ export function getEventId(time, events, day) {
   for (let i = 0; i < events.length; i++) {
     if (
       isBetween(time, events[i].start, events[i].end) &&
-      datesAreOnSameDay(events[i].day, day)
+      datesAreOnSameDay(new Date(events[i].day), new Date(day))
     ) {
       return events[i].id;
     }
@@ -130,4 +130,25 @@ export function RemoveOneStep(time) {
       break;
   }
   return newHours + ":" + newMinutes;
+}
+
+export async function getEvents(token, start, end) {
+  try {
+    const fetchResponse = await fetch("http://localhost:3001/GetEvents", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: token,
+        start: start,
+        end: end,
+      }),
+    });
+    const res = await fetchResponse.json();
+    return res;
+  } catch (e) {
+    return e;
+  }
 }

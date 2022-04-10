@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../styles/MyCalendar.css";
 import { datesAreOnSameDay, displayDate } from "./Functions";
 import {
@@ -10,33 +10,35 @@ import {
   RemoveOneStep,
   getEventId,
   previousMonday,
+  getEvents,
 } from "./MyCalendarFunctions";
+import { useLogin } from "./contexts/AuthContext";
 
 export default function MyCalendar({ options }) {
-  const events = [
-    {
-      id: 34,
-      day: new Date(Date.now()),
-      start: "9:00",
-      end: "10:00",
-      title: "RDV",
-    },
-    {
-      id: 35,
-      day: new Date(Date.now()),
-      start: "11:00",
-      end: "11:30",
-      title: "RDV",
-    },
-    {
-      id: 36,
-      day: new Date(Date.now()),
-      start: "14:00",
-      end: "17:00",
-      title: "RDV",
-    },
-  ];
-  var eventId = 0;
+  // const events = [
+  //   {
+  //     id: 34,
+  //     day: new Date(Date.now()),
+  //     start: "9:00",
+  //     end: "10:00",
+  //     title: "RDV",
+  //   },
+  //   {
+  //     id: 35,
+  //     day: new Date(Date.now()),
+  //     start: "11:00",
+  //     end: "11:30",
+  //     title: "RDV",
+  //   },
+  //   {
+  //     id: 36,
+  //     day: new Date(Date.now()),
+  //     start: "14:00",
+  //     end: "17:00",
+  //     title: "RDV",
+  //   },
+  // ];
+
   const today = Date.now();
   const thisMonday = previousMonday(new Date(today));
   const dayOfTheWeek = new Date(today).getDay();
@@ -54,6 +56,28 @@ export default function MyCalendar({ options }) {
     "Dimanche",
   ];
   const hours = hoursOfTheDay();
+  const token = useLogin().token;
+  const [events, setEvents] = useState([]);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await getEvents(
+          token,
+          displayedMonday,
+          new Date(addNdays(displayedMonday, 6))
+        );
+        if (data.success) {
+          setEvents(data.data);
+        }
+        // switch loading to false after fetch is complete
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+  }, [token, displayedMonday]);
+
+  console.log(events);
 
   // we'll go from 0 to 24 with a step of 1/4h
   function hoursOfTheDay() {
