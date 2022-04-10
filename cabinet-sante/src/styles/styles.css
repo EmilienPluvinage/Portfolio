@@ -162,6 +162,7 @@ h2 {
   border-bottom: 1px solid lightgray;
   padding: 2px;
   font: inherit;
+  border-radius: 0px;
 }
 
 .td-input textarea {
