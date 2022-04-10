@@ -61,3 +61,10 @@ export function capitalize(string) {
   }
   return res.slice(1);
 }
+
+export function moveToFirst(array, value) {
+  let index = array.indexOf(value);
+  if (index !== -1) {
+    array.unshift(array.splice(index, 1)[0]);
+  }
+}
