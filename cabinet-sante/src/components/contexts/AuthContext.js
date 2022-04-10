@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useUpdatePatients } from "./PatientsContext";
+import { useUpdateGovData } from "./GovDataContext";
 
 const LoginContext = React.createContext();
 const LoggingContext = React.createContext();
@@ -14,6 +15,7 @@ export function useLogging() {
 
 export function AuthProvider({ children }) {
   const getPatients = useUpdatePatients();
+  const getGovData = useUpdateGovData();
   // True or False
   const [login, setLogin] = useState(false);
   // Token to be passed to any SQL query and compared with the one in DB
@@ -43,6 +45,7 @@ export function AuthProvider({ children }) {
     if (bool) {
       setToken(newToken);
       getPatients(newToken);
+      getGovData();
     } else {
       removeToken(token);
       localStorage.removeItem("token");
