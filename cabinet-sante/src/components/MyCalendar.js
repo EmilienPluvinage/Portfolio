@@ -1,19 +1,41 @@
 import React from "react";
 import { useState } from "react";
 import "../styles/MyCalendar.css";
+import { datesAreOnSameDay, displayDate } from "./Functions";
 import {
-  datesAreOnSameDay,
-  previousMonday,
-  displayDate,
   addNdays,
   weekNumber,
   isInEvent,
   isFirstSlotOfEvent,
   RemoveOneStep,
   getEventId,
-} from "./Functions";
+  previousMonday,
+} from "./MyCalendarFunctions";
 
-export default function MyCalendar({ options, events }) {
+export default function MyCalendar({ options }) {
+  const events = [
+    {
+      id: 34,
+      day: new Date(Date.now()),
+      start: "9:00",
+      end: "10:00",
+      title: "RDV",
+    },
+    {
+      id: 35,
+      day: new Date(Date.now()),
+      start: "11:00",
+      end: "11:30",
+      title: "RDV",
+    },
+    {
+      id: 36,
+      day: new Date(Date.now()),
+      start: "14:00",
+      end: "17:00",
+      title: "RDV",
+    },
+  ];
   var eventId = 0;
   const today = Date.now();
   const thisMonday = previousMonday(new Date(today));
