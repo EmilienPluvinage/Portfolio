@@ -26,7 +26,6 @@ export function GovDataProvider({ children }) {
       });
       const res = await fetchResponse.json();
       setCities(res);
-      console.log(res);
     } catch (e) {
       return e;
     }

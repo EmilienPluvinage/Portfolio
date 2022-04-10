@@ -133,7 +133,6 @@ export function RemoveOneStep(time) {
 }
 
 export async function getEvents(token, start, end) {
-  console.log(process.env.REACT_APP_API_DOMAIN + "/GetEvents");
   try {
     const fetchResponse = await fetch(
       process.env.REACT_APP_API_DOMAIN + "/GetEvents",

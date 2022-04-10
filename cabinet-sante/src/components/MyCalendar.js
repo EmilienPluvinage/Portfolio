@@ -78,8 +78,6 @@ export default function MyCalendar({ options }) {
     fetchData();
   }, [token, displayedMonday]);
 
-  console.log(events);
-
   // we'll go from 0 to 24 with a step of 1/4h
   function hoursOfTheDay() {
     var hours = [];
