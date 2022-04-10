@@ -4,12 +4,12 @@ import { capitalize } from "./Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { useParams } from "react-router-dom";
-import InfoBox from "./InfoBox";
 import { Link } from "react-router-dom";
+import { Button } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
+import { Autocomplete } from "@mantine/core";
 
 export default function NewPatient() {
-  const [open, setOpen] = useState(false);
-  const [infoText, setInfoText] = useState("");
   const token = useLogin().token;
   const PatientList = usePatients();
   const getPatients = useUpdatePatients();
@@ -137,12 +137,11 @@ export default function NewPatient() {
       const res = await fetchResponse.json();
       getPatients(token);
       if (res.success) {
-        setInfoText(
-          id === 0
-            ? "Patient ajouté avec succès."
-            : "Patient modifié avec succès."
-        );
-        setOpen(true);
+        showNotification({
+          title: "Modification enregistrée",
+          message: "La fiche de votre patient a bien été mise à jour.",
+          color: "cyan",
+        });
       }
     } catch (e) {
       return e;
@@ -151,16 +150,15 @@ export default function NewPatient() {
 
   return (
     <div>
-      <InfoBox text={infoText} open={open} setOpen={setOpen} />
       <form onSubmit={submitForm}>
         <div className="nav-patient">
-          <div className="btn-patient" onClick={submitForm}>
+          <Button onClick={submitForm} style={{ margin: "5px" }}>
             Enregistrer
-          </div>
-          <div className="btn-patient">Consultation</div>
-          <div className="btn-patient">Paiement</div>
+          </Button>
+          <Button style={{ margin: "5px" }}>Consultation</Button>
+          <Button style={{ margin: "5px" }}>Paiement</Button>
           <Link className="text-link" to="/Nouveau-patient">
-            <div className="btn-patient">Nouveau Patient</div>
+            <Button style={{ margin: "5px" }}>Nouveau Patient</Button>
           </Link>
         </div>
         <h2>1 - État Civil du Patient{" " + firstname + " " + lastname}</h2>
@@ -303,13 +301,33 @@ export default function NewPatient() {
                 <tr>
                   <td className="td-label">Ville:</td>
                   <td className="td-input">
-                    <input
+                    <Autocomplete
+                      placeholder=""
+                      data={[
+                        "React",
+                        "Angular",
+                        "Svelte",
+                        "Vue",
+                        "Angular2",
+                        "Svelte2",
+                        "Vue2",
+                        "React3",
+                        "Angular3",
+                        "Svelte3",
+                        "Vue3",
+                        "React4",
+                        "Angular4",
+                        "Svelte4",
+                        "Vue4",
+                      ]}
+                    />
+                    {/* <input
                       type="text"
                       name="city"
                       onChange={(e) => handleChange(e, "city")}
                       autoComplete="new-password"
                       value={city}
-                    />
+                    /> */}
                   </td>
                 </tr>
               </tbody>

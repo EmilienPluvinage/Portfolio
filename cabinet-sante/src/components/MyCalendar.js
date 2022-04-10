@@ -13,6 +13,7 @@ import {
   getEvents,
 } from "./MyCalendarFunctions";
 import { useLogin } from "./contexts/AuthContext";
+import { Button } from "@mantine/core";
 
 export default function MyCalendar({ options }) {
   // const events = [
@@ -95,18 +96,18 @@ export default function MyCalendar({ options }) {
   return (
     <div className="MyCalendar-main">
       <div className="MyCalendar-nav">
-        <div
-          className="MyCalendar-btn"
+        <Button
+          style={{ margin: "5px" }}
           onClick={() => setDisplayedMonday((monday) => addNdays(monday, -7))}
         >
           &lt;
-        </div>
-        <div
-          className="MyCalendar-btn"
+        </Button>
+        <Button
+          style={{ margin: "5px" }}
           onClick={() => setDisplayedMonday((monday) => addNdays(monday, 7))}
         >
           &gt;
-        </div>
+        </Button>
         <div>Semaine {displayedWeek}</div>
       </div>
       <div className="MyCalendar-content">

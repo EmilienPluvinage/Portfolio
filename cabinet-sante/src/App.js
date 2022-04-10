@@ -6,6 +6,8 @@ import Login from "./components/Login";
 import { BrowserRouter as Router } from "react-router-dom";
 import { AuthProvider } from "./components/contexts/AuthContext";
 import { PatientsProvider } from "./components/contexts/PatientsContext";
+import { NotificationsProvider } from "@mantine/notifications";
+import { MantineProvider } from "@mantine/core";
 
 function App() {
   const menu = [
@@ -19,18 +21,22 @@ function App() {
 
   return (
     <div id="App">
-      <PatientsProvider>
-        <AuthProvider>
-          <Header />
-          <div id="parent">
-            <Router>
-              <LeftMenu menu={menu} />
-              <Main menu={menu} />
-            </Router>
-            <Login />
-          </div>
-        </AuthProvider>
-      </PatientsProvider>
+      <MantineProvider theme={{ primaryColor: "cyan" }}>
+        <NotificationsProvider position="top-right">
+          <PatientsProvider>
+            <AuthProvider>
+              <Header />
+              <div id="parent">
+                <Router>
+                  <LeftMenu menu={menu} />
+                  <Main menu={menu} />
+                </Router>
+                <Login />
+              </div>
+            </AuthProvider>
+          </PatientsProvider>
+        </NotificationsProvider>
+      </MantineProvider>
     </div>
   );
 }
