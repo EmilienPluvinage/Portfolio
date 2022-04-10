@@ -1,7 +1,7 @@
 import { datesAreOnSameDay } from "./Functions";
 export function weekNumber(date) {
   var oneJan = new Date(date.getFullYear(), 0, 1);
-  var oneJanDay = oneJan.getDay();
+  //var oneJanDay = oneJan.getDay();
   var numberOfDays = Math.floor((date - oneJan) / (24 * 60 * 60 * 1000));
   var result = Math.ceil((date.getDay() + 1 + numberOfDays) / 7);
   // if the first day of Jan was one a Friday, Saturday or Sunday, then is doesn't count as the first week of the year
