@@ -304,7 +304,11 @@ export default function NewPatient() {
                 <tr>
                   <td className="td-label">Ville:</td>
                   <td className="td-input">
-                    <Autocomplete placeholder="" data={autoCompleteCities} />
+                    <Autocomplete
+                      placeholder="Saint-Vincent-de-Barbeyrargues (34730)"
+                      data={autoCompleteCities}
+                      size={"xs"}
+                    />
                     {/* <input
                       type="text"
                       name="city"
