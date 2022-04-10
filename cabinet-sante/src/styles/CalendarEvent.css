@@ -1,0 +1,31 @@
+/* Dropdown Content (Hidden by Default) */
+.event-content {
+  position: absolute;
+  background-color: lightgray;
+  width: 115px;
+  height: 0px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border-radius: 5px;
+  border: 1px solid white;
+  overflow: hidden;
+  transition: all 100ms;
+  transition-property: color, background-color, box-shadow, border-color;
+  text-transform: capitalize;
+  padding: 20px;
+}
+
+/* Change color of dropdown links on hover */
+.event-content:hover {
+  background-color: white;
+  cursor: pointer;
+  transition: all 100ms;
+  transition-property: color, background-color, box-shadow, border-color;
+}
+
+/* Links inside the dropdown */
+.event-content span {
+  padding: 10px;
+  text-decoration: none;
+  display: block;
+}

@@ -14,6 +14,7 @@ import {
 } from "./MyCalendarFunctions";
 import { useLogin } from "./contexts/AuthContext";
 import { Button } from "@mantine/core";
+import CalendarEvent from "./CalendarEvent";
 
 export default function MyCalendar({ options }) {
   // const events = [
@@ -171,12 +172,15 @@ export default function MyCalendar({ options }) {
                     step.start,
                     events,
                     addNdays(displayedMonday, index)
-                  ) &&
-                    getEventId(
-                      step.start,
-                      events,
-                      addNdays(displayedMonday, index)
-                    )}{" "}
+                  ) && (
+                    <CalendarEvent
+                      text={getEventId(
+                        step.start,
+                        events,
+                        addNdays(displayedMonday, index)
+                      )}
+                    />
+                  )}
                   &nbsp;
                 </div>
               ))}
