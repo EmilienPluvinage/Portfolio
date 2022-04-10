@@ -2,6 +2,7 @@ import "../styles/styles.css";
 import { useState } from "react";
 import { useLogin, useLogging } from "./contexts/AuthContext";
 import { useEffect } from "react";
+import { TextInput, Button } from "@mantine/core";
 
 function Login() {
   const currentToken = localStorage.getItem("token");
@@ -91,24 +92,26 @@ function Login() {
       <div id="LoginScreen">
         <div id="LoginContent">
           <form onSubmit={handleSubmit}>
-            <p>E-mail :</p>
-            <p>
-              <input
-                type="text"
-                name="email"
-                onChange={(e) => handleChange(e, "email")}
-                value={value.email}
-              />
-            </p>
-            <p>Mot de Passe :</p>
-            <p>
-              <input
-                type="password"
-                name="password"
-                onChange={(e) => handleChange(e, "password")}
-                value={value.password}
-              />
-            </p>
+            <TextInput
+              label="E-mail"
+              name="email"
+              placeholder="Votre e-mail"
+              onChange={(e) => handleChange(e, "email")}
+              value={value.email}
+              size={"sm"}
+              style={{ margin: "10px" }}
+            />
+
+            <TextInput
+              label="Mot de passe :"
+              type="password"
+              name="password"
+              onChange={(e) => handleChange(e, "password")}
+              value={value.password}
+              size={"sm"}
+              style={{ margin: "10px" }}
+            />
+
             <p>{errorMessage}</p>
             <input type="submit" className="btn" value="Login" />
           </form>
