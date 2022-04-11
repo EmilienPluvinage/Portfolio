@@ -3,23 +3,25 @@ import { useState } from "react";
 import { useLogin, useLogging } from "./contexts/AuthContext";
 import { useEffect } from "react";
 import { TextInput, Button } from "@mantine/core";
+import { useForm } from "@mantine/form";
 
 function Login() {
   const currentToken = localStorage.getItem("token");
   const loggedIn = useLogin().login;
   const logging = useLogging();
   const [errorMessage, setErrorMessage] = useState("");
-  const [value, setValue] = useState({
-    email: "",
-    password: "",
-  });
 
-  useEffect(() => {
-    if (!loggedIn) {
-      setValue({ email: "", password: "" });
-      setErrorMessage("");
-    }
-  }, [loggedIn]);
+  const form = useForm({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+
+    validate: {
+      email: (value) =>
+        /^\S+@\S+$/.test(value) ? null : "Format de l'email incorrect.",
+    },
+  });
 
   useEffect(() => {
     // if we're not logged in but there is an existing token in local storage
@@ -29,25 +31,11 @@ function Login() {
     }
   }, [currentToken, loggedIn, logging]);
 
-  function handleChange(event, name) {
-    switch (name) {
-      case "email":
-        setValue({ email: event.target.value, password: value.password });
-        break;
-      case "password":
-        setValue({ email: value.email, password: event.target.value });
-        break;
-      default:
-        break;
-    }
-  }
-
-  async function handleSubmit(event) {
-    event.preventDefault();
+  async function handleSubmit(values) {
     try {
       const data = await postLogin(
-        value.email.toLowerCase(),
-        value.password.toLowerCase()
+        values.email.toLowerCase(),
+        values.password.toLowerCase()
       );
       if (data.loggedIn) {
         logging(true, data.token);
@@ -91,13 +79,12 @@ function Login() {
     !loggedIn && (
       <div id="LoginScreen">
         <div id="LoginContent">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
             <TextInput
               label="E-mail"
               name="email"
               placeholder="Votre e-mail"
-              onChange={(e) => handleChange(e, "email")}
-              value={value.email}
+              {...form.getInputProps("email")}
               size={"sm"}
               style={{ margin: "10px" }}
             />
@@ -106,14 +93,17 @@ function Login() {
               label="Mot de passe :"
               type="password"
               name="password"
-              onChange={(e) => handleChange(e, "password")}
-              value={value.password}
+              placeholder="Votre mot de passe"
+              {...form.getInputProps("password")}
               size={"sm"}
               style={{ margin: "10px" }}
             />
 
             <p>{errorMessage}</p>
-            <input type="submit" className="btn" value="Login" />
+
+            <Button type="submit" style={{ margin: "10px" }}>
+              Connexion
+            </Button>
           </form>
         </div>
       </div>
