@@ -68,3 +68,47 @@ export function moveToFirst(array, value) {
     array.unshift(array.splice(index, 1)[0]);
   }
 }
+export function concatenateDateTime(date, time) {
+  var month = date.getMonth() + 1;
+  return (
+    date.getFullYear() +
+    "-" +
+    (month.toString().length === 1 ? "0" + month : month) +
+    "-" +
+    date.getDate() +
+    " " +
+    time.getHours() +
+    ":" +
+    time.getMinutes() +
+    ":00"
+  );
+}
+
+export function displayDateInFrench(date) {
+  var minutes = date.getMinutes();
+  const mois = [
+    "Janvier",
+    "Février",
+    "Mars",
+    "Avril",
+    "Mai",
+    "Juin",
+    "Juillet",
+    "Août",
+    "Septembre",
+    "Octobre",
+    "Novembre",
+    "Décembre",
+  ];
+  return (
+    date.getDate() +
+    " " +
+    mois[date.getMonth()] +
+    " " +
+    date.getFullYear() +
+    " à " +
+    date.getHours() +
+    "h" +
+    (minutes.toString().length === 1 ? "0" + minutes : minutes)
+  );
+}
