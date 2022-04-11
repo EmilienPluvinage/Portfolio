@@ -95,7 +95,7 @@ h2 {
   margin-left: 20px;
   margin-right: 20px;
   padding: 20px;
-  border-radius: 0.5rem;
+  border-radius: 0.3rem;
   font-size: 0.8rem;
 }
 
@@ -127,27 +127,6 @@ h2 {
 }
 #LoginScreen input {
   width: 250px;
-}
-#LoginScreen .btn {
-  border: none;
-  margin: auto;
-  margin-top: 30px;
-  padding: 10px;
-  padding-left: 30px;
-  padding-right: 30px;
-  border-radius: 2rem;
-  background-color: 22b8cf;
-  text-transform: uppercase;
-  color: white;
-  letter-spacing: 0.1rem;
-  font-weight: 500;
-  font-size: 0.8rem;
-  width: min-content;
-}
-
-#LoginScreen .btn:hover {
-  cursor: pointer;
-  background-color: #22b8cf;
 }
 
 .new-patient {
