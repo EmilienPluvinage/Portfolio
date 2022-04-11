@@ -1,0 +1,22 @@
+.fc-direction-ltr .fc-timegrid-now-indicator-arrow {
+  opacity: 0;
+}
+.fc .fc-timegrid-now-indicator-arrow {
+  opacity: 0;
+}
+.fc .fc-timegrid-now-indicator-line {
+  opacity: 0.7;
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  right: 0;
+  margin-top: -2px;
+  border-style: solid;
+  border-color: #22b8cf;
+  border-color: var(— fc-now-indicator-color, #22b8cf);
+  border-width: 2px 0 0;
+}
+
+.fc-day-today {
+  background: #f0fcfd !important;
+}
