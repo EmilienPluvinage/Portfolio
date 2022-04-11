@@ -6,11 +6,11 @@ import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { useGovData } from "./contexts/GovDataContext";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { Button } from "@mantine/core";
+import { Button, Modal } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { Autocomplete } from "@mantine/core";
 import { moveToFirst } from "./Functions";
-import PopupBox from "./PopupBox";
+import NewAppointment from "./NewAppointment";
 
 export default function NewPatient() {
   var cities = useGovData().cities;
@@ -24,7 +24,7 @@ export default function NewPatient() {
   moveToFirst(autoCompleteCities, "Assas (34820)");
   moveToFirst(autoCompleteCities, "Prades-le-Lez (34730)");
   moveToFirst(autoCompleteCities, "Saint-Vincent-de-Barbeyrargues (34730)");
-  const [open, setOpen] = useState(false);
+  const [opened, setOpened] = useState(false);
   const token = useLogin().token;
   const PatientList = usePatients();
   const getPatients = useUpdatePatients();
@@ -166,23 +166,27 @@ export default function NewPatient() {
 
   return (
     <>
-      <PopupBox
-        children={"text"}
+      <Modal
+        centered
+        overlayOpacity={0.3}
+        opened={opened}
+        onClose={() => setOpened(false)}
         title={"Consultation pour " + firstname + " " + lastname}
-        open={open}
-        setOpen={setOpen}
-      />
+        closeOnClickOutside={false}
+      >
+        <NewAppointment setOpened={setOpened} patientId={id} />
+      </Modal>
       <form onSubmit={submitForm}>
         <div className="nav-patient">
-          <Button onClick={submitForm} style={{ margin: "5px" }}>
+          <Button onClick={submitForm} style={{ margin: "10px" }}>
             Enregistrer
           </Button>
-          <Button onClick={() => setOpen(true)} style={{ margin: "5px" }}>
+          <Button onClick={() => setOpened(true)} style={{ margin: "10px" }}>
             Consultation
           </Button>
-          <Button style={{ margin: "5px" }}>Paiement</Button>
+          <Button style={{ margin: "10px" }}>Paiement</Button>
           <Link className="text-link" to="/Nouveau-patient">
-            <Button style={{ margin: "5px" }}>Nouveau Patient</Button>
+            <Button style={{ margin: "10px" }}>Nouveau Patient</Button>
           </Link>
         </div>
         <h2>1 - État Civil du Patient{" " + firstname + " " + lastname}</h2>

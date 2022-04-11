@@ -78,6 +78,45 @@ app.post("/NewPatient", (req, res, next) => {
   });
 });
 
+// ADD A NEW APPOINTMENT
+
+app.post("/NewEvent", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          // var userId = rows[0].userId; not useful so far, but later we may want to add a check to make sure the patient indeed
+          // belongs to that user
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "INSERT INTO appointments(patientId, start, end, title, patientType, reason) VALUES (?,?,?,?,?,?)",
+            [
+              req.body.patientId,
+              req.body.start,
+              req.body.end,
+              req.body.title,
+              req.body.patientType,
+              req.body.reason,
+            ],
+            (err, result) => {
+              if (err) throw err;
+              res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
 //////////////
 //   READ   //
 //////////////
