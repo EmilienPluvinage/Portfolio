@@ -10,6 +10,7 @@ import { Button } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { Autocomplete } from "@mantine/core";
 import { moveToFirst } from "./Functions";
+import PopupBox from "./PopupBox";
 
 export default function NewPatient() {
   var cities = useGovData().cities;
@@ -23,7 +24,7 @@ export default function NewPatient() {
   moveToFirst(autoCompleteCities, "Assas (34820)");
   moveToFirst(autoCompleteCities, "Prades-le-Lez (34730)");
   moveToFirst(autoCompleteCities, "Saint-Vincent-de-Barbeyrargues (34730)");
-
+  const [open, setOpen] = useState(false);
   const token = useLogin().token;
   const PatientList = usePatients();
   const getPatients = useUpdatePatients();
@@ -164,13 +165,21 @@ export default function NewPatient() {
   }
 
   return (
-    <div>
+    <>
+      <PopupBox
+        children={"text"}
+        title={"Consultation pour " + firstname + " " + lastname}
+        open={open}
+        setOpen={setOpen}
+      />
       <form onSubmit={submitForm}>
         <div className="nav-patient">
           <Button onClick={submitForm} style={{ margin: "5px" }}>
             Enregistrer
           </Button>
-          <Button style={{ margin: "5px" }}>Consultation</Button>
+          <Button onClick={() => setOpen(true)} style={{ margin: "5px" }}>
+            Consultation
+          </Button>
           <Button style={{ margin: "5px" }}>Paiement</Button>
           <Link className="text-link" to="/Nouveau-patient">
             <Button style={{ margin: "5px" }}>Nouveau Patient</Button>
@@ -458,6 +467,6 @@ export default function NewPatient() {
         </div>
         <div className="form-btn"></div>
       </form>
-    </div>
+    </>
   );
 }

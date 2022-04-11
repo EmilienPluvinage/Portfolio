@@ -68,7 +68,7 @@ export default function MyFullCalendar() {
           locale={"fr"}
           buttonText={buttonText}
           eventBackgroundColor={"#22b8cf"}
-          eventBorderColor={"#0C8599{"}
+          eventBorderColor={"#0C8599"}
         />
       </div>
     </>
