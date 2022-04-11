@@ -40,6 +40,8 @@ function Login() {
       if (data.loggedIn) {
         logging(true, data.token);
         localStorage.setItem("token", data.token);
+        setErrorMessage("");
+        form.reset();
       } else {
         switch (data.error) {
           case "incorrect password":
@@ -87,6 +89,7 @@ function Login() {
               {...form.getInputProps("email")}
               size={"sm"}
               style={{ margin: "10px" }}
+              required
             />
 
             <TextInput
@@ -97,6 +100,7 @@ function Login() {
               {...form.getInputProps("password")}
               size={"sm"}
               style={{ margin: "10px" }}
+              required
             />
 
             <p>{errorMessage}</p>
