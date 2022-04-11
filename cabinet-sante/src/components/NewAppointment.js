@@ -13,17 +13,27 @@ import dayjs from "dayjs";
 import "dayjs/locale/fr";
 import { useLogin } from "./contexts/AuthContext";
 import { showNotification } from "@mantine/notifications";
-import { concatenateDateTime, displayDateInFrench } from "./Functions";
+import {
+  concatenateDateTime,
+  displayDateInFrench,
+  dateOnly,
+  timeOnly,
+} from "./Functions";
 
-export default function NewAppointment({ setOpened, patientId }) {
+export default function NewAppointment({ setOpened, patientId, startingTime }) {
+  console.log(startingTime);
   const [patient, setPatient] = useState("");
   const [id, setId] = useState(patientId);
-  const now = new Date();
+  const now = new Date(
+    startingTime === 0 ? Date.now() : timeOnly(startingTime)
+  );
   const then = dayjs(now).add(60, "minutes").toDate();
   const token = useLogin().token;
   const [title, setTitle] = useState("");
   const [time, setTime] = useState([now, then]);
-  const [date, setDate] = useState(new Date(Date.now()));
+  const [date, setDate] = useState(
+    new Date(startingTime === 0 ? Date.now() : dateOnly(startingTime))
+  );
   const [reason, setReason] = useState("");
   const [patientType, setPatientType] = useState("");
   const [loading, setLoading] = useState("");

@@ -83,6 +83,23 @@ export function concatenateDateTime(date, time) {
     ":00"
   );
 }
+export function dateOnly(str) {
+  var date = new Date(str);
+  return new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    0,
+    0,
+    0,
+    0
+  );
+}
+
+export function timeOnly(str) {
+  var date = new Date(str);
+  return new Date(0, 0, 0, date.getHours(), date.getMinutes(), 0, 0);
+}
 
 export function displayDateInFrench(date) {
   var minutes = date.getMinutes();

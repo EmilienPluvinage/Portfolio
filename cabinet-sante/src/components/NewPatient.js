@@ -173,7 +173,7 @@ export default function NewPatient() {
         title={"Consultation pour " + firstname + " " + lastname}
         closeOnClickOutside={false}
       >
-        <NewAppointment setOpened={setOpened} patientId={id} />
+        <NewAppointment setOpened={setOpened} patientId={id} startingTime={0} />
       </Modal>
       <form onSubmit={submitForm}>
         <div className="nav-patient">

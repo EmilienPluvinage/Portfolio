@@ -8,8 +8,13 @@ import { useLogin } from "./contexts/AuthContext";
 import { useState } from "react";
 import { useEffect } from "react";
 import { getAllEvents } from "./Functions";
+import NewAppointment from "./NewAppointment";
+import { Modal } from "@mantine/core";
 
 export default function MyFullCalendar() {
+  const [opened, setOpened] = useState(false);
+  const [startingTime, setStartingTime] = useState(new Date());
+
   const token = useLogin().token;
   const buttonText = { today: "Semaine actuelle" };
   const [events, setEvents] = useState([]);
@@ -29,7 +34,8 @@ export default function MyFullCalendar() {
   }, [token]);
 
   function handleDateClick(arg) {
-    alert(arg.dateStr);
+    setStartingTime(arg.dateStr);
+    setOpened(true);
   }
   function handleEventClick(arg) {
     alert(arg.event.id);
@@ -48,6 +54,20 @@ export default function MyFullCalendar() {
   }
   return (
     <>
+      <Modal
+        centered
+        overlayOpacity={0.3}
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title={"Consultation"}
+        closeOnClickOutside={false}
+      >
+        <NewAppointment
+          setOpened={setOpened}
+          startingTime={startingTime}
+          patientId={0}
+        />
+      </Modal>
       <h2>Agenda</h2>
       <div className="main-content">
         <FullCalendar
