@@ -25,7 +25,7 @@ header {
   background-color: rgb(50, 50, 50);
 }
 header h1 {
-  color: #5fb0d1;
+  color: #22b8cf;
   text-transform: uppercase;
   font-weight: 300;
   padding: 20px;
@@ -66,13 +66,13 @@ header h1 {
 
 #LeftMenu li:hover {
   cursor: pointer;
-  color: #5fb0d1;
+  color: #22b8cf;
   background-color: #f2f3f6;
 }
 
 #LeftMenu li.clicked {
-  background-color: #ebf9ff;
-  color: #5fb0d1;
+  background-color: #e3fafc;
+  color: #22b8cf;
   font-weight: 500;
 }
 
@@ -136,7 +136,7 @@ h2 {
   padding-left: 30px;
   padding-right: 30px;
   border-radius: 2rem;
-  background-color: skyblue;
+  background-color: 22b8cf;
   text-transform: uppercase;
   color: white;
   letter-spacing: 0.1rem;
@@ -147,7 +147,7 @@ h2 {
 
 #LoginScreen .btn:hover {
   cursor: pointer;
-  background-color: #ade5ff;
+  background-color: #22b8cf;
 }
 
 .new-patient {
