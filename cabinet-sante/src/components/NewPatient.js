@@ -6,9 +6,20 @@ import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { useGovData } from "./contexts/GovDataContext";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { Button, Modal } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { Autocomplete } from "@mantine/core";
+import { Calendar } from "tabler-icons-react";
+
+import {
+  Autocomplete,
+  TextInput,
+  Button,
+  Modal,
+  Radio,
+  RadioGroup,
+  Textarea,
+} from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { DatePicker } from "@mantine/dates";
 import { moveToFirst } from "./Functions";
 import NewAppointment from "./NewAppointment";
 
@@ -29,19 +40,23 @@ export default function NewPatient() {
   const PatientList = usePatients();
   const getPatients = useUpdatePatients();
   const [id, setId] = useState(0);
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
-  const [birthday, setBirthday] = useState("");
-  const [sex, setSex] = useState("");
-  const [mobilephone, setMobilePhone] = useState("");
-  const [landline, setLandline] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [postcode, setPostcode] = useState("");
-  const [city, setCity] = useState("");
-  const [comments, setComments] = useState("");
   const params = useParams();
 
+  const form = useForm({
+    initialValues: {
+      lastname: "",
+      firstname: "",
+      birthday: "",
+      sex: "",
+      mobilephone: "",
+      landline: "",
+      email: "",
+      address: "",
+      city: "",
+      comments: "",
+    },
+  });
+  console.log(form.values);
   useEffect(() => {
     // we prefill the fields if it's an update, leave them empty if it's an addition
     if (PatientList.length > 0) {
@@ -51,77 +66,27 @@ export default function NewPatient() {
         );
         if (patient !== undefined) {
           setId(patient.id);
-          setFirstname(patient.firstname);
-          setLastname(patient.lastname);
-          setBirthday(patient.birthday);
-          setSex(patient.sex);
-          setMobilePhone(patient.mobilephone);
-          setLandline(patient.landline);
-          setEmail(patient.email);
-          setAddress(patient.address);
-          setPostcode(patient.postcode);
-          setCity(patient.city);
-          setComments(patient.comments);
+          form.setValues({
+            firstname: patient.firstname,
+            lastname: patient.lastname,
+            birthday: patient.birthday !== "" ? new Date(patient.birthday) : "",
+            sex: patient.sex,
+            mobilephone: patient.mobilephone,
+            landline: patient.landline,
+            email: patient.email,
+            address: patient.address,
+            city: patient.city,
+            comments: patient.comments,
+          });
         }
       } else {
-        setId(0);
-        setFirstname("");
-        setLastname("");
-        setBirthday("");
-        setSex("");
-        setMobilePhone("");
-        setLandline("");
-        setEmail("");
-        setAddress("");
-        setPostcode("");
-        setCity("");
-        setComments("");
+        form.reset();
       }
     }
   }, [params, PatientList]);
 
-  function handleChange(event, name) {
-    switch (name) {
-      case "firstname":
-        setFirstname(capitalize(event.target.value));
-        break;
-      case "lastname":
-        setLastname(capitalize(event.target.value));
-        break;
-      case "birthday":
-        setBirthday(event.target.value);
-        break;
-      case "sex":
-        setSex(event.target.value);
-        break;
-      case "mobilephone":
-        setMobilePhone(event.target.value);
-        break;
-      case "landline":
-        setLandline(event.target.value);
-        break;
-      case "email":
-        setEmail(event.target.value);
-        break;
-      case "address":
-        setAddress(event.target.value);
-        break;
-      case "postcode":
-        setPostcode(event.target.value);
-        break;
-      case "city":
-        setCity(event.target.value);
-        break;
-      case "comments":
-        setComments(event.target.value);
-        break;
-      default:
-        break;
-    }
-  }
-
-  async function submitForm(event) {
-    event.preventDefault();
+  async function submitForm(values) {
+    console.log(values);
     var link =
       process.env.REACT_APP_API_DOMAIN +
       "/" +
@@ -134,26 +99,27 @@ export default function NewPatient() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          firstname: firstname,
-          lastname: lastname,
-          birthday: birthday,
-          sex: sex,
-          mobilephone: mobilephone,
-          landline: landline,
-          email: email,
-          address: address,
-          postcode: postcode,
-          city: city,
-          comments: comments,
+          firstname: capitalize(values.firstname),
+          lastname: capitalize(values.lastname),
+          birthday: values.birthday,
+          sex: values.sex,
+          mobilephone: values.mobilephone,
+          landline: values.landline,
+          email: values.email,
+          address: values.address,
+          postcode: values.postcode,
+          city: values.city,
+          comments: values.comments,
           token: token,
           id: id,
         }),
       });
       const res = await fetchResponse.json();
-      getPatients(token);
       if (res.success) {
+        getPatients(token);
         showNotification({
-          title: "Modification enregistrée",
+          title:
+            id !== 0 ? "Modification enregistrée" : "Nouveau patient ajouté",
           message: "La fiche de votre patient a bien été mise à jour.",
           color: "cyan",
         });
@@ -163,6 +129,10 @@ export default function NewPatient() {
     }
   }
 
+  // for validation
+  // pattern="0[0-9]{9}|\+[0-9]{11}"
+  // pattern="0[0-9]{9}|\+[0-9]{11}"
+
   return (
     <>
       <Modal
@@ -170,14 +140,14 @@ export default function NewPatient() {
         overlayOpacity={0.3}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={"Consultation pour " + firstname + " " + lastname}
+        title={"Consultation"}
         closeOnClickOutside={false}
       >
         <NewAppointment setOpened={setOpened} patientId={id} startingTime={0} />
       </Modal>
-      <form onSubmit={submitForm}>
+      <form onSubmit={form.onSubmit((values) => submitForm(values))}>
         <div className="nav-patient">
-          <Button onClick={submitForm} style={{ margin: "10px" }}>
+          <Button type="submit" style={{ margin: "10px" }}>
             Enregistrer
           </Button>
           <Button onClick={() => setOpened(true)} style={{ margin: "10px" }}>
@@ -188,170 +158,86 @@ export default function NewPatient() {
             <Button style={{ margin: "10px" }}>Nouveau Patient</Button>
           </Link>
         </div>
-        <h2>1 - État Civil du Patient{" " + firstname + " " + lastname}</h2>
+        <h2>1 - État Civil du Patient</h2>
         <div className="main-content">
           <div className="new-patient">
-            <table>
-              <tbody>
-                <tr>
-                  <td className="td-label">Nom:</td>
-                  <td className="td-input">
-                    <input
-                      type="text"
-                      name="lastname"
-                      value={lastname}
-                      onChange={(e) => handleChange(e, "lastname")}
-                      autoComplete="new-password"
-                      required
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="td-label">Prénom:</td>
-                  <td className="td-input">
-                    <input
-                      type="text"
-                      name="firstname"
-                      value={firstname}
-                      onChange={(e) => handleChange(e, "firstname")}
-                      autoComplete="new-password"
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="td-label">Date de naissance:</td>
-                  <td className="td-input">
-                    <input
-                      type="date"
-                      name="birthday"
-                      value={birthday}
-                      onChange={(e) => handleChange(e, "birthday")}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="td-label">Genre:</td>
-                  <td className="td-input">
-                    <label>H</label>
-                    <input
-                      type="radio"
-                      name="sex"
-                      value="homme"
-                      checked={sex === "homme" && "checked"}
-                      onChange={(e) => handleChange(e, "sex")}
-                      required
-                    />
-                    <label>F</label>
-                    <input
-                      type="radio"
-                      name="sex"
-                      value="femme"
-                      checked={sex === "femme" && "checked"}
-                      onChange={(e) => handleChange(e, "sex")}
-                    />
-                    <label>Autre</label>
-                    <input
-                      type="radio"
-                      name="sex"
-                      value="autre"
-                      checked={sex === "autre" && "checked"}
-                      onChange={(e) => handleChange(e, "sex")}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="td-label">Téléphone portable:</td>
-                  <td className="td-input">
-                    <input
-                      type="phone"
-                      pattern="0[0-9]{9}|\+[0-9]{11}"
-                      name="mobilephone"
-                      onChange={(e) => handleChange(e, "mobilephone")}
-                      autoComplete="new-password"
-                      value={mobilephone}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="td-label">Téléphone fixe:</td>
-                  <td className="td-input">
-                    <input
-                      type="phone"
-                      pattern="0[0-9]{9}|\+[0-9]{11}"
-                      name="landline"
-                      onChange={(e) => handleChange(e, "landline")}
-                      autoComplete="new-password"
-                      value={landline}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <table>
-              <tbody>
-                <tr>
-                  <td className="td-label">Adresse e-mail:</td>
-                  <td className="td-input">
-                    <input
-                      type="email"
-                      name="email"
-                      onChange={(e) => handleChange(e, "email")}
-                      autoComplete="new-password"
-                      value={email}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="td-label">Adresse postale:</td>
-                  <td className="td-input">
-                    <textarea
-                      name="address"
-                      onChange={(e) => handleChange(e, "address")}
-                      autoComplete="new-password"
-                      value={address}
-                    />
-                  </td>
-                </tr>
+            <div className="form-column">
+              <TextInput
+                label="Nom"
+                name="lastname"
+                {...form.getInputProps("lastname")}
+                autoComplete="new-password"
+                required
+              />
+              <TextInput
+                label="Prénom"
+                name="firstname"
+                {...form.getInputProps("firstname")}
+                autoComplete="new-password"
+              />
+              <DatePicker
+                label="Date de naissance"
+                locale="fr"
+                {...form.getInputProps("birthday")}
+                inputFormat="DD/MM/YYYY"
+                placeholder="Choisissez une date"
+                icon={<Calendar size={16} />}
+                allowFreeInput
+              />
+              <RadioGroup
+                label="Genre"
+                name="sex"
+                {...form.getInputProps("sex")}
+                size={"sm"}
+                required
+              >
+                <Radio value="homme" label="Homme" />
+                <Radio value="femme" label="Femme" />
+                <Radio value="autre" label="Autre" />
+              </RadioGroup>
+            </div>
+            <div className="form-column">
+              <TextInput
+                label="Téléphone Portable"
+                name="mobilephone"
+                {...form.getInputProps("mobilephone")}
+                autoComplete="new-password"
+              />
+              <TextInput
+                label="Téléphone fixe"
+                name="landline"
+                {...form.getInputProps("landline")}
+                autoComplete="new-password"
+              />
+              <TextInput
+                label="Adresse e-mail"
+                name="email"
+                {...form.getInputProps("email")}
+                size={"sm"}
+                autoComplete="new-password"
+              />
+            </div>
+            <div className="form-column">
+              <Textarea
+                label="Adresse postale"
+                name="address"
+                {...form.getInputProps("address")}
+                autoComplete="new-password"
+              />
 
-                <tr>
-                  <td className="td-label">Ville:</td>
-                  <td className="td-input">
-                    <Autocomplete
-                      placeholder="Saint-Vincent-de-Barbeyrargues (34730)"
-                      data={autoCompleteCities}
-                      size={"xs"}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="td-label">Code postal:</td>
-                  <td className="td-input">
-                    <input
-                      type="text"
-                      pattern="[0-9]{5}"
-                      name="postcode"
-                      onChange={(e) => handleChange(e, "postcode")}
-                      autoComplete="new-password"
-                      value={postcode}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <table>
-              <tbody>
-                <tr>
-                  <td className="td-label">Remarques:</td>
-                  <td className="td-input">
-                    <textarea
-                      name="comments"
-                      onChange={(e) => handleChange(e, "comments")}
-                      value={comments}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+              <Autocomplete
+                label="Ville"
+                name="city"
+                placeholder="Saint-Vincent-de-Barbeyrargues (34730)"
+                {...form.getInputProps("city")}
+                data={autoCompleteCities}
+              />
+              <Textarea
+                label="Remarques"
+                name="comments"
+                {...form.getInputProps("comments")}
+              />
+            </div>
           </div>
         </div>
         <h2>2 - Informations sur le Patient</h2>

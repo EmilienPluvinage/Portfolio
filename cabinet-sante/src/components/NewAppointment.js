@@ -19,6 +19,7 @@ import {
   dateOnly,
   timeOnly,
 } from "./Functions";
+import { Calendar } from "tabler-icons-react";
 
 export default function NewAppointment({ setOpened, patientId, startingTime }) {
   console.log(startingTime);
@@ -98,6 +99,9 @@ export default function NewAppointment({ setOpened, patientId, startingTime }) {
         locale="fr"
         value={date}
         onChange={setDate}
+        inputFormat="DD/MM/YYYY"
+        placeholder="Choisissez une date"
+        icon={<Calendar size={16} />}
         required
       />
       <TimeRangeInput
