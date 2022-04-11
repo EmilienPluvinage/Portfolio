@@ -3,7 +3,6 @@ import { Routes, Route } from "react-router-dom";
 import { useLogin } from "./contexts/AuthContext";
 import NewPatient from "./NewPatient";
 import PatientList from "./PatientList";
-import MyCalendar from "./MyCalendar";
 import MyFullCalendar from "./MyFullCalendar";
 
 function Main({ menu }) {
@@ -15,16 +14,8 @@ function Main({ menu }) {
           <Route exact path="/Nouveau-Patient/:id" element={<NewPatient />} />
           <Route exact path="/Nouveau-Patient" element={<NewPatient />} />
           <Route exact path="/Listing-Patients" element={<PatientList />} />
-          <Route exact path="/FullCalendar" element={<MyFullCalendar />} />
-          <Route
-            exact
-            path="/Agenda"
-            element={
-              <div className="main-content">
-                <MyCalendar options={{ dayStart: 8, dayEnd: 21 }} />
-              </div>
-            }
-          />
+          <Route exact path="/Agenda" element={<MyFullCalendar />} />
+
           {menu.map(({ link, name }) => (
             <Route
               key={link}
