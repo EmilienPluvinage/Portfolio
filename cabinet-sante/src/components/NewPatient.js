@@ -44,7 +44,6 @@ export default function NewPatient() {
 
   useEffect(() => {
     // we prefill the fields if it's an update, leave them empty if it's an addition
-    console.log(params);
     if (PatientList.length > 0) {
       if (params?.id !== undefined) {
         var patient = PatientList.find(

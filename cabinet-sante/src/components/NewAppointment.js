@@ -1,5 +1,12 @@
 import React from "react";
-import { TextInput, Textarea, Select, Button, Center } from "@mantine/core";
+import {
+  TextInput,
+  Textarea,
+  Select,
+  Button,
+  Center,
+  Autocomplete,
+} from "@mantine/core";
 import { DatePicker, TimeRangeInput } from "@mantine/dates";
 import { useState } from "react";
 import dayjs from "dayjs";
@@ -9,6 +16,8 @@ import { showNotification } from "@mantine/notifications";
 import { concatenateDateTime, displayDateInFrench } from "./Functions";
 
 export default function NewAppointment({ setOpened, patientId }) {
+  const [patient, setPatient] = useState("");
+  const [id, setId] = useState(patientId);
   const now = new Date();
   const then = dayjs(now).add(60, "minutes").toDate();
   const token = useLogin().token;
@@ -24,7 +33,6 @@ export default function NewAppointment({ setOpened, patientId }) {
     var link = process.env.REACT_APP_API_DOMAIN + "/NewEvent";
     const start = concatenateDateTime(date, time[0]);
     const end = concatenateDateTime(date, time[1]);
-
     try {
       const fetchResponse = await fetch(link, {
         method: "POST",
@@ -58,8 +66,41 @@ export default function NewAppointment({ setOpened, patientId }) {
     }
   }
 
+  function handlePatientChange(value) {
+    // rajouter un truc qui si on trouve pas value dans le tableau des id des patients, on fait setId à 0.
+    setId(value);
+    var patient = "";
+    switch (value) {
+      case "1":
+        patient = "Emilien Pluvinage";
+        break;
+      case "2":
+        patient = "Elsa Theillet";
+        break;
+      case "3":
+        patient = "Robert De Niro";
+        break;
+      default:
+        break;
+    }
+    setPatient(patient);
+  }
+
   return (
     <>
+      {patientId === 0 && (
+        <Autocomplete
+          label="Patient"
+          value={patient}
+          onChange={handlePatientChange}
+          data={[
+            { value: "1", label: "Emilien Pluvinage" },
+            { value: "2", label: "Elsa Theillet" },
+            { value: "3", label: "Robert De Niro" },
+          ]}
+          required
+        />
+      )}
       <TextInput
         label="Titre"
         name="title"
