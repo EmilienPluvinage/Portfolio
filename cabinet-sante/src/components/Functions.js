@@ -112,3 +112,25 @@ export function displayDateInFrench(date) {
     (minutes.toString().length === 1 ? "0" + minutes : minutes)
   );
 }
+
+export async function getAllEvents(token) {
+  try {
+    const fetchResponse = await fetch(
+      process.env.REACT_APP_API_DOMAIN + "/GetAllEvents",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: token,
+        }),
+      }
+    );
+    const res = await fetchResponse.json();
+    return res;
+  } catch (e) {
+    return e;
+  }
+}

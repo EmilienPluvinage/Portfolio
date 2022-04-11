@@ -7,7 +7,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { useLogin } from "./contexts/AuthContext";
 import { useState } from "react";
 import { useEffect } from "react";
-import { getAllEvents } from "./MyCalendarFunctions";
+import { getAllEvents } from "./Functions";
 
 export default function MyFullCalendar() {
   const token = useLogin().token;
