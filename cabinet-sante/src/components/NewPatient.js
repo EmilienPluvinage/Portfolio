@@ -17,6 +17,9 @@ import {
   Radio,
   RadioGroup,
   Textarea,
+  NumberInput,
+  CheckboxGroup,
+  Checkbox,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { DatePicker } from "@mantine/dates";
@@ -55,6 +58,15 @@ export default function NewPatient() {
       address: "",
       city: "",
       comments: "",
+      maritalStatus: "",
+      numberOfChildren: 0,
+      job: "",
+      GP: "",
+      hobbies: "",
+      SSNumber: "",
+      healthInsurance: "",
+      sentBy: "",
+      hand: "",
     },
   });
 
@@ -76,6 +88,15 @@ export default function NewPatient() {
           address: patient.address,
           city: patient.city,
           comments: patient.comments,
+          maritalStatus: patient.maritalStatus,
+          numberOfChildren: patient.numberOfChildren,
+          job: patient.job,
+          GP: patient.GP,
+          hobbies: patient.hobbies,
+          SSNumber: patient.SSNumber,
+          healthInsurance: patient.healthInsurance,
+          sentBy: patient.sentBy,
+          hand: patient.hand,
         });
       }
     } else if (params?.id === undefined && id !== 0) {
@@ -109,6 +130,15 @@ export default function NewPatient() {
           postcode: values.postcode,
           city: values.city,
           comments: values.comments,
+          maritalStatus: values.maritalStatus,
+          numberOfChildren: values.numberOfChildren,
+          job: values.job,
+          GP: values.GP,
+          hobbies: values.hobbies,
+          SSNumber: values.SSNumber,
+          healthInsurance: values.healthInsurance,
+          sentBy: values.sentBy,
+          hand: values.hand,
           token: token,
           id: id,
         }),
@@ -260,118 +290,69 @@ export default function NewPatient() {
         <h2>2 - Informations sur le Patient</h2>
         <div className="main-content">
           <div className="new-patient">
-            <table>
-              <tbody>
-                <tr>
-                  <td className="td-label">Statut Marital:</td>
-                  <td className="td-input">
-                    <input type="text" name="maritalStatus" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="td-label">Nombre d'enfants:</td>
-                  <td className="td-input">
-                    <input type="number" name="numberOfChildren" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="td-label">Profession / Scolarité:</td>
-                  <td className="td-input">
-                    <input type="text" name="job" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="td-label">Médecin traitant</td>
-                  <td className="td-input">
-                    <input type="text" name="GP" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="td-label">Loisirs</td>
-                  <td className="td-input">
-                    <input type="text" name="hobbies" />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <table>
-              <tbody>
-                <tr>
-                  <td className="td-label">Numéro de sécurité sociale:</td>
-                  <td className="td-input">
-                    <input type="phone" pattern="[0-9]{13}" name="SSNumber" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="td-label">Téléphone fixe:</td>
-                  <td className="td-input">
-                    <input type="phone" pattern="[0-9]{10}" name="landline" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="td-label">Mutuelle:</td>
-                  <td className="td-input">
-                    <input type="text" name="healthInsurance" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="td-label">Envoyé par:</td>
-                  <td className="td-input">
-                    <input type="text" name="sentBy" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="td-label">Préférence Manuelle:</td>
-                  <td className="td-input">
-                    Gauche : <input type="checkbox" name="gauche" /> Droite :{" "}
-                    <input type="checkbox" name="droite" />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <div className="form-column">
+              <TextInput
+                label="Statut Marital"
+                name="maritalStatus"
+                {...form.getInputProps("maritalStatus")}
+                autoComplete="new-password"
+              />
+              <NumberInput
+                label="Nombre d'enfants"
+                name="numberOfChildren"
+                {...form.getInputProps("numberOfChildren")}
+                autoComplete="new-password"
+              />
+              <TextInput
+                label="Profession / Scolarité"
+                name="job"
+                {...form.getInputProps("job")}
+                autoComplete="new-password"
+              />
+            </div>
+            <div className="form-column">
+              <TextInput
+                label="Médecin Traitant"
+                name="GP"
+                {...form.getInputProps("GP")}
+                autoComplete="new-password"
+              />
+              <TextInput
+                label="Loisirs"
+                name="hobbies"
+                {...form.getInputProps("hobbies")}
+                autoComplete="new-password"
+              />
+              <TextInput
+                label="Numéro de sécurité sociale"
+                name="SSNumber"
+                {...form.getInputProps("SSNumber")}
+                autoComplete="new-password"
+              />
+            </div>
+            <div className="form-column">
+              <TextInput
+                label="Mutuelle"
+                name="healthInsurance"
+                {...form.getInputProps("healhInsurance")}
+                autoComplete="new-password"
+              />
+              <TextInput
+                label="Envoyé par"
+                name="sentBy"
+                {...form.getInputProps("sentBy")}
+                autoComplete="new-password"
+              />
+              <CheckboxGroup
+                label="Préférence manuelle"
+                style={{ marginTop: "5px" }}
+              >
+                <Checkbox value="gauche" label="Gauche" />
+                <Checkbox value="droite" label="Droite" />
+              </CheckboxGroup>
+            </div>
           </div>
         </div>
-        <h2>3 - Antécédents</h2>
-        <div className="main-content">
-          <p>Remarques</p>
-          <div className="new-patient">
-            <table>
-              <thead>
-                <tr>
-                  <th colSpan={2}>Actuellement</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="td-label">
-                    Maladie <input type="checkbox" name="check-maladie" />
-                  </td>
-                  <td className="td-input">
-                    <input type="text" name="maladie" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="td-label">
-                    Psychologie{" "}
-                    <input type="checkbox" name="check-psychologie" />
-                  </td>
-                  <td className="td-input">
-                    <input type="text" name="psychologie" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="td-label">
-                    Traitement <input type="checkbox" name="check-traitement" />
-                  </td>
-                  <td className="td-input">
-                    <input type="text" name="traitement" />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div className="form-btn"></div>
       </form>
     </>
   );
