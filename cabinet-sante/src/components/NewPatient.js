@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
 import { Calendar } from "tabler-icons-react";
+import { useNavigate } from "react-router-dom";
 
 import {
   Autocomplete,
@@ -24,6 +25,7 @@ import { moveToFirst } from "./Functions";
 import NewAppointment from "./NewAppointment";
 
 export default function NewPatient() {
+  const navigate = useNavigate();
   var cities = useGovData().cities;
   var autoCompleteCities = cities.map(function (a) {
     return a.nom + " (" + a.codesPostaux[0] + ")";
@@ -115,6 +117,7 @@ export default function NewPatient() {
       const res = await fetchResponse.json();
       if (res.success) {
         getPatients(token);
+        console.log(res.id);
         setId(res.id);
         showNotification({
           title:
@@ -122,6 +125,7 @@ export default function NewPatient() {
           message: "La fiche de votre patient a bien été mise à jour.",
           color: "cyan",
         });
+        navigate("/Nouveau-Patient/" + res.id);
       }
     } catch (e) {
       return e;
@@ -153,7 +157,7 @@ export default function NewPatient() {
             Consultation
           </Button>
           <Button style={{ margin: "10px" }}>Paiement</Button>
-          <Link className="text-link" to="/Nouveau-patient">
+          <Link className="text-link" to="/Nouveau-Patient">
             <Button style={{ margin: "10px" }}>Nouveau Patient</Button>
           </Link>
         </div>
