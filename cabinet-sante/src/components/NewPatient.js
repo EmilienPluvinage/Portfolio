@@ -6,7 +6,13 @@ import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { useGovData } from "./contexts/GovDataContext";
 import { useParams } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
-import { Calendar } from "tabler-icons-react";
+import {
+  Calendar,
+  Upload,
+  CreditCard,
+  User,
+  ReportMedical,
+} from "tabler-icons-react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -45,7 +51,6 @@ export default function NewPatient() {
   const getPatients = useUpdatePatients();
   const [id, setId] = useState(0);
   const params = useParams();
-
   const form = useForm({
     initialValues: {
       lastname: "",
@@ -57,6 +62,7 @@ export default function NewPatient() {
       email: "",
       address: "",
       city: "",
+      country: "",
       comments: "",
       maritalStatus: "",
       numberOfChildren: 0,
@@ -69,6 +75,7 @@ export default function NewPatient() {
       hand: "",
     },
   });
+  console.log(form.values.hand);
 
   if (PatientList.length > 0) {
     if (params?.id !== undefined && params?.id.toString() !== id.toString()) {
@@ -87,6 +94,7 @@ export default function NewPatient() {
           email: patient.email,
           address: patient.address,
           city: patient.city,
+          country: patient.country,
           comments: patient.comments,
           maritalStatus: patient.maritalStatus,
           numberOfChildren: patient.numberOfChildren,
@@ -129,6 +137,7 @@ export default function NewPatient() {
           address: values.address,
           postcode: values.postcode,
           city: values.city,
+          country: values.country,
           comments: values.comments,
           maritalStatus: values.maritalStatus,
           numberOfChildren: values.numberOfChildren,
@@ -190,17 +199,37 @@ export default function NewPatient() {
       >
         <NewAppointment setOpened={setOpened} patientId={id} startingTime={0} />
       </Modal>
-      <form onSubmit={form.onSubmit((values) => submitForm(values))}>
+      <form
+        onSubmit={form.onSubmit((values) => submitForm(values))}
+        autoComplete="new-password"
+      >
         <div className="nav-patient">
-          <Button type="submit" style={{ margin: "10px" }}>
+          <Button
+            leftIcon={<Upload size={18} />}
+            type="submit"
+            style={{ margin: "10px" }}
+          >
             Enregistrer
           </Button>
-          <Button onClick={() => setOpened(true)} style={{ margin: "10px" }}>
+          <Button
+            leftIcon={<ReportMedical size={18} />}
+            onClick={() => setOpened(true)}
+            style={{ margin: "10px" }}
+          >
             Consultation
           </Button>
-          <Button style={{ margin: "10px" }}>Paiement</Button>
+          <Button
+            leftIcon={<CreditCard size={18} />}
+            style={{ margin: "10px" }}
+          >
+            Paiement
+          </Button>
 
-          <Button onClick={ClickOnNewPatient} style={{ margin: "10px" }}>
+          <Button
+            leftIcon={<User size={18} />}
+            onClick={ClickOnNewPatient}
+            style={{ margin: "10px" }}
+          >
             Nouveau Patient
           </Button>
         </div>
@@ -212,14 +241,14 @@ export default function NewPatient() {
                 label="Nom"
                 name="lastname"
                 {...form.getInputProps("lastname")}
-                autoComplete="new-password"
                 required
+                autoComplete="nope"
               />
               <TextInput
                 label="Prénom"
                 name="firstname"
                 {...form.getInputProps("firstname")}
-                autoComplete="new-password"
+                autoComplete={"" + Math.random()}
               />
               <DatePicker
                 label="Date de naissance"
@@ -248,20 +277,25 @@ export default function NewPatient() {
                 label="Téléphone Portable"
                 name="mobilephone"
                 {...form.getInputProps("mobilephone")}
-                autoComplete="new-password"
+                autoComplete={"" + Math.random()}
               />
               <TextInput
                 label="Téléphone fixe"
                 name="landline"
                 {...form.getInputProps("landline")}
-                autoComplete="new-password"
+                autoComplete={"" + Math.random()}
               />
               <TextInput
                 label="Adresse e-mail"
                 name="email"
                 {...form.getInputProps("email")}
                 size={"sm"}
-                autoComplete="new-password"
+                autoComplete={"" + Math.random()}
+              />
+              <Textarea
+                label="Remarques"
+                name="comments"
+                {...form.getInputProps("comments")}
               />
             </div>
             <div className="form-column">
@@ -269,7 +303,7 @@ export default function NewPatient() {
                 label="Adresse postale"
                 name="address"
                 {...form.getInputProps("address")}
-                autoComplete="new-password"
+                autoComplete={"" + Math.random()}
               />
 
               <Autocomplete
@@ -279,10 +313,11 @@ export default function NewPatient() {
                 {...form.getInputProps("city")}
                 data={autoCompleteCities}
               />
-              <Textarea
-                label="Remarques"
-                name="comments"
-                {...form.getInputProps("comments")}
+              <TextInput
+                label="Pays"
+                name="country"
+                {...form.getInputProps("country")}
+                autoComplete={"" + Math.random()}
               />
             </div>
           </div>
@@ -295,19 +330,19 @@ export default function NewPatient() {
                 label="Statut Marital"
                 name="maritalStatus"
                 {...form.getInputProps("maritalStatus")}
-                autoComplete="new-password"
+                autoComplete={"" + Math.random()}
               />
               <NumberInput
                 label="Nombre d'enfants"
                 name="numberOfChildren"
                 {...form.getInputProps("numberOfChildren")}
-                autoComplete="new-password"
+                autoComplete={"" + Math.random()}
               />
               <TextInput
                 label="Profession / Scolarité"
                 name="job"
                 {...form.getInputProps("job")}
-                autoComplete="new-password"
+                autoComplete={"" + Math.random()}
               />
             </div>
             <div className="form-column">
@@ -315,19 +350,19 @@ export default function NewPatient() {
                 label="Médecin Traitant"
                 name="GP"
                 {...form.getInputProps("GP")}
-                autoComplete="new-password"
+                autoComplete={"" + Math.random()}
               />
               <TextInput
                 label="Loisirs"
                 name="hobbies"
                 {...form.getInputProps("hobbies")}
-                autoComplete="new-password"
+                autoComplete={"" + Math.random()}
               />
               <TextInput
                 label="Numéro de sécurité sociale"
                 name="SSNumber"
                 {...form.getInputProps("SSNumber")}
-                autoComplete="new-password"
+                autoComplete={"" + Math.random()}
               />
             </div>
             <div className="form-column">
@@ -335,15 +370,16 @@ export default function NewPatient() {
                 label="Mutuelle"
                 name="healthInsurance"
                 {...form.getInputProps("healhInsurance")}
-                autoComplete="new-password"
+                autoComplete={"" + Math.random()}
               />
               <TextInput
                 label="Envoyé par"
                 name="sentBy"
                 {...form.getInputProps("sentBy")}
-                autoComplete="new-password"
+                autoComplete={"" + Math.random()}
               />
               <CheckboxGroup
+                {...form.getInputProps("hand")}
                 label="Préférence manuelle"
                 style={{ marginTop: "5px" }}
               >
