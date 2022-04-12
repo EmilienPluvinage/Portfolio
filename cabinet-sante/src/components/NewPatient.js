@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "../styles/styles.css";
 import { capitalize } from "./Functions";
 import { useLogin } from "./contexts/AuthContext";
@@ -56,37 +56,35 @@ export default function NewPatient() {
       comments: "",
     },
   });
-  console.log(form.values);
-  useEffect(() => {
-    // we prefill the fields if it's an update, leave them empty if it's an addition
-    if (PatientList.length > 0) {
-      if (params?.id !== undefined) {
-        var patient = PatientList.find(
-          (e) => e.id.toString() === params.id.toString()
-        );
-        if (patient !== undefined) {
-          setId(patient.id);
-          form.setValues({
-            firstname: patient.firstname,
-            lastname: patient.lastname,
-            birthday: patient.birthday !== "" ? new Date(patient.birthday) : "",
-            sex: patient.sex,
-            mobilephone: patient.mobilephone,
-            landline: patient.landline,
-            email: patient.email,
-            address: patient.address,
-            city: patient.city,
-            comments: patient.comments,
-          });
-        }
-      } else {
-        form.reset();
+
+  if (PatientList.length > 0) {
+    if (params?.id !== undefined && params?.id.toString() !== id.toString()) {
+      var patient = PatientList.find(
+        (e) => e.id.toString() === params.id.toString()
+      );
+      if (patient !== undefined) {
+        setId(patient.id);
+        form.setValues({
+          firstname: patient.firstname,
+          lastname: patient.lastname,
+          birthday: patient.birthday !== "" ? new Date(patient.birthday) : "",
+          sex: patient.sex,
+          mobilephone: patient.mobilephone,
+          landline: patient.landline,
+          email: patient.email,
+          address: patient.address,
+          city: patient.city,
+          comments: patient.comments,
+        });
       }
+    } else if (params?.id === undefined && id !== 0) {
+      form.reset();
+      form.setFieldValue("birthday", null);
+      setId(0);
     }
-  }, [params, PatientList]);
+  }
 
   async function submitForm(values) {
-    console.log(values);
     var link =
       process.env.REACT_APP_API_DOMAIN +
       "/" +
@@ -117,6 +115,7 @@ export default function NewPatient() {
       const res = await fetchResponse.json();
       if (res.success) {
         getPatients(token);
+        setId(res.id);
         showNotification({
           title:
             id !== 0 ? "Modification enregistrée" : "Nouveau patient ajouté",
@@ -178,6 +177,7 @@ export default function NewPatient() {
               <DatePicker
                 label="Date de naissance"
                 locale="fr"
+                name="birthday"
                 {...form.getInputProps("birthday")}
                 inputFormat="DD/MM/YYYY"
                 placeholder="Choisissez une date"
