@@ -67,7 +67,19 @@ app.post("/NewPatient", (req, res, next) => {
             ],
             (err, result) => {
               if (err) throw err;
-              res.status(201).json({ success: true, error: "" });
+
+              // we finally get the id of the newly added patient an return it to our front end
+              connection.query(
+                "SELECT id FROM patients WHERE userId=? AND firstname=? AND lastname=? ORDER BY id DESC LIMIT 0,1",
+                [userId, req.body.firstname, req.body.lastname],
+                (err, result) => {
+                  if (err) throw err;
+
+                  res
+                    .status(201)
+                    .json({ success: true, error: "", id: result[0].id });
+                }
+              );
             }
           );
         } else {
@@ -329,7 +341,9 @@ app.post("/UpdatePatient", (req, res, next) => {
             ],
             (err, result) => {
               if (err) throw err;
-              res.status(201).json({ success: true, error: "" });
+              res
+                .status(201)
+                .json({ success: true, error: "", id: req.body.id });
             }
           );
         } else {
