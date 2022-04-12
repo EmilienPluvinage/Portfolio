@@ -5,7 +5,6 @@ import { useLogin } from "./contexts/AuthContext";
 import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { useGovData } from "./contexts/GovDataContext";
 import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
 import { Calendar } from "tabler-icons-react";
 import { useNavigate } from "react-router-dom";
@@ -132,6 +131,19 @@ export default function NewPatient() {
     }
   }
 
+  function ClickOnNewPatient() {
+    if (id === 0) {
+      showNotification({
+        title: "Attention",
+        message:
+          "Vous êtes déjà en train d'ajouter un nouveau patient et il n'a pas été enregistré. Enregistrez-le avant d'en ajouter un autre.",
+      });
+    } else {
+      // message pour confirmer si pas sauvegardé un patient qu'on modifie (donc dont l'id n'est pas 0)
+      navigate("/Nouveau-Patient");
+    }
+  }
+
   // for validation
   // pattern="0[0-9]{9}|\+[0-9]{11}"
   // pattern="0[0-9]{9}|\+[0-9]{11}"
@@ -157,9 +169,10 @@ export default function NewPatient() {
             Consultation
           </Button>
           <Button style={{ margin: "10px" }}>Paiement</Button>
-          <Link className="text-link" to="/Nouveau-Patient">
-            <Button style={{ margin: "10px" }}>Nouveau Patient</Button>
-          </Link>
+
+          <Button onClick={ClickOnNewPatient} style={{ margin: "10px" }}>
+            Nouveau Patient
+          </Button>
         </div>
         <h2>1 - État Civil du Patient</h2>
         <div className="main-content">
