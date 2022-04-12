@@ -9,8 +9,8 @@ import { showNotification } from "@mantine/notifications";
 import {
   Calendar,
   Upload,
-  CreditCard,
-  User,
+  CurrencyEuro,
+  UserPlus,
   ReportMedical,
 } from "tabler-icons-react";
 import { useNavigate } from "react-router-dom";
@@ -46,6 +46,7 @@ export default function NewPatient() {
   moveToFirst(autoCompleteCities, "Prades-le-Lez (34730)");
   moveToFirst(autoCompleteCities, "Saint-Vincent-de-Barbeyrargues (34730)");
   const [opened, setOpened] = useState(false);
+  const [loading, setLoading] = useState("");
   const token = useLogin().token;
   const PatientList = usePatients();
   const getPatients = useUpdatePatients();
@@ -115,6 +116,7 @@ export default function NewPatient() {
   }
 
   async function submitForm(values) {
+    setLoading("loading");
     var link =
       process.env.REACT_APP_API_DOMAIN +
       "/" +
@@ -157,6 +159,7 @@ export default function NewPatient() {
         getPatients(token);
         console.log(res.id);
         setId(res.id);
+        setLoading("");
         showNotification({
           title:
             id !== 0 ? "Modification enregistrée" : "Nouveau patient ajouté",
@@ -208,6 +211,7 @@ export default function NewPatient() {
             leftIcon={<Upload size={18} />}
             type="submit"
             style={{ margin: "10px" }}
+            loading={loading}
           >
             Enregistrer
           </Button>
@@ -219,14 +223,14 @@ export default function NewPatient() {
             Consultation
           </Button>
           <Button
-            leftIcon={<CreditCard size={18} />}
+            leftIcon={<CurrencyEuro size={18} />}
             style={{ margin: "10px" }}
           >
             Paiement
           </Button>
 
           <Button
-            leftIcon={<User size={18} />}
+            leftIcon={<UserPlus size={18} />}
             onClick={ClickOnNewPatient}
             style={{ margin: "10px" }}
           >
