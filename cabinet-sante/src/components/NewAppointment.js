@@ -22,7 +22,6 @@ import {
 import { Calendar } from "tabler-icons-react";
 
 export default function NewAppointment({ setOpened, patientId, startingTime }) {
-  console.log(startingTime);
   const [patient, setPatient] = useState("");
   const [id, setId] = useState(patientId);
   const now = new Date(
