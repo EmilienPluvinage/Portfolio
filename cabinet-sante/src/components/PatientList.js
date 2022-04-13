@@ -5,7 +5,10 @@ import { useState } from "react";
 import { Pencil } from "tabler-icons-react";
 import { Link } from "react-router-dom";
 export default function PatientList() {
+  const patientsPerPage = 100;
   const patients = usePatients();
+  const numberOfPages =
+    patients.length > 0 ? Math.floor(patients.length / patientsPerPage) + 1 : 1;
   const [activePage, setPage] = useState(1);
 
   const ths = (
@@ -46,7 +49,7 @@ export default function PatientList() {
             style={{ marginBottom: "20px" }}
             page={activePage}
             onChange={setPage}
-            total={10}
+            total={numberOfPages}
             size={"sm"}
           />
         </Center>
