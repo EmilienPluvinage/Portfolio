@@ -1,10 +1,10 @@
 import { useState } from "react";
 import "../styles/styles.css";
-import { capitalize } from "./Functions";
+import { capitalize, wasPatientModified } from "./Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { useGovData } from "./contexts/GovDataContext";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
 import {
   Calendar,
@@ -29,6 +29,8 @@ import {
   CheckboxGroup,
   Checkbox,
   Select,
+  Text,
+  Grid,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { DatePicker } from "@mantine/dates";
@@ -49,12 +51,35 @@ export default function NewPatient() {
   moveToFirst(autoCompleteCities, "Prades-le-Lez (34730)");
   moveToFirst(autoCompleteCities, "Saint-Vincent-de-Barbeyrargues (34730)");
   const [opened, setOpened] = useState(false);
+  const [openedConfirm, setOpenedConfirm] = useState(false);
   const [loading, setLoading] = useState("");
   const token = useLogin().token;
   const PatientList = usePatients();
   const getPatients = useUpdatePatients();
   const [id, setId] = useState(0);
   const params = useParams();
+  const initialValues = {
+    lastname: "",
+    firstname: "",
+    birthday: "",
+    sex: "",
+    mobilephone: "",
+    landline: "",
+    email: "",
+    address: "",
+    city: "",
+    country: "",
+    comments: "",
+    maritalStatus: "",
+    numberOfChildren: 0,
+    job: "",
+    GP: "",
+    hobbies: "",
+    SSNumber: "",
+    healthInsurance: "",
+    sentBy: "",
+    hand: [],
+  };
   const maritalStatusData = [
     "Inconnu",
     "Célibataire",
@@ -65,30 +90,8 @@ export default function NewPatient() {
     "Veuf(ve)",
   ];
   const form = useForm({
-    initialValues: {
-      lastname: "",
-      firstname: "",
-      birthday: "",
-      sex: "",
-      mobilephone: "",
-      landline: "",
-      email: "",
-      address: "",
-      city: "",
-      country: "",
-      comments: "",
-      maritalStatus: "",
-      numberOfChildren: 0,
-      job: "",
-      GP: "",
-      hobbies: "",
-      SSNumber: "",
-      healthInsurance: "",
-      sentBy: "",
-      hand: "",
-    },
+    initialValues: initialValues,
   });
-  console.log(form.values.hand);
 
   if (PatientList.length > 0) {
     if (params?.id !== undefined && params?.id.toString() !== id.toString()) {
@@ -169,7 +172,6 @@ export default function NewPatient() {
       const res = await fetchResponse.json();
       if (res.success) {
         getPatients(token);
-        console.log(res.id);
         setId(res.id);
         setLoading("");
         showNotification({
@@ -196,8 +198,16 @@ export default function NewPatient() {
         color: "yellow",
       });
     } else {
-      // message pour confirmer si pas sauvegardé un patient qu'on modifie (donc dont l'id n'est pas 0)
-      navigate("/Nouveau-Patient");
+      if (
+        wasPatientModified(
+          form.values,
+          PatientList.find((e) => e.id === id)
+        )
+      ) {
+        setOpenedConfirm(true);
+      } else {
+        navigate("/Nouveau-Patient");
+      }
     }
   }
 
@@ -216,6 +226,37 @@ export default function NewPatient() {
         closeOnClickOutside={false}
       >
         <NewAppointment setOpened={setOpened} patientId={id} startingTime={0} />
+      </Modal>
+      <Modal
+        centered
+        overlayOpacity={0.3}
+        withCloseButton={false}
+        opened={openedConfirm}
+        onClose={() => setOpenedConfirm(false)}
+        closeOnClickOutside={false}
+      >
+        <Text>
+          Les modifications que vous avez effectuées n'ont pas été enregistrées.
+          Êtes-vous sûr(e) de vouloir ajouter un nouveau patient et annuler les
+          modifications effectuées?
+          <Grid
+            justify="space-between"
+            style={{ marginTop: "10px", marginRight: "50px" }}
+          >
+            <Grid.Col span={2}>
+              <Button variant="default" onClick={() => setOpenedConfirm(false)}>
+                Retour
+              </Button>
+            </Grid.Col>
+            <Grid.Col span={2}>
+              <Link to="/Nouveau-Patient" className="text-link">
+                <Button onClick={() => setOpenedConfirm(false)}>
+                  Confirmer
+                </Button>
+              </Link>
+            </Grid.Col>
+          </Grid>
+        </Text>
       </Modal>
       <form
         onSubmit={form.onSubmit((values) => submitForm(values))}

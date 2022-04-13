@@ -50,7 +50,7 @@ app.post("/NewPatient", (req, res, next) => {
           var userId = rows[0].userId;
           // Now connected and we have the user ID so we do the insert
           connection.query(
-            "INSERT INTO patients(userId, firstname, lastname, birthday, sex, mobilephone, landline, email, address, postcode, city, comments) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+            "INSERT INTO patients(userId, firstname, lastname, birthday, sex, mobilephone, landline, email, address, city, comments) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
             [
               userId,
               req.body.firstname,
@@ -61,7 +61,6 @@ app.post("/NewPatient", (req, res, next) => {
               req.body.landline,
               req.body.email,
               req.body.address,
-              req.body.postcode,
               req.body.city,
               req.body.comments,
             ],
@@ -324,7 +323,7 @@ app.post("/UpdatePatient", (req, res, next) => {
         if (rows.length === 1) {
           // Now connected and we have the user ID so we do the update
           connection.query(
-            "UPDATE patients SET firstname=?, lastname=?, birthday=?, sex=?, mobilephone=?, landline=?, email=?, address=?, postcode=?, city=?, comments=? WHERE id=?",
+            "UPDATE patients SET firstname=?, lastname=?, birthday=?, sex=?, mobilephone=?, landline=?, email=?, address=?, city=?, comments=? WHERE id=?",
             [
               req.body.firstname,
               req.body.lastname,
@@ -334,7 +333,6 @@ app.post("/UpdatePatient", (req, res, next) => {
               req.body.landline,
               req.body.email,
               req.body.address,
-              req.body.postcode,
               req.body.city,
               req.body.comments,
               req.body.id,

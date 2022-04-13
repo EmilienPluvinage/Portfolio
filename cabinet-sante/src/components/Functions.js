@@ -158,3 +158,13 @@ export function calculateAge(date) {
   var diff = new Date(now - birthdate);
   return diff.getFullYear() - 1970;
 }
+
+export function wasPatientModified(patient, patientFromTheList) {
+  var pat1 = { ...patient };
+  var pat2 = { ...patientFromTheList };
+  // we remove the fields that are only present in patientfromtheList in order to compare all the other ones.
+  delete pat2.fullname;
+  delete pat2.id;
+  delete pat2.userId;
+  return JSON.stringify(pat1) !== JSON.stringify(pat2);
+}
