@@ -352,6 +352,35 @@ app.post("/UpdatePatient", (req, res, next) => {
   });
 });
 
+app.post("/UpdateEventTime", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          const userId = rows[0].userId;
+          // Now connected and we have the user ID so we do the update
+          connection.query(
+            "UPDATE appointments SET start=?, end=? WHERE id=?",
+            [req.body.start, req.body.end, req.body.id],
+            (err, result) => {
+              if (err) throw err;
+              res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
 ////////////////
 //   DELETE   //
 ////////////////

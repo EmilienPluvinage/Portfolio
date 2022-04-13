@@ -7,9 +7,15 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { useLogin } from "./contexts/AuthContext";
 import { useState } from "react";
 import { useEffect } from "react";
-import { getAllEvents } from "./Functions";
+import {
+  getAllEvents,
+  concatenateDateTime,
+  displayDateInFrench,
+} from "./Functions";
 import NewAppointment from "./NewAppointment";
 import { Modal } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
+import { Check } from "tabler-icons-react";
 
 export default function MyFullCalendar() {
   const [opened, setOpened] = useState(false);
@@ -18,6 +24,8 @@ export default function MyFullCalendar() {
   const token = useLogin().token;
   const buttonText = { today: "Semaine actuelle" };
   const [events, setEvents] = useState([]);
+  const [calendarUpdate, setCalendarUpdate] = useState(0);
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -31,17 +39,60 @@ export default function MyFullCalendar() {
       }
     }
     fetchData();
-  }, [token]);
+  }, [token, calendarUpdate]);
 
   function handleDateClick(arg) {
     setStartingTime(arg.dateStr);
     setOpened(true);
   }
+
+  async function updateEventTime(id, startingTime, endingTime, src) {
+    var link = process.env.REACT_APP_API_DOMAIN + "/UpdateEventTime";
+    const start = concatenateDateTime(startingTime, startingTime);
+    const end = concatenateDateTime(endingTime, endingTime);
+    try {
+      const fetchResponse = await fetch(link, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: id,
+          start: start,
+          end: end,
+          token: token,
+        }),
+      });
+      const res = await fetchResponse.json();
+      if (res.success) {
+        const msg =
+          src === "drop"
+            ? "Le rendez-vous a bien été déplacé au " +
+              displayDateInFrench(new Date(start)) +
+              "."
+            : "La durée du rendez-vous a bien été modifiée";
+        showNotification({
+          title: "Consultation modifiée",
+          message: msg,
+          icon: <Check />,
+          color: "green",
+        });
+        setCalendarUpdate((e) => e + 1);
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
   function handleEventClick(arg) {
     alert(arg.event.id);
   }
   function handleEventDrop(arg) {
-    alert(arg.event.start + " " + arg.event.end);
+    updateEventTime(arg.event.id, arg.event.start, arg.event.end, "drop");
+  }
+  function handleEventResize(arg) {
+    updateEventTime(arg.event.id, arg.event.start, arg.event.end, "resize");
   }
   function renderEventContent(eventInfo) {
     return (
@@ -85,6 +136,7 @@ export default function MyFullCalendar() {
           allDaySlot={false}
           editable={true}
           eventDrop={handleEventDrop}
+          eventResize={handleEventResize}
           locale={"fr"}
           buttonText={buttonText}
           eventBackgroundColor={"#22b8cf"}
