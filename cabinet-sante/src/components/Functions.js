@@ -151,3 +151,10 @@ export async function getAllEvents(token) {
     return e;
   }
 }
+
+export function calculateAge(date) {
+  const birthdate = new Date(date);
+  const now = new Date(Date.now());
+  var diff = new Date(now - birthdate);
+  return diff.getFullYear() - 1970;
+}

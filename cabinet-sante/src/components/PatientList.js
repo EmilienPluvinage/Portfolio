@@ -1,6 +1,7 @@
 import "../styles/styles.css";
 import { usePatients } from "./contexts/PatientsContext";
 import { Pagination, Table, Button, Center } from "@mantine/core";
+import { calculateAge } from "./Functions";
 import { useState } from "react";
 import { Pencil } from "tabler-icons-react";
 import { Link } from "react-router-dom";
@@ -27,7 +28,9 @@ export default function PatientList() {
     <tr key={element.id}>
       <td>{element.firstname}</td>
       <td>{element.lastname}</td>
-      <td>{element.birthday}</td>
+      <td>
+        {element.birthday !== "" ? calculateAge(element.birthday) + " ans" : ""}
+      </td>
       <td>{element.city}</td>
       <td>{element.mobilephone}</td>
       <td> </td>
