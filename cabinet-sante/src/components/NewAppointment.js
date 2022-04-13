@@ -1,4 +1,5 @@
 import React from "react";
+import { usePatients } from "./contexts/PatientsContext";
 import {
   TextInput,
   Textarea,
@@ -22,6 +23,10 @@ import {
 import { Calendar } from "tabler-icons-react";
 
 export default function NewAppointment({ setOpened, patientId, startingTime }) {
+  const patients = usePatients();
+  const patientsList = patients.map((e) => {
+    return e.fullname;
+  });
   const [patient, setPatient] = useState("");
   const [id, setId] = useState(patientId);
   const now = new Date(
@@ -83,7 +88,7 @@ export default function NewAppointment({ setOpened, patientId, startingTime }) {
           label="Patient"
           value={patient}
           onChange={setPatient}
-          data={["Emilien Pluvinage", "Elsa Theillet", "Robert De Niro"]}
+          data={patientsList}
           required
         />
       )}

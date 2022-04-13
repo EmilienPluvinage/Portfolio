@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { calculateAge } from "../Functions";
 
 const PatientsContext = React.createContext();
 const UpdatePatientsContext = React.createContext();
@@ -14,7 +15,6 @@ export function useUpdatePatients() {
 export function PatientsProvider({ children }) {
   // True or False
   const [patients, setPatients] = useState([]);
-
   async function updatePatientsList(token) {
     try {
       const fetchResponse = await fetch(
@@ -31,6 +31,15 @@ export function PatientsProvider({ children }) {
         }
       );
       const res = await fetchResponse.json();
+      res.data.forEach((element) => {
+        element.fullname =
+          element.firstname +
+          " " +
+          element.lastname +
+          (element.birthday !== ""
+            ? " (" + calculateAge(element.birthday) + " ans)"
+            : "");
+      });
       setPatients(res.data);
     } catch (e) {
       return e;
