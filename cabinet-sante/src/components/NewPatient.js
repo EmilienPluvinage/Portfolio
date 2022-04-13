@@ -225,7 +225,12 @@ export default function NewPatient() {
         title={"Consultation"}
         closeOnClickOutside={false}
       >
-        <NewAppointment setOpened={setOpened} patientId={id} startingTime={0} />
+        <NewAppointment
+          setOpened={setOpened}
+          patientId={id}
+          startingTime={0}
+          appointmentId={0}
+        />
       </Modal>
       <Modal
         centered

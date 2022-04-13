@@ -7,6 +7,7 @@ import {
   Button,
   Center,
   Autocomplete,
+  Grid,
 } from "@mantine/core";
 import { DatePicker, TimeRangeInput } from "@mantine/dates";
 import { useState } from "react";
@@ -20,9 +21,14 @@ import {
   dateOnly,
   timeOnly,
 } from "./Functions";
-import { Calendar, Check } from "tabler-icons-react";
+import { Calendar, Check, Trash, Pencil } from "tabler-icons-react";
 
-export default function NewAppointment({ setOpened, patientId, startingTime }) {
+export default function NewAppointment({
+  setOpened,
+  patientId,
+  startingTime,
+  appointmentId,
+}) {
   const patients = usePatients();
   const patientsList = patients.map((e) => {
     return e.fullname;
@@ -42,6 +48,38 @@ export default function NewAppointment({ setOpened, patientId, startingTime }) {
   const [reason, setReason] = useState("");
   const [patientType, setPatientType] = useState("");
   const [loading, setLoading] = useState("");
+  const [deleteLoader, setDeleteLoader] = useState("");
+
+  async function deleteAppointment() {
+    setDeleteLoader("loading");
+    var link = process.env.REACT_APP_API_DOMAIN + "/DeleteEvent";
+    try {
+      const fetchResponse = await fetch(link, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: appointmentId,
+          token: token,
+        }),
+      });
+      const res = await fetchResponse.json();
+      if (res.success) {
+        setOpened(false);
+        setDeleteLoader("");
+        showNotification({
+          title: "Consultation supprimée",
+          message: "Le rendez-vous a bien été supprimé.",
+          icon: <Check />,
+          color: "green",
+        });
+      }
+    } catch (e) {
+      return e;
+    }
+  }
 
   async function handleForm() {
     setLoading("loading");
@@ -131,15 +169,43 @@ export default function NewAppointment({ setOpened, patientId, startingTime }) {
         searchable
         nothingFound="Pas d'option"
       />
-      <Center>
-        <Button
-          style={{ marginTop: "10px" }}
-          onClick={handleForm}
-          loading={loading}
+      {appointmentId === 0 ? (
+        <Center>
+          <Button
+            style={{ marginTop: "10px" }}
+            onClick={handleForm}
+            loading={loading}
+          >
+            Planifier
+          </Button>
+        </Center>
+      ) : (
+        <Grid
+          justify="space-between"
+          style={{ marginTop: "10px", marginRight: "70px" }}
         >
-          Planifier
-        </Button>
-      </Center>
+          <Grid.Col span={2}>
+            <Button
+              leftIcon={<Trash size={18} />}
+              variant="outline"
+              color="red"
+              onClick={deleteAppointment}
+              loading={deleteLoader}
+            >
+              Supprimer
+            </Button>
+          </Grid.Col>
+          <Grid.Col span={2}>
+            <Button
+              leftIcon={<Pencil size={18} />}
+              onClick={handleForm}
+              loading={loading}
+            >
+              Modifier
+            </Button>
+          </Grid.Col>
+        </Grid>
+      )}
     </>
   );
 }

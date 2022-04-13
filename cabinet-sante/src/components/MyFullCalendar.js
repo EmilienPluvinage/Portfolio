@@ -25,6 +25,7 @@ export default function MyFullCalendar() {
   const buttonText = { today: "Semaine actuelle" };
   const [events, setEvents] = useState([]);
   const [calendarUpdate, setCalendarUpdate] = useState(0);
+  const [appointmentId, setAppointmentId] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
@@ -39,12 +40,7 @@ export default function MyFullCalendar() {
       }
     }
     fetchData();
-  }, [token, calendarUpdate]);
-
-  function handleDateClick(arg) {
-    setStartingTime(arg.dateStr);
-    setOpened(true);
-  }
+  }, [token, calendarUpdate, opened]);
 
   async function updateEventTime(id, startingTime, endingTime, src) {
     var link = process.env.REACT_APP_API_DOMAIN + "/UpdateEventTime";
@@ -86,12 +82,23 @@ export default function MyFullCalendar() {
   }
 
   function handleEventClick(arg) {
-    alert(arg.event.id);
+    // when user clicks on an event
+    setAppointmentId(arg.event.id);
+    setOpened(true);
   }
+  function handleDateClick(arg) {
+    // when users clicks somewhere on the calendar (outside an event)
+    setStartingTime(arg.dateStr);
+    setAppointmentId(0);
+    setOpened(true);
+  }
+
   function handleEventDrop(arg) {
+    // when an event is moved
     updateEventTime(arg.event.id, arg.event.start, arg.event.end, "drop");
   }
   function handleEventResize(arg) {
+    // when an event is resized
     updateEventTime(arg.event.id, arg.event.start, arg.event.end, "resize");
   }
   function renderEventContent(eventInfo) {
@@ -117,6 +124,7 @@ export default function MyFullCalendar() {
           setOpened={setOpened}
           startingTime={startingTime}
           patientId={0}
+          appointmentId={appointmentId}
         />
       </Modal>
       <h2>Agenda</h2>
