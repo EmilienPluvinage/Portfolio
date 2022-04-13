@@ -45,7 +45,7 @@ export default function PatientList() {
   ));
   return (
     <div>
-      <h2>Liste des Patients</h2>
+      <h2>{patients.length > 0 && patients.length + " "}Patients</h2>
       <div className="main-content">
         <Center>
           <Pagination
