@@ -20,7 +20,8 @@ import {
   dateOnly,
   timeOnly,
 } from "./Functions";
-import { Calendar } from "tabler-icons-react";
+import { Calendar, Check } from "tabler-icons-react";
+import { greatestDurationDenominator } from "@fullcalendar/react";
 
 export default function NewAppointment({ setOpened, patientId, startingTime }) {
   const patients = usePatients();
@@ -74,6 +75,8 @@ export default function NewAppointment({ setOpened, patientId, startingTime }) {
             "Le rendez-vous du " +
             displayDateInFrench(new Date(start)) +
             " a bien été enregistré.",
+          icon: <Check />,
+          color: "green",
         });
       }
     } catch (e) {

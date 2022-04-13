@@ -12,6 +12,8 @@ import {
   CurrencyEuro,
   UserPlus,
   ReportMedical,
+  Check,
+  ExclamationMark,
 } from "tabler-icons-react";
 import { useNavigate } from "react-router-dom";
 
@@ -164,7 +166,8 @@ export default function NewPatient() {
           title:
             id !== 0 ? "Modification enregistrée" : "Nouveau patient ajouté",
           message: "La fiche de votre patient a bien été mise à jour.",
-          color: "cyan",
+          color: "green",
+          icon: <Check />,
         });
         navigate("/Nouveau-Patient/" + res.id);
       }
@@ -179,6 +182,8 @@ export default function NewPatient() {
         title: "Attention",
         message:
           "Vous êtes déjà en train d'ajouter un nouveau patient et il n'a pas été enregistré. Enregistrez-le avant d'en ajouter un autre.",
+        icon: <ExclamationMark />,
+        color: "yellow",
       });
     } else {
       // message pour confirmer si pas sauvegardé un patient qu'on modifie (donc dont l'id n'est pas 0)
