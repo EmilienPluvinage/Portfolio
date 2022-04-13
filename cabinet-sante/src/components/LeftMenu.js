@@ -1,7 +1,6 @@
 import "../styles/styles.css";
 import { Link, useLocation } from "react-router-dom";
 import { useLogin, useLogging } from "./contexts/AuthContext";
-import { usePatients } from "./contexts/PatientsContext";
 import {
   List,
   UserPlus,
@@ -11,13 +10,11 @@ import {
   Calculator,
   CalendarStats,
 } from "tabler-icons-react";
-import { ThemeIcon } from "@mantine/core";
 
 function LeftMenu() {
   const path = useLocation().pathname;
   const loggedIn = useLogin().login;
   const logging = useLogging();
-  const patients = usePatients();
   const iconsStyle = {
     marginRight: "10px",
     position: "relative",
