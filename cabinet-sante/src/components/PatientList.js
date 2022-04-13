@@ -15,8 +15,8 @@ export default function PatientList() {
 
   const ths = (
     <tr>
-      <th>Nom</th>
       <th>Prénom</th>
+      <th>Nom</th>
       <th>Âge</th>
       <th>Ville</th>
       <th>Téléphone</th>
