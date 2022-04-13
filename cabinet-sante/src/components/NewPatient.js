@@ -28,6 +28,7 @@ import {
   NumberInput,
   CheckboxGroup,
   Checkbox,
+  Select,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { DatePicker } from "@mantine/dates";
@@ -54,6 +55,15 @@ export default function NewPatient() {
   const getPatients = useUpdatePatients();
   const [id, setId] = useState(0);
   const params = useParams();
+  const maritalStatusData = [
+    "Inconnu",
+    "Célibataire",
+    "Marié(e)",
+    "Pacsé(e)",
+    "En Couple",
+    "Divorcé(e)",
+    "Veuf(ve)",
+  ];
   const form = useForm({
     initialValues: {
       lastname: "",
@@ -335,7 +345,8 @@ export default function NewPatient() {
         <div className="main-content">
           <div className="new-patient">
             <div className="form-column">
-              <TextInput
+              <Select
+                data={maritalStatusData}
                 label="Statut Marital"
                 name="maritalStatus"
                 {...form.getInputProps("maritalStatus")}

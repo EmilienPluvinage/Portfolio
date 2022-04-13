@@ -21,7 +21,6 @@ import {
   timeOnly,
 } from "./Functions";
 import { Calendar, Check } from "tabler-icons-react";
-import { greatestDurationDenominator } from "@fullcalendar/react";
 
 export default function NewAppointment({ setOpened, patientId, startingTime }) {
   const patients = usePatients();
