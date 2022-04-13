@@ -251,7 +251,7 @@ export default function NewPatient() {
             <Grid.Col span={2}>
               <Link to="/Nouveau-Patient" className="text-link">
                 <Button onClick={() => setOpenedConfirm(false)}>
-                  Confirmer
+                  Continuer
                 </Button>
               </Link>
             </Grid.Col>
@@ -293,7 +293,7 @@ export default function NewPatient() {
             Nouveau Patient
           </Button>
         </div>
-        <h2>1 - État Civil du Patient</h2>
+        <h2>État Civil du Patient</h2>
         <div className="main-content">
           <div className="new-patient">
             <div className="form-column">
@@ -382,7 +382,7 @@ export default function NewPatient() {
             </div>
           </div>
         </div>
-        <h2>2 - Informations sur le Patient</h2>
+        <h2>Informations sur le Patient</h2>
         <div className="main-content">
           <div className="new-patient">
             <div className="form-column">
