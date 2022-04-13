@@ -11,6 +11,7 @@ import {
   Calculator,
   CalendarStats,
 } from "tabler-icons-react";
+import { ThemeIcon } from "@mantine/core";
 
 function LeftMenu() {
   const path = useLocation().pathname;
@@ -43,7 +44,13 @@ function LeftMenu() {
           <Link to="/Listing-Patients" className="text-link">
             <li className={path === "/Listing-Patients" ? "clicked" : ""}>
               <List size={iconsSize} style={iconsStyle} />
-              Liste des patients ({patients.length})
+              Liste des patients{" "}
+              <ThemeIcon
+                variant={path === "/Listing-Patients" ? "outline" : "default"}
+                size={"sm"}
+              >
+                {patients.length}
+              </ThemeIcon>
             </li>
           </Link>
           <Link to="/Agenda" className="text-link">
