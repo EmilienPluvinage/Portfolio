@@ -34,7 +34,7 @@ function App() {
                 <Header />
                 <div id="parent">
                   <Router>
-                    <LeftMenu menu={menu} />
+                    <LeftMenu />
                     <Main menu={menu} />
                   </Router>
                   <Login />
