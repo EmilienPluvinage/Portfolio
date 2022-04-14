@@ -63,33 +63,33 @@ export default function NewAppointment({
   async function deleteAppointment() {
     // to rewrite probably
     setDeleteLoader("loading");
-    //   var link = process.env.REACT_APP_API_DOMAIN + "/DeleteEvent";
-    //   try {
-    //     const fetchResponse = await fetch(link, {
-    //       method: "POST",
-    //       headers: {
-    //         Accept: "application/json",
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify({
-    //         id: appointmentId,
-    //         token: token,
-    //       }),
-    //     });
-    //     const res = await fetchResponse.json();
-    //     if (res.success) {
-    //       setOpened(false);
-    //       setDeleteLoader("");
-    //       showNotification({
-    //         title: "Consultation supprimée",
-    //         message: "Le rendez-vous a bien été supprimé.",
-    //         icon: <Check />,
-    //         color: "green",
-    //       });
-    //     }
-    //   } catch (e) {
-    //     return e;
-    //   }
+    var link = process.env.REACT_APP_API_DOMAIN + "/DeleteEvent";
+    try {
+      const fetchResponse = await fetch(link, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: appointmentId,
+          token: token,
+        }),
+      });
+      const res = await fetchResponse.json();
+      if (res.success) {
+        setOpened(false);
+        setDeleteLoader("");
+        showNotification({
+          title: "Consultation supprimée",
+          message: "Le rendez-vous a bien été supprimé.",
+          icon: <Check />,
+          color: "green",
+        });
+      }
+    } catch (e) {
+      return e;
+    }
   }
 
   async function submitForm(values) {

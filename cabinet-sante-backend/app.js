@@ -488,7 +488,7 @@ app.post("/UpdateEventTime", (req, res, next) => {
         if (rows.length === 1) {
           const userId = rows[0].userId;
           connection.query(
-            "SELECT * FROM appointments LEFT JOIN patients ON appointments.patientId = patients.id WHERE appointments.id=? AND patients.userId=?",
+            "SELECT * FROM appointments WHERE id = ? AND userId=?",
             [req.body.id, userId],
             (err, rows) => {
               if (err) throw err;
@@ -558,7 +558,7 @@ app.post("/DeleteEvent", (req, res, next) => {
         if (rows.length === 1) {
           const userId = rows[0].userId;
           connection.query(
-            "SELECT * FROM appointments LEFT JOIN patients ON appointments.patientId = patients.id WHERE appointments.id=? AND patients.userId=?",
+            "SELECT * FROM appointments WHERE id = ? AND userId=?",
             [req.body.id, userId],
             (err, rows) => {
               if (err) throw err;
