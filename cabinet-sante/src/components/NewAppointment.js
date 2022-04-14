@@ -6,7 +6,7 @@ import {
   Select,
   Button,
   Center,
-  Autocomplete,
+  MultiSelect,
   Grid,
 } from "@mantine/core";
 import { DatePicker, TimeRangeInput } from "@mantine/dates";
@@ -21,7 +21,7 @@ import {
   dateOnly,
   timeOnly,
 } from "./Functions";
-import { Calendar, Check, Trash, Pencil } from "tabler-icons-react";
+import { Calendar, Check, Trash, Pencil, UserPlus } from "tabler-icons-react";
 
 export default function NewAppointment({
   setOpened,
@@ -123,15 +123,17 @@ export default function NewAppointment({
 
   return (
     <>
-      {patientId === 0 && (
-        <Autocomplete
-          label="Patient"
-          value={patient}
-          onChange={setPatient}
-          data={patientsList}
-          required
-        />
-      )}
+      <MultiSelect
+        icon={<UserPlus size={16} />}
+        data={patientsList}
+        label="Patient(s)"
+        placeholder="Ajouter"
+        searchable
+        limit={10}
+        nothingFound="Aucune option disponible"
+        maxDropdownHeight={160}
+      />
+
       <TextInput
         label="Titre"
         name="title"
