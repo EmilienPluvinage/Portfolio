@@ -15,7 +15,7 @@ import {
 import NewAppointment from "./NewAppointment";
 import { Modal } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { Check } from "tabler-icons-react";
+import { Check, X } from "tabler-icons-react";
 
 export default function MyFullCalendar() {
   const [opened, setOpened] = useState(false);
@@ -75,6 +75,14 @@ export default function MyFullCalendar() {
           color: "green",
         });
         setCalendarUpdate((e) => e + 1);
+      } else {
+        showNotification({
+          title: "Erreur",
+          message: res.error.code,
+          icon: <X />,
+          color: "red",
+        });
+        console.log(res.error);
       }
     } catch (e) {
       return e;

@@ -412,8 +412,12 @@ app.post("/UpdateEventTime", (req, res, next) => {
                   "UPDATE appointments SET start=?, end=? WHERE id=?",
                   [req.body.start, req.body.end, req.body.id],
                   (err, result) => {
-                    if (err) throw err;
-                    res.status(201).json({ success: true, error: "" });
+                    if (err) {
+                      console.log(err);
+                      res.status(201).json({ success: false, error: err });
+                    } else {
+                      res.status(201).json({ success: true, error: "" });
+                    }
                   }
                 );
               } else {
