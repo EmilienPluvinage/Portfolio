@@ -7,6 +7,10 @@ import {
   Center,
   MultiSelect,
   Grid,
+  Accordion,
+  Text,
+  NumberInput,
+  Select,
 } from "@mantine/core";
 import { DatePicker, TimeRangeInput } from "@mantine/dates";
 import { useState } from "react";
@@ -54,6 +58,9 @@ export default function NewAppointment({
     timeRange: [now, then],
     important: "",
     comments: "",
+    size: 0,
+    weight: 0,
+    patientType: "",
   };
 
   const form = useForm({
@@ -188,23 +195,74 @@ export default function NewAppointment({
           name="title"
           {...form.getInputProps("title")}
         />
-        <DatePicker
-          label="Jour de la consultation"
-          locale="fr"
-          name="date"
-          {...form.getInputProps("date")}
-          inputFormat="DD/MM/YYYY"
-          placeholder="Choisissez une date"
-          icon={<Calendar size={16} />}
-          required
-        />
-        <TimeRangeInput
-          locale="fr"
-          label="Heure de la consultation"
-          name="timeRange"
-          {...form.getInputProps("timeRange")}
-          required
-        />
+        <Grid grow>
+          <Grid.Col span={2}>
+            <DatePicker
+              label="Jour de la consultation"
+              locale="fr"
+              name="date"
+              {...form.getInputProps("date")}
+              inputFormat="DD/MM/YYYY"
+              placeholder="Choisissez une date"
+              icon={<Calendar size={16} />}
+              required
+            />
+          </Grid.Col>
+          <Grid.Col span={2}>
+            <TimeRangeInput
+              locale="fr"
+              label="Heure de la consultation"
+              name="timeRange"
+              {...form.getInputProps("timeRange")}
+              required
+            />
+          </Grid.Col>
+        </Grid>
+        <Accordion iconPosition="right" iconSize={22} offsetIcon={false}>
+          <Accordion.Item label="Détails de la consultation">
+            {form.values.patients.length <= 1 ? (
+              <>
+                <Grid grow>
+                  <Grid.Col span={3}>
+                    <NumberInput
+                      name="size"
+                      label="Taille (en cm):"
+                      {...form.getInputProps("size")}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={3}>
+                    <NumberInput
+                      name="weight"
+                      label="Poids (en kg:"
+                      {...form.getInputProps("weight")}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={3}>
+                    <Select
+                      data={[
+                        "Adulte",
+                        "Femme enceinte",
+                        "Enfant",
+                        "Nourrisson",
+                      ]}
+                      name="patientType"
+                      label="Profil du patient"
+                      {...form.getInputProps("patientType")}
+                    />
+                  </Grid.Col>
+                </Grid>
+              </>
+            ) : (
+              <Text size={"sm"}>
+                Cette options n'est disponible uniquement pour les rendez-vous
+                avez une seule personne et permets de fournir des informations
+                complémentaires (Taille, poids, symptômes, etc...). Pour les
+                rendez-vous multi-patients, il est préférable d'utiliser la case
+                "Commentaires" ci-dessous.
+              </Text>
+            )}
+          </Accordion.Item>
+        </Accordion>
         <Textarea
           label="Commentaires"
           name="comments"

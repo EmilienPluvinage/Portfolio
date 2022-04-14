@@ -215,6 +215,7 @@ export default function NewPatient() {
         onClose={() => setOpened(false)}
         title={"Consultation"}
         closeOnClickOutside={false}
+        size="50%"
       >
         <NewAppointment
           setOpened={setOpened}
