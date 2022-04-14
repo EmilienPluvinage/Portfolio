@@ -12,7 +12,7 @@
   right: 0;
   margin-top: -2px;
   border-style: solid;
-  border-color: #22b8cf;
+  border-color: #22b8cf !important;
   border-color: var(— fc-now-indicator-color, #22b8cf);
   border-width: 2px 0 0;
 }
