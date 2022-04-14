@@ -170,13 +170,14 @@ export default function NewAppointment({
         autoComplete="new-password"
       >
         <MultiSelect
+          dropdownPosition="top"
           name="patients"
           icon={<UserPlus size={16} />}
           data={patientsList}
           label="Patient(s)"
           placeholder="Ajouter"
           searchable
-          limit={10}
+          limit={5}
           nothingFound="Aucune option disponible"
           maxDropdownHeight={160}
           {...form.getInputProps("patients")}
