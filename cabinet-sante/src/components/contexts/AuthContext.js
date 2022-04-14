@@ -40,17 +40,17 @@ export function AuthProvider({ children }) {
     }
   }
 
-  function logging(bool, newToken) {
-    setLogin(bool);
+  async function logging(bool, newToken) {
     if (bool) {
       setToken(newToken);
-      getPatients(newToken);
-      getGovData();
+      await getPatients(newToken);
+      await getGovData();
     } else {
       removeToken(token);
       localStorage.removeItem("token");
       setToken(null);
     }
+    setLogin(bool);
   }
   return (
     <LoginContext.Provider value={{ login: login, token: token }}>

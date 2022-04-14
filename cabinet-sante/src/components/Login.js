@@ -2,14 +2,17 @@ import "../styles/styles.css";
 import { useState } from "react";
 import { useLogin, useLogging } from "./contexts/AuthContext";
 import { useEffect } from "react";
-import { TextInput, Button } from "@mantine/core";
+import { TextInput, Button, Loader, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { showNotification } from "@mantine/notifications";
+import { Check } from "tabler-icons-react";
 
 function Login() {
   const currentToken = localStorage.getItem("token");
   const loggedIn = useLogin().login;
   const logging = useLogging();
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const form = useForm({
     initialValues: {
@@ -26,9 +29,14 @@ function Login() {
   useEffect(() => {
     // if we're not logged in but there is an existing token in local storage
     // it means the user is returning, so we log him in.
-    if (currentToken !== null && loggedIn === false) {
-      logging(true, currentToken);
+    async function returning() {
+      if (currentToken !== null && loggedIn === false) {
+        setLoading(true);
+        await logging(true, currentToken);
+        setLoading(false);
+      }
     }
+    returning();
   }, [currentToken, loggedIn, logging]);
 
   async function handleSubmit(values) {
@@ -38,10 +46,18 @@ function Login() {
         values.password.toLowerCase()
       );
       if (data.loggedIn) {
-        logging(true, data.token);
+        showNotification({
+          title: "Connexion réussie",
+          message: "Bienvenue sur votre espace client.",
+          color: "green",
+          icon: <Check />,
+        });
+        setLoading(true);
+        await logging(true, data.token);
         localStorage.setItem("token", data.token);
         setErrorMessage("");
         form.reset();
+        setLoading(false);
       } else {
         switch (data.error) {
           case "incorrect password":
@@ -78,7 +94,8 @@ function Login() {
   }
 
   return (
-    !loggedIn && (
+    !loggedIn &&
+    (!loading ? (
       <div id="LoginScreen">
         <div id="LoginContent">
           <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
@@ -111,7 +128,16 @@ function Login() {
           </form>
         </div>
       </div>
-    )
+    ) : (
+      <div id="LoginScreen">
+        <div id="LoginContent">
+          <Text style={{ marginBottom: "30px" }} size={"sm"}>
+            Récupération des données en cours...
+          </Text>
+          <Loader size="xl" />
+        </div>
+      </div>
+    ))
   );
 }
 
