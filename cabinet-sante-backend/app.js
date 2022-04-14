@@ -331,37 +331,53 @@ app.post("/UpdatePatient", (req, res, next) => {
         connection.release(); // return the connection to pool
         if (err) throw err;
         if (rows.length === 1) {
-          // Now connected and we have the user ID so we do the update
+          // Now connected and we have the user ID
+          var userId = rows[0].userId;
+          // we first need to check that the patients corresponds to that user.
           connection.query(
-            "UPDATE patients SET firstname=?, lastname=?, birthday=?, sex=?, mobilephone=?, landline=?, email=?, address=?, city=?, country=?,comments=?, maritalStatus=?,numberofChildren=?,job=?,GP=?,hobbies=?,SSNumber=?,healthInsurance=?,sentBy=?,hand=? WHERE id=?",
-            [
-              req.body.firstname,
-              req.body.lastname,
-              req.body.birthday,
-              req.body.sex,
-              req.body.mobilephone,
-              req.body.landline,
-              req.body.email,
-              req.body.address,
-              req.body.city,
-              req.body.country,
-              req.body.comments,
-              req.body.maritalStatus,
-              req.body.numberOfChildren,
-              req.body.job,
-              req.body.GP,
-              req.body.hobbies,
-              req.body.SSNumber,
-              req.body.healthInsurance,
-              req.body.sentBy,
-              req.body.hand,
-              req.body.id,
-            ],
-            (err, result) => {
-              if (err) throw err;
-              res
-                .status(201)
-                .json({ success: true, error: "", id: req.body.id });
+            "SELECT * FROM patients WHERE id=? AND userId=?",
+            [req.body.id, userId],
+            (err, rows) => {
+              if (rows.length === 1) {
+                // so we do the update
+                connection.query(
+                  "UPDATE patients SET firstname=?, lastname=?, birthday=?, sex=?, mobilephone=?, landline=?, email=?, address=?, city=?, country=?,comments=?, maritalStatus=?,numberofChildren=?,job=?,GP=?,hobbies=?,SSNumber=?,healthInsurance=?,sentBy=?,hand=? WHERE id=?",
+                  [
+                    req.body.firstname,
+                    req.body.lastname,
+                    req.body.birthday,
+                    req.body.sex,
+                    req.body.mobilephone,
+                    req.body.landline,
+                    req.body.email,
+                    req.body.address,
+                    req.body.city,
+                    req.body.country,
+                    req.body.comments,
+                    req.body.maritalStatus,
+                    req.body.numberOfChildren,
+                    req.body.job,
+                    req.body.GP,
+                    req.body.hobbies,
+                    req.body.SSNumber,
+                    req.body.healthInsurance,
+                    req.body.sentBy,
+                    req.body.hand,
+                    req.body.id,
+                  ],
+                  (err, result) => {
+                    if (err) throw err;
+                    res
+                      .status(201)
+                      .json({ success: true, error: "", id: req.body.id });
+                  }
+                );
+              } else {
+                res.status(201).json({
+                  success: false,
+                  error: "user id and patient id don't match",
+                });
+              }
             }
           );
         } else {
@@ -384,13 +400,28 @@ app.post("/UpdateEventTime", (req, res, next) => {
         if (err) throw err;
         if (rows.length === 1) {
           const userId = rows[0].userId;
-          // Now connected and we have the user ID so we do the update
           connection.query(
-            "UPDATE appointments SET start=?, end=? WHERE id=?",
-            [req.body.start, req.body.end, req.body.id],
-            (err, result) => {
+            "SELECT * FROM appointments LEFT JOIN patients ON appointments.patientId = patients.id WHERE appointments.id=? AND patients.userId=?",
+            [req.body.id, userId],
+            (err, rows) => {
               if (err) throw err;
-              res.status(201).json({ success: true, error: "" });
+              if (rows.length === 1) {
+                // so we do the update
+                // Now connected and we have the user ID so we do the update
+                connection.query(
+                  "UPDATE appointments SET start=?, end=? WHERE id=?",
+                  [req.body.start, req.body.end, req.body.id],
+                  (err, result) => {
+                    if (err) throw err;
+                    res.status(201).json({ success: true, error: "" });
+                  }
+                );
+              } else {
+                res.status(201).json({
+                  success: false,
+                  error: "userId and appointmentId do not match",
+                });
+              }
             }
           );
         } else {
@@ -435,13 +466,27 @@ app.post("/DeleteEvent", (req, res, next) => {
         if (err) throw err;
         if (rows.length === 1) {
           const userId = rows[0].userId;
-          // Now connected and we have the user ID so we do the update
           connection.query(
-            "DELETE FROM appointments WHERE id=?",
-            req.body.id,
-            (err, result) => {
+            "SELECT * FROM appointments LEFT JOIN patients ON appointments.patientId = patients.id WHERE appointments.id=? AND patients.userId=?",
+            [req.body.id, userId],
+            (err, rows) => {
               if (err) throw err;
-              res.status(201).json({ success: true, error: "" });
+              if (rows.length === 1) {
+                // Now connected and we have the user ID so we do the update
+                connection.query(
+                  "DELETE FROM appointments WHERE id=?",
+                  req.body.id,
+                  (err, result) => {
+                    if (err) throw err;
+                    res.status(201).json({ success: true, error: "" });
+                  }
+                );
+              } else {
+                res.status(201).json({
+                  success: false,
+                  error: "userId and appointmentId do not match",
+                });
+              }
             }
           );
         } else {
