@@ -32,7 +32,17 @@ export function GovDataProvider({ children }) {
         },
       });
       const res = await fetchResponse.json();
-      setCities(res);
+      var result = res.map(function (a) {
+        return a.nom + " (" + a.codesPostaux[0] + ")";
+      });
+      moveToFirst(result, "Saint-Clément-de-Rivière (34980)");
+      moveToFirst(result, "Paris (75001)");
+      moveToFirst(result, "Montpellier (34070)");
+      moveToFirst(result, "Teyran (34820)");
+      moveToFirst(result, "Assas (34820)");
+      moveToFirst(result, "Prades-le-Lez (34730)");
+      moveToFirst(result, "Saint-Vincent-de-Barbeyrargues (34730)");
+      setCities(result);
     } catch (e) {
       return e;
     }

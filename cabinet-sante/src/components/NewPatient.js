@@ -34,23 +34,13 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { DatePicker } from "@mantine/dates";
-import { moveToFirst } from "./Functions";
 import NewAppointment from "./NewAppointment";
 
 export default function NewPatient() {
   const navigate = useNavigate();
-  var cities = useGovData().cities;
+  var autoCompleteCities = useGovData().cities;
   var autoCompleteCountries = useGovData().countries;
-  var autoCompleteCities = cities.map(function (a) {
-    return a.nom + " (" + a.codesPostaux[0] + ")";
-  });
-  moveToFirst(autoCompleteCities, "Saint-Clément-de-Rivière (34980)");
-  moveToFirst(autoCompleteCities, "Paris (75001)");
-  moveToFirst(autoCompleteCities, "Montpellier (34070)");
-  moveToFirst(autoCompleteCities, "Teyran (34820)");
-  moveToFirst(autoCompleteCities, "Assas (34820)");
-  moveToFirst(autoCompleteCities, "Prades-le-Lez (34730)");
-  moveToFirst(autoCompleteCities, "Saint-Vincent-de-Barbeyrargues (34730)");
+
   const [opened, setOpened] = useState(false);
   const [openedConfirm, setOpenedConfirm] = useState(false);
   const [loading, setLoading] = useState("");
