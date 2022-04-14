@@ -113,7 +113,7 @@ export default function NewPatient() {
           country: patient.country,
           comments: patient.comments,
           maritalStatus: patient.maritalStatus,
-          numberOfChildren: patient.numberOfChildren,
+          numberOfChildren: parseInt(patient.numberOfChildren),
           job: patient.job,
           GP: patient.GP,
           hobbies: patient.hobbies,
@@ -164,7 +164,7 @@ export default function NewPatient() {
           SSNumber: values.SSNumber,
           healthInsurance: values.healthInsurance,
           sentBy: values.sentBy,
-          hand: values.hand,
+          hand: JSON.stringify(values.hand),
           token: token,
           id: id,
         }),
@@ -435,7 +435,7 @@ export default function NewPatient() {
               <TextInput
                 label="Mutuelle"
                 name="healthInsurance"
-                {...form.getInputProps("healhInsurance")}
+                {...form.getInputProps("healthInsurance")}
                 autoComplete={"" + Math.random()}
               />
               <TextInput

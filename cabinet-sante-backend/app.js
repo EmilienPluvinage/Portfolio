@@ -50,7 +50,7 @@ app.post("/NewPatient", (req, res, next) => {
           var userId = rows[0].userId;
           // Now connected and we have the user ID so we do the insert
           connection.query(
-            "INSERT INTO patients(userId, firstname, lastname, birthday, sex, mobilephone, landline, email, address, city, comments, maritalStatus, numberOfChildren, job, GP, hobbies, SSNumber, healthInsurance, sentBy, hand) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            "INSERT INTO patients(userId, firstname, lastname, birthday, sex, mobilephone, landline, email, address, city, country, comments, maritalStatus, numberOfChildren, job, GP, hobbies, SSNumber, healthInsurance, sentBy, hand) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [
               userId,
               req.body.firstname,
@@ -62,6 +62,7 @@ app.post("/NewPatient", (req, res, next) => {
               req.body.email,
               req.body.address,
               req.body.city,
+              req.body.country,
               req.body.comments,
               req.body.maritalStatus,
               req.body.numberOfChildren,
@@ -71,7 +72,7 @@ app.post("/NewPatient", (req, res, next) => {
               req.body.SSNumber,
               req.body.healthInsurance,
               req.body.sentBy,
-              JSON.stringify(req.body.hand),
+              req.body.hand,
             ],
             (err, result) => {
               if (err) throw err;
@@ -332,7 +333,7 @@ app.post("/UpdatePatient", (req, res, next) => {
         if (rows.length === 1) {
           // Now connected and we have the user ID so we do the update
           connection.query(
-            "UPDATE patients SET firstname=?, lastname=?, birthday=?, sex=?, mobilephone=?, landline=?, email=?, address=?, city=?, comments=? WHERE id=?",
+            "UPDATE patients SET firstname=?, lastname=?, birthday=?, sex=?, mobilephone=?, landline=?, email=?, address=?, city=?, country=?,comments=?, maritalStatus=?,numberofChildren=?,job=?,GP=?,hobbies=?,SSNumber=?,healthInsurance=?,sentBy=?,hand=? WHERE id=?",
             [
               req.body.firstname,
               req.body.lastname,
@@ -343,7 +344,17 @@ app.post("/UpdatePatient", (req, res, next) => {
               req.body.email,
               req.body.address,
               req.body.city,
+              req.body.country,
               req.body.comments,
+              req.body.maritalStatus,
+              req.body.numberOfChildren,
+              req.body.job,
+              req.body.GP,
+              req.body.hobbies,
+              req.body.SSNumber,
+              req.body.healthInsurance,
+              req.body.sentBy,
+              req.body.hand,
               req.body.id,
             ],
             (err, result) => {

@@ -31,6 +31,7 @@ export function PatientsProvider({ children }) {
         }
       );
       const res = await fetchResponse.json();
+
       res.data.forEach((element) => {
         element.fullname =
           element.firstname +
@@ -39,7 +40,10 @@ export function PatientsProvider({ children }) {
           (element.birthday !== ""
             ? " (" + calculateAge(element.birthday) + " ans)"
             : "");
+        // we stringify this before storing it in DB since this is an array of 0 to 2 values.
+        element.hand = JSON.parse(element.hand);
       });
+
       setPatients(res.data);
     } catch (e) {
       return e;
