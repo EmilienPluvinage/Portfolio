@@ -168,3 +168,13 @@ export function wasPatientModified(patient, patientFromTheList) {
   delete pat2.userId;
   return JSON.stringify(pat1) !== JSON.stringify(pat2);
 }
+
+export function getFullnameFromId(patientsList, id) {
+  var index = patientsList.findIndex((item) => item.id === id);
+  return patientsList[index].fullname;
+}
+
+export function getIdFromFullname(patientsList, fullname) {
+  var index = patientsList.findIndex((item) => item.fullname === fullname);
+  return patientsList[index].id;
+}

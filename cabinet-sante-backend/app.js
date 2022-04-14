@@ -112,19 +112,59 @@ app.post("/NewEvent", (req, res, next) => {
         connection.release(); // return the connection to pool
         if (err) throw err;
         if (rows.length === 1) {
-          // var userId = rows[0].userId; not useful so far, but later we may want to add a check to make sure the patient indeed
+          var userId = rows[0].userId;
           // belongs to that user
           // Now connected and we have the user ID so we do the insert
           connection.query(
-            "INSERT INTO appointments(patientId, start, end, title, patientType, reason) VALUES (?,?,?,?,?,?)",
+            "INSERT INTO appointments(userId, start, end, title, important, comments) VALUES (?,?,?,?,?,?)",
             [
-              req.body.patientId,
+              userId,
               req.body.start,
               req.body.end,
               req.body.title,
-              req.body.patientType,
-              req.body.reason,
+              req.body.important,
+              req.body.comments,
             ],
+            (err, result) => {
+              if (err) throw err;
+              connection.query(
+                "SELECT id FROM appointments WHERE userId= ? ORDER BY id DESC LIMIT 0,1",
+                userId,
+                (err, rows) => {
+                  if (err) throw err;
+                  res
+                    .status(201)
+                    .json({ success: true, error: "", id: rows[0].id });
+                }
+              );
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
+// ADD A NEW PARTICIPANT TO AN APPOINTMENT
+
+app.post("/NewParticipant", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          // belongs to that user
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "INSERT INTO isInAppointment(patientId, appointmentId) VALUES (?,?)",
+            [req.body.patientId, req.body.appointmentId],
             (err, result) => {
               if (err) throw err;
               res.status(201).json({ success: true, error: "" });
@@ -239,7 +279,7 @@ app.post("/GetPatients", (req, res, next) => {
   });
 });
 
-// LIST OF EVENTS BETWEEN TWO DATES (INCLUDED)
+// LIST OF EVENTS BETWEEN TWO DATES (INCLUDED) // TO FINISH TO CODE
 
 app.post("/GetEvents", (req, res, next) => {
   pool.getConnection((err, connection) => {
@@ -315,6 +355,53 @@ async function doesTokenExist(connection, token) {
     return rows.length > 0;
   });
 }
+
+//GET DETAILS OF ONE PARTICULAR EVENT
+
+app.post("/GetEventDetails", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          const userId = rows[0].userId;
+          connection.query(
+            "SELECT * FROM appointments LEFT JOIN patients ON appointments.patientId = patients.id WHERE appointments.id=? AND patients.userId=?",
+            [req.body.id, userId],
+            (err, rows) => {
+              if (err) throw err;
+              if (rows.length === 1) {
+                // now we get the details of the appointment we need
+                connection.query(
+                  "SELECT * FROM appointments WHERE id = ?",
+                  req.body.id,
+                  (err, rows) => {
+                    if (err) throw err;
+                    res.status(201).json({ success: true, data: rows });
+                  }
+                );
+                // we also update the time of the token
+                updateTokenTime(connection, req.body.token);
+              } else {
+                res.status(201).json({
+                  success: false,
+                  error: "user id and patient id don't match",
+                });
+              }
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
 
 ////////////////
 //   UPDATE   //
