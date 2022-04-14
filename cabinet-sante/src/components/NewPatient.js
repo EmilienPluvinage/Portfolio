@@ -40,6 +40,7 @@ import NewAppointment from "./NewAppointment";
 export default function NewPatient() {
   const navigate = useNavigate();
   var cities = useGovData().cities;
+  var autoCompleteCountries = useGovData().countries;
   var autoCompleteCities = cities.map(function (a) {
     return a.nom + " (" + a.codesPostaux[0] + ")";
   });
@@ -378,11 +379,12 @@ export default function NewPatient() {
                 {...form.getInputProps("city")}
                 data={autoCompleteCities}
               />
-              <TextInput
+              <Autocomplete
                 label="Pays"
                 name="country"
+                placeholder="France"
                 {...form.getInputProps("country")}
-                autoComplete={"" + Math.random()}
+                data={autoCompleteCountries}
               />
             </div>
           </div>
