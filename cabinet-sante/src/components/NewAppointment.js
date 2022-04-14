@@ -150,7 +150,9 @@ export default function NewAppointment({
             message:
               "Le rendez-vous du " +
               displayDateInFrench(new Date(start)) +
-              " a bien été enregistré.",
+              " a bien été enregistré avec " +
+              values.patients.length +
+              " participant(s).",
             icon: <Check />,
             color: "green",
           });
