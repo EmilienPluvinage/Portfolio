@@ -90,6 +90,7 @@ export default function AppointmentDetails({
   }
 
   async function submitForm(values) {
+    console.log(values);
     setLoading("loading");
     var link = process.env.REACT_APP_API_DOMAIN + "/NewEvent";
     const start = concatenateDateTime(values.date, values.timeRange[0]);
@@ -129,8 +130,8 @@ export default function AppointmentDetails({
               token: token,
               size: values.size,
               weight: values.weight,
-              EVAbefore: values.EVAbefore,
-              EVAafter: values.EVAafter,
+              EVAbefore: EVAbefore,
+              EVAafter: EVAafter,
               reasonDetails: values.reasonDetails,
               patientType: values.patientType,
             }),

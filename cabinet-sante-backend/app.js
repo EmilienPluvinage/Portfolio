@@ -163,8 +163,17 @@ app.post("/NewParticipant", (req, res, next) => {
           // belongs to that user
           // Now connected and we have the user ID so we do the insert
           connection.query(
-            "INSERT INTO isInAppointment(patientId, appointmentId) VALUES (?,?)",
-            [req.body.patientId, req.body.appointmentId],
+            "INSERT INTO isInAppointment(patientId, appointmentId, size, weight, EVAbefore, EVAafter, reasonDetails, patientType) VALUES (?,?,?,?,?,?,?,?)",
+            [
+              req.body.patientId,
+              req.body.appointmentId,
+              req.body.size,
+              req.body.weight,
+              req.body.EVAbefore,
+              req.body.EVAafter,
+              req.body.reasonDetails,
+              req.body.patientType,
+            ],
             (err, result) => {
               if (err) throw err;
               res.status(201).json({ success: true, error: "" });
