@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "../styles/styles.css";
-import { capitalize, wasPatientModified } from "./Functions";
+import { capitalize, getFullnameFromId, wasPatientModified } from "./Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { useGovData } from "./contexts/GovDataContext";
@@ -14,6 +14,7 @@ import {
   ReportMedical,
   Check,
   ExclamationMark,
+  ListSearch,
 } from "tabler-icons-react";
 import { useNavigate } from "react-router-dom";
 
@@ -35,6 +36,7 @@ import {
 import { useForm } from "@mantine/form";
 import { DatePicker } from "@mantine/dates";
 import AppointmentDetails from "./AppointmentDetails";
+import History from "./History";
 
 export default function NewPatient() {
   const navigate = useNavigate();
@@ -43,6 +45,7 @@ export default function NewPatient() {
 
   const [opened, setOpened] = useState(false);
   const [openedConfirm, setOpenedConfirm] = useState(false);
+  const [openedHistory, setOpenedHistory] = useState(false);
   const [loading, setLoading] = useState("");
   const token = useLogin().token;
   const PatientList = usePatients();
@@ -209,21 +212,37 @@ export default function NewPatient() {
   return (
     <>
       {id !== 0 && (
-        <Modal
-          centered
-          overlayOpacity={0.3}
-          opened={opened}
-          onClose={() => setOpened(false)}
-          title={"Consultation"}
-          closeOnClickOutside={false}
-          size="50%"
-        >
-          <AppointmentDetails
-            setOpened={setOpened}
-            patientId={id}
-            appointmentId={0}
-          />
-        </Modal>
+        <>
+          <Modal
+            centered
+            overlayOpacity={0.3}
+            opened={openedHistory}
+            onClose={() => setOpenedHistory(false)}
+            title={"Historique de " + getFullnameFromId(PatientList, id)}
+            closeOnClickOutside={false}
+            size="50%"
+          >
+            {" "}
+            {openedHistory && <History patientId={id} />}
+          </Modal>
+          <Modal
+            centered
+            overlayOpacity={0.3}
+            opened={opened}
+            onClose={() => setOpened(false)}
+            title={"Consultation"}
+            closeOnClickOutside={false}
+            size="50%"
+          >
+            {opened && (
+              <AppointmentDetails
+                setOpened={setOpened}
+                patientId={id}
+                appointmentId={0}
+              />
+            )}
+          </Modal>
+        </>
       )}
       <Modal
         centered
@@ -277,6 +296,13 @@ export default function NewPatient() {
                 style={{ margin: "10px" }}
               >
                 Consultation
+              </Button>
+              <Button
+                leftIcon={<ListSearch size={18} />}
+                onClick={() => setOpenedHistory(true)}
+                style={{ margin: "10px" }}
+              >
+                Historique
               </Button>
               <Button
                 leftIcon={<CurrencyEuro size={18} />}

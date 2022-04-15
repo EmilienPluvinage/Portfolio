@@ -288,6 +288,39 @@ app.post("/GetPatients", (req, res, next) => {
   });
 });
 
+// LIST OF APPOINTMENTS FOR ONE PARTICULAR PATIENT
+
+app.post("/GetHistory", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          var userId = rows[0].userId;
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "SELECT * FROM appointments LEFT JOIN isInAppointment ON appointments.id = isInAppointment.appointmentId WHERE userId = ? AND patientId = ? ORDER BY appointments.start DESC",
+            [userId, req.body.patientId],
+            (err, rows) => {
+              if (err) throw err;
+              res.status(201).json({ success: true, data: rows });
+            }
+          );
+          // we also update the time of the token
+          updateTokenTime(connection, req.body.token);
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
 // LIST OF EVENTS BETWEEN TWO DATES (INCLUDED) // TO FINISH TO CODE
 
 app.post("/GetEvents", (req, res, next) => {
