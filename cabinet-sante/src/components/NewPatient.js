@@ -34,7 +34,7 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { DatePicker } from "@mantine/dates";
-import NewAppointment from "./NewAppointment";
+import AppointmentDetails from "./AppointmentDetails";
 
 export default function NewPatient() {
   const navigate = useNavigate();
@@ -208,22 +208,23 @@ export default function NewPatient() {
 
   return (
     <>
-      <Modal
-        centered
-        overlayOpacity={0.3}
-        opened={opened}
-        onClose={() => setOpened(false)}
-        title={"Consultation"}
-        closeOnClickOutside={false}
-        size="50%"
-      >
-        <NewAppointment
-          setOpened={setOpened}
-          patientId={id}
-          startingTime={0}
-          appointmentId={0}
-        />
-      </Modal>
+      {id !== 0 && (
+        <Modal
+          centered
+          overlayOpacity={0.3}
+          opened={opened}
+          onClose={() => setOpened(false)}
+          title={"Consultation"}
+          closeOnClickOutside={false}
+          size="50%"
+        >
+          <AppointmentDetails
+            setOpened={setOpened}
+            patientId={id}
+            appointmentId={0}
+          />
+        </Modal>
+      )}
       <Modal
         centered
         overlayOpacity={0.3}
@@ -268,19 +269,23 @@ export default function NewPatient() {
           >
             Enregistrer
           </Button>
-          <Button
-            leftIcon={<ReportMedical size={18} />}
-            onClick={() => setOpened(true)}
-            style={{ margin: "10px" }}
-          >
-            Consultation
-          </Button>
-          <Button
-            leftIcon={<CurrencyEuro size={18} />}
-            style={{ margin: "10px" }}
-          >
-            Paiement
-          </Button>
+          {id !== 0 && (
+            <>
+              <Button
+                leftIcon={<ReportMedical size={18} />}
+                onClick={() => setOpened(true)}
+                style={{ margin: "10px" }}
+              >
+                Consultation
+              </Button>
+              <Button
+                leftIcon={<CurrencyEuro size={18} />}
+                style={{ margin: "10px" }}
+              >
+                Paiement
+              </Button>{" "}
+            </>
+          )}
 
           <Button
             leftIcon={<UserPlus size={18} />}
