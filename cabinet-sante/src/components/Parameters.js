@@ -1,101 +1,143 @@
 import "../styles/styles.css";
 import { useLogin } from "./contexts/AuthContext";
 import { useEffect, useState } from "react";
-import { Table, TextInput, Checkbox, Button } from "@mantine/core";
+import {
+  TextInput,
+  Checkbox,
+  Button,
+  Modal,
+  Select,
+  Grid,
+} from "@mantine/core";
+import { Pencil, Check } from "tabler-icons-react";
+import { showNotification } from "@mantine/notifications";
+import { getConfigData } from "./Functions";
 
 export default function Parameters() {
   const token = useLogin().token;
   const [appointmentTypes, setAppointmentTypes] = useState([]);
-  const [update, setUpdate] = useState(0);
+  const [appointmentType, setAppointmentType] = useState("");
+  const [appointmentTypeMulti, setAppointmentTypeMulti] = useState(0);
+  const [ATSelect, setATselect] = useState("");
+  const [ATopened, setATOpened] = useState(false);
+  const [appointmentTypeId, setAppointmentId] = useState(0);
+
+  const ATlist =
+    appointmentTypes?.length > 0 ? appointmentTypes.map((e) => e.type) : [];
 
   useEffect(() => {
-    async function getConfigData(token) {
-      try {
-        const fetchResponse = await fetch(
-          process.env.REACT_APP_API_DOMAIN + "/GetConfigData",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              token: token,
-            }),
-          }
-        );
-        const res = await fetchResponse.json();
-        if (res.success) {
-          setConfigData(res.data);
-        }
-      } catch (e) {
-        return e;
-      }
+    async function getData() {
+      const data = await getConfigData(token);
+      setConfigData(data);
     }
-    getConfigData(token);
+    getData();
   }, [token]);
 
   function setConfigData(data) {
     setAppointmentTypes(data.appointmentTypes);
   }
 
-  function submitAppointmentForm(values) {
-    console.log(values);
+  function submitAppointmentForm(event) {
+    event.preventDefault();
+    updateAppointmentType(appointmentType, appointmentTypeMulti);
+    setATOpened(false);
   }
 
-  function handleAppointmentTypeChange(name, id, event) {
-    console.log(event.target.value);
-
-    var temp = appointmentTypes;
-    var index = temp.findIndex((e) => e.id === id);
-    switch (name) {
-      case "type":
-        temp[index].type = event.target.value;
-        break;
-      case "multi":
-        temp[index].multi = event.target.value === "on" ? 0 : 1;
-        break;
-      default:
-        break;
+  async function updateAppointmentType(type, multi) {
+    try {
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/UpdateAppointmentType",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            type: type,
+            multi: multi,
+            token: token,
+            id: appointmentTypeId,
+          }),
+        }
+      );
+      const res = await fetchResponse.json();
+      if (res.success) {
+        showNotification({
+          title: type,
+          message: "Le type de consultation a été modifié.",
+          color: "green",
+          icon: <Check />,
+        });
+        const data = await getConfigData(token);
+        setConfigData(data);
+        setATselect(appointmentType);
+      }
+    } catch (e) {
+      return e;
     }
-
-    setAppointmentTypes(temp);
   }
-  console.log(appointmentTypes[1]);
+
+  function handleATForm(event) {
+    event.preventDefault();
+    setAppointmentType(ATSelect);
+    var index = appointmentTypes.findIndex((e) => e.type === ATSelect);
+    setAppointmentTypeMulti(appointmentTypes[index].multi);
+    setAppointmentId(appointmentTypes[index].id);
+    setATOpened(true);
+  }
+
   return (
     <div>
-      <h2>Types de consultations</h2>
-      <div className="main-content">
+      <h2>Paramètres</h2>
+      <Modal
+        opened={ATopened}
+        onClose={() => setATOpened(false)}
+        title="Changer le type de consultation"
+        overlayOpacity={0.3}
+        centered
+      >
         <form onSubmit={submitAppointmentForm}>
-          <Table style={{ width: "fit-content" }}>
-            <tbody>
-              {appointmentTypes.map((e) => (
-                <tr key={e.id + e.type}>
-                  <td>
-                    <Checkbox
-                      checked={e.multi}
-                      label="Collectif"
-                      name={e.id + "-multi"}
-                      onChange={(event) =>
-                        handleAppointmentTypeChange("multi", e.id, event)
-                      }
-                    />
-                  </td>
-                  <td>
-                    <TextInput
-                      name={e.id + "-type"}
-                      value={e.type}
-                      onChange={(event) =>
-                        handleAppointmentTypeChange("type", e.id, event)
-                      }
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-          <Button type="submit">Modifier</Button>
+          <Grid grow align="Flex-end">
+            <Grid.Col span={1}>
+              <Button type="submit">Modifier</Button>
+            </Grid.Col>
+            <Grid.Col span={1}>
+              <Checkbox
+                checked={appointmentTypeMulti}
+                onChange={(event) =>
+                  setAppointmentTypeMulti(event.currentTarget.checked)
+                }
+                label="collectif"
+                style={{ marginBottom: "8px" }}
+              />
+            </Grid.Col>
+            <Grid.Col span={4}>
+              <TextInput
+                value={appointmentType}
+                onChange={(event) =>
+                  setAppointmentType(event.currentTarget.value)
+                }
+                label="Type"
+              />
+            </Grid.Col>
+          </Grid>
         </form>
+      </Modal>
+      <div className="main-content">
+        <div style={{ width: "fit-content" }}>
+          <form onSubmit={handleATForm}>
+            <Select
+              data={ATlist}
+              value={ATSelect}
+              onChange={setATselect}
+              label="Types de consultations"
+            ></Select>
+            <Button type="submit">
+              <Pencil size={18} />
+            </Button>
+          </form>
+        </div>
       </div>
     </div>
   );

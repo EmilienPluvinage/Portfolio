@@ -191,3 +191,27 @@ export function sortByDepartment(array, number) {
   );
   return citiesToTheTop.concat(citiesToTheBottom);
 }
+
+export async function getConfigData(token) {
+  try {
+    const fetchResponse = await fetch(
+      process.env.REACT_APP_API_DOMAIN + "/GetConfigData",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: token,
+        }),
+      }
+    );
+    const res = await fetchResponse.json();
+    if (res.success) {
+      return res.data;
+    }
+  } catch (e) {
+    return e;
+  }
+}
