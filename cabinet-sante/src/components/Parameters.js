@@ -147,7 +147,7 @@ export default function Parameters() {
                   </Button>
                 </Grid.Col>
                 <Grid.Col span={2}>
-                  <Button size={"xs"} type="submit">
+                  <Button variant="outline" size={"xs"} type="submit">
                     <Pencil size={18} />
                   </Button>
                 </Grid.Col>
