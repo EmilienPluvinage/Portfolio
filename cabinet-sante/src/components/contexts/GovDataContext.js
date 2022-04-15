@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { moveToFirst } from "../Functions";
+import { moveToFirst, sortByDepartment } from "../Functions";
 
 const GovDataContext = React.createContext();
 const UpdateGovDataContext = React.createContext();
@@ -31,10 +31,21 @@ export function GovDataProvider({ children }) {
           "Content-Type": "application/json",
         },
       });
-      const res = await fetchResponse.json();
+      var res = await fetchResponse.json();
+
+      // we first order it by putting all the cities from one department at the top
+      // ideally we would get the department number from the user's address but for now this will do.
+      res = sortByDepartment(res, "34");
+
+      // then take only the info we need (ie city name and postcode)
       var result = res.map(function (a) {
         return a.nom + " (" + a.codesPostaux[0] + ")";
       });
+
+      // finally we move the most used city to the top
+      // right now this is hardcoded but once there is enough data in the DB
+      // it could be done by looking at the actual data of the most types cities.
+
       moveToFirst(result, "Saint-Clément-de-Rivière (34980)");
       moveToFirst(result, "Paris (75001)");
       moveToFirst(result, "Montpellier (34070)");

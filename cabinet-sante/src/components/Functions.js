@@ -178,3 +178,16 @@ export function getIdFromFullname(patientsList, fullname) {
   var index = patientsList.findIndex((item) => item.fullname === fullname);
   return patientsList[index].id;
 }
+
+export function sortByDepartment(array, number) {
+  // Take all the cities from number department and move them to the top of the array
+  // so that they show up first in the autocomplete form input.
+
+  var citiesToTheTop = array.filter(
+    (element) => element.codeDepartement === number
+  );
+  var citiesToTheBottom = array.filter(
+    (element) => element.codeDepartement !== number
+  );
+  return citiesToTheTop.concat(citiesToTheBottom);
+}
