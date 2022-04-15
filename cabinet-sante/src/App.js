@@ -18,6 +18,7 @@ function App() {
     { link: "/Agenda", name: "Agenda" },
     { link: "/Comptabilite", name: "Comptabilité" },
     { link: "/Statistiques", name: "Statistiques" },
+    { link: "/Parametres", name: "Paramètres" },
   ];
 
   return (

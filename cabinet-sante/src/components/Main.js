@@ -4,6 +4,7 @@ import { useLogin } from "./contexts/AuthContext";
 import NewPatient from "./NewPatient";
 import PatientList from "./PatientList";
 import MyFullCalendar from "./MyFullCalendar";
+import Parameters from "./Parameters";
 
 function Main({ menu }) {
   const loggedIn = useLogin().login;
@@ -15,7 +16,7 @@ function Main({ menu }) {
           <Route exact path="/Nouveau-Patient" element={<NewPatient />} />
           <Route exact path="/Listing-Patients" element={<PatientList />} />
           <Route exact path="/Agenda" element={<MyFullCalendar />} />
-
+          <Route exact path="/Parametres" element={<Parameters />} />
           {menu.map(({ link, name }) => (
             <Route
               key={link}

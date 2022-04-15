@@ -9,6 +9,7 @@ import {
   ChartBar,
   Calculator,
   CalendarStats,
+  Settings,
 } from "tabler-icons-react";
 
 function LeftMenu() {
@@ -60,6 +61,12 @@ function LeftMenu() {
             <li className={path === "/Statistiques" ? "clicked" : ""}>
               <ChartBar size={iconsSize} style={iconsStyle} />
               Statistiques
+            </li>
+          </Link>
+          <Link to="/Parametres" className="text-link">
+            <li className={path === "/Parametres" ? "clicked" : ""}>
+              <Settings size={iconsSize} style={iconsStyle} />
+              Paramètres
             </li>
           </Link>
 
