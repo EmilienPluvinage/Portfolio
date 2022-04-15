@@ -8,8 +8,9 @@ import {
   Modal,
   Select,
   Grid,
+  Center,
 } from "@mantine/core";
-import { Pencil, Check } from "tabler-icons-react";
+import { Pencil, Check, Trash, Plus } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
 import { getConfigData } from "./Functions";
 
@@ -133,9 +134,25 @@ export default function Parameters() {
               onChange={setATselect}
               label="Types de consultations"
             ></Select>
-            <Button type="submit">
-              <Pencil size={18} />
-            </Button>
+            <Center>
+              <Grid grow style={{ marginTop: "5px" }}>
+                <Grid.Col span={2}>
+                  <Button size={"xs"} variant="outline">
+                    <Plus size={18} />
+                  </Button>
+                </Grid.Col>
+                <Grid.Col span={2}>
+                  <Button size={"xs"} variant="outline" color="red">
+                    <Trash size={18} />
+                  </Button>
+                </Grid.Col>
+                <Grid.Col span={2}>
+                  <Button size={"xs"} type="submit">
+                    <Pencil size={18} />
+                  </Button>
+                </Grid.Col>
+              </Grid>
+            </Center>
           </form>
         </div>
       </div>
