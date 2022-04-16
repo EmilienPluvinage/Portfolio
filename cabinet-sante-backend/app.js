@@ -448,32 +448,17 @@ app.post("/GetEventDetails", (req, res, next) => {
         if (rows.length === 1) {
           const userId = rows[0].userId;
           connection.query(
-            "SELECT * FROM appointments LEFT JOIN patients ON appointments.patientId = patients.id WHERE appointments.id=? AND patients.userId=?",
+            "SELECT * FROM isInAppointment LEFT JOIN appointments ON isInAppointment.appointmentId = appointments.id RIGHT JOIN patients ON isInAppointment.patientId = patients.id WHERE appointments.id=? AND patients.userId=?",
             [req.body.id, userId],
             (err, rows) => {
               if (err) throw err;
-              if (rows.length === 1) {
-                // now we get the details of the appointment we need
-                connection.query(
-                  "SELECT * FROM appointments WHERE id = ?",
-                  req.body.id,
-                  (err, rows) => {
-                    if (err) throw err;
-                    res.status(201).json({ success: true, data: rows });
-                  }
-                );
-                // we also update the time of the token
-                updateTokenTime(connection, req.body.token);
-              } else {
-                res.status(201).json({
-                  success: false,
-                  error: "user id and patient id don't match",
-                });
-              }
+              console.log(rows);
+              // we also update the time of the token
+              updateTokenTime(connection, req.body.token);
+
+              res.status(201).json({ success: true, data: rows });
             }
           );
-        } else {
-          res.status(201).json({ success: false, error: "not connected" });
         }
       }
     );
@@ -605,6 +590,118 @@ app.post("/UpdateEventTime", (req, res, next) => {
                 connection.query(
                   "UPDATE appointments SET start=?, end=? WHERE id=?",
                   [req.body.start, req.body.end, req.body.id],
+                  (err, result) => {
+                    if (err) {
+                      console.log(err);
+                      res.status(201).json({ success: false, error: err });
+                    } else {
+                      res.status(201).json({ success: true, error: "" });
+                    }
+                  }
+                );
+              } else {
+                res.status(201).json({
+                  success: false,
+                  error: "userId and appointmentId do not match",
+                });
+              }
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
+app.post("/UpdateEvent", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          const userId = rows[0].userId;
+          connection.query(
+            "SELECT * FROM appointments WHERE id = ? AND userId=?",
+            [req.body.appointmentId, userId],
+            (err, rows) => {
+              if (err) throw err;
+              if (rows.length === 1) {
+                // so we do the update
+                // Now connected and we have the user ID so we do the update
+                connection.query(
+                  "UPDATE appointments SET important =?, start=?, end=?, title=?, comments=? WHERE id=?",
+                  [
+                    req.body.important,
+                    req.body.start,
+                    req.body.end,
+                    req.body.title,
+                    req.body.comments,
+                    req.body.appointmentId,
+                  ],
+                  (err, result) => {
+                    if (err) {
+                      console.log(err);
+                      res.status(201).json({ success: false, error: err });
+                    } else {
+                      res.status(201).json({ success: true, error: "" });
+                    }
+                  }
+                );
+              } else {
+                res.status(201).json({
+                  success: false,
+                  error: "userId and appointmentId do not match",
+                });
+              }
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
+app.post("/UpdateParticipant", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          const userId = rows[0].userId;
+          connection.query(
+            "SELECT * FROM appointments WHERE id = ? AND userId=?",
+            [req.body.appointmentId, userId],
+            (err, rows) => {
+              if (err) throw err;
+              if (rows.length === 1) {
+                // so we do the update
+                // Now connected and we have the user ID so we do the update
+                connection.query(
+                  "UPDATE isInAppointment SET size =?, weight=?, EVAbefore=?, EVAafter=?, reasonDetails=?, patientType=? WHERE appointmentId=? AND patientId=?",
+                  [
+                    req.body.size,
+                    req.body.weight,
+                    req.body.EVAbefore,
+                    req.body.EVAafter,
+                    req.body.reasonDetails,
+                    req.body.patientType,
+                    req.body.appointmentId,
+                    req.body.patientId,
+                  ],
                   (err, result) => {
                     if (err) {
                       console.log(err);

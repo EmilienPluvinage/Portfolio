@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useLogin } from "./contexts/AuthContext";
-import { Pagination, Table, Button, Center } from "@mantine/core";
+import { Pagination, Table, Button, Center, Modal } from "@mantine/core";
 import { displayDate, displayTime } from "./Functions";
 import { Search } from "tabler-icons-react";
+import AppointmentDetails from "./AppointmentDetails";
 
 export default function History({ patientId }) {
   const token = useLogin().token;
@@ -13,6 +14,9 @@ export default function History({ patientId }) {
       ? Math.floor(historyData.length / rowsPerPage) + 1
       : 1;
   const [activePage, setPage] = useState(1);
+  const [opened, setOpened] = useState(false);
+  const [appointmentId, setAppointmentId] = useState(0);
+  const [update, setUpdate] = useState(0);
 
   useEffect(() => {
     async function getData() {
@@ -40,10 +44,33 @@ export default function History({ patientId }) {
       }
     }
     getData();
-  }, [token, patientId]);
+  }, [token, patientId, update]);
+
+  function handleClick(id) {
+    setAppointmentId(id);
+    setOpened(true);
+  }
 
   return (
     <>
+      <Modal
+        centered
+        overlayOpacity={0.3}
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title={"Consultation"}
+        closeOnClickOutside={false}
+        size="50%"
+      >
+        {opened && (
+          <AppointmentDetails
+            setOpened={setOpened}
+            patientId={0}
+            appointmentId={appointmentId}
+            setUpdate={setUpdate}
+          />
+        )}
+      </Modal>
       <Center>
         <Pagination
           style={{ marginBottom: "20px" }}
@@ -75,7 +102,10 @@ export default function History({ patientId }) {
               <td>Type</td>
               <td>Prix</td>
               <td>
-                <Button size="xs">
+                <Button
+                  size="xs"
+                  onClick={() => handleClick(event.appointmentId)}
+                >
                   <Search size={18} />
                 </Button>
               </td>

@@ -21,14 +21,18 @@ import {
   concatenateDateTime,
   displayDateInFrench,
   getFullnameFromId,
+  dateOnly,
+  timeOnly,
 } from "./Functions";
 import { Calendar, Check, Trash, Pencil } from "tabler-icons-react";
 import { useForm } from "@mantine/form";
+import { useEffect } from "react";
 
 export default function AppointmentDetails({
   setOpened,
   patientId, // to be used to pre-fill patient input when appointmentId === 0
   appointmentId,
+  setUpdate,
 }) {
   const patients = usePatients();
   const token = useLogin().token;
@@ -36,6 +40,8 @@ export default function AppointmentDetails({
   const [deleteLoader, setDeleteLoader] = useState("");
   const [EVAbefore, setEVAbefore] = useState(0);
   const [EVAafter, setEVAafter] = useState(0);
+  const [id, setId] = useState(0);
+  const [patient, setPatient] = useState(patientId);
 
   const now = new Date(Date.now());
   const then = dayjs(now).add(60, "minutes").toDate();
@@ -57,6 +63,53 @@ export default function AppointmentDetails({
   const form = useForm({
     initialValues: initialValues,
   });
+
+  useEffect(() => {
+    if (appointmentId !== 0 && id === 0) {
+      // then we get data from the DB and update the from
+      async function getData() {
+        try {
+          const fetchResponse = await fetch(
+            process.env.REACT_APP_API_DOMAIN + "/GetEventDetails",
+            {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                id: appointmentId,
+                token: token,
+              }),
+            }
+          );
+          const res = await fetchResponse.json();
+
+          if (res.success) {
+            const row = res.data[0];
+            setId(appointmentId);
+            setPatient(row.patientId);
+            setEVAbefore(row.EVAbefore);
+            setEVAafter(row.EVAafter);
+            form.setValues({
+              title: row.title,
+              date: dateOnly(row.start),
+              timeRange: [timeOnly(row.start), timeOnly(row.end)],
+              important: row.important,
+              comments: row.comments,
+              size: row.size,
+              weight: row.weight,
+              reasonDetails: row.reasonDetails,
+              patientType: row.patientType,
+            });
+          }
+        } catch (e) {
+          return e;
+        }
+      }
+      getData();
+    }
+  }, [appointmentId, id, token, form]);
 
   async function deleteAppointment() {
     setDeleteLoader("loading");
@@ -90,7 +143,14 @@ export default function AppointmentDetails({
   }
 
   async function submitForm(values) {
-    console.log(values);
+    if (appointmentId === 0) {
+      createEvent(values);
+    } else {
+      updateEvent(values);
+    }
+  }
+
+  async function createEvent(values) {
     setLoading("loading");
     var link = process.env.REACT_APP_API_DOMAIN + "/NewEvent";
     const start = concatenateDateTime(values.date, values.timeRange[0]);
@@ -125,7 +185,7 @@ export default function AppointmentDetails({
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              patientId: patientId,
+              patientId: patient,
               appointmentId: eventId,
               token: token,
               size: values.size,
@@ -146,8 +206,75 @@ export default function AppointmentDetails({
               "Le rendez-vous du " +
               displayDateInFrench(new Date(start)) +
               "  avec " +
-              getFullnameFromId(patients, patientId) +
+              getFullnameFromId(patients, patient) +
               " a bien été enregistré.",
+            icon: <Check />,
+            color: "green",
+          });
+        }
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
+  async function updateEvent(values) {
+    setLoading("loading");
+    var link = process.env.REACT_APP_API_DOMAIN + "/UpdateEvent";
+    const start = concatenateDateTime(values.date, values.timeRange[0]);
+    const end = concatenateDateTime(values.date, values.timeRange[1]);
+    try {
+      const fetchResponse = await fetch(link, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          appointmentId: id,
+          important: values.important,
+          start: start,
+          end: end,
+          title: values.title,
+          comments: values.comments,
+          token: token,
+        }),
+      });
+      const res = await fetchResponse.json();
+      if (res.success) {
+        const fetchResponse = await fetch(
+          process.env.REACT_APP_API_DOMAIN + "/UpdateParticipant",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              patientId: patient,
+              appointmentId: id,
+              token: token,
+              size: values.size,
+              weight: values.weight,
+              EVAbefore: EVAbefore,
+              EVAafter: EVAafter,
+              reasonDetails: values.reasonDetails,
+              patientType: values.patientType,
+            }),
+          }
+        );
+        const res2 = await fetchResponse.json();
+        if (res2.success) {
+          setOpened(false);
+          setUpdate((prev) => prev + 1);
+          showNotification({
+            title: "Consultation Modifiée",
+            message:
+              "Le rendez-vous du " +
+              displayDateInFrench(new Date(start)) +
+              "  avec " +
+              getFullnameFromId(patients, patient) +
+              " a bien été modifié.",
             icon: <Check />,
             color: "green",
           });
@@ -164,7 +291,9 @@ export default function AppointmentDetails({
         onSubmit={form.onSubmit((values) => submitForm(values))}
         autoComplete="new-password"
       >
-        <Text size="sm">Patient: {getFullnameFromId(patients, patientId)}</Text>
+        <Text size="sm">
+          Patient: {patient !== 0 && getFullnameFromId(patients, patient)}
+        </Text>
 
         <Grid grow>
           <Grid.Col span={4}>
