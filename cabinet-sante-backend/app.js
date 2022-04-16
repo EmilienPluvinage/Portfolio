@@ -116,7 +116,7 @@ app.post("/NewEvent", (req, res, next) => {
           // belongs to that user
           // Now connected and we have the user ID so we do the insert
           connection.query(
-            "INSERT INTO appointments(userId, start, end, title, important, comments) VALUES (?,?,?,?,?,?)",
+            "INSERT INTO appointments(userId, start, end, title, important, comments, idType) VALUES (?,?,?,?,?,?,?)",
             [
               userId,
               req.body.start,
@@ -124,6 +124,7 @@ app.post("/NewEvent", (req, res, next) => {
               req.body.title,
               req.body.important,
               req.body.comments,
+              req.body.idType,
             ],
             (err, result) => {
               if (err) throw err;

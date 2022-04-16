@@ -7,6 +7,7 @@ import {
   MultiSelect,
   Grid,
   Modal,
+  Select,
 } from "@mantine/core";
 import { DatePicker, TimeRangeInput } from "@mantine/dates";
 import { useState } from "react";
@@ -33,6 +34,7 @@ import {
 } from "tabler-icons-react";
 import { useForm } from "@mantine/form";
 import AppointmentDetails from "./AppointmentDetails";
+import { useConfig } from "./contexts/ConfigContext";
 
 export default function NewAppointment({
   setOpened,
@@ -43,6 +45,10 @@ export default function NewAppointment({
   const patients = usePatients();
   const patientsList = patients.map((e) => {
     return e.fullname;
+  });
+  const appointmentTypes = useConfig().appointmentTypes;
+  const typesList = appointmentTypes.map((e) => {
+    return e.type;
   });
   const token = useLogin().token;
   const [loading, setLoading] = useState("");
@@ -68,6 +74,7 @@ export default function NewAppointment({
     size: 0,
     weight: 0,
     patientType: "",
+    appointmentType: "",
   };
 
   const form = useForm({
@@ -75,7 +82,6 @@ export default function NewAppointment({
   });
 
   async function deleteAppointment() {
-    // to rewrite probably
     setDeleteLoader("loading");
     var link = process.env.REACT_APP_API_DOMAIN + "/DeleteEvent";
     try {
@@ -110,6 +116,10 @@ export default function NewAppointment({
     var link = process.env.REACT_APP_API_DOMAIN + "/NewEvent";
     const start = concatenateDateTime(values.date, values.timeRange[0]);
     const end = concatenateDateTime(values.date, values.timeRange[1]);
+    const appointmentTypeId = appointmentTypes.find(
+      (e) => e.type === values.appointmentType
+    ).id;
+    console.log(appointmentTypeId);
     try {
       const fetchResponse = await fetch(link, {
         method: "POST",
@@ -123,6 +133,7 @@ export default function NewAppointment({
           end: end,
           title: values.title,
           comments: values.comments,
+          idType: appointmentTypeId,
           token: token,
         }),
       });
@@ -238,12 +249,28 @@ export default function NewAppointment({
           maxDropdownHeight={160}
           {...form.getInputProps("patients")}
         />
+        <Grid grow>
+          <Grid.Col span={2}>
+            {" "}
+            <TextInput
+              style={{ marginTop: "8px" }}
+              label="Titre"
+              name="title"
+              {...form.getInputProps("title")}
+            />
+          </Grid.Col>
+          <Grid.Col span={2}>
+            <Grid.Col span={2}>
+              <Select
+                data={typesList}
+                name="appointmentType"
+                label="Type de consultation"
+                {...form.getInputProps("appointmentType")}
+              />
+            </Grid.Col>
+          </Grid.Col>
+        </Grid>
 
-        <TextInput
-          label="Titre"
-          name="title"
-          {...form.getInputProps("title")}
-        />
         <Grid grow>
           <Grid.Col span={2}>
             <DatePicker
