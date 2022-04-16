@@ -393,7 +393,7 @@ export default function AppointmentDetails({
         ) : (
           <Grid
             justify="space-between"
-            style={{ marginTop: "10px", marginRight: "70px" }}
+            style={{ marginTop: "10px", marginRight: "45px" }}
           >
             <Grid.Col span={2}>
               <Button
@@ -412,7 +412,7 @@ export default function AppointmentDetails({
                 leftIcon={<Pencil size={18} />}
                 loading={loading}
               >
-                Modifier
+                Enregistrer
               </Button>
             </Grid.Col>
           </Grid>

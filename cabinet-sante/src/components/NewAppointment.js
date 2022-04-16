@@ -4,13 +4,9 @@ import {
   TextInput,
   Textarea,
   Button,
-  Center,
   MultiSelect,
   Grid,
-  Accordion,
-  Text,
-  NumberInput,
-  Select,
+  Modal,
 } from "@mantine/core";
 import { DatePicker, TimeRangeInput } from "@mantine/dates";
 import { useState } from "react";
@@ -26,8 +22,17 @@ import {
   getFullnameFromId,
   getIdFromFullname,
 } from "./Functions";
-import { Calendar, Check, Trash, Pencil, UserPlus } from "tabler-icons-react";
+import {
+  Calendar,
+  Check,
+  Trash,
+  Pencil,
+  UserPlus,
+  ListDetails,
+  Clock,
+} from "tabler-icons-react";
 import { useForm } from "@mantine/form";
+import AppointmentDetails from "./AppointmentDetails";
 
 export default function NewAppointment({
   setOpened,
@@ -42,6 +47,8 @@ export default function NewAppointment({
   const token = useLogin().token;
   const [loading, setLoading] = useState("");
   const [deleteLoader, setDeleteLoader] = useState("");
+  const [openedDetails, setOpenedDetails] = useState(false);
+  const [appointment, setAppointment] = useState(appointmentId);
 
   const now = new Date(
     startingTime === 0 ? Date.now() : timeOnly(startingTime)
@@ -99,8 +106,7 @@ export default function NewAppointment({
     }
   }
 
-  async function submitForm(values) {
-    setLoading("loading");
+  async function addEvent(values) {
     var link = process.env.REACT_APP_API_DOMAIN + "/NewEvent";
     const start = concatenateDateTime(values.date, values.timeRange[0]);
     const end = concatenateDateTime(values.date, values.timeRange[1]);
@@ -139,6 +145,12 @@ export default function NewAppointment({
                 body: JSON.stringify({
                   patientId: patientId,
                   appointmentId: eventId,
+                  size: 0,
+                  weight: 0,
+                  EVAbefore: 0,
+                  EVAafter: 0,
+                  reasonDetails: "",
+                  patientType: "",
                   token: token,
                 }),
               }
@@ -150,33 +162,70 @@ export default function NewAppointment({
           });
         }
         await addPatients();
-        if (success) {
-          setOpened(false);
-          showNotification({
-            title: "Consultation planifiée",
-            message:
-              "Le rendez-vous du " +
-              displayDateInFrench(new Date(start)) +
-              " a bien été enregistré avec " +
-              values.patients.length +
-              " participant(s).",
-            icon: <Check />,
-            color: "green",
-          });
-        }
+        return { success: success, eventId: eventId };
       }
     } catch (e) {
       return e;
     }
   }
 
+  async function submitForm(values) {
+    const start = concatenateDateTime(values.date, values.timeRange[0]);
+    setLoading("loading");
+    const result = await addEvent(values);
+    if (result.success) {
+      setOpened(false);
+      showNotification({
+        title: "Consultation planifiée",
+        message:
+          "Le rendez-vous du " +
+          displayDateInFrench(new Date(start)) +
+          " a bien été enregistré avec " +
+          values.patients.length +
+          " participant(s).",
+        icon: <Check />,
+        color: "green",
+      });
+    }
+  }
+
+  async function openDetails() {
+    setDeleteLoader("loading");
+    const result = await addEvent(form.values);
+    if (result.success) {
+      setAppointment(result.eventId);
+      setOpenedDetails(true);
+    }
+  }
+
   return (
     <>
+      <Modal
+        centered
+        overlayOpacity={0.3}
+        opened={openedDetails}
+        onClose={() => {
+          setOpenedDetails(false);
+          setOpened(false);
+        }}
+        title={"Consultation"}
+        closeOnClickOutside={false}
+        size="50%"
+      >
+        {openedDetails && (
+          <AppointmentDetails
+            setOpened={setOpened}
+            patientId={0}
+            appointmentId={appointment}
+          />
+        )}
+      </Modal>
       <form
         onSubmit={form.onSubmit((values) => submitForm(values))}
         autoComplete="new-password"
       >
         <MultiSelect
+          required
           dropdownPosition="top"
           name="patients"
           icon={<UserPlus size={16} />}
@@ -218,51 +267,7 @@ export default function NewAppointment({
             />
           </Grid.Col>
         </Grid>
-        <Accordion iconPosition="right" iconSize={22} offsetIcon={false}>
-          <Accordion.Item label="Détails de la consultation">
-            {form.values.patients.length <= 1 ? (
-              <>
-                <Grid grow>
-                  <Grid.Col span={3}>
-                    <NumberInput
-                      name="size"
-                      label="Taille (en cm):"
-                      {...form.getInputProps("size")}
-                    />
-                  </Grid.Col>
-                  <Grid.Col span={3}>
-                    <NumberInput
-                      name="weight"
-                      label="Poids (en kg:"
-                      {...form.getInputProps("weight")}
-                    />
-                  </Grid.Col>
-                  <Grid.Col span={3}>
-                    <Select
-                      data={[
-                        "Adulte",
-                        "Femme enceinte",
-                        "Enfant",
-                        "Nourrisson",
-                      ]}
-                      name="patientType"
-                      label="Profil du patient"
-                      {...form.getInputProps("patientType")}
-                    />
-                  </Grid.Col>
-                </Grid>
-              </>
-            ) : (
-              <Text size={"sm"}>
-                Cette options n'est disponible uniquement pour les rendez-vous
-                avez une seule personne et permets de fournir des informations
-                complémentaires (Taille, poids, symptômes, etc...). Pour les
-                rendez-vous multi-patients, il est préférable d'utiliser la case
-                "Commentaires" ci-dessous.
-              </Text>
-            )}
-          </Accordion.Item>
-        </Accordion>
+
         <Textarea
           label="Commentaires"
           name="comments"
@@ -270,15 +275,31 @@ export default function NewAppointment({
         />
 
         {appointmentId === 0 ? (
-          <Center>
-            <Button
-              type="submit"
-              style={{ marginTop: "10px" }}
-              loading={loading}
-            >
-              Planifier
-            </Button>
-          </Center>
+          <Grid
+            justify="space-between"
+            style={{ marginTop: "10px", marginRight: "70px" }}
+          >
+            <Grid.Col span={2}>
+              {form?.values?.patients?.length <= 1 && (
+                <Button
+                  leftIcon={<ListDetails size={18} />}
+                  onClick={openDetails}
+                  loading={deleteLoader}
+                >
+                  Détails
+                </Button>
+              )}
+            </Grid.Col>
+            <Grid.Col span={2}>
+              <Button
+                leftIcon={<Clock size={18} />}
+                type="submit"
+                loading={loading}
+              >
+                Planifier
+              </Button>
+            </Grid.Col>
+          </Grid>
         ) : (
           <Grid
             justify="space-between"
