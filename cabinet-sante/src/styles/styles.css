@@ -21,7 +21,7 @@ body {
 header {
   height: fit-content;
   width: 100%;
-  background-color: rgb(50, 50, 50);
+  background-color: rgb(40, 40, 40);
 }
 header h1 {
   color: #22b8cf;
@@ -43,7 +43,7 @@ header h1 {
 
 #LeftMenu {
   width: fit-content;
-  color: #474747;
+  color: rgb(40, 40, 40);
   font-size: 0.8rem;
   font-weight: 400;
   padding-right: 20px;
@@ -82,7 +82,7 @@ header h1 {
   border-top: 1px solid lightgrey;
 }
 h2 {
-  color: gray;
+  color: rgb(40, 40, 40);
   margin-left: 30px;
   font-size: 1rem;
   font-weight: 400;
