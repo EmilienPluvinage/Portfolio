@@ -16,6 +16,7 @@ import NewAppointment from "./NewAppointment";
 import { Modal } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { Check, X } from "tabler-icons-react";
+import { useConfig } from "./contexts/ConfigContext";
 
 export default function MyFullCalendar() {
   const [opened, setOpened] = useState(false);
@@ -26,7 +27,8 @@ export default function MyFullCalendar() {
   const [events, setEvents] = useState([]);
   const [calendarUpdate, setCalendarUpdate] = useState(0);
   const [appointmentId, setAppointmentId] = useState(0);
-
+  const appointmentTypes = useConfig().appointmentTypes;
+  console.log(appointmentTypes);
   useEffect(() => {
     async function fetchData() {
       try {

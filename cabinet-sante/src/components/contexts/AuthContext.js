@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useUpdatePatients } from "./PatientsContext";
 import { useUpdateGovData } from "./GovDataContext";
+import { useUpdateConfig } from "./ConfigContext";
 
 const LoginContext = React.createContext();
 const LoggingContext = React.createContext();
@@ -16,6 +17,7 @@ export function useLogging() {
 export function AuthProvider({ children }) {
   const getPatients = useUpdatePatients();
   const getGovData = useUpdateGovData();
+  const getConfig = useUpdateConfig();
   // True or False
   const [login, setLogin] = useState(false);
   // Token to be passed to any SQL query and compared with the one in DB
@@ -23,16 +25,19 @@ export function AuthProvider({ children }) {
 
   async function removeToken(token) {
     try {
-      const fetchResponse = await fetch("http://localhost:3001/DeleteToken", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          token: token,
-        }),
-      });
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/DeleteToken",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+          }),
+        }
+      );
       const res = await fetchResponse.json();
       return res;
     } catch (e) {
@@ -43,8 +48,12 @@ export function AuthProvider({ children }) {
   async function logging(bool, newToken) {
     if (bool) {
       setToken(newToken);
-      await getPatients(newToken);
-      await getGovData();
+      async function getData() {
+        getPatients(newToken);
+        getGovData();
+        getConfig(newToken);
+      }
+      await getData();
     } else {
       removeToken(token);
       localStorage.removeItem("token");

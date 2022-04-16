@@ -7,6 +7,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { AuthProvider } from "./components/contexts/AuthContext";
 import { PatientsProvider } from "./components/contexts/PatientsContext";
 import { GovDataProvider } from "./components/contexts/GovDataContext";
+import { ConfigurationProvider } from "./components/contexts/ConfigContext";
 import { NotificationsProvider } from "@mantine/notifications";
 import { MantineProvider } from "@mantine/core";
 
@@ -30,18 +31,20 @@ function App() {
           }}
         >
           <NotificationsProvider position="top-right">
-            <PatientsProvider>
-              <AuthProvider>
-                <Header />
-                <div id="parent">
-                  <Router>
-                    <LeftMenu />
-                    <Main menu={menu} />
-                  </Router>
-                  <Login />
-                </div>
-              </AuthProvider>
-            </PatientsProvider>
+            <ConfigurationProvider>
+              <PatientsProvider>
+                <AuthProvider>
+                  <Header />
+                  <div id="parent">
+                    <Router>
+                      <LeftMenu />
+                      <Main menu={menu} />
+                    </Router>
+                    <Login />
+                  </div>
+                </AuthProvider>
+              </PatientsProvider>
+            </ConfigurationProvider>
           </NotificationsProvider>
         </MantineProvider>
       </GovDataProvider>
