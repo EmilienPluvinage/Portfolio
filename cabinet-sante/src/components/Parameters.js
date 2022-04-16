@@ -1,6 +1,6 @@
 import "../styles/styles.css";
 import { useLogin } from "./contexts/AuthContext";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   TextInput,
   Checkbox,
@@ -12,12 +12,13 @@ import {
 } from "@mantine/core";
 import { Pencil, Check, Trash, Plus } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
-import { getConfigData } from "./Functions";
-import 
+import { useConfig, useUpdateConfig } from "./contexts/ConfigContext";
 
 export default function Parameters() {
   const token = useLogin().token;
-  const [appointmentTypes, setAppointmentTypes] = useState([]);
+  const appointmentTypes = useConfig().appointmentTypes;
+  console.log(appointmentTypes);
+  const updateConfigData = useUpdateConfig();
   const [appointmentType, setAppointmentType] = useState("");
   const [appointmentTypeMulti, setAppointmentTypeMulti] = useState(0);
   const [ATSelect, setATselect] = useState("");
@@ -26,18 +27,6 @@ export default function Parameters() {
 
   const ATlist =
     appointmentTypes?.length > 0 ? appointmentTypes.map((e) => e.type) : [];
-
-  useEffect(() => {
-    async function getData() {
-      const data = await getConfigData(token);
-      setConfigData(data);
-    }
-    getData();
-  }, [token]);
-
-  function setConfigData(data) {
-    setAppointmentTypes(data.appointmentTypes);
-  }
 
   function submitAppointmentForm(event) {
     event.preventDefault();
@@ -71,8 +60,7 @@ export default function Parameters() {
           color: "green",
           icon: <Check />,
         });
-        const data = await getConfigData(token);
-        setConfigData(data);
+        updateConfigData(token);
         setATselect(appointmentType);
       }
     } catch (e) {
