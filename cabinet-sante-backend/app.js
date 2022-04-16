@@ -773,7 +773,14 @@ app.post("/DeleteEvent", (req, res, next) => {
                   req.body.id,
                   (err, result) => {
                     if (err) throw err;
-                    res.status(201).json({ success: true, error: "" });
+                    connection.query(
+                      "DELETE FROM isInAppointment WHERE appointmentId=?",
+                      req.body.id,
+                      (err, result) => {
+                        if (err) throw err;
+                        res.status(201).json({ success: true, error: "" });
+                      }
+                    );
                   }
                 );
               } else {

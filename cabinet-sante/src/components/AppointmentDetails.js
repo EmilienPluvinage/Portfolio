@@ -130,6 +130,7 @@ export default function AppointmentDetails({
       if (res.success) {
         setOpened(false);
         setDeleteLoader("");
+        setUpdate((prev) => prev + 1);
         showNotification({
           title: "Consultation supprimée",
           message: "Le rendez-vous a bien été supprimé.",
