@@ -28,7 +28,7 @@ export default function MyFullCalendar() {
   const [calendarUpdate, setCalendarUpdate] = useState(0);
   const [appointmentId, setAppointmentId] = useState(0);
   const appointmentTypes = useConfig().appointmentTypes;
-  console.log(appointmentTypes);
+
   useEffect(() => {
     async function fetchData() {
       try {

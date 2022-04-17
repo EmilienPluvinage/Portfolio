@@ -31,6 +31,7 @@ import {
   UserPlus,
   ListDetails,
   Clock,
+  X,
 } from "tabler-icons-react";
 import { useForm } from "@mantine/form";
 import AppointmentDetails from "./AppointmentDetails";
@@ -113,13 +114,16 @@ export default function NewAppointment({
   }
 
   async function addEvent(values) {
+    const check = checkValues(values);
+    if (!check.check) {
+      return { success: false, message: check.message };
+    }
     var link = process.env.REACT_APP_API_DOMAIN + "/NewEvent";
     const start = concatenateDateTime(values.date, values.timeRange[0]);
     const end = concatenateDateTime(values.date, values.timeRange[1]);
     const appointmentTypeId = appointmentTypes.find(
       (e) => e.type === values.appointmentType
     ).id;
-    console.log(appointmentTypeId);
     try {
       const fetchResponse = await fetch(link, {
         method: "POST",
@@ -180,11 +184,55 @@ export default function NewAppointment({
     }
   }
 
+  function checkValues(values) {
+    if (values.appointmentType === "") {
+      return {
+        check: false,
+        message: "Merci de sélectionner le type de consultation.",
+      };
+    }
+    const appointmentTypeMulti = appointmentTypes.find(
+      (e) => e.type === values.appointmentType
+    ).multi;
+
+    if (values.patients.length === 0) {
+      return {
+        check: false,
+        message: "Merci de sélectionner au moins un patient.",
+      };
+    }
+
+    if (appointmentTypeMulti === 0 && values.patients.length > 1) {
+      return {
+        check: false,
+        message:
+          "Ce type de consultation ne permet pas d'avoir plusieurs patients en même temps.",
+      };
+    }
+    if (values.date === null || values.start === "" || values.end === "") {
+      return {
+        check: false,
+        message:
+          "Merci de sélectionner une date, une heure de début et une heure de fin.",
+      };
+    }
+
+    if (timeOnly(values.timeRange[0]) >= timeOnly(values.timeRange[1])) {
+      return {
+        check: false,
+        message:
+          "Merci de sélectionner une heure de fin postérieure à la date de début de rendez-vous.",
+      };
+    }
+
+    return { check: true };
+  }
+
   async function submitForm(values) {
-    const start = concatenateDateTime(values.date, values.timeRange[0]);
     setLoading("loading");
     const result = await addEvent(values);
     if (result.success) {
+      const start = concatenateDateTime(values.date, values.timeRange[0]);
       setOpened(false);
       showNotification({
         title: "Consultation planifiée",
@@ -197,6 +245,14 @@ export default function NewAppointment({
         icon: <Check />,
         color: "green",
       });
+    } else {
+      setLoading("");
+      showNotification({
+        title: "Consultation non-planifiée",
+        message: result.message,
+        icon: <X />,
+        color: "red",
+      });
     }
   }
 
@@ -206,6 +262,14 @@ export default function NewAppointment({
     if (result.success) {
       setAppointment(result.eventId);
       setOpenedDetails(true);
+    } else {
+      setDeleteLoader("");
+      showNotification({
+        title: "Consultation non-planifiée",
+        message: result.message,
+        icon: <X />,
+        color: "red",
+      });
     }
   }
 
@@ -266,6 +330,7 @@ export default function NewAppointment({
                 name="appointmentType"
                 label="Type de consultation"
                 {...form.getInputProps("appointmentType")}
+                required
               />
             </Grid.Col>
           </Grid.Col>
