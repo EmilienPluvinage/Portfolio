@@ -3,7 +3,9 @@ import { useLogin } from "./contexts/AuthContext";
 import { Pagination, Table, Button, Center, Modal } from "@mantine/core";
 import { displayDate, displayTime } from "./Functions";
 import { Search } from "tabler-icons-react";
+import NewAppointment from "./NewAppointment";
 import AppointmentDetails from "./AppointmentDetails";
+import { useConfig } from "./contexts/ConfigContext";
 
 export default function History({ patientId }) {
   const token = useLogin().token;
@@ -15,8 +17,10 @@ export default function History({ patientId }) {
       : 1;
   const [activePage, setPage] = useState(1);
   const [opened, setOpened] = useState(false);
+  const [openedDetails, setOpenedDetails] = useState(false);
   const [appointmentId, setAppointmentId] = useState(0);
   const [update, setUpdate] = useState(0);
+  const appointmentTypes = useConfig().appointmentTypes;
 
   useEffect(() => {
     async function getData() {
@@ -46,9 +50,13 @@ export default function History({ patientId }) {
     getData();
   }, [token, patientId, update]);
 
-  function handleClick(id) {
+  function handleClick(id, multi) {
     setAppointmentId(id);
-    setOpened(true);
+    if (multi === 1) {
+      setOpened(true);
+    } else {
+      setOpenedDetails(true);
+    }
   }
 
   return (
@@ -60,11 +68,28 @@ export default function History({ patientId }) {
         onClose={() => setOpened(false)}
         title={"Consultation"}
         closeOnClickOutside={false}
-        size="50%"
       >
         {opened && (
-          <AppointmentDetails
+          <NewAppointment
             setOpened={setOpened}
+            startingTime={0}
+            patientId={0}
+            appointmentId={appointmentId}
+          />
+        )}
+      </Modal>
+      <Modal
+        centered
+        overlayOpacity={0.3}
+        opened={openedDetails}
+        onClose={() => setOpenedDetails(false)}
+        title={"Consultation"}
+        closeOnClickOutside={false}
+        size="50%"
+      >
+        {openedDetails && (
+          <AppointmentDetails
+            setOpened={setOpenedDetails}
             patientId={0}
             appointmentId={appointmentId}
             setUpdate={setUpdate}
@@ -99,12 +124,19 @@ export default function History({ patientId }) {
               <td>{displayDate(new Date(event.start), true)}</td>
               <td>{displayTime(new Date(event.start))}</td>
               <td>{displayTime(new Date(event.end))}</td>
-              <td>Type</td>
+              <td>
+                {appointmentTypes.find((e) => e.id === event.idType).type}
+              </td>
               <td>Prix</td>
               <td>
                 <Button
                   size="xs"
-                  onClick={() => handleClick(event.appointmentId)}
+                  onClick={() =>
+                    handleClick(
+                      event.appointmentId,
+                      appointmentTypes.find((e) => e.id === event.idType).multi
+                    )
+                  }
                 >
                   <Search size={18} />
                 </Button>
