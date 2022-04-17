@@ -1,5 +1,5 @@
 import React from "react";
-import { usePatients } from "./contexts/PatientsContext";
+import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import {
   TextInput,
   Textarea,
@@ -47,6 +47,7 @@ export default function NewAppointment({
   appointmentId,
 }) {
   const patients = usePatients();
+  const updatePatients = useUpdatePatients();
   const patientsList = patients.map((e) => {
     return e.fullname;
   });
@@ -207,6 +208,8 @@ export default function NewAppointment({
             if (index === -1) {
               // it's a new patient
               patientId = await newPatient(element);
+              // we also need to update the context
+              await updatePatients(token);
             } else {
               // it's not, so we get the id of the existing one.
               patientId = getIdFromFullname(patients, element);
