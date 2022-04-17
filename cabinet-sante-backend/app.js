@@ -453,7 +453,7 @@ app.post("/GetEventDetails", (req, res, next) => {
             [req.body.id, userId],
             (err, rows) => {
               if (err) throw err;
-              console.log(rows);
+
               // we also update the time of the token
               updateTokenTime(connection, req.body.token);
 
@@ -783,6 +783,50 @@ app.post("/DeleteEvent", (req, res, next) => {
                         res.status(201).json({ success: true, error: "" });
                       }
                     );
+                  }
+                );
+              } else {
+                res.status(201).json({
+                  success: false,
+                  error: "userId and appointmentId do not match",
+                });
+              }
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
+// CLEAR EVENT PARTICIPANTS
+
+app.post("/DeleteAllParticipants", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          const userId = rows[0].userId;
+          connection.query(
+            "SELECT * FROM appointments WHERE id = ? AND userId=?",
+            [req.body.appointmentId, userId],
+            (err, rows) => {
+              if (err) throw err;
+              if (rows.length === 1) {
+                connection.query(
+                  "DELETE FROM isInAppointment WHERE appointmentId=?",
+                  [req.body.appointmentId],
+                  (err, result) => {
+                    if (err) throw err;
+                    res.status(201).json({ success: true, error: "" });
                   }
                 );
               } else {

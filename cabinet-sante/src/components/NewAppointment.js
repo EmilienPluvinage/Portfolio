@@ -36,6 +36,7 @@ import {
 import { useForm } from "@mantine/form";
 import AppointmentDetails from "./AppointmentDetails";
 import { useConfig } from "./contexts/ConfigContext";
+import { useEffect } from "react";
 
 export default function NewAppointment({
   setOpened,
@@ -56,6 +57,7 @@ export default function NewAppointment({
   const [deleteLoader, setDeleteLoader] = useState("");
   const [openedDetails, setOpenedDetails] = useState(false);
   const [appointment, setAppointment] = useState(appointmentId);
+  const [id, setId] = useState(0);
 
   const now = new Date(
     startingTime === 0 ? Date.now() : timeOnly(startingTime)
@@ -81,6 +83,53 @@ export default function NewAppointment({
   const form = useForm({
     initialValues: initialValues,
   });
+
+  useEffect(() => {
+    if (appointmentId !== 0 && id === 0) {
+      // then we get data from the DB and update the from
+      async function getData() {
+        try {
+          const fetchResponse = await fetch(
+            process.env.REACT_APP_API_DOMAIN + "/GetEventDetails",
+            {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                id: appointmentId,
+                token: token,
+              }),
+            }
+          );
+          const res = await fetchResponse.json();
+
+          if (res.success) {
+            // const row = res.data[0];
+            setId(appointmentId);
+            const row = res.data[0];
+            const patientsList = res.data.map((e) =>
+              getFullnameFromId(patients, e.patientId)
+            );
+            form.setValues({
+              patients: patientsList,
+              title: row.title,
+              date: dateOnly(row.start),
+              timeRange: [timeOnly(row.start), timeOnly(row.end)],
+              important: row.important,
+              comments: row.comments,
+              appointmentType: appointmentTypes.find((e) => e.id === row.idType)
+                .type,
+            });
+          }
+        } catch (e) {
+          return e;
+        }
+      }
+      getData();
+    }
+  }, [appointmentId, id, token, form, appointmentTypes, patientId, patients]);
 
   async function deleteAppointment() {
     setDeleteLoader("loading");
@@ -184,6 +233,101 @@ export default function NewAppointment({
     }
   }
 
+  async function UpdateEvent(values) {
+    const check = checkValues(values);
+    if (!check.check) {
+      return { success: false, message: check.message };
+    }
+    var link = process.env.REACT_APP_API_DOMAIN + "/UpdateEvent";
+    const start = concatenateDateTime(values.date, values.timeRange[0]);
+    const end = concatenateDateTime(values.date, values.timeRange[1]);
+    const appointmentTypeId = appointmentTypes.find(
+      (e) => e.type === values.appointmentType
+    ).id;
+    try {
+      const fetchResponse = await fetch(link, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          important: values.important,
+          start: start,
+          end: end,
+          title: values.title,
+          comments: values.comments,
+          idType: appointmentTypeId,
+          appointmentId: id,
+          token: token,
+        }),
+      });
+      const res = await fetchResponse.json();
+      if (res.success) {
+        var success = true;
+
+        // Now that the event has been updated, we need to update all the participants,
+        // Easy solution for now : delete all the participants and re-add them.
+        // We'll see later if this creates any issue in which case we'll go through all of them one by one
+        try {
+          const fetchResponse = await fetch(
+            process.env.REACT_APP_API_DOMAIN + "/DeleteAllParticipants",
+            {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                appointmentId: id,
+                token: token,
+              }),
+            }
+          );
+          const resClear = await fetchResponse.json();
+          if (resClear.success) {
+            async function addPatients() {
+              values.patients.forEach(async (element) => {
+                var patientId = getIdFromFullname(patients, element);
+                const fetchResponse = await fetch(
+                  process.env.REACT_APP_API_DOMAIN + "/NewParticipant",
+                  {
+                    method: "POST",
+                    headers: {
+                      Accept: "application/json",
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      patientId: patientId,
+                      appointmentId: id,
+                      size: 0,
+                      weight: 0,
+                      EVAbefore: 0,
+                      EVAafter: 0,
+                      reasonDetails: "",
+                      patientType: "",
+                      token: token,
+                    }),
+                  }
+                );
+                const res = await fetchResponse.json();
+                if (res.success === false) {
+                  success = false;
+                }
+              });
+            }
+            await addPatients();
+            return { success: success, eventId: id };
+          }
+        } catch (e) {
+          return e;
+        }
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
   function checkValues(values) {
     if (values.appointmentType === "") {
       return {
@@ -230,12 +374,13 @@ export default function NewAppointment({
 
   async function submitForm(values) {
     setLoading("loading");
-    const result = await addEvent(values);
+    const result =
+      id === 0 ? await addEvent(values) : await UpdateEvent(values);
     if (result.success) {
       const start = concatenateDateTime(values.date, values.timeRange[0]);
       setOpened(false);
       showNotification({
-        title: "Consultation planifiée",
+        title: id === 0 ? "Consultation planifiée" : "Consultation modifiée",
         message:
           "Le rendez-vous du " +
           displayDateInFrench(new Date(start)) +

@@ -48,7 +48,7 @@ export default function History({ patientId }) {
       }
     }
     getData();
-  }, [token, patientId, update]);
+  }, [token, patientId, update, opened]);
 
   function handleClick(id, multi) {
     setAppointmentId(id);
