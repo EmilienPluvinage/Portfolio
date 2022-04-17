@@ -207,20 +207,6 @@ app.post("/NewParticipant", (req, res, next) => {
 //   READ   //
 //////////////
 
-// TEST SERVER
-
-app.get("/Test", (req, res, next) => {
-  pool.getConnection((err, connection) => {
-    if (err) throw err;
-    console.log("connected as id " + connection.threadId);
-    connection.query("SELECT * FROM users", (err, rows) => {
-      connection.release(); // return the connection to pool
-      if (err) throw err;
-      console.log("The data from users table are: \n", rows);
-    });
-  });
-});
-
 // LOGIN
 
 app.post("/Login", (req, res, next) => {
