@@ -161,23 +161,38 @@ app.post("/NewParticipant", (req, res, next) => {
         connection.release(); // return the connection to pool
         if (err) throw err;
         if (rows.length === 1) {
+          const userId = rows[0].userId;
           // belongs to that user
           // Now connected and we have the user ID so we do the insert
           connection.query(
-            "INSERT INTO isInAppointment(patientId, appointmentId, size, weight, EVAbefore, EVAafter, reasonDetails, patientType) VALUES (?,?,?,?,?,?,?,?)",
-            [
-              req.body.patientId,
-              req.body.appointmentId,
-              req.body.size,
-              req.body.weight,
-              req.body.EVAbefore,
-              req.body.EVAafter,
-              req.body.reasonDetails,
-              req.body.patientType,
-            ],
-            (err, result) => {
+            "SELECT * FROM appointments WHERE id = ? AND userId=?",
+            [req.body.appointmentId, userId],
+            (err, rows) => {
               if (err) throw err;
-              res.status(201).json({ success: true, error: "" });
+              if (rows.length === 1) {
+                connection.query(
+                  "INSERT INTO isInAppointment(patientId, appointmentId, size, weight, EVAbefore, EVAafter, reasonDetails, patientType) VALUES (?,?,?,?,?,?,?,?)",
+                  [
+                    req.body.patientId,
+                    req.body.appointmentId,
+                    req.body.size,
+                    req.body.weight,
+                    req.body.EVAbefore,
+                    req.body.EVAafter,
+                    req.body.reasonDetails,
+                    req.body.patientType,
+                  ],
+                  (err, result) => {
+                    if (err) throw err;
+                    res.status(201).json({ success: true, error: "" });
+                  }
+                );
+              } else {
+                res.status(201).json({
+                  success: false,
+                  error: "userId and appointmentId do not match",
+                });
+              }
             }
           );
         } else {
