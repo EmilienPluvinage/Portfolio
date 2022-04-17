@@ -17,9 +17,11 @@ import { Modal } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { Check, X } from "tabler-icons-react";
 import { useConfig } from "./contexts/ConfigContext";
+import AppointmentDetails from "./AppointmentDetails";
 
 export default function MyFullCalendar() {
   const [opened, setOpened] = useState(false);
+  const [openedDetails, setOpenedDetails] = useState(false);
   const [startingTime, setStartingTime] = useState(new Date());
 
   const token = useLogin().token;
@@ -36,13 +38,12 @@ export default function MyFullCalendar() {
         if (data.success) {
           setEvents(data.data);
         }
-        // switch loading to false after fetch is complete
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
     fetchData();
-  }, [token, calendarUpdate, opened]);
+  }, [token, calendarUpdate, opened, openedDetails]);
 
   async function updateEventTime(id, startingTime, endingTime, src) {
     var link = process.env.REACT_APP_API_DOMAIN + "/UpdateEventTime";
@@ -92,9 +93,19 @@ export default function MyFullCalendar() {
   }
 
   function handleEventClick(arg) {
-    // when user clicks on an event
+    // when user clicks on an event, we need to know whether it's a group event or a solo event.
+    const appointmentTypeId = events.find(
+      (e) => e.id.toString() === arg.event.id.toString()
+    ).idType;
+    const multi = appointmentTypes.find(
+      (e) => e.id === appointmentTypeId
+    ).multi;
     setAppointmentId(arg.event.id);
-    setOpened(true);
+    if (multi === 1) {
+      setOpened(true);
+    } else {
+      setOpenedDetails(true);
+    }
   }
   function handleDateClick(arg) {
     // when users clicks somewhere on the calendar (outside an event)
@@ -130,12 +141,31 @@ export default function MyFullCalendar() {
         title={"Consultation"}
         closeOnClickOutside={false}
       >
-        <NewAppointment
-          setOpened={setOpened}
-          startingTime={startingTime}
-          patientId={0}
-          appointmentId={appointmentId}
-        />
+        {opened && (
+          <NewAppointment
+            setOpened={setOpened}
+            startingTime={startingTime}
+            patientId={0}
+            appointmentId={appointmentId}
+          />
+        )}
+      </Modal>
+      <Modal
+        centered
+        overlayOpacity={0.3}
+        opened={openedDetails}
+        onClose={() => setOpenedDetails(false)}
+        title={"Consultation"}
+        closeOnClickOutside={false}
+        size="50%"
+      >
+        {openedDetails && (
+          <AppointmentDetails
+            setOpened={setOpenedDetails}
+            patientId={0}
+            appointmentId={appointmentId}
+          />
+        )}
       </Modal>
       <h2>Agenda</h2>
       <div className="main-content">

@@ -166,7 +166,9 @@ export default function AppointmentDetails({
       if (res.success) {
         setOpened(false);
         setDeleteLoader("");
-        setUpdate((prev) => prev + 1);
+        if (setUpdate !== undefined) {
+          setUpdate((prev) => prev + 1);
+        }
         showNotification({
           title: "Consultation supprimée",
           message: "Le rendez-vous a bien été supprimé.",
@@ -323,7 +325,9 @@ export default function AppointmentDetails({
           const res2 = await fetchResponse.json();
           if (res2.success) {
             setOpened(false);
-            setUpdate((prev) => prev + 1);
+            if (setUpdate !== undefined) {
+              setUpdate((prev) => prev + 1);
+            }
             showNotification({
               title: "Consultation Modifiée",
               message:
