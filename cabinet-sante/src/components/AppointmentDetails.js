@@ -24,7 +24,7 @@ import {
   dateOnly,
   timeOnly,
 } from "./Functions";
-import { Calendar, Check, Trash, Pencil } from "tabler-icons-react";
+import { Calendar, Check, Trash, Pencil, X } from "tabler-icons-react";
 import { useForm } from "@mantine/form";
 import { useEffect } from "react";
 import { useConfig } from "./contexts/ConfigContext";
@@ -120,6 +120,33 @@ export default function AppointmentDetails({
     }
   }, [appointmentId, id, token, form, appointmentTypes]);
 
+  function checkValues(values) {
+    if (values.appointmentType === "") {
+      return {
+        check: false,
+        message: "Merci de sélectionner le type de consultation.",
+      };
+    }
+
+    if (values.date === null || values.start === "" || values.end === "") {
+      return {
+        check: false,
+        message:
+          "Merci de sélectionner une date, une heure de début et une heure de fin.",
+      };
+    }
+
+    if (timeOnly(values.timeRange[0]) >= timeOnly(values.timeRange[1])) {
+      return {
+        check: false,
+        message:
+          "Merci de sélectionner une heure de fin postérieure à la date de début de rendez-vous.",
+      };
+    }
+
+    return { check: true };
+  }
+
   async function deleteAppointment() {
     setDeleteLoader("loading");
     var link = process.env.REACT_APP_API_DOMAIN + "/DeleteEvent";
@@ -161,145 +188,165 @@ export default function AppointmentDetails({
   }
 
   async function createEvent(values) {
-    setLoading("loading");
-    var link = process.env.REACT_APP_API_DOMAIN + "/NewEvent";
-    const start = concatenateDateTime(values.date, values.timeRange[0]);
-    const end = concatenateDateTime(values.date, values.timeRange[1]);
-    const appointmentTypeId = appointmentTypes.find(
-      (e) => e.type === values.appointmentType
-    ).id;
-    try {
-      const fetchResponse = await fetch(link, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          important: values.important,
-          start: start,
-          end: end,
-          title: values.title,
-          comments: values.comments,
-          idType: appointmentTypeId,
-          token: token,
-        }),
-      });
-      const res = await fetchResponse.json();
-      if (res.success) {
-        var eventId = res.id;
-        // Now that the event has been created, we need to add all the participants
+    const check = checkValues(values);
+    if (check.check) {
+      setLoading("loading");
+      var link = process.env.REACT_APP_API_DOMAIN + "/NewEvent";
+      const start = concatenateDateTime(values.date, values.timeRange[0]);
+      const end = concatenateDateTime(values.date, values.timeRange[1]);
+      const appointmentTypeId = appointmentTypes.find(
+        (e) => e.type === values.appointmentType
+      ).id;
+      try {
+        const fetchResponse = await fetch(link, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            important: values.important,
+            start: start,
+            end: end,
+            title: values.title,
+            comments: values.comments,
+            idType: appointmentTypeId,
+            token: token,
+          }),
+        });
+        const res = await fetchResponse.json();
+        if (res.success) {
+          var eventId = res.id;
+          // Now that the event has been created, we need to add all the participants
 
-        const fetchResponse = await fetch(
-          process.env.REACT_APP_API_DOMAIN + "/NewParticipant",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              patientId: patient,
-              appointmentId: eventId,
-              token: token,
-              size: values.size,
-              weight: values.weight,
-              EVAbefore: EVAbefore,
-              EVAafter: EVAafter,
-              reasonDetails: values.reasonDetails,
-              patientType: values.patientType,
-            }),
+          const fetchResponse = await fetch(
+            process.env.REACT_APP_API_DOMAIN + "/NewParticipant",
+            {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                patientId: patient,
+                appointmentId: eventId,
+                token: token,
+                size: values.size,
+                weight: values.weight,
+                EVAbefore: EVAbefore,
+                EVAafter: EVAafter,
+                reasonDetails: values.reasonDetails,
+                patientType: values.patientType,
+              }),
+            }
+          );
+          const res2 = await fetchResponse.json();
+          if (res2.success) {
+            setOpened(false);
+            showNotification({
+              title: "Consultation planifiée",
+              message:
+                "Le rendez-vous du " +
+                displayDateInFrench(new Date(start)) +
+                "  avec " +
+                getFullnameFromId(patients, patient) +
+                " a bien été enregistré.",
+              icon: <Check />,
+              color: "green",
+            });
           }
-        );
-        const res2 = await fetchResponse.json();
-        if (res2.success) {
-          setOpened(false);
-          showNotification({
-            title: "Consultation planifiée",
-            message:
-              "Le rendez-vous du " +
-              displayDateInFrench(new Date(start)) +
-              "  avec " +
-              getFullnameFromId(patients, patient) +
-              " a bien été enregistré.",
-            icon: <Check />,
-            color: "green",
-          });
         }
+      } catch (e) {
+        return e;
       }
-    } catch (e) {
-      return e;
+    } else {
+      showNotification({
+        title: "Consultation non-planifiée",
+        message: check.message,
+        icon: <X />,
+        color: "red",
+      });
     }
   }
 
   async function updateEvent(values) {
-    setLoading("loading");
-    var link = process.env.REACT_APP_API_DOMAIN + "/UpdateEvent";
-    const start = concatenateDateTime(values.date, values.timeRange[0]);
-    const end = concatenateDateTime(values.date, values.timeRange[1]);
-    const appointmentTypeId = appointmentTypes.find(
-      (e) => e.type === values.appointmentType
-    ).id;
-    try {
-      const fetchResponse = await fetch(link, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          appointmentId: id,
-          important: values.important,
-          start: start,
-          end: end,
-          title: values.title,
-          comments: values.comments,
-          idType: appointmentTypeId,
-          token: token,
-        }),
-      });
-      const res = await fetchResponse.json();
-      if (res.success) {
-        const fetchResponse = await fetch(
-          process.env.REACT_APP_API_DOMAIN + "/UpdateParticipant",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              patientId: patient,
-              appointmentId: id,
-              token: token,
-              size: values.size,
-              weight: values.weight,
-              EVAbefore: EVAbefore,
-              EVAafter: EVAafter,
-              reasonDetails: values.reasonDetails,
-              patientType: values.patientType,
-            }),
+    const check = checkValues(values);
+    if (check.check) {
+      setLoading("loading");
+      var link = process.env.REACT_APP_API_DOMAIN + "/UpdateEvent";
+      const start = concatenateDateTime(values.date, values.timeRange[0]);
+      const end = concatenateDateTime(values.date, values.timeRange[1]);
+      const appointmentTypeId = appointmentTypes.find(
+        (e) => e.type === values.appointmentType
+      ).id;
+      try {
+        const fetchResponse = await fetch(link, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            appointmentId: id,
+            important: values.important,
+            start: start,
+            end: end,
+            title: values.title,
+            comments: values.comments,
+            idType: appointmentTypeId,
+            token: token,
+          }),
+        });
+        const res = await fetchResponse.json();
+        if (res.success) {
+          const fetchResponse = await fetch(
+            process.env.REACT_APP_API_DOMAIN + "/UpdateParticipant",
+            {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                patientId: patient,
+                appointmentId: id,
+                token: token,
+                size: values.size,
+                weight: values.weight,
+                EVAbefore: EVAbefore,
+                EVAafter: EVAafter,
+                reasonDetails: values.reasonDetails,
+                patientType: values.patientType,
+              }),
+            }
+          );
+          const res2 = await fetchResponse.json();
+          if (res2.success) {
+            setOpened(false);
+            setUpdate((prev) => prev + 1);
+            showNotification({
+              title: "Consultation Modifiée",
+              message:
+                "Le rendez-vous du " +
+                displayDateInFrench(new Date(start)) +
+                "  avec " +
+                getFullnameFromId(patients, patient) +
+                " a bien été modifié.",
+              icon: <Check />,
+              color: "green",
+            });
           }
-        );
-        const res2 = await fetchResponse.json();
-        if (res2.success) {
-          setOpened(false);
-          setUpdate((prev) => prev + 1);
-          showNotification({
-            title: "Consultation Modifiée",
-            message:
-              "Le rendez-vous du " +
-              displayDateInFrench(new Date(start)) +
-              "  avec " +
-              getFullnameFromId(patients, patient) +
-              " a bien été modifié.",
-            icon: <Check />,
-            color: "green",
-          });
         }
+      } catch (e) {
+        return e;
       }
-    } catch (e) {
-      return e;
+    } else {
+      showNotification({
+        title: "Consultation non-planifiée",
+        message: check.message,
+        icon: <X />,
+        color: "red",
+      });
     }
   }
 
