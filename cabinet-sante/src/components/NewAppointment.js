@@ -22,6 +22,8 @@ import {
   timeOnly,
   getFullnameFromId,
   getIdFromFullname,
+  capitalize,
+  splitname,
 } from "./Functions";
 import {
   Calendar,
@@ -48,6 +50,7 @@ export default function NewAppointment({
   const patientsList = patients.map((e) => {
     return e.fullname;
   });
+  const [data, setData] = useState(patientsList);
   const appointmentTypes = useConfig().appointmentTypes;
   const typesList = appointmentTypes.map((e) => {
     return e.type;
@@ -197,7 +200,17 @@ export default function NewAppointment({
         // Now that the event has been created, we need to add all the participants
         async function addPatients() {
           values.patients.forEach(async (element) => {
-            var patientId = getIdFromFullname(patients, element);
+            // first we check if this is a new patient, as in : is it already in the patients list:
+            var patientId = 0;
+            var index = patientsList.findIndex((e) => e === element);
+
+            if (index === -1) {
+              // it's a new patient
+              patientId = await newPatient(element);
+            } else {
+              // it's not, so we get the id of the existing one.
+              patientId = getIdFromFullname(patients, element);
+            }
             const fetchResponse = await fetch(
               process.env.REACT_APP_API_DOMAIN + "/NewParticipant",
               {
@@ -328,6 +341,34 @@ export default function NewAppointment({
     }
   }
 
+  async function newPatient(fullname) {
+    const name = splitname(fullname);
+
+    try {
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/NewPatientSimplified",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            firstname: capitalize(name.firstname),
+            lastname: capitalize(name.lastname),
+            token: token,
+          }),
+        }
+      );
+      const res = await fetchResponse.json();
+      if (res.success) {
+        return res.id;
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
   function checkValues(values) {
     if (values.appointmentType === "") {
       return {
@@ -449,12 +490,14 @@ export default function NewAppointment({
           dropdownPosition="top"
           name="patients"
           icon={<UserPlus size={16} />}
-          data={patientsList}
+          data={data}
           label="Patient(s)"
           placeholder="Ajouter"
           searchable
+          creatable
+          getCreateLabel={(query) => `Ajouter ${query}`}
+          onCreate={(query) => setData((current) => [...current, query])}
           limit={5}
-          nothingFound="Aucune option disponible"
           maxDropdownHeight={160}
           {...form.getInputProps("patients")}
         />

@@ -191,3 +191,11 @@ export function sortByDepartment(array, number) {
   );
   return citiesToTheTop.concat(citiesToTheBottom);
 }
+
+export function splitname(fullname) {
+  const [firstName, ...lastName] = fullname.split(" ").filter(Boolean);
+  return {
+    firstname: firstName,
+    lastname: lastName.join(" "),
+  };
+}
