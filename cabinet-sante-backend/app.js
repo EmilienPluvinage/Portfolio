@@ -637,13 +637,14 @@ app.post("/UpdateEvent", (req, res, next) => {
                 // so we do the update
                 // Now connected and we have the user ID so we do the update
                 connection.query(
-                  "UPDATE appointments SET important =?, start=?, end=?, title=?, comments=? WHERE id=?",
+                  "UPDATE appointments SET important =?, start=?, end=?, title=?, comments=?, idType=? WHERE id=?",
                   [
                     req.body.important,
                     req.body.start,
                     req.body.end,
                     req.body.title,
                     req.body.comments,
+                    req.body.idType,
                     req.body.appointmentId,
                   ],
                   (err, result) => {

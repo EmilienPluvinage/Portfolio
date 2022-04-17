@@ -27,6 +27,7 @@ import {
 import { Calendar, Check, Trash, Pencil } from "tabler-icons-react";
 import { useForm } from "@mantine/form";
 import { useEffect } from "react";
+import { useConfig } from "./contexts/ConfigContext";
 
 export default function AppointmentDetails({
   setOpened,
@@ -42,6 +43,11 @@ export default function AppointmentDetails({
   const [EVAafter, setEVAafter] = useState(0);
   const [id, setId] = useState(0);
   const [patient, setPatient] = useState(patientId);
+  const appointmentTypes = useConfig().appointmentTypes;
+  const appointmentTypesSolo = appointmentTypes.filter((e) => e.multi === 0);
+  const typesList = appointmentTypesSolo.map((e) => {
+    return e.type;
+  });
 
   const now = new Date(Date.now());
   const then = dayjs(now).add(60, "minutes").toDate();
@@ -58,6 +64,7 @@ export default function AppointmentDetails({
     EVAafter: 0,
     reasonDetails: "",
     patientType: "",
+    appointmentType: "",
   };
 
   const form = useForm({
@@ -101,6 +108,8 @@ export default function AppointmentDetails({
               weight: row.weight,
               reasonDetails: row.reasonDetails,
               patientType: row.patientType,
+              appointmentType: appointmentTypes.find((e) => e.id === row.idType)
+                .type,
             });
           }
         } catch (e) {
@@ -109,7 +118,7 @@ export default function AppointmentDetails({
       }
       getData();
     }
-  }, [appointmentId, id, token, form]);
+  }, [appointmentId, id, token, form, appointmentTypes]);
 
   async function deleteAppointment() {
     setDeleteLoader("loading");
@@ -156,6 +165,9 @@ export default function AppointmentDetails({
     var link = process.env.REACT_APP_API_DOMAIN + "/NewEvent";
     const start = concatenateDateTime(values.date, values.timeRange[0]);
     const end = concatenateDateTime(values.date, values.timeRange[1]);
+    const appointmentTypeId = appointmentTypes.find(
+      (e) => e.type === values.appointmentType
+    ).id;
     try {
       const fetchResponse = await fetch(link, {
         method: "POST",
@@ -169,6 +181,7 @@ export default function AppointmentDetails({
           end: end,
           title: values.title,
           comments: values.comments,
+          idType: appointmentTypeId,
           token: token,
         }),
       });
@@ -224,6 +237,9 @@ export default function AppointmentDetails({
     var link = process.env.REACT_APP_API_DOMAIN + "/UpdateEvent";
     const start = concatenateDateTime(values.date, values.timeRange[0]);
     const end = concatenateDateTime(values.date, values.timeRange[1]);
+    const appointmentTypeId = appointmentTypes.find(
+      (e) => e.type === values.appointmentType
+    ).id;
     try {
       const fetchResponse = await fetch(link, {
         method: "POST",
@@ -238,6 +254,7 @@ export default function AppointmentDetails({
           end: end,
           title: values.title,
           comments: values.comments,
+          idType: appointmentTypeId,
           token: token,
         }),
       });
@@ -295,6 +312,14 @@ export default function AppointmentDetails({
         <Text size="sm">
           Patient: {patient !== 0 && getFullnameFromId(patients, patient)}
         </Text>
+        <Select
+          style={{ width: "fit-content" }}
+          data={typesList}
+          name="appointmentType"
+          label="Consultation"
+          {...form.getInputProps("appointmentType")}
+          required
+        />
 
         <Grid grow>
           <Grid.Col span={4}>
@@ -304,6 +329,7 @@ export default function AppointmentDetails({
               {...form.getInputProps("title")}
             />
           </Grid.Col>
+
           <Grid.Col span={2}>
             <DatePicker
               label="Jour"
