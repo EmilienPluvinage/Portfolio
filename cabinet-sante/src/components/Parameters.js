@@ -9,6 +9,7 @@ import {
   Select,
   Grid,
   Center,
+  ColorPicker,
 } from "@mantine/core";
 import { Pencil, Check, Trash, Plus } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
@@ -23,6 +24,7 @@ export default function Parameters() {
   const [ATSelect, setATselect] = useState("");
   const [ATopened, setATOpened] = useState(false);
   const [appointmentTypeId, setAppointmentId] = useState(0);
+  const [color, setColor] = useState("");
 
   const ATlist =
     appointmentTypes?.length > 0 ? appointmentTypes.map((e) => e.type) : [];
@@ -46,6 +48,7 @@ export default function Parameters() {
           body: JSON.stringify({
             type: type,
             multi: multi,
+            color: color,
             token: token,
             id: appointmentTypeId,
           }),
@@ -73,6 +76,7 @@ export default function Parameters() {
     var index = appointmentTypes.findIndex((e) => e.type === ATSelect);
     setAppointmentTypeMulti(appointmentTypes[index].multi);
     setAppointmentId(appointmentTypes[index].id);
+    setColor(appointmentTypes[index].color);
     setATOpened(true);
   }
 
@@ -86,31 +90,47 @@ export default function Parameters() {
         overlayOpacity={0.3}
         centered
       >
-        <form onSubmit={submitAppointmentForm}>
-          <Grid grow align="Flex-end">
-            <Grid.Col span={1}>
-              <Button type="submit">Modifier</Button>
-            </Grid.Col>
-            <Grid.Col span={1}>
-              <Checkbox
-                checked={appointmentTypeMulti}
-                onChange={(event) =>
-                  setAppointmentTypeMulti(event.currentTarget.checked)
-                }
-                label="collectif"
-                style={{ marginBottom: "8px" }}
-              />
-            </Grid.Col>
-            <Grid.Col span={4}>
-              <TextInput
-                value={appointmentType}
-                onChange={(event) =>
-                  setAppointmentType(event.currentTarget.value)
-                }
-                label="Type"
-              />
-            </Grid.Col>
-          </Grid>
+        <form
+          onSubmit={submitAppointmentForm}
+          style={{
+            width: "max-content",
+            margin: "auto",
+          }}
+        >
+          {" "}
+          <Center>
+            {" "}
+            <TextInput
+              value={appointmentType}
+              style={{ margin: "10px" }}
+              onChange={(event) =>
+                setAppointmentType(event.currentTarget.value)
+              }
+              label="Type"
+            />
+          </Center>
+          <Center>
+            <Checkbox
+              checked={appointmentTypeMulti}
+              onChange={(event) =>
+                setAppointmentTypeMulti(event.currentTarget.checked)
+              }
+              label="collectif"
+              style={{ margin: "10px" }}
+            />
+          </Center>
+          <Center>
+            <ColorPicker
+              style={{ margin: "10px" }}
+              value={color}
+              onChange={setColor}
+            />
+          </Center>
+          <Center>
+            <Button style={{ margin: "10px" }} type="submit">
+              Modifier
+            </Button>
+          </Center>
         </form>
       </Modal>
       <div className="main-content">

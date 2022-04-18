@@ -631,8 +631,14 @@ app.post("/UpdateAppointmentType", (req, res, next) => {
           var userId = rows[0].userId;
           // so we do the update
           connection.query(
-            "UPDATE appointmentTypes SET type=?, multi=? WHERE id=? and userId=?",
-            [req.body.type, req.body.multi, req.body.id, userId],
+            "UPDATE appointmentTypes SET type=?, multi=?, color=? WHERE id=? and userId=?",
+            [
+              req.body.type,
+              req.body.multi,
+              req.body.color,
+              req.body.id,
+              userId,
+            ],
             (err, result) => {
               if (err) throw err;
               res.status(201).json({ success: true, error: "" });
