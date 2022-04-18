@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "../styles/styles.css";
-import { capitalize, getFullnameFromId, wasPatientModified } from "./Functions";
+import { capitalize, getFullnameFromId } from "./Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { useGovData } from "./contexts/GovDataContext";
@@ -34,7 +34,7 @@ import { DatePicker } from "@mantine/dates";
 import AppointmentDetails from "./AppointmentDetails";
 import History from "./History";
 
-export default function NewPatient({ setOpenedConfirm, modified }) {
+export default function NewPatient() {
   const navigate = useNavigate();
   var autoCompleteCities = useGovData().cities;
   var autoCompleteCountries = useGovData().countries;
@@ -180,12 +180,7 @@ export default function NewPatient({ setOpenedConfirm, modified }) {
   // for validation
   // pattern="0[0-9]{9}|\+[0-9]{11}"
   // pattern="0[0-9]{9}|\+[0-9]{11}"
-  function modify() {
-    modified.current = wasPatientModified(
-      form.values,
-      PatientList.find((e) => e.id === id)
-    );
-  }
+
   return (
     <>
       {id !== 0 && (
@@ -224,7 +219,6 @@ export default function NewPatient({ setOpenedConfirm, modified }) {
 
       <form
         onSubmit={form.onSubmit((values) => submitForm(values))}
-        onChange={() => modify()}
         autoComplete="new-password"
       >
         <div className="nav-patient">

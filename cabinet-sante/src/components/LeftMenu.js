@@ -14,25 +14,17 @@ import {
   Search,
   ReportMedical,
 } from "tabler-icons-react";
-import {
-  Center,
-  Select,
-  Modal,
-  Badge,
-  Text,
-  Grid,
-  Button,
-} from "@mantine/core";
+import { Center, Select, Modal, Badge } from "@mantine/core";
 import { useState } from "react";
 import NewAppointment from "./NewAppointment";
 
-function LeftMenu({ modified }) {
+function LeftMenu() {
   const navigate = useNavigate();
   const patients = usePatients();
   const patientsList = patients.map((e) => {
     return e.fullname;
   });
-  const [openedConfirm, setOpenedConfirm] = useState(false);
+
   const [opened, setOpened] = useState(false);
   const [search, setSearch] = useState("");
   const path = useLocation().pathname;
@@ -53,50 +45,9 @@ function LeftMenu({ modified }) {
     }
   }
 
-  function newPatient() {
-    if (modified.current) {
-      setOpenedConfirm(true);
-    } else {
-      navigate("/Nouveau-patient/");
-    }
-  }
   return (
     loggedIn && (
       <>
-        <Modal
-          centered
-          overlayOpacity={0.3}
-          withCloseButton={false}
-          opened={openedConfirm}
-          onClose={() => setOpenedConfirm(false)}
-          closeOnClickOutside={false}
-        >
-          <Text>
-            Les modifications que vous avez effectuées n'ont pas été
-            enregistrées. Êtes-vous sûr(e) de vouloir ajouter un nouveau patient
-            et annuler les modifications effectuées?
-            <Grid
-              justify="space-between"
-              style={{ marginTop: "10px", marginRight: "50px" }}
-            >
-              <Grid.Col span={2}>
-                <Button
-                  variant="default"
-                  onClick={() => setOpenedConfirm(false)}
-                >
-                  Retour
-                </Button>
-              </Grid.Col>
-              <Grid.Col span={2}>
-                <Link to="/Nouveau-Patient" className="text-link">
-                  <Button onClick={() => setOpenedConfirm(false)}>
-                    Continuer
-                  </Button>
-                </Link>
-              </Grid.Col>
-            </Grid>
-          </Text>
-        </Modal>
         <Modal
           centered
           overlayOpacity={0.3}
@@ -140,14 +91,12 @@ function LeftMenu({ modified }) {
                 Accueil
               </li>
             </Link>
-
-            <li
-              onClick={newPatient}
-              className={path === "/Nouveau-Patient" ? "clicked" : ""}
-            >
-              <UserPlus size={iconsSize} style={iconsStyle} />
-              Nouveau Patient
-            </li>
+            <Link to="/Nouveau-Patient" className="text-link">
+              <li className={path === "/Nouveau-Patient" ? "clicked" : ""}>
+                <UserPlus size={iconsSize} style={iconsStyle} />
+                Nouveau Patient
+              </li>
+            </Link>
 
             <li onClick={() => setOpened(true)}>
               <ReportMedical size={iconsSize} style={iconsStyle} />
