@@ -10,8 +10,10 @@ import { GovDataProvider } from "./components/contexts/GovDataContext";
 import { ConfigurationProvider } from "./components/contexts/ConfigContext";
 import { NotificationsProvider } from "@mantine/notifications";
 import { MantineProvider } from "@mantine/core";
+import { useRef } from "react";
 
 function App() {
+  const modified = useRef(false);
   const menu = [
     { link: "/", name: "Accueil" },
     { link: "/Nouveau-Patient", name: "Nouveau Patient" },
@@ -37,8 +39,8 @@ function App() {
                   <Header />
                   <div id="parent">
                     <Router>
-                      <LeftMenu />
-                      <Main menu={menu} />
+                      <LeftMenu modified={modified} />
+                      <Main menu={menu} modified={modified} />
                     </Router>
                     <Login />
                   </div>

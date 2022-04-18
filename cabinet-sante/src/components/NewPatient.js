@@ -4,16 +4,14 @@ import { capitalize, getFullnameFromId, wasPatientModified } from "./Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { useGovData } from "./contexts/GovDataContext";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
 import {
   Calendar,
   Upload,
   CurrencyEuro,
-  UserPlus,
   ReportMedical,
   Check,
-  ExclamationMark,
   ListSearch,
 } from "tabler-icons-react";
 import { useNavigate } from "react-router-dom";
@@ -30,21 +28,18 @@ import {
   CheckboxGroup,
   Checkbox,
   Select,
-  Text,
-  Grid,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { DatePicker } from "@mantine/dates";
 import AppointmentDetails from "./AppointmentDetails";
 import History from "./History";
 
-export default function NewPatient() {
+export default function NewPatient({ setOpenedConfirm, modified }) {
   const navigate = useNavigate();
   var autoCompleteCities = useGovData().cities;
   var autoCompleteCountries = useGovData().countries;
 
   const [opened, setOpened] = useState(false);
-  const [openedConfirm, setOpenedConfirm] = useState(false);
   const [openedHistory, setOpenedHistory] = useState(false);
   const [loading, setLoading] = useState("");
   const token = useLogin().token;
@@ -182,33 +177,15 @@ export default function NewPatient() {
     }
   }
 
-  function ClickOnNewPatient() {
-    if (id === 0) {
-      showNotification({
-        title: "Attention",
-        message:
-          "Vous êtes déjà en train d'ajouter un nouveau patient et il n'a pas été enregistré. Enregistrez-le avant d'en ajouter un autre.",
-        icon: <ExclamationMark />,
-        color: "yellow",
-      });
-    } else {
-      if (
-        wasPatientModified(
-          form.values,
-          PatientList.find((e) => e.id === id)
-        )
-      ) {
-        setOpenedConfirm(true);
-      } else {
-        navigate("/Nouveau-Patient");
-      }
-    }
-  }
-
   // for validation
   // pattern="0[0-9]{9}|\+[0-9]{11}"
   // pattern="0[0-9]{9}|\+[0-9]{11}"
-
+  function modify() {
+    modified.current = wasPatientModified(
+      form.values,
+      PatientList.find((e) => e.id === id)
+    );
+  }
   return (
     <>
       {id !== 0 && (
@@ -244,39 +221,10 @@ export default function NewPatient() {
           </Modal>
         </>
       )}
-      <Modal
-        centered
-        overlayOpacity={0.3}
-        withCloseButton={false}
-        opened={openedConfirm}
-        onClose={() => setOpenedConfirm(false)}
-        closeOnClickOutside={false}
-      >
-        <Text>
-          Les modifications que vous avez effectuées n'ont pas été enregistrées.
-          Êtes-vous sûr(e) de vouloir ajouter un nouveau patient et annuler les
-          modifications effectuées?
-          <Grid
-            justify="space-between"
-            style={{ marginTop: "10px", marginRight: "50px" }}
-          >
-            <Grid.Col span={2}>
-              <Button variant="default" onClick={() => setOpenedConfirm(false)}>
-                Retour
-              </Button>
-            </Grid.Col>
-            <Grid.Col span={2}>
-              <Link to="/Nouveau-Patient" className="text-link">
-                <Button onClick={() => setOpenedConfirm(false)}>
-                  Continuer
-                </Button>
-              </Link>
-            </Grid.Col>
-          </Grid>
-        </Text>
-      </Modal>
+
       <form
         onSubmit={form.onSubmit((values) => submitForm(values))}
+        onChange={() => modify()}
         autoComplete="new-password"
       >
         <div className="nav-patient">
@@ -312,14 +260,6 @@ export default function NewPatient() {
               </Button>{" "}
             </>
           )}
-
-          <Button
-            leftIcon={<UserPlus size={18} />}
-            onClick={ClickOnNewPatient}
-            style={{ margin: "10px" }}
-          >
-            Nouveau Patient
-          </Button>
         </div>
         <h2>État Civil du Patient</h2>
         <div className="main-content">

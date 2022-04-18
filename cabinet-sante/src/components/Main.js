@@ -6,14 +6,22 @@ import PatientList from "./PatientList";
 import MyFullCalendar from "./MyFullCalendar";
 import Parameters from "./Parameters";
 
-function Main({ menu }) {
+function Main({ menu, modified }) {
   const loggedIn = useLogin().login;
   return (
     loggedIn && (
       <div id="Main">
         <Routes>
-          <Route exact path="/Nouveau-Patient/:id" element={<NewPatient />} />
-          <Route exact path="/Nouveau-Patient" element={<NewPatient />} />
+          <Route
+            exact
+            path="/Nouveau-Patient/:id"
+            element={<NewPatient modified={modified} />}
+          />
+          <Route
+            exact
+            path="/Nouveau-Patient"
+            element={<NewPatient modified={modified} />}
+          />
           <Route exact path="/Listing-Patients" element={<PatientList />} />
           <Route exact path="/Agenda" element={<MyFullCalendar />} />
           <Route exact path="/Parametres" element={<Parameters />} />
