@@ -13,7 +13,7 @@ import {
   Settings,
   Search,
 } from "tabler-icons-react";
-import { Autocomplete, Center, Select } from "@mantine/core";
+import { Center, Select } from "@mantine/core";
 import { useState } from "react";
 
 function LeftMenu() {
@@ -46,8 +46,8 @@ function LeftMenu() {
       <div id="LeftMenu">
         <Center>
           <Select
+            limit={5}
             searchable
-            maxDropdownHeight={500}
             placeholder="Rechercher un patient"
             data={patientsList}
             icon={<Search size={18} />}
