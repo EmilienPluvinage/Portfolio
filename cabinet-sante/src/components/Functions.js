@@ -27,6 +27,36 @@ export function displayDate(today) {
   return date;
 }
 
+export function displayFullDate(today) {
+  var day = today.getDate();
+  var month = today.getMonth();
+  var year = today.getFullYear();
+
+  const mois = [
+    "Janvier",
+    "Février",
+    "Mars",
+    "Avril",
+    "Mai",
+    "Juin",
+    "Juillet",
+    "Août",
+    "Septembre",
+    "Octobre",
+    "Novembre",
+    "Décembre",
+  ];
+
+  var date =
+    (day.toString().length === 1 ? "0" + day : day) +
+    " " +
+    mois[month] +
+    " " +
+    year;
+
+  return date;
+}
+
 export function displayTime(today) {
   var date =
     today.getHours() +

@@ -2,31 +2,20 @@ import "../styles/styles.css";
 import { usePatients } from "./contexts/PatientsContext";
 import { useLogin } from "./contexts/AuthContext";
 import { Pagination, Table, Button, Center } from "@mantine/core";
-import { calculateAge } from "./Functions";
+import { calculateAge, displayFullDate } from "./Functions";
 import { useState } from "react";
 import { Pencil } from "tabler-icons-react";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 export default function PatientList() {
   const token = useLogin().token;
-  const [lastestEvents, setLatestEvents] = useState([]);
+  const [latestEvents, setLatestEvents] = useState([]);
   const patientsPerPage = 100;
   const patients = usePatients();
   const numberOfPages =
     patients.length > 0 ? Math.floor(patients.length / patientsPerPage) + 1 : 1;
   const [activePage, setPage] = useState(1);
-  const ths = (
-    <tr>
-      <th>Prénom</th>
-      <th>Nom</th>
-      <th>Âge</th>
-      <th>Ville</th>
-      <th>Téléphone</th>
-      <th>Dernière Consultation</th>
-      <th>Modification</th>
-    </tr>
-  );
-  console.log(lastestEvents);
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -52,6 +41,18 @@ export default function PatientList() {
     fetchData();
   }, [token]);
 
+  const ths = (
+    <tr>
+      <th>Prénom</th>
+      <th>Nom</th>
+      <th>Âge</th>
+      <th>Ville</th>
+      <th>Téléphone</th>
+      <th>Dernière Consultation</th>
+      <th>Modification</th>
+    </tr>
+  );
+
   const rows = patients.map((element) => (
     <tr key={element.id}>
       <td>{element.firstname}</td>
@@ -61,7 +62,11 @@ export default function PatientList() {
       </td>
       <td>{element.city}</td>
       <td>{element.mobilephone}</td>
-      <td> </td>
+      <td>
+        {displayFullDate(
+          new Date(latestEvents.find((e) => e.patientId === element.id)?.latest)
+        )}
+      </td>
       <td>
         <Link to={"/Nouveau-Patient/" + element.id}>
           <Button leftIcon={<Pencil size={18} />} compact variant="outline">
