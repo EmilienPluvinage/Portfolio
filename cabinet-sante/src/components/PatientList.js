@@ -48,7 +48,10 @@ export default function PatientList() {
       <th>Âge</th>
       <th>Ville</th>
       <th>Téléphone</th>
-      <th>Dernière Consultation</th>
+      <th>
+        Dernière <br />
+        Consultation
+      </th>
       <th>Modification</th>
     </tr>
   );

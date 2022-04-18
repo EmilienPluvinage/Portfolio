@@ -41,7 +41,6 @@ function LeftMenu() {
     var index = patients.findIndex((e) => e.fullname === value);
     if (index !== -1) {
       navigate("/Nouveau-patient/" + patients[index].id);
-      setSearch("");
     }
   }
   return (
@@ -70,6 +69,7 @@ function LeftMenu() {
             <Select
               limit={5}
               searchable
+              clearable
               placeholder="Rechercher un patient"
               data={patientsList}
               icon={<Search size={18} />}
@@ -103,7 +103,11 @@ function LeftMenu() {
               <li className={path === "/Listing-Patients" ? "clicked" : ""}>
                 <List size={iconsSize} style={iconsStyle} />
                 Liste des patients{" "}
-                <Badge variant="filled" size="xs">
+                <Badge
+                  variant="filled"
+                  size="xs"
+                  style={{ position: "relative", bottom: "2px" }}
+                >
                   {patients.length}
                 </Badge>
               </li>
