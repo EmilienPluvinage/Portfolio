@@ -12,7 +12,7 @@ export function useUpdateConfig() {
 }
 
 export function ConfigurationProvider({ children }) {
-  const [appointmentTypes, setAppointmentTyeps] = useState([]);
+  const [appointmentTypes, setAppointmentTypes] = useState([]);
 
   async function initData(token) {
     updateAppointmentTypesList(token);
@@ -35,7 +35,7 @@ export function ConfigurationProvider({ children }) {
       );
       const res = await fetchResponse.json();
       if (res.success) {
-        setAppointmentTyeps(res.data.appointmentTypes);
+        setAppointmentTypes(res.data.appointmentTypes);
       }
     } catch (e) {
       return e;

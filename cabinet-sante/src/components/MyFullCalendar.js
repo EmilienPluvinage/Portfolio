@@ -31,19 +31,31 @@ export default function MyFullCalendar() {
   const [appointmentId, setAppointmentId] = useState(0);
   const appointmentTypes = useConfig().appointmentTypes;
 
+  console.log(events);
+
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const data = await getAllEvents(token);
-        if (data.success) {
-          setEvents(data.data);
+    if (appointmentTypes?.length > 0) {
+      async function fetchData() {
+        try {
+          const data = await getAllEvents(token);
+          if (data.success) {
+            var events = data.data;
+            events.forEach((element) => {
+              var color = appointmentTypes.find(
+                (e) => e.id === element.idType
+              ).color;
+              element.backgroundColor = color;
+            });
+            setEvents(events);
+            console.log(events);
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
       }
+      fetchData();
     }
-    fetchData();
-  }, [token, calendarUpdate, opened, openedDetails]);
+  }, [token, calendarUpdate, opened, openedDetails, appointmentTypes]);
 
   async function updateEventTime(id, startingTime, endingTime, src) {
     var link = process.env.REACT_APP_API_DOMAIN + "/UpdateEventTime";

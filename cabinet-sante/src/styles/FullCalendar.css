@@ -31,5 +31,5 @@
 }
 
 .fc-timegrid-event:hover {
-  background-color: #1098ad !important;
+  filter: opacity(0.8) !important;
 }
