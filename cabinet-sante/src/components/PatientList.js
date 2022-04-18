@@ -11,7 +11,6 @@ export default function PatientList() {
   const numberOfPages =
     patients.length > 0 ? Math.floor(patients.length / patientsPerPage) + 1 : 1;
   const [activePage, setPage] = useState(1);
-  console.log(patients);
   const ths = (
     <tr>
       <th>Prénom</th>

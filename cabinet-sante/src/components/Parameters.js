@@ -17,7 +17,6 @@ import { useConfig, useUpdateConfig } from "./contexts/ConfigContext";
 export default function Parameters() {
   const token = useLogin().token;
   const appointmentTypes = useConfig().appointmentTypes;
-  console.log(appointmentTypes);
   const updateConfigData = useUpdateConfig();
   const [appointmentType, setAppointmentType] = useState("");
   const [appointmentTypeMulti, setAppointmentTypeMulti] = useState(0);
