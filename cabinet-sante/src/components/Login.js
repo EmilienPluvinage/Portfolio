@@ -40,6 +40,7 @@ function Login() {
   }, [currentToken, loggedIn, logging]);
 
   async function handleSubmit(values) {
+    setLoading(true);
     try {
       const data = await postLogin(
         values.email.toLowerCase(),
@@ -52,7 +53,7 @@ function Login() {
           color: "green",
           icon: <Check />,
         });
-        setLoading(true);
+
         await logging(true, data.token);
         localStorage.setItem("token", data.token);
         setErrorMessage("");
