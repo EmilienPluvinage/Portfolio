@@ -124,6 +124,7 @@ export default function Parameters() {
               style={{ margin: "10px" }}
               value={color}
               onChange={setColor}
+              format="rgba"
             />
           </Center>
           <Center>
