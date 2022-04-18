@@ -1,11 +1,15 @@
 import "../styles/styles.css";
 import { usePatients } from "./contexts/PatientsContext";
+import { useLogin } from "./contexts/AuthContext";
 import { Pagination, Table, Button, Center } from "@mantine/core";
 import { calculateAge } from "./Functions";
 import { useState } from "react";
 import { Pencil } from "tabler-icons-react";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 export default function PatientList() {
+  const token = useLogin().token;
+  const [lastestEvents, setLatestEvents] = useState([]);
   const patientsPerPage = 100;
   const patients = usePatients();
   const numberOfPages =
@@ -22,6 +26,31 @@ export default function PatientList() {
       <th>Modification</th>
     </tr>
   );
+  console.log(lastestEvents);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const fetchResponse = await fetch(
+          process.env.REACT_APP_API_DOMAIN + "/GetLatestEvents",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token: token,
+            }),
+          }
+        );
+        const res = await fetchResponse.json();
+        setLatestEvents(res.data);
+      } catch (e) {
+        return e;
+      }
+    }
+    fetchData();
+  }, [token]);
 
   const rows = patients.map((element) => (
     <tr key={element.id}>
