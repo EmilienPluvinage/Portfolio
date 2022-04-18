@@ -14,7 +14,7 @@ import {
   Search,
   ReportMedical,
 } from "tabler-icons-react";
-import { Center, Select, Modal } from "@mantine/core";
+import { Center, Select, Modal, Badge } from "@mantine/core";
 import { useState } from "react";
 import NewAppointment from "./NewAppointment";
 
@@ -102,7 +102,10 @@ function LeftMenu() {
             <Link to="/Listing-Patients" className="text-link">
               <li className={path === "/Listing-Patients" ? "clicked" : ""}>
                 <List size={iconsSize} style={iconsStyle} />
-                Liste des patients
+                Liste des patients{" "}
+                <Badge variant="filled" size="xs">
+                  {patients.length}
+                </Badge>
               </li>
             </Link>
             <Link to="/Agenda" className="text-link">
