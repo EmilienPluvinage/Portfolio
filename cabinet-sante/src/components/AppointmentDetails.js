@@ -44,6 +44,8 @@ export default function AppointmentDetails({
   const [id, setId] = useState(0);
   const [patient, setPatient] = useState(patientId);
   const appointmentTypes = useConfig().appointmentTypes;
+  const patientTypes = useConfig().patientTypes;
+  const patientTypesList = patientTypes.map((e) => e.type);
   const appointmentTypesSolo = appointmentTypes.filter((e) => e.multi === 0);
   const typesList = appointmentTypesSolo.map((e) => {
     return e.type;
@@ -94,8 +96,15 @@ export default function AppointmentDetails({
 
           if (res.success) {
             const row = res.data[0];
-            setId(appointmentId);
             setPatient(row.patientId);
+            var appointmentType = appointmentTypes.find(
+              (e) => e.id === row.idType
+            ).type;
+            var patientType = patientTypes.find(
+              (e) => e.id.toString() === row.patientType.toString()
+            )?.type;
+            setId(appointmentId);
+
             setEVAbefore(row.EVAbefore);
             setEVAafter(row.EVAafter);
             form.setValues({
@@ -107,9 +116,8 @@ export default function AppointmentDetails({
               size: row.size,
               weight: row.weight,
               reasonDetails: row.reasonDetails,
-              patientType: row.patientType,
-              appointmentType: appointmentTypes.find((e) => e.id === row.idType)
-                .type,
+              patientType: patientType,
+              appointmentType: appointmentType,
             });
           }
         } catch (e) {
@@ -118,7 +126,7 @@ export default function AppointmentDetails({
       }
       getData();
     }
-  }, [appointmentId, id, token, form, appointmentTypes]);
+  }, [appointmentId, id, token, form, appointmentTypes, patientTypes]);
 
   function checkValues(values) {
     if (values.appointmentType === "") {
@@ -196,6 +204,7 @@ export default function AppointmentDetails({
       var link = process.env.REACT_APP_API_DOMAIN + "/NewEvent";
       const start = concatenateDateTime(values.date, values.timeRange[0]);
       const end = concatenateDateTime(values.date, values.timeRange[1]);
+
       const appointmentTypeId = appointmentTypes.find(
         (e) => e.type === values.appointmentType
       ).id;
@@ -238,7 +247,9 @@ export default function AppointmentDetails({
                 EVAbefore: EVAbefore,
                 EVAafter: EVAafter,
                 reasonDetails: values.reasonDetails,
-                patientType: values.patientType,
+                patientType: patientTypes.find(
+                  (e) => e.type === values.patientType
+                )?.id,
               }),
             }
           );
@@ -318,7 +329,9 @@ export default function AppointmentDetails({
                 EVAbefore: EVAbefore,
                 EVAafter: EVAafter,
                 reasonDetails: values.reasonDetails,
-                patientType: values.patientType,
+                patientType: patientTypes.find(
+                  (e) => e.type === values.patientType
+                )?.id,
               }),
             }
           );
@@ -406,7 +419,7 @@ export default function AppointmentDetails({
         <Grid grow>
           <Grid.Col span={2}>
             <Select
-              data={["Adulte", "Femme enceinte", "Enfant", "Nourrisson"]}
+              data={patientTypesList}
               name="patientType"
               label="Profil du patient"
               {...form.getInputProps("patientType")}

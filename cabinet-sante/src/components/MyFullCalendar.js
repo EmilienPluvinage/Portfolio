@@ -31,8 +31,6 @@ export default function MyFullCalendar() {
   const [appointmentId, setAppointmentId] = useState(0);
   const appointmentTypes = useConfig().appointmentTypes;
 
-  console.log(events);
-
   useEffect(() => {
     if (appointmentTypes?.length > 0) {
       async function fetchData() {
@@ -47,7 +45,6 @@ export default function MyFullCalendar() {
               element.backgroundColor = color;
             });
             setEvents(events);
-            console.log(events);
           }
         } catch (error) {
           console.error(error);
