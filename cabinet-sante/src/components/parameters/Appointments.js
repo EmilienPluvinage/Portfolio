@@ -30,11 +30,15 @@ export default function Parameters({ appointmentTypes }) {
 
   function submitAppointmentForm(event) {
     event.preventDefault();
-    updateAppointmentType(appointmentType, appointmentTypeMulti);
+    if (appointmentTypeId === 0) {
+      addNewType(appointmentType, appointmentTypeMulti, color);
+    } else {
+      updateAppointmentType(appointmentType, appointmentTypeMulti, color);
+    }
     setATOpened(false);
   }
 
-  async function updateAppointmentType(type, multi) {
+  async function updateAppointmentType(type, multi, color) {
     try {
       const fetchResponse = await fetch(
         process.env.REACT_APP_API_DOMAIN + "/UpdateAppointmentType",
@@ -69,6 +73,40 @@ export default function Parameters({ appointmentTypes }) {
     }
   }
 
+  async function addNewType(type, multi, color) {
+    try {
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/AddAppointmentType",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            type: type,
+            multi: multi,
+            color: color,
+            token: token,
+          }),
+        }
+      );
+      const res = await fetchResponse.json();
+      if (res.success) {
+        showNotification({
+          title: type,
+          message: "Le type de consultation a été ajouté.",
+          color: "green",
+          icon: <Check />,
+        });
+        updateConfigData(token);
+        setATselect(appointmentType);
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
   function handleATForm(event) {
     event.preventDefault();
     setAppointmentType(ATSelect);
@@ -79,13 +117,59 @@ export default function Parameters({ appointmentTypes }) {
     setATOpened(true);
   }
 
+  function addAppointmentType() {
+    setAppointmentType("");
+    setAppointmentTypeMulti(false);
+    setAppointmentId(0);
+    setColor("#ffffff");
+    setATOpened(true);
+  }
+
+  async function deleteAppointmentType() {
+    var index = appointmentTypes.findIndex((e) => e.type === ATSelect);
+    var title = ATSelect;
+    var appointmentTypeId = appointmentTypes[index].id;
+    try {
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/DeleteAppointmentType",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: appointmentTypeId,
+            token: token,
+          }),
+        }
+      );
+      const res = await fetchResponse.json();
+      if (res.success) {
+        showNotification({
+          title: title,
+          message: "Le type de consultation a été supprimé.",
+          color: "green",
+          icon: <Check />,
+        });
+        updateConfigData(token);
+        setATselect(appointmentTypes[0].type);
+      }
+    } catch (e) {
+      return e;
+    }
+  }
   return (
     <>
       {" "}
       <Modal
         opened={ATopened}
         onClose={() => setATOpened(false)}
-        title="Changer le type de consultation"
+        title={
+          appointmentTypeId === 0
+            ? "Ajouter un type de consultation"
+            : "Changer le type de consultation"
+        }
         overlayOpacity={0.3}
         centered
       >
@@ -128,7 +212,7 @@ export default function Parameters({ appointmentTypes }) {
           </Center>
           <Center>
             <Button style={{ margin: "10px" }} type="submit">
-              Modifier
+              {appointmentTypeId === 0 ? "Ajouter" : "Modifier"}
             </Button>
           </Center>
         </form>
@@ -144,12 +228,21 @@ export default function Parameters({ appointmentTypes }) {
           <Center>
             <Grid grow style={{ marginTop: "5px" }}>
               <Grid.Col span={2}>
-                <Button size={"xs"} variant="outline">
+                <Button
+                  size={"xs"}
+                  variant="outline"
+                  onClick={addAppointmentType}
+                >
                   <Plus size={18} />
                 </Button>
               </Grid.Col>
               <Grid.Col span={2}>
-                <Button size={"xs"} variant="outline" color="red">
+                <Button
+                  size={"xs"}
+                  variant="outline"
+                  color="red"
+                  onClick={deleteAppointmentType}
+                >
                   <Trash size={18} />
                 </Button>
               </Grid.Col>
