@@ -213,7 +213,48 @@ app.post("/AddAppointmentType", (req, res, next) => {
             (err, result) => {
               if (err) throw err;
               connection.query(
-                "SELECT id FROM appointments WHERE userId= ? ORDER BY id DESC LIMIT 0,1",
+                "SELECT id FROM appointmentTypes WHERE userId= ? ORDER BY id DESC LIMIT 0,1",
+                userId,
+                (err, rows) => {
+                  if (err) throw err;
+                  res
+                    .status(201)
+                    .json({ success: true, error: "", id: rows[0].id });
+                }
+              );
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
+// ADD A NEW PATIENT TYPE PARAMETER
+
+app.post("/AddPatientType", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          var userId = rows[0].userId;
+          // belongs to that user
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "INSERT INTO patientTypes(type, userId) VALUES (?,?)",
+            [req.body.type, userId],
+            (err, result) => {
+              if (err) throw err;
+              connection.query(
+                "SELECT id FROM patientTypes WHERE userId= ? ORDER BY id DESC LIMIT 0,1",
                 userId,
                 (err, rows) => {
                   if (err) throw err;
@@ -485,9 +526,24 @@ app.post("/GetConfigData", (req, res, next) => {
             userId,
             (err, rows) => {
               if (err) throw err;
-              res
-                .status(201)
-                .json({ success: true, data: { appointmentTypes: rows } });
+
+              var appointmentsTypes = rows;
+              connection.query(
+                "SELECT * FROM patientTypes WHERE userId=?",
+                userId,
+                (err, rows) => {
+                  if (err) throw err;
+
+                  var patientTypes = rows;
+                  res.status(201).json({
+                    success: true,
+                    data: {
+                      appointmentTypes: appointmentsTypes,
+                      patientTypes: patientTypes,
+                    },
+                  });
+                }
+              );
             }
           );
           // we also update the time of the token
@@ -680,6 +736,36 @@ app.post("/UpdateAppointmentType", (req, res, next) => {
               req.body.id,
               userId,
             ],
+            (err, result) => {
+              if (err) throw err;
+              res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
+app.post("/UpdatePatientType", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT * FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          // Now connected and we have the user ID
+          var userId = rows[0].userId;
+          // so we do the update
+          connection.query(
+            "UPDATE patientTypes SET type=? WHERE id=? and userId=?",
+            [req.body.type, req.body.id, userId],
             (err, result) => {
               if (err) throw err;
               res.status(201).json({ success: true, error: "" });
@@ -970,7 +1056,7 @@ app.post("/DeleteAllParticipants", (req, res, next) => {
   });
 });
 
-// ADD A NEW APPOINTMENT TYPE PARAMETER
+// DELETE APPOINTMENT TYPE PARAMETER
 
 app.post("/DeleteAppointmentType", (req, res, next) => {
   pool.getConnection((err, connection) => {
@@ -988,6 +1074,37 @@ app.post("/DeleteAppointmentType", (req, res, next) => {
           // Now connected and we have the user ID so we do the insert
           connection.query(
             "DELETE FROM appointmentTypes WHERE userId=? AND id=?",
+            [userId, req.body.id],
+            (err, result) => {
+              res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
+// DELETE PATIENT TYPE PARAMETER
+
+app.post("/DeletePatientType", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          var userId = rows[0].userId;
+          // belongs to that user
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "DELETE FROM patientTypes WHERE userId=? AND id=?",
             [userId, req.body.id],
             (err, result) => {
               res.status(201).json({ success: true, error: "" });
