@@ -1,5 +1,5 @@
-import "../styles/styles.css";
-import { useLogin } from "./contexts/AuthContext";
+import "../../styles/styles.css";
+import { useLogin } from "../contexts/AuthContext";
 import { useState } from "react";
 import {
   TextInput,
@@ -13,11 +13,10 @@ import {
 } from "@mantine/core";
 import { Pencil, Check, Trash, Plus } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
-import { useConfig, useUpdateConfig } from "./contexts/ConfigContext";
+import { useUpdateConfig } from "../contexts/ConfigContext";
 
-export default function Parameters() {
+export default function Parameters({ appointmentTypes }) {
   const token = useLogin().token;
-  const appointmentTypes = useConfig().appointmentTypes;
   const updateConfigData = useUpdateConfig();
   const [appointmentType, setAppointmentType] = useState("");
   const [appointmentTypeMulti, setAppointmentTypeMulti] = useState(0);
@@ -81,8 +80,8 @@ export default function Parameters() {
   }
 
   return (
-    <div>
-      <h2>Paramètres</h2>
+    <>
+      {" "}
       <Modal
         opened={ATopened}
         onClose={() => setATOpened(false)}
@@ -134,37 +133,35 @@ export default function Parameters() {
           </Center>
         </form>
       </Modal>
-      <div className="main-content">
-        <div style={{ width: "fit-content" }}>
-          <form onSubmit={handleATForm}>
-            <Select
-              data={ATlist}
-              value={ATSelect}
-              onChange={setATselect}
-              label="Types de consultations"
-            ></Select>
-            <Center>
-              <Grid grow style={{ marginTop: "5px" }}>
-                <Grid.Col span={2}>
-                  <Button size={"xs"} variant="outline">
-                    <Plus size={18} />
-                  </Button>
-                </Grid.Col>
-                <Grid.Col span={2}>
-                  <Button size={"xs"} variant="outline" color="red">
-                    <Trash size={18} />
-                  </Button>
-                </Grid.Col>
-                <Grid.Col span={2}>
-                  <Button variant="outline" size={"xs"} type="submit">
-                    <Pencil size={18} />
-                  </Button>
-                </Grid.Col>
-              </Grid>
-            </Center>
-          </form>
-        </div>
+      <div style={{ width: "fit-content" }}>
+        <form onSubmit={handleATForm}>
+          <Select
+            data={ATlist}
+            value={ATSelect}
+            onChange={setATselect}
+            label="Types de consultations"
+          ></Select>
+          <Center>
+            <Grid grow style={{ marginTop: "5px" }}>
+              <Grid.Col span={2}>
+                <Button size={"xs"} variant="outline">
+                  <Plus size={18} />
+                </Button>
+              </Grid.Col>
+              <Grid.Col span={2}>
+                <Button size={"xs"} variant="outline" color="red">
+                  <Trash size={18} />
+                </Button>
+              </Grid.Col>
+              <Grid.Col span={2}>
+                <Button variant="outline" size={"xs"} type="submit">
+                  <Pencil size={18} />
+                </Button>
+              </Grid.Col>
+            </Grid>
+          </Center>
+        </form>
       </div>
-    </div>
+    </>
   );
 }

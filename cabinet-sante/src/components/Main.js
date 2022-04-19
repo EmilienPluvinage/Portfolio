@@ -4,7 +4,7 @@ import { useLogin } from "./contexts/AuthContext";
 import NewPatient from "./NewPatient";
 import PatientList from "./PatientList";
 import MyFullCalendar from "./MyFullCalendar";
-import Parameters from "./Parameters";
+import Parameters from "./parameters/Parameters";
 
 function Main({ menu }) {
   const loggedIn = useLogin().login;
