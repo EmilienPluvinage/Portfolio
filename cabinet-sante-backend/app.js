@@ -312,6 +312,54 @@ app.post("/AddPackage", (req, res, next) => {
   });
 });
 
+app.post("/AddPriceSchemeRule", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          var userId = rows[0].userId;
+          // belongs to that user
+          // Now connected and we have the user ID so we do the insert
+          console.log(req.body.packageId);
+          connection.query(
+            "INSERT INTO priceScheme(userId,packageId, appointmentTypeId, patientTypeId, price) VALUES (?,?,?,?,?)",
+            [
+              userId,
+              req.body.packageId !== undefined ? req.body.packageId : 0,
+              req.body.appointmentTypeId !== undefined
+                ? req.body.appointmentTypeId
+                : 0,
+              req.body.patientTypeId !== undefined ? req.body.patientTypeId : 0,
+              req.body.price,
+            ],
+            (err, result) => {
+              if (err) throw err;
+              connection.query(
+                "SELECT id FROM priceScheme WHERE userId= ? ORDER BY id DESC LIMIT 0,1",
+                userId,
+                (err, rows) => {
+                  if (err) throw err;
+                  res
+                    .status(201)
+                    .json({ success: true, error: "", id: rows[0].id });
+                }
+              );
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
 // ADD A NEW PARTICIPANT TO AN APPOINTMENT
 
 app.post("/NewParticipant", (req, res, next) => {
@@ -808,6 +856,43 @@ app.post("/UpdateAppointmentType", (req, res, next) => {
   });
 });
 
+app.post("/UpdatePriceSchemeRule", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT * FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          // Now connected and we have the user ID
+          var userId = rows[0].userId;
+          // so we do the update
+          connection.query(
+            "UPDATE priceScheme SET packageId=?, appointmentTypeId=?, patientTypeId=?, price=? WHERE id=? and userId=?",
+            [
+              req.body.packageId,
+              req.body.appointmentTypeId,
+              req.body.patientTypeId,
+              req.body.price,
+              req.body.id,
+              userId,
+            ],
+            (err, result) => {
+              if (err) throw err;
+              res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
 app.post("/UpdatePatientType", (req, res, next) => {
   pool.getConnection((err, connection) => {
     if (err) throw err;
@@ -1163,6 +1248,37 @@ app.post("/DeleteAppointmentType", (req, res, next) => {
           // Now connected and we have the user ID so we do the insert
           connection.query(
             "DELETE FROM appointmentTypes WHERE userId=? AND id=?",
+            [userId, req.body.id],
+            (err, result) => {
+              res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
+// DELETE PRICE SCHEME RULE
+
+app.post("/DeletePriceSchemeRule", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          var userId = rows[0].userId;
+          // belongs to that user
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "DELETE FROM priceScheme WHERE userId=? AND id=?",
             [userId, req.body.id],
             (err, result) => {
               res.status(201).json({ success: true, error: "" });
