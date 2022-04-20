@@ -14,6 +14,7 @@ export function useUpdateConfig() {
 export function ConfigurationProvider({ children }) {
   const [appointmentTypes, setAppointmentTypes] = useState([]);
   const [patientTypes, setPatientTypes] = useState([]);
+  const [packages, setPackages] = useState([]);
 
   async function initData(token) {
     updateAppointmentTypesList(token);
@@ -38,6 +39,7 @@ export function ConfigurationProvider({ children }) {
       if (res.success) {
         setAppointmentTypes(res.data.appointmentTypes);
         setPatientTypes(res.data.patientTypes);
+        setPackages(res.data.packages);
       }
     } catch (e) {
       return e;
@@ -46,7 +48,11 @@ export function ConfigurationProvider({ children }) {
 
   return (
     <ConfigContext.Provider
-      value={{ appointmentTypes: appointmentTypes, patientTypes: patientTypes }}
+      value={{
+        appointmentTypes: appointmentTypes,
+        patientTypes: patientTypes,
+        packages: packages,
+      }}
     >
       <UpdateConfigContext.Provider value={initData}>
         {children}

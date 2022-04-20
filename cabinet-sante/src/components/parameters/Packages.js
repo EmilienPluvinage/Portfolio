@@ -1,43 +1,52 @@
 import "../../styles/styles.css";
 import { useLogin } from "../contexts/AuthContext";
 import { useState } from "react";
-import { TextInput, Button, Modal, Select, Grid, Center } from "@mantine/core";
+import {
+  TextInput,
+  Button,
+  Modal,
+  Select,
+  Grid,
+  Center,
+  NumberInput,
+} from "@mantine/core";
 import { Pencil, Check, Trash, Plus } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
 import { useUpdateConfig } from "../contexts/ConfigContext";
 import { useEffect } from "react";
 
-export default function Parameters({ patientTypes }) {
+export default function Parameters({ packages }) {
   const token = useLogin().token;
   const updateConfigData = useUpdateConfig();
-  const [patientType, setPatientType] = useState("");
-  const [PTSelect, setPTselect] = useState("");
-  const [PTopened, setPTOpened] = useState(false);
-  const [patientTypeId, setPatientTypeId] = useState(0);
+  const [pack, setPackage] = useState("");
+  const [price, setPrice] = useState(0);
+  const [packageSelect, setPackageSelect] = useState("");
+  const [packageOpened, setPackageOpened] = useState(false);
+  const [packageId, setPackageId] = useState(0);
 
-  const PTlist =
-    patientTypes?.length > 0 ? patientTypes.map((e) => e.type) : [];
+  const Packageslist =
+    packages?.length > 0 ? packages.map((e) => e.package) : [];
 
   useEffect(() => {
-    if (patientTypes?.length > 0) {
-      setPTselect(patientTypes[0].type);
+    if (packages?.length > 0) {
+      setPackageSelect(packages[0].package);
     }
-  }, [patientTypes]);
+  }, [packages]);
 
   function submitAppointmentForm(event) {
     event.preventDefault();
-    if (patientTypeId === 0) {
-      addNewType(patientType);
+    if (packageId === 0) {
+      addNewPackage(pack, price);
     } else {
-      updateType(patientType);
+      updatePackage(pack, price);
     }
-    setPTOpened(false);
+    setPackageOpened(false);
   }
 
-  async function updateType(type) {
+  async function updatePackage(pack, price) {
     try {
       const fetchResponse = await fetch(
-        process.env.REACT_APP_API_DOMAIN + "/UpdatePatientType",
+        process.env.REACT_APP_API_DOMAIN + "/UpdatePackage",
         {
           method: "POST",
           headers: {
@@ -45,32 +54,33 @@ export default function Parameters({ patientTypes }) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            type: type,
+            package: pack,
+            price: Math.round(price * 100),
             token: token,
-            id: patientTypeId,
+            id: packageId,
           }),
         }
       );
       const res = await fetchResponse.json();
       if (res.success) {
         showNotification({
-          title: type,
-          message: "Le type de profil patient a été modifié.",
+          title: pack,
+          message: "Le type de forfait a été modifié.",
           color: "green",
           icon: <Check />,
         });
         updateConfigData(token);
-        setPTselect(type);
+        setPackageSelect(pack);
       }
     } catch (e) {
       return e;
     }
   }
 
-  async function addNewType(type) {
+  async function addNewPackage(pack, price) {
     try {
       const fetchResponse = await fetch(
-        process.env.REACT_APP_API_DOMAIN + "/AddPatientType",
+        process.env.REACT_APP_API_DOMAIN + "/AddPackage",
         {
           method: "POST",
           headers: {
@@ -78,7 +88,8 @@ export default function Parameters({ patientTypes }) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            type: type,
+            package: pack,
+            price: Math.round(price * 100),
             token: token,
           }),
         }
@@ -86,40 +97,42 @@ export default function Parameters({ patientTypes }) {
       const res = await fetchResponse.json();
       if (res.success) {
         showNotification({
-          title: type,
-          message: "Le type de consultation a été ajouté.",
+          title: pack,
+          message: "Le forfait a été ajouté.",
           color: "green",
           icon: <Check />,
         });
         updateConfigData(token);
-        setPTselect(type);
+        setPackage(pack);
       }
     } catch (e) {
       return e;
     }
   }
 
-  function handlePTForm(event) {
+  function handlePackageForm(event) {
     event.preventDefault();
-    setPatientType(PTSelect);
-    var index = patientTypes.findIndex((e) => e.type === PTSelect);
-    setPatientTypeId(patientTypes[index].id);
-    setPTOpened(true);
+    setPackage(packageSelect);
+    var index = packages.findIndex((e) => e.package === packageSelect);
+    setPackageId(packages[index].id);
+    setPrice(Math.round(packages[index].price) / 100);
+    setPackageOpened(true);
   }
 
-  function addPatientType() {
-    setPatientType("");
-    setPatientTypeId(0);
-    setPTOpened(true);
+  function addPackage() {
+    setPackage("");
+    setPrice(0);
+    setPackageId(0);
+    setPackageOpened(true);
   }
 
-  async function deletePatientType() {
-    var index = patientTypes.findIndex((e) => e.type === PTSelect);
-    var title = PTSelect;
-    var patientTypeId = patientTypes[index].id;
+  async function deletePackage() {
+    var index = packages.findIndex((e) => e.package === packageSelect);
+    var title = packageSelect;
+    var packageId = packages[index].id;
     try {
       const fetchResponse = await fetch(
-        process.env.REACT_APP_API_DOMAIN + "/DeletePatientType",
+        process.env.REACT_APP_API_DOMAIN + "/DeletePackage",
         {
           method: "POST",
           headers: {
@@ -127,7 +140,7 @@ export default function Parameters({ patientTypes }) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            id: patientTypeId,
+            id: packageId,
             token: token,
           }),
         }
@@ -136,12 +149,12 @@ export default function Parameters({ patientTypes }) {
       if (res.success) {
         showNotification({
           title: title,
-          message: "Le type de profil patient a été supprimé.",
+          message: "Le forfait été supprimé.",
           color: "green",
           icon: <Check />,
         });
         updateConfigData(token);
-        setPTselect(patientTypes[0].type);
+        setPackageSelect(packages[0].package);
       }
     } catch (e) {
       return e;
@@ -151,13 +164,9 @@ export default function Parameters({ patientTypes }) {
     <>
       {" "}
       <Modal
-        opened={PTopened}
-        onClose={() => setPTOpened(false)}
-        title={
-          patientTypeId === 0
-            ? "Ajouter un type de profil patient"
-            : "Changer le type de profil patient"
-        }
+        opened={packageOpened}
+        onClose={() => setPackageOpened(false)}
+        title={packageId === 0 ? "Ajouter un forfait" : "Changer le forfait"}
         overlayOpacity={0.3}
         centered
       >
@@ -172,31 +181,42 @@ export default function Parameters({ patientTypes }) {
           <Center>
             {" "}
             <TextInput
-              value={patientType}
+              value={pack}
               style={{ margin: "10px" }}
-              onChange={(event) => setPatientType(event.currentTarget.value)}
-              label="Type"
+              onChange={(event) => setPackage(event.currentTarget.value)}
+              label="Nom du forfait"
+              required
+            />
+            <NumberInput
+              label="Prix"
+              min={0}
+              precision={2}
+              step={0.01}
+              value={price}
+              onChange={(val) => setPrice(val)}
+              hideControls
+              required
             />
           </Center>
           <Center>
             <Button style={{ margin: "10px" }} type="submit">
-              {patientTypeId === 0 ? "Ajouter" : "Modifier"}
+              {packageId === 0 ? "Ajouter" : "Modifier"}
             </Button>
           </Center>
         </form>
       </Modal>
       <div style={{ width: "fit-content" }}>
-        <form onSubmit={handlePTForm}>
+        <form onSubmit={handlePackageForm}>
           <Select
-            data={PTlist}
-            value={PTSelect}
-            onChange={setPTselect}
-            label="Types de Profil Patient"
+            data={Packageslist}
+            value={packageSelect}
+            onChange={setPackageSelect}
+            label="Forfaits"
           ></Select>
           <Center>
             <Grid grow style={{ marginTop: "5px" }}>
               <Grid.Col span={2}>
-                <Button size={"xs"} variant="outline" onClick={addPatientType}>
+                <Button size={"xs"} variant="outline" onClick={addPackage}>
                   <Plus size={18} />
                 </Button>
               </Grid.Col>
@@ -205,7 +225,7 @@ export default function Parameters({ patientTypes }) {
                   size={"xs"}
                   variant="outline"
                   color="red"
-                  onClick={deletePatientType}
+                  onClick={deletePackage}
                 >
                   <Trash size={18} />
                 </Button>

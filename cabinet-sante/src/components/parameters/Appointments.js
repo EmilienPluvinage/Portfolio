@@ -14,6 +14,7 @@ import {
 import { Pencil, Check, Trash, Plus } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
 import { useUpdateConfig } from "../contexts/ConfigContext";
+import { useEffect } from "react";
 
 export default function Parameters({ appointmentTypes }) {
   const token = useLogin().token;
@@ -27,6 +28,12 @@ export default function Parameters({ appointmentTypes }) {
 
   const ATlist =
     appointmentTypes?.length > 0 ? appointmentTypes.map((e) => e.type) : [];
+
+  useEffect(() => {
+    if (appointmentTypes?.length > 0) {
+      setATselect(appointmentTypes[0].type);
+    }
+  }, [appointmentTypes]);
 
   function submitAppointmentForm(event) {
     event.preventDefault();

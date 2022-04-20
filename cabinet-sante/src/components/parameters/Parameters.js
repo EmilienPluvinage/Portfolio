@@ -3,6 +3,7 @@ import "../../styles/styles.css";
 import { useConfig } from "../contexts/ConfigContext";
 import Appointments from "./Appointments";
 import Patients from "./Patients";
+import Packages from "./Packages";
 
 export default function Parameters() {
   const config = useConfig();
@@ -19,6 +20,9 @@ export default function Parameters() {
             </Grid.Col>
             <Grid.Col span={3}>
               <Patients patientTypes={config.patientTypes} />
+            </Grid.Col>
+            <Grid.Col span={3}>
+              <Packages packages={config.packages} />
             </Grid.Col>
           </Grid>
         </div>

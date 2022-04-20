@@ -273,6 +273,45 @@ app.post("/AddPatientType", (req, res, next) => {
   });
 });
 
+app.post("/AddPackage", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          var userId = rows[0].userId;
+          // belongs to that user
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "INSERT INTO packages(package, price, userId) VALUES (?,?,?)",
+            [req.body.package, req.body.price, userId],
+            (err, result) => {
+              if (err) throw err;
+              connection.query(
+                "SELECT id FROM packages WHERE userId= ? ORDER BY id DESC LIMIT 0,1",
+                userId,
+                (err, rows) => {
+                  if (err) throw err;
+                  res
+                    .status(201)
+                    .json({ success: true, error: "", id: rows[0].id });
+                }
+              );
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
 // ADD A NEW PARTICIPANT TO AN APPOINTMENT
 
 app.post("/NewParticipant", (req, res, next) => {
@@ -535,13 +574,23 @@ app.post("/GetConfigData", (req, res, next) => {
                   if (err) throw err;
 
                   var patientTypes = rows;
-                  res.status(201).json({
-                    success: true,
-                    data: {
-                      appointmentTypes: appointmentsTypes,
-                      patientTypes: patientTypes,
-                    },
-                  });
+                  connection.query(
+                    "SELECT * FROM packages WHERE userId=?",
+                    userId,
+                    (err, rows) => {
+                      if (err) throw err;
+
+                      var packages = rows;
+                      res.status(201).json({
+                        success: true,
+                        data: {
+                          appointmentTypes: appointmentsTypes,
+                          patientTypes: patientTypes,
+                          packages: packages,
+                        },
+                      });
+                    }
+                  );
                 }
               );
             }
@@ -766,6 +815,36 @@ app.post("/UpdatePatientType", (req, res, next) => {
           connection.query(
             "UPDATE patientTypes SET type=? WHERE id=? and userId=?",
             [req.body.type, req.body.id, userId],
+            (err, result) => {
+              if (err) throw err;
+              res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
+app.post("/UpdatePackage", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT * FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          // Now connected and we have the user ID
+          var userId = rows[0].userId;
+          // so we do the update
+          connection.query(
+            "UPDATE packages SET package=?, price=? WHERE id=? and userId=?",
+            [req.body.package, req.body.price, req.body.id, userId],
             (err, result) => {
               if (err) throw err;
               res.status(201).json({ success: true, error: "" });
@@ -1105,6 +1184,35 @@ app.post("/DeletePatientType", (req, res, next) => {
           // Now connected and we have the user ID so we do the insert
           connection.query(
             "DELETE FROM patientTypes WHERE userId=? AND id=?",
+            [userId, req.body.id],
+            (err, result) => {
+              res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
+app.post("/DeletePackage", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          var userId = rows[0].userId;
+          // belongs to that user
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "DELETE FROM packages WHERE userId=? AND id=?",
             [userId, req.body.id],
             (err, result) => {
               res.status(201).json({ success: true, error: "" });
