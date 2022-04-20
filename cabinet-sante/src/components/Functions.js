@@ -226,6 +226,9 @@ export function setAutomaticPrice(
   var price = 0;
   var index = 0;
 
+  // appointmentTypeId can't be 0 since this is a required field
+  if (appointmentTypeId === 0) return 0;
+
   // test si tu trouves une règle qui remplit les 3 conditions
   index = priceScheme.findIndex(
     (e) =>

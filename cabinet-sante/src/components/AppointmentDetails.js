@@ -23,6 +23,7 @@ import {
   getFullnameFromId,
   dateOnly,
   timeOnly,
+  setAutomaticPrice,
 } from "./Functions";
 import { Calendar, Check, Trash, Pencil, X } from "tabler-icons-react";
 import { useForm } from "@mantine/form";
@@ -45,6 +46,7 @@ export default function AppointmentDetails({
   const [patient, setPatient] = useState(patientId);
   const appointmentTypes = useConfig().appointmentTypes;
   const patientTypes = useConfig().patientTypes;
+  const priceScheme = useConfig().priceScheme;
   const patientTypesList = patientTypes.map((e) => e.type);
   const appointmentTypesSolo = appointmentTypes.filter((e) => e.multi === 0);
   const typesList = appointmentTypesSolo.map((e) => {
@@ -371,6 +373,39 @@ export default function AppointmentDetails({
     }
   }
 
+  function handleChange(name, value) {
+    form.setFieldValue(name, value);
+    setPrice(name, value);
+  }
+
+  function setPrice(name, value) {
+    var appointmentType =
+      name === "appointmentType" ? value : form.values.appointmentType;
+    var patientType = name === "patientType" ? value : form.values.patientType;
+    var appointmentTypeId = appointmentTypes.find(
+      (e) => e.type === appointmentType
+    )?.id;
+    var patientTypeId = patientTypes.find((e) => e.type === patientType)?.id;
+    var packageId = patients.find((e) => e.id === patientId)?.packageId;
+
+    packageId = packageId === null || packageId === undefined ? 0 : packageId;
+    patientTypeId =
+      patientTypeId === null || patientTypeId === undefined ? 0 : patientTypeId;
+    appointmentTypeId =
+      appointmentTypeId === null || appointmentTypeId === undefined
+        ? 0
+        : appointmentTypeId;
+
+    form.setFieldValue(
+      "price",
+      setAutomaticPrice(
+        priceScheme,
+        patientTypeId,
+        appointmentTypeId,
+        packageId
+      ) / 100
+    );
+  }
   return (
     <>
       <form
@@ -387,7 +422,8 @@ export default function AppointmentDetails({
               data={typesList}
               name="appointmentType"
               label="Consultation"
-              {...form.getInputProps("appointmentType")}
+              value={form.values.appointmentType}
+              onChange={(value) => handleChange("appointmentType", value)}
               required
             />
           </Grid.Col>
@@ -440,7 +476,8 @@ export default function AppointmentDetails({
               data={patientTypesList}
               name="patientType"
               label="Profil du patient"
-              {...form.getInputProps("patientType")}
+              value={form.values.patientType}
+              onChange={(value) => handleChange("patientType", value)}
             />
           </Grid.Col>
           <Grid.Col span={2}>
