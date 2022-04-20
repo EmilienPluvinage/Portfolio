@@ -4,10 +4,10 @@ import { useConfig } from "../contexts/ConfigContext";
 import Appointments from "./Appointments";
 import Patients from "./Patients";
 import Packages from "./Packages";
+import PriceScheme from "./PriceScheme";
 
 export default function Parameters() {
   const config = useConfig();
-
   return (
     <div>
       <h2>Paramètres</h2>
@@ -25,6 +25,7 @@ export default function Parameters() {
               <Packages packages={config.packages} />
             </Grid.Col>
           </Grid>
+          <PriceScheme />
         </div>
       </div>
     </div>

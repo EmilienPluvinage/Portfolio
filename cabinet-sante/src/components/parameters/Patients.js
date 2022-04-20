@@ -7,7 +7,7 @@ import { showNotification } from "@mantine/notifications";
 import { useUpdateConfig } from "../contexts/ConfigContext";
 import { useEffect } from "react";
 
-export default function Parameters({ patientTypes }) {
+export default function Patients({ patientTypes }) {
   const token = useLogin().token;
   const updateConfigData = useUpdateConfig();
   const [patientType, setPatientType] = useState("");

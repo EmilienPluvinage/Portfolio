@@ -581,14 +581,24 @@ app.post("/GetConfigData", (req, res, next) => {
                       if (err) throw err;
 
                       var packages = rows;
-                      res.status(201).json({
-                        success: true,
-                        data: {
-                          appointmentTypes: appointmentsTypes,
-                          patientTypes: patientTypes,
-                          packages: packages,
-                        },
-                      });
+                      connection.query(
+                        "SELECT * FROM priceScheme WHERE userId=?",
+                        userId,
+                        (err, rows) => {
+                          if (err) throw err;
+
+                          var priceScheme = rows;
+                          res.status(201).json({
+                            success: true,
+                            data: {
+                              appointmentTypes: appointmentsTypes,
+                              patientTypes: patientTypes,
+                              packages: packages,
+                              priceScheme: priceScheme,
+                            },
+                          });
+                        }
+                      );
                     }
                   );
                 }

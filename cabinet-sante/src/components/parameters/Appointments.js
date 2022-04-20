@@ -16,7 +16,7 @@ import { showNotification } from "@mantine/notifications";
 import { useUpdateConfig } from "../contexts/ConfigContext";
 import { useEffect } from "react";
 
-export default function Parameters({ appointmentTypes }) {
+export default function Appointments({ appointmentTypes }) {
   const token = useLogin().token;
   const updateConfigData = useUpdateConfig();
   const [appointmentType, setAppointmentType] = useState("");

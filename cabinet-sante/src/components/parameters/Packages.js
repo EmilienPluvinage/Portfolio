@@ -15,7 +15,7 @@ import { showNotification } from "@mantine/notifications";
 import { useUpdateConfig } from "../contexts/ConfigContext";
 import { useEffect } from "react";
 
-export default function Parameters({ packages }) {
+export default function Packages({ packages }) {
   const token = useLogin().token;
   const updateConfigData = useUpdateConfig();
   const [pack, setPackage] = useState("");
