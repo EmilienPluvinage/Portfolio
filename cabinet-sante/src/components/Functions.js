@@ -1,3 +1,18 @@
+const mois = [
+  "Janvier",
+  "Février",
+  "Mars",
+  "Avril",
+  "Mai",
+  "Juin",
+  "Juillet",
+  "Août",
+  "Septembre",
+  "Octobre",
+  "Novembre",
+  "Décembre",
+];
+
 export function displayPrice(priceInCents) {
   // displays the price with a comma and two decimals, unless it's 0, in which case we return 0.
   var i = Math.round(priceInCents).toString().length - 2;
@@ -31,21 +46,6 @@ export function displayFullDate(today) {
   var day = today.getDate();
   var month = today.getMonth();
   var year = today.getFullYear();
-
-  const mois = [
-    "Janvier",
-    "Février",
-    "Mars",
-    "Avril",
-    "Mai",
-    "Juin",
-    "Juillet",
-    "Août",
-    "Septembre",
-    "Octobre",
-    "Novembre",
-    "Décembre",
-  ];
 
   var date =
     (day.toString().length === 1 ? "0" + day : day) +
@@ -133,20 +133,7 @@ export function timeOnly(str) {
 
 export function displayDateInFrench(date) {
   var minutes = date.getMinutes();
-  const mois = [
-    "Janvier",
-    "Février",
-    "Mars",
-    "Avril",
-    "Mai",
-    "Juin",
-    "Juillet",
-    "Août",
-    "Septembre",
-    "Octobre",
-    "Novembre",
-    "Décembre",
-  ];
+
   return (
     date.getDate() +
     " " +
@@ -228,4 +215,45 @@ export function splitname(fullname) {
     firstname: firstName,
     lastname: lastName.join(" "),
   };
+}
+
+export function setAutomaticPrice(
+  priceScheme,
+  patientTypeId,
+  appointmentTypeId,
+  packageId
+) {
+  var price = 0;
+  var index = 0;
+
+  // test si tu trouves une règle qui remplit les 3 conditions
+  index = priceScheme.findIndex(
+    (e) =>
+      e.appointmentTypeId === appointmentTypeId &&
+      e.packageId === packageId &&
+      e.patientTypeId === patientTypeId
+  );
+  if (index !== -1) return priceScheme[index].price;
+
+  // sinon, test si tu trouves une qui remplit 2 des 3 conditions (en virant d'abord type de patient, ensuite forfait)
+  index = priceScheme.findIndex(
+    (e) =>
+      e.appointmentTypeId === appointmentTypeId && e.packageId === packageId
+  );
+  if (index !== -1) return priceScheme[index].price;
+
+  index = priceScheme.findIndex(
+    (e) =>
+      e.appointmentTypeId === appointmentTypeId &&
+      e.patientTypeId === patientTypeId
+  );
+  if (index !== -1) return priceScheme[index].price;
+
+  // sinon test si trouve une qui remplit 1 des 3 conditions (tester consultation uniquement, car consultation existe forcément.)
+  index = priceScheme.findIndex(
+    (e) => e.appointmentTypeId === appointmentTypeId
+  );
+  if (index !== -1) return priceScheme[index].price;
+
+  return price;
 }
