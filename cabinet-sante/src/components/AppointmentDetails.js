@@ -67,6 +67,7 @@ export default function AppointmentDetails({
     reasonDetails: "",
     patientType: "",
     appointmentType: "",
+    price: 0,
   };
 
   const form = useForm({
@@ -118,6 +119,7 @@ export default function AppointmentDetails({
               reasonDetails: row.reasonDetails,
               patientType: patientType,
               appointmentType: appointmentType,
+              price: row.price / 100,
             });
           }
         } catch (e) {
@@ -250,6 +252,7 @@ export default function AppointmentDetails({
                 patientType: patientTypes.find(
                   (e) => e.type === values.patientType
                 )?.id,
+                price: Math.round(values.price * 100),
               }),
             }
           );
@@ -332,6 +335,7 @@ export default function AppointmentDetails({
                 patientType: patientTypes.find(
                   (e) => e.type === values.patientType
                 )?.id,
+                price: Math.round(values.price * 100),
               }),
             }
           );
@@ -376,14 +380,28 @@ export default function AppointmentDetails({
         <Text size="sm">
           Patient: {patient !== 0 && getFullnameFromId(patients, patient)}
         </Text>
-        <Select
-          style={{ width: "fit-content" }}
-          data={typesList}
-          name="appointmentType"
-          label="Consultation"
-          {...form.getInputProps("appointmentType")}
-          required
-        />
+        <Grid>
+          <Grid.Col span={4}>
+            <Select
+              style={{ width: "fit-content" }}
+              data={typesList}
+              name="appointmentType"
+              label="Consultation"
+              {...form.getInputProps("appointmentType")}
+              required
+            />
+          </Grid.Col>
+          <Grid.Col span={2}>
+            <NumberInput
+              label="Prix"
+              min={0}
+              precision={2}
+              step={0.01}
+              {...form.getInputProps("price")}
+              hideControls
+            />
+          </Grid.Col>
+        </Grid>
 
         <Grid grow>
           <Grid.Col span={4}>
