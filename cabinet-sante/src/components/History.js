@@ -74,7 +74,7 @@ export default function History({ patientId }) {
       const res = await fetchResponse.json();
       if (res.success) {
         // now that's it's done we update the data displayed in the table
-        updateAppointments();
+        updateAppointments(token);
         setOpenedPrice(false);
         showNotification({
           title: "Prix Modifié",

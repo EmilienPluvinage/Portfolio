@@ -178,7 +178,7 @@ export default function AppointmentDetails({
       if (res.success) {
         setOpened(false);
         setDeleteLoader("");
-        updateAppointments();
+        updateAppointments(token);
         showNotification({
           title: "Consultation supprimée",
           message: "Le rendez-vous a bien été supprimé.",
@@ -344,7 +344,7 @@ export default function AppointmentDetails({
           const res2 = await fetchResponse.json();
           if (res2.success) {
             setOpened(false);
-            updateAppointments();
+            updateAppointments(token);
             showNotification({
               title: "Consultation Modifiée",
               message:

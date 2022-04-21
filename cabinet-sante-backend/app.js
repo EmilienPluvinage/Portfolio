@@ -521,7 +521,7 @@ app.post("/GetHistory", (req, res, next) => {
           // Now connected and we have the user ID so we do the insert
           connection.query(
             "SELECT * FROM appointments LEFT JOIN isInAppointment ON appointments.id = isInAppointment.appointmentId WHERE userId = ? ORDER BY appointments.start DESC",
-            [userId],
+            userId,
             (err, rows) => {
               if (err) throw err;
               res.status(201).json({ success: true, data: rows });
