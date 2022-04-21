@@ -13,8 +13,14 @@ export function useUpdatePatients() {
 }
 
 export function PatientsProvider({ children }) {
-  // True or False
   const [patients, setPatients] = useState([]);
+  const [appointments, setAppointments] = useState([]);
+
+  async function initData(token) {
+    updatePatientsList(token);
+    updateAppointmentsList(token);
+  }
+
   async function updatePatientsList(token) {
     try {
       const fetchResponse = await fetch(
@@ -48,9 +54,33 @@ export function PatientsProvider({ children }) {
     }
   }
 
+  async function updateAppointmentsList(token) {
+    try {
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/GetHistory",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+          }),
+        }
+      );
+      const res = await fetchResponse.json();
+      setAppointments(res.data);
+    } catch (e) {
+      return e;
+    }
+  }
+
   return (
-    <PatientsContext.Provider value={patients}>
-      <UpdatePatientsContext.Provider value={updatePatientsList}>
+    <PatientsContext.Provider
+      value={{ patients: patients, appointments: appointments }}
+    >
+      <UpdatePatientsContext.Provider value={initData}>
         {children}
       </UpdatePatientsContext.Provider>
     </PatientsContext.Provider>

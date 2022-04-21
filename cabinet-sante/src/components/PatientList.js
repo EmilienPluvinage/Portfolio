@@ -11,7 +11,7 @@ export default function PatientList() {
   const token = useLogin().token;
   const [latestEvents, setLatestEvents] = useState([]);
   const patientsPerPage = 100;
-  const patients = usePatients();
+  const patients = usePatients().patients;
   const numberOfPages =
     patients.length > 0 ? Math.floor(patients.length / patientsPerPage) + 1 : 1;
   const [activePage, setPage] = useState(1);

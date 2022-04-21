@@ -1,5 +1,5 @@
 import React from "react";
-import { usePatients } from "./contexts/PatientsContext";
+import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import {
   TextInput,
   Textarea,
@@ -34,9 +34,9 @@ export default function AppointmentDetails({
   setOpened,
   patientId, // to be used to pre-fill patient input when appointmentId === 0
   appointmentId,
-  setUpdate,
 }) {
-  const patients = usePatients();
+  const patients = usePatients().patients;
+  const updateAppointments = useUpdatePatients();
   const token = useLogin().token;
   const [loading, setLoading] = useState("");
   const [deleteLoader, setDeleteLoader] = useState("");
@@ -178,9 +178,7 @@ export default function AppointmentDetails({
       if (res.success) {
         setOpened(false);
         setDeleteLoader("");
-        if (setUpdate !== undefined) {
-          setUpdate((prev) => prev + 1);
-        }
+        updateAppointments();
         showNotification({
           title: "Consultation supprimée",
           message: "Le rendez-vous a bien été supprimé.",
@@ -346,9 +344,7 @@ export default function AppointmentDetails({
           const res2 = await fetchResponse.json();
           if (res2.success) {
             setOpened(false);
-            if (setUpdate !== undefined) {
-              setUpdate((prev) => prev + 1);
-            }
+            updateAppointments();
             showNotification({
               title: "Consultation Modifiée",
               message:

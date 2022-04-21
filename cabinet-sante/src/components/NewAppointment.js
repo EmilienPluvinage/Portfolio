@@ -47,7 +47,7 @@ export default function NewAppointment({
   startingTime,
   appointmentId,
 }) {
-  const patients = usePatients();
+  const patients = usePatients().patients;
   const updatePatients = useUpdatePatients();
   const patientsList = patients.map((e) => {
     return e.fullname;

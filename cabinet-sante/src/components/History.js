@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useLogin } from "./contexts/AuthContext";
 import {
   Pagination,
@@ -14,11 +14,14 @@ import NewAppointment from "./NewAppointment";
 import AppointmentDetails from "./AppointmentDetails";
 import { useConfig } from "./contexts/ConfigContext";
 import { showNotification } from "@mantine/notifications";
+import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 
 export default function History({ patientId }) {
   const token = useLogin().token;
   const rowsPerPage = 10;
-  const [historyData, setHistoryData] = useState([]);
+  const appointments = usePatients().appointments;
+  const updateAppointments = useUpdatePatients();
+  const historyData = appointments.filter((e) => e.patientId === patientId);
   const numberOfPages =
     historyData.length > 0
       ? Math.floor(historyData.length / rowsPerPage) + 1
@@ -30,36 +33,7 @@ export default function History({ patientId }) {
   const [openedDetails, setOpenedDetails] = useState(false);
   const [openedPrice, setOpenedPrice] = useState(false);
   const [appointmentId, setAppointmentId] = useState(0);
-  const [update, setUpdate] = useState(0);
   const appointmentTypes = useConfig().appointmentTypes;
-
-  useEffect(() => {
-    async function getData() {
-      try {
-        const fetchResponse = await fetch(
-          process.env.REACT_APP_API_DOMAIN + "/GetHistory",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              token: token,
-              patientId: patientId,
-            }),
-          }
-        );
-        const res = await fetchResponse.json();
-        if (res.success) {
-          setHistoryData(res.data);
-        }
-      } catch (e) {
-        return e;
-      }
-    }
-    getData();
-  }, [token, patientId, update, opened]);
 
   function handleClick(id, multi) {
     setAppointmentId(id);
@@ -100,7 +74,7 @@ export default function History({ patientId }) {
       const res = await fetchResponse.json();
       if (res.success) {
         // now that's it's done we update the data displayed in the table
-        setUpdate((prev) => prev + 1);
+        updateAppointments();
         setOpenedPrice(false);
         showNotification({
           title: "Prix Modifié",
@@ -177,7 +151,6 @@ export default function History({ patientId }) {
             setOpened={setOpenedDetails}
             patientId={0}
             appointmentId={appointmentId}
-            setUpdate={setUpdate}
           />
         )}
       </Modal>

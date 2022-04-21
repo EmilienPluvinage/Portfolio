@@ -20,7 +20,7 @@ import NewAppointment from "./NewAppointment";
 
 function LeftMenu() {
   const navigate = useNavigate();
-  const patients = usePatients();
+  const patients = usePatients().patients;
   const patientsList = patients.map((e) => {
     return e.fullname;
   });
