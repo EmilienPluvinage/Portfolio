@@ -87,7 +87,6 @@ export default function History({ patientId }) {
       return e;
     }
   }
-  console.log(historyData);
   return (
     <>
       <Modal
