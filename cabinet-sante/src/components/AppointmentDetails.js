@@ -36,7 +36,7 @@ export default function AppointmentDetails({
   appointmentId,
 }) {
   const patients = usePatients().patients;
-  const updateAppointments = useUpdatePatients();
+  const updateAppointments = useUpdatePatients().update;
   const token = useLogin().token;
   const [loading, setLoading] = useState("");
   const [deleteLoader, setDeleteLoader] = useState("");

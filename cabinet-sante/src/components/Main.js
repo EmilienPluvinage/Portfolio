@@ -5,12 +5,14 @@ import NewPatient from "./NewPatient";
 import PatientList from "./PatientList";
 import MyFullCalendar from "./MyFullCalendar";
 import Parameters from "./parameters/Parameters";
+import CheckForIncorrectPrices from "./CheckForIncorrectPrices";
 
 function Main({ menu }) {
   const loggedIn = useLogin().login;
   return (
     loggedIn && (
       <div id="Main">
+        <CheckForIncorrectPrices />
         <Routes>
           <Route exact path="/Nouveau-Patient/:id" element={<NewPatient />} />
           <Route exact path="/Nouveau-Patient" element={<NewPatient />} />

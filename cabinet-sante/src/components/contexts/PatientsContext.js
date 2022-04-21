@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import { calculateAge } from "../Functions";
+import CheckForIncorrectPrices from "../CheckForIncorrectPrices";
 
 const PatientsContext = React.createContext();
 const UpdatePatientsContext = React.createContext();
@@ -15,6 +16,7 @@ export function useUpdatePatients() {
 export function PatientsProvider({ children }) {
   const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [checkOpen, setCheckOpen] = useState(false);
 
   async function initData(token) {
     updatePatientsList(token);
@@ -76,11 +78,29 @@ export function PatientsProvider({ children }) {
     }
   }
 
+  function checkPrices() {
+    const checks = appointments.map((e) => {
+      return {
+        check: e.price !== 0 || e.priceSetByUser === true,
+        id: e.id,
+      };
+    });
+    const numberOfIncorrectPrices = checks.reduce(
+      (acc, item) => (item.check === false ? acc + 1 : acc),
+      0
+    );
+    console.log("Incorrect Prices : %i", numberOfIncorrectPrices);
+    setCheckOpen(numberOfIncorrectPrices > 0);
+  }
+
   return (
     <PatientsContext.Provider
       value={{ patients: patients, appointments: appointments }}
     >
-      <UpdatePatientsContext.Provider value={initData}>
+      <UpdatePatientsContext.Provider
+        value={{ update: initData, check: checkPrices }}
+      >
+        <CheckForIncorrectPrices open={checkOpen} setOpen={setCheckOpen} />
         {children}
       </UpdatePatientsContext.Provider>
     </PatientsContext.Provider>

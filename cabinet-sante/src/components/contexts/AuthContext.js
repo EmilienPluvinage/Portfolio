@@ -15,7 +15,8 @@ export function useLogging() {
 }
 
 export function AuthProvider({ children }) {
-  const getPatients = useUpdatePatients();
+  const CheckAppointments = useUpdatePatients().check;
+  const getPatients = useUpdatePatients().update;
   const getGovData = useUpdateGovData();
   const getConfig = useUpdateConfig();
   // True or False
@@ -54,6 +55,7 @@ export function AuthProvider({ children }) {
         getConfig(newToken);
       }
       await getData();
+      CheckAppointments();
     } else {
       removeToken(token);
       localStorage.removeItem("token");

@@ -20,7 +20,7 @@ export default function History({ patientId }) {
   const token = useLogin().token;
   const rowsPerPage = 10;
   const appointments = usePatients().appointments;
-  const updateAppointments = useUpdatePatients();
+  const updateAppointments = useUpdatePatients().update;
   const historyData = appointments.filter((e) => e.patientId === patientId);
   const numberOfPages =
     historyData.length > 0
