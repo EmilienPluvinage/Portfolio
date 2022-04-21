@@ -24,6 +24,7 @@ import {
   getIdFromFullname,
   capitalize,
   splitname,
+  setAutomaticPrice,
 } from "./Functions";
 import {
   Calendar,
@@ -53,6 +54,7 @@ export default function NewAppointment({
   });
   const [data, setData] = useState(patientsList);
   const appointmentTypes = useConfig().appointmentTypes;
+  const priceScheme = useConfig().priceScheme;
   const typesList = appointmentTypes.map((e) => {
     return e.type;
   });
@@ -214,6 +216,19 @@ export default function NewAppointment({
               // it's not, so we get the id of the existing one.
               patientId = getIdFromFullname(patients, element);
             }
+
+            var packageId = patients.find((e) => e.id === patientId)?.packageId;
+
+            packageId =
+              packageId === null || packageId === undefined ? 0 : packageId;
+
+            var price = setAutomaticPrice(
+              priceScheme,
+              0,
+              appointmentTypeId,
+              packageId
+            );
+
             const fetchResponse = await fetch(
               process.env.REACT_APP_API_DOMAIN + "/NewParticipant",
               {
@@ -232,6 +247,8 @@ export default function NewAppointment({
                   reasonDetails: "",
                   patientType: "",
                   token: token,
+                  price: price,
+                  priceSetByUser: false,
                 }),
               }
             );
@@ -305,6 +322,19 @@ export default function NewAppointment({
             async function addPatients() {
               values.patients.forEach(async (element) => {
                 var patientId = getIdFromFullname(patients, element);
+                var packageId = patients.find(
+                  (e) => e.id === patientId
+                )?.packageId;
+
+                packageId =
+                  packageId === null || packageId === undefined ? 0 : packageId;
+
+                var price = setAutomaticPrice(
+                  priceScheme,
+                  0,
+                  appointmentTypeId,
+                  packageId
+                );
                 const fetchResponse = await fetch(
                   process.env.REACT_APP_API_DOMAIN + "/NewParticipant",
                   {
@@ -323,6 +353,8 @@ export default function NewAppointment({
                       reasonDetails: "",
                       patientType: "",
                       token: token,
+                      price: price,
+                      priceSetByUser: false,
                     }),
                   }
                 );
