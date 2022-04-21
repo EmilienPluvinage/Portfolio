@@ -1,6 +1,7 @@
 import "../../styles/styles.css";
 import { useLogin } from "../contexts/AuthContext";
 import { useState } from "react";
+import Confirmation from "../Confirmation";
 import {
   TextInput,
   Button,
@@ -23,6 +24,12 @@ export default function Packages({ packages }) {
   const [packageSelect, setPackageSelect] = useState("");
   const [packageOpened, setPackageOpened] = useState(false);
   const [packageId, setPackageId] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [confirmation, setConfirmation] = useState({
+    text: "",
+    title: "",
+    callback: undefined,
+  });
 
   const Packageslist =
     packages?.length > 0 ? packages.map((e) => e.package) : [];
@@ -160,9 +167,24 @@ export default function Packages({ packages }) {
       return e;
     }
   }
+
+  function handleDeleteClick() {
+    setConfirmation({
+      title: "Suppression",
+      text: "Êtes vous sûr(e) de vouloir supprimer ce forfait?",
+      callback: () => deletePackage(),
+    });
+    setOpen(true);
+  }
   return (
     <>
-      {" "}
+      <Confirmation
+        text={confirmation.text}
+        title={confirmation.title}
+        callback={confirmation.callback}
+        open={open}
+        close={() => setOpen(false)}
+      />{" "}
       <Modal
         opened={packageOpened}
         onClose={() => setPackageOpened(false)}
@@ -225,7 +247,7 @@ export default function Packages({ packages }) {
                   size={"xs"}
                   variant="outline"
                   color="red"
-                  onClick={deletePackage}
+                  onClick={handleDeleteClick}
                 >
                   <Trash size={18} />
                 </Button>

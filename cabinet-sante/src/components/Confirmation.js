@@ -20,7 +20,7 @@ export default function Confirmation({ text, title, callback, open, close }) {
         <Text>{text}</Text>
         <Grid
           justify="space-between"
-          style={{ marginTop: "10px", marginRight: "45px" }}
+          style={{ marginTop: "10px", marginRight: "50px" }}
         >
           <Grid.Col span={2}>
             <Button variant="default" onClick={close}>

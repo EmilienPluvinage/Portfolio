@@ -6,6 +6,7 @@ import { Pencil, Check, Trash, Plus } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
 import { useUpdateConfig } from "../contexts/ConfigContext";
 import { useEffect } from "react";
+import Confirmation from "../Confirmation";
 
 export default function Patients({ patientTypes }) {
   const token = useLogin().token;
@@ -14,6 +15,12 @@ export default function Patients({ patientTypes }) {
   const [PTSelect, setPTselect] = useState("");
   const [PTopened, setPTOpened] = useState(false);
   const [patientTypeId, setPatientTypeId] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [confirmation, setConfirmation] = useState({
+    text: "",
+    title: "",
+    callback: undefined,
+  });
 
   const PTlist =
     patientTypes?.length > 0 ? patientTypes.map((e) => e.type) : [];
@@ -147,9 +154,24 @@ export default function Patients({ patientTypes }) {
       return e;
     }
   }
+
+  function handleDeleteClick() {
+    setConfirmation({
+      title: "Suppression",
+      text: "Êtes vous sûr(e) de vouloir supprimer ce profil patient?",
+      callback: () => deletePatientType(),
+    });
+    setOpen(true);
+  }
   return (
     <>
-      {" "}
+      <Confirmation
+        text={confirmation.text}
+        title={confirmation.title}
+        callback={confirmation.callback}
+        open={open}
+        close={() => setOpen(false)}
+      />{" "}
       <Modal
         opened={PTopened}
         onClose={() => setPTOpened(false)}
@@ -205,7 +227,7 @@ export default function Patients({ patientTypes }) {
                   size={"xs"}
                   variant="outline"
                   color="red"
-                  onClick={deletePatientType}
+                  onClick={handleDeleteClick}
                 >
                   <Trash size={18} />
                 </Button>

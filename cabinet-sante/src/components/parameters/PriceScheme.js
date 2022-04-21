@@ -13,6 +13,7 @@ import {
 import { displayPrice } from "../Functions";
 import { Check, Pencil, Plus, Trash } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
+import Confirmation from "../Confirmation";
 
 export default function PriceScheme() {
   const token = useLogin().token;
@@ -24,6 +25,12 @@ export default function PriceScheme() {
   const [pack, setPack] = useState("");
   const [appointmentType, setAppointmentType] = useState("");
   const [patientType, setPatientType] = useState("");
+  const [open, setOpen] = useState(false);
+  const [confirmation, setConfirmation] = useState({
+    text: "",
+    title: "",
+    callback: undefined,
+  });
 
   const Packageslist =
     config.packages?.length > 0
@@ -88,7 +95,7 @@ export default function PriceScheme() {
       </td>
       <td>
         <Button
-          onClick={() => deletePriceSchemeRule(element.id)}
+          onClick={() => handleDeleteClick(element.id)}
           leftIcon={<Trash size={18} />}
           compact
           color="red"
@@ -227,8 +234,23 @@ export default function PriceScheme() {
       updatePSRule();
     }
   }
+  function handleDeleteClick(id) {
+    setConfirmation({
+      title: "Suppression",
+      text: "Êtes vous sûr(e) de vouloir supprimer cette règle de prix?",
+      callback: () => deletePriceSchemeRule(id),
+    });
+    setOpen(true);
+  }
   return (
     <>
+      <Confirmation
+        text={confirmation.text}
+        title={confirmation.title}
+        callback={confirmation.callback}
+        open={open}
+        close={() => setOpen(false)}
+      />
       <Modal
         opened={opened}
         onClose={() => setOpened(false)}

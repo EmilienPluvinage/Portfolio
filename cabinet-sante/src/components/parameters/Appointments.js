@@ -1,6 +1,7 @@
 import "../../styles/styles.css";
 import { useLogin } from "../contexts/AuthContext";
 import { useState } from "react";
+import Confirmation from "../Confirmation";
 import {
   TextInput,
   Checkbox,
@@ -25,6 +26,12 @@ export default function Appointments({ appointmentTypes }) {
   const [ATopened, setATOpened] = useState(false);
   const [appointmentTypeId, setAppointmentId] = useState(0);
   const [color, setColor] = useState("");
+  const [open, setOpen] = useState(false);
+  const [confirmation, setConfirmation] = useState({
+    text: "",
+    title: "",
+    callback: undefined,
+  });
 
   const ATlist =
     appointmentTypes?.length > 0 ? appointmentTypes.map((e) => e.type) : [];
@@ -166,9 +173,24 @@ export default function Appointments({ appointmentTypes }) {
       return e;
     }
   }
+
+  function handleDeleteClick() {
+    setConfirmation({
+      title: "Suppression",
+      text: "Êtes vous sûr(e) de vouloir supprimer ce type de consultation?",
+      callback: () => deleteAppointmentType(),
+    });
+    setOpen(true);
+  }
   return (
     <>
-      {" "}
+      <Confirmation
+        text={confirmation.text}
+        title={confirmation.title}
+        callback={confirmation.callback}
+        open={open}
+        close={() => setOpen(false)}
+      />{" "}
       <Modal
         opened={ATopened}
         onClose={() => setATOpened(false)}
@@ -248,7 +270,7 @@ export default function Appointments({ appointmentTypes }) {
                   size={"xs"}
                   variant="outline"
                   color="red"
-                  onClick={deleteAppointmentType}
+                  onClick={handleDeleteClick}
                 >
                   <Trash size={18} />
                 </Button>
