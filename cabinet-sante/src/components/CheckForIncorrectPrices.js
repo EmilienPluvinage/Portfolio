@@ -1,11 +1,10 @@
 import { Button, Modal, Grid, Text } from "@mantine/core";
+import { Link } from "react-router-dom";
+import "../styles/styles.css";
 
 export default function CheckForIncorrectPrices({ open, setOpen }) {
   // This component is going to check whether there are any prices that are 0 AND setByUser = false to warn the user.
 
-  function handleClick() {
-    console.log("to the prices check");
-  }
   return (
     open && (
       <Modal
@@ -30,7 +29,9 @@ export default function CheckForIncorrectPrices({ open, setOpen }) {
             </Button>
           </Grid.Col>
           <Grid.Col span={2}>
-            <Button onClick={handleClick}>Vérifier</Button>
+            <Link to="/Verifier-les-prix" className="text-link">
+              <Button onClick={() => setOpen(false)}>Vérifier</Button>
+            </Link>
           </Grid.Col>
         </Grid>
       </Modal>

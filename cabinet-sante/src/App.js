@@ -24,30 +24,30 @@ function App() {
 
   return (
     <div id="App">
-      <GovDataProvider>
-        <MantineProvider
-          theme={{
-            primaryColor: "cyan",
-          }}
-        >
-          <NotificationsProvider position="top-right">
-            <ConfigurationProvider>
-              <PatientsProvider>
-                <AuthProvider>
-                  <Header />
-                  <div id="parent">
-                    <Router>
+      <Router>
+        <GovDataProvider>
+          <MantineProvider
+            theme={{
+              primaryColor: "cyan",
+            }}
+          >
+            <NotificationsProvider position="top-right">
+              <ConfigurationProvider>
+                <PatientsProvider>
+                  <AuthProvider>
+                    <Header />
+                    <div id="parent">
                       <LeftMenu />
                       <Main menu={menu} />
-                    </Router>
-                    <Login />
-                  </div>
-                </AuthProvider>
-              </PatientsProvider>
-            </ConfigurationProvider>
-          </NotificationsProvider>
-        </MantineProvider>
-      </GovDataProvider>
+                      <Login />
+                    </div>
+                  </AuthProvider>
+                </PatientsProvider>
+              </ConfigurationProvider>
+            </NotificationsProvider>
+          </MantineProvider>
+        </GovDataProvider>
+      </Router>
     </div>
   );
 }

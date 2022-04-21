@@ -89,7 +89,6 @@ export function PatientsProvider({ children }) {
       (acc, item) => (item.check === false ? acc + 1 : acc),
       0
     );
-    console.log("Incorrect Prices : %i", numberOfIncorrectPrices);
     setCheckOpen(numberOfIncorrectPrices > 0);
   }
 
