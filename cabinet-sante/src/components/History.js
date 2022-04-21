@@ -9,7 +9,7 @@ import {
   NumberInput,
 } from "@mantine/core";
 import { displayDate, displayPrice, displayTime } from "./Functions";
-import { Ce, Check, Search } from "tabler-icons-react";
+import { Check, Search } from "tabler-icons-react";
 import NewAppointment from "./NewAppointment";
 import AppointmentDetails from "./AppointmentDetails";
 import { useConfig } from "./contexts/ConfigContext";
