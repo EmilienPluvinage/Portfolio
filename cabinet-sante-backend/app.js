@@ -383,7 +383,7 @@ app.post("/NewParticipant", (req, res, next) => {
               if (err) throw err;
               if (rows.length === 1) {
                 connection.query(
-                  "INSERT INTO isInAppointment(patientId, appointmentId, size, weight, EVAbefore, EVAafter, reasonDetails, patientType) VALUES (?,?,?,?,?,?,?,?)",
+                  "INSERT INTO isInAppointment(patientId, appointmentId, size, weight, EVAbefore, EVAafter, reasonDetails, patientType, price, priceSetByUser) VALUES (?,?,?,?,?,?,?,?,?,?)",
                   [
                     req.body.patientId,
                     req.body.appointmentId,
@@ -393,6 +393,8 @@ app.post("/NewParticipant", (req, res, next) => {
                     req.body.EVAafter,
                     req.body.reasonDetails,
                     req.body.patientType,
+                    req.body.price,
+                    req.body.priceSetByUser,
                   ],
                   (err, result) => {
                     if (err) throw err;
@@ -1058,6 +1060,7 @@ app.post("/UpdateEvent", (req, res, next) => {
 });
 
 app.post("/UpdateParticipant", (req, res, next) => {
+  console.log(req.body);
   pool.getConnection((err, connection) => {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
@@ -1078,7 +1081,7 @@ app.post("/UpdateParticipant", (req, res, next) => {
                 // so we do the update
                 // Now connected and we have the user ID so we do the update
                 connection.query(
-                  "UPDATE isInAppointment SET size =?, weight=?, EVAbefore=?, EVAafter=?, reasonDetails=?, patientType=? WHERE appointmentId=? AND patientId=?",
+                  "UPDATE isInAppointment SET size =?, weight=?, EVAbefore=?, EVAafter=?, reasonDetails=?, patientType=?, price=?, priceSetByUser=? WHERE appointmentId=? AND patientId=?",
                   [
                     req.body.size,
                     req.body.weight,
@@ -1086,6 +1089,8 @@ app.post("/UpdateParticipant", (req, res, next) => {
                     req.body.EVAafter,
                     req.body.reasonDetails,
                     req.body.patientType,
+                    req.body.price,
+                    req.body.priceSetByUser,
                     req.body.appointmentId,
                     req.body.patientId,
                   ],

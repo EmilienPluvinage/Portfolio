@@ -255,6 +255,7 @@ export default function AppointmentDetails({
                   (e) => e.type === values.patientType
                 )?.id,
                 price: Math.round(values.price * 100),
+                priceSetByUser: true,
               }),
             }
           );
@@ -338,6 +339,7 @@ export default function AppointmentDetails({
                   (e) => e.type === values.patientType
                 )?.id,
                 price: Math.round(values.price * 100),
+                priceSetByUser: true,
               }),
             }
           );
