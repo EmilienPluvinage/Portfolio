@@ -18,11 +18,13 @@ import { showNotification } from "@mantine/notifications";
 import { Check, X } from "tabler-icons-react";
 import { useConfig } from "./contexts/ConfigContext";
 import AppointmentDetails from "./AppointmentDetails";
+import { usePatients } from "./contexts/PatientsContext";
 
 export default function MyFullCalendar() {
   const [opened, setOpened] = useState(false);
   const [openedDetails, setOpenedDetails] = useState(false);
   const [startingTime, setStartingTime] = useState(new Date());
+  const appointments = usePatients().appointments;
 
   const token = useLogin().token;
   const buttonText = { today: "Semaine actuelle" };
@@ -33,26 +35,29 @@ export default function MyFullCalendar() {
 
   useEffect(() => {
     if (appointmentTypes?.length > 0) {
-      async function fetchData() {
-        try {
-          const data = await getAllEvents(token);
-          if (data.success) {
-            var events = data.data;
-            events.forEach((element) => {
-              var color = appointmentTypes.find(
-                (e) => e.id === element.idType
-              ).color;
-              element.backgroundColor = color;
-            });
-            setEvents(events);
-          }
-        } catch (error) {
-          console.error(error);
-        }
-      }
-      fetchData();
+      // d'abord un accumulateur pour récupérer que les infos qu'on veut
+      var events = appointments.reduce(
+        (acc, item) =>
+          acc.find((e) => e.id === item.appointmentId)
+            ? acc
+            : acc.concat({
+                id: item.appointmentId,
+                userId: item.userId,
+                start: item.start,
+                end: item.end,
+                title: item.title,
+                idType: item.idType,
+              }),
+        []
+      );
+
+      events.forEach((element) => {
+        var color = appointmentTypes.find((e) => e.id === element.idType).color;
+        element.backgroundColor = color;
+      });
+      setEvents(events);
     }
-  }, [token, calendarUpdate, opened, openedDetails, appointmentTypes]);
+  }, [calendarUpdate, opened, openedDetails, appointmentTypes, appointments]);
 
   async function updateEventTime(id, startingTime, endingTime, src) {
     var link = process.env.REACT_APP_API_DOMAIN + "/UpdateEventTime";
