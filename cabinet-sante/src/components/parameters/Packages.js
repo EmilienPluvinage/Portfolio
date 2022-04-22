@@ -11,14 +11,16 @@ import {
   Center,
   NumberInput,
 } from "@mantine/core";
-import { Pencil, Check, Trash, Plus } from "tabler-icons-react";
+import { Pencil, Check, Trash, Plus, X } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
 import { useUpdateConfig } from "../contexts/ConfigContext";
 import { useEffect } from "react";
+import { usePatients } from "../contexts/PatientsContext";
 
 export default function Packages({ packages }) {
   const token = useLogin().token;
   const updateConfigData = useUpdateConfig();
+  const patients = usePatients().patients;
   const [pack, setPackage] = useState("");
   const [price, setPrice] = useState(0);
   const [packageSelect, setPackageSelect] = useState("");
@@ -137,34 +139,44 @@ export default function Packages({ packages }) {
     var index = packages.findIndex((e) => e.package === packageSelect);
     var title = packageSelect;
     var packageId = packages[index].id;
-    try {
-      const fetchResponse = await fetch(
-        process.env.REACT_APP_API_DOMAIN + "/DeletePackage",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: packageId,
-            token: token,
-          }),
+    if (patients.findIndex((e) => e.packageId === packageId) === -1) {
+      try {
+        const fetchResponse = await fetch(
+          process.env.REACT_APP_API_DOMAIN + "/DeletePackage",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: packageId,
+              token: token,
+            }),
+          }
+        );
+        const res = await fetchResponse.json();
+        if (res.success) {
+          showNotification({
+            title: title,
+            message: "Le forfait été supprimé.",
+            color: "green",
+            icon: <Check />,
+          });
+          updateConfigData(token);
+          setPackageSelect(packages[0].package);
         }
-      );
-      const res = await fetchResponse.json();
-      if (res.success) {
-        showNotification({
-          title: title,
-          message: "Le forfait été supprimé.",
-          color: "green",
-          icon: <Check />,
-        });
-        updateConfigData(token);
-        setPackageSelect(packages[0].package);
+      } catch (e) {
+        return e;
       }
-    } catch (e) {
-      return e;
+    } else {
+      showNotification({
+        title: title,
+        message:
+          "Le forfait ne peut pas être supprimé car il est utilisé pour certains patients.",
+        color: "red",
+        icon: <X />,
+      });
     }
   }
 
