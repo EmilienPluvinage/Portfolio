@@ -12,6 +12,8 @@ export default function IncorrectPricesList() {
   // This component is going to display potential incorrect prices for the user to confirm, we the possibility to update them one by one, or to confirm them all in one go.
   const token = useLogin().token;
   const appointmentTypes = useConfig().appointmentTypes;
+  const packages = useConfig().packages;
+  const patientTypes = useConfig().patientTypes;
   const appointments = usePatients().appointments;
   const updateAppointments = useUpdatePatients().update;
   const patients = usePatients().patients;
@@ -121,7 +123,9 @@ export default function IncorrectPricesList() {
               <th>Date</th>
               <th>Début</th>
               <th>Fin</th>
-              <th>Type</th>
+              <th>Consultation</th>
+              <th>Profil</th>
+              <th>Forfait</th>
               <th>Prix</th>
             </tr>
           </thead>
@@ -137,6 +141,22 @@ export default function IncorrectPricesList() {
                 <td>{displayTime(new Date(event.end))}</td>
                 <td>
                   {appointmentTypes.find((e) => e.id === event.idType)?.type}
+                </td>
+                <td>
+                  {
+                    patientTypes.find(
+                      (e) => e.id.toString() === event.patientType.toString()
+                    )?.type
+                  }
+                </td>
+                <td>
+                  {
+                    packages.find(
+                      (e) =>
+                        e.id ===
+                        patients.find((e) => e.id === event.patientId).packageId
+                    )?.package
+                  }
                 </td>
                 <td>
                   <Button
