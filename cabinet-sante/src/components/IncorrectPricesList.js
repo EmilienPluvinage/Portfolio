@@ -133,7 +133,7 @@ export default function IncorrectPricesList() {
             {data.map((event) => (
               <tr key={event.id}>
                 <td>
-                  {patients.find((e) => e.id === event.patientId).fullname}
+                  {patients.find((e) => e.id === event.patientId)?.fullname}
                 </td>
                 <td>{event.title}</td>
                 <td>{displayDate(new Date(event.start), true)}</td>
