@@ -36,6 +36,7 @@ export default function AppointmentDetails({
   appointmentId,
 }) {
   const patients = usePatients().patients;
+  const appointments = usePatients().appointments;
   const updateAppointments = useUpdatePatients().update;
   const token = useLogin().token;
   const [loading, setLoading] = useState("");
@@ -79,58 +80,37 @@ export default function AppointmentDetails({
   useEffect(() => {
     if (appointmentId !== 0 && id === 0) {
       // then we get data from the DB and update the from
-      async function getData() {
-        try {
-          const fetchResponse = await fetch(
-            process.env.REACT_APP_API_DOMAIN + "/GetEventDetails",
-            {
-              method: "POST",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                id: appointmentId,
-                token: token,
-              }),
-            }
-          );
-          const res = await fetchResponse.json();
 
-          if (res.success) {
-            const row = res.data[0];
-            setPatient(row.patientId);
-            var appointmentType = appointmentTypes.find(
-              (e) => e.id === row.idType
-            ).type;
-            var patientType = patientTypes.find(
-              (e) => e.id.toString() === row.patientType.toString()
-            )?.type;
-            setId(appointmentId);
+      const thisAppointment = appointments.filter(
+        (e) => e.appointmentId === appointmentId
+      );
+      const row = thisAppointment[0];
+      setPatient(row.patientId);
+      var appointmentType = appointmentTypes.find(
+        (e) => e.id === row.idType
+      ).type;
+      var patientType = patientTypes.find(
+        (e) => e.id.toString() === row.patientType.toString()
+      )?.type;
+      setId(appointmentId);
 
-            setEVAbefore(row.EVAbefore);
-            setEVAafter(row.EVAafter);
-            form.setValues({
-              title: row.title,
-              date: dateOnly(row.start),
-              timeRange: [timeOnly(row.start), timeOnly(row.end)],
-              important: row.important,
-              comments: row.comments,
-              size: row.size,
-              weight: row.weight,
-              reasonDetails: row.reasonDetails,
-              patientType: patientType,
-              appointmentType: appointmentType,
-              price: row.price / 100,
-            });
-          }
-        } catch (e) {
-          return e;
-        }
-      }
-      getData();
+      setEVAbefore(row.EVAbefore);
+      setEVAafter(row.EVAafter);
+      form.setValues({
+        title: row.title,
+        date: dateOnly(row.start),
+        timeRange: [timeOnly(row.start), timeOnly(row.end)],
+        important: row.important,
+        comments: row.comments,
+        size: row.size,
+        weight: row.weight,
+        reasonDetails: row.reasonDetails,
+        patientType: patientType,
+        appointmentType: appointmentType,
+        price: row.price / 100,
+      });
     }
-  }, [appointmentId, id, token, form, appointmentTypes, patientTypes]);
+  }, [appointmentId, id, form, appointmentTypes, patientTypes, appointments]);
 
   function checkValues(values) {
     if (values.appointmentType === "") {
