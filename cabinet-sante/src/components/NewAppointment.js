@@ -368,6 +368,7 @@ export default function NewAppointment({
               });
             }
             await addPatients();
+            await updatePatients(token);
             return { success: success, eventId: id };
           }
         } catch (e) {
