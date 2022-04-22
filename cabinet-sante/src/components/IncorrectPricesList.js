@@ -3,13 +3,12 @@ import { usePatients } from "./contexts/PatientsContext";
 import { Table } from "@mantine/core";
 import { displayDate, displayTime } from "./Functions";
 import { useConfig } from "./contexts/ConfigContext";
-import { useLogin } from "./contexts/AuthContext";
 
 import UpdatePrice from "./UpdatePrice";
+import ConfirmPrice from "./ConfirmPrice";
 
 export default function IncorrectPricesList() {
   // This component is going to display potential incorrect prices for the user to confirm, we the possibility to update them one by one, or to confirm them all in one go.
-  const token = useLogin().token;
   const appointmentTypes = useConfig().appointmentTypes;
   const packages = useConfig().packages;
   const patientTypes = useConfig().patientTypes;
@@ -17,7 +16,7 @@ export default function IncorrectPricesList() {
   const patients = usePatients().patients;
   const checks = appointments.map((e) => {
     return {
-      check: e.price !== 0 || e.priceSetByUser === true,
+      check: e.price !== 0 || e.priceSetByUser === 1,
       id: e.id,
     };
   });
@@ -48,6 +47,7 @@ export default function IncorrectPricesList() {
               <th>Profil</th>
               <th>Forfait</th>
               <th>Prix</th>
+              <th>Confirmer</th>
             </tr>
           </thead>
           <tbody>
@@ -81,6 +81,9 @@ export default function IncorrectPricesList() {
                 </td>
                 <td>
                   <UpdatePrice InitialPrice={event.price} priceId={event.id} />
+                </td>
+                <td>
+                  <ConfirmPrice InitialPrice={event.price} priceId={event.id} />
                 </td>
               </tr>
             ))}
