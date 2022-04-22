@@ -871,19 +871,27 @@ app.post("/UpdatePrice", (req, res, next) => {
         if (rows.length === 1) {
           // Now connected and we have the user ID
           var userId = rows[0].userId;
-          // so we do the update
+
+          // check that this appointments corresponds to the right userId
           connection.query(
-            "UPDATE isInAppointment SET price=?, priceSetByUser=? WHERE id=? AND patientId=? AND appointmentId=?",
-            [
-              req.body.price,
-              req.body.priceSetByUser,
-              req.body.id,
-              req.body.patientId,
-              req.body.appointmentId,
-            ],
+            "SELECT * FROM isInAppointment LEFT JOIN appointments ON inInAppointment.appointmentId = appointments.id WHERE isInAppointment.id=? AND appointments.userId=?",
+            [req.body.id, userId],
             (err, result) => {
-              if (err) throw err;
-              res.status(201).json({ success: true, error: "" });
+              if (rows.length === 1) {
+                connection.query(
+                  "UPDATE isInAppointment SET price=?, priceSetByUser=? WHERE id=?",
+                  [req.body.price, req.body.priceSetByUser, req.body.id],
+                  (err, result) => {
+                    if (err) throw err;
+                    res.status(201).json({ success: true, error: "" });
+                  }
+                );
+              } else {
+                res.status(201).json({
+                  success: false,
+                  error: "isInAppointment id and user id do not match",
+                });
+              }
             }
           );
         } else {
