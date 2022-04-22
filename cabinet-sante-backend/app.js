@@ -420,7 +420,9 @@ app.post("/NewParticipant", (req, res, next) => {
                     req.body.EVAbefore,
                     req.body.EVAafter,
                     req.body.reasonDetails,
-                    req.body.patientType,
+                    req.body.patientType !== undefined
+                      ? req.body.patientType
+                      : 0,
                     req.body.price,
                     req.body.priceSetByUser,
                   ],
