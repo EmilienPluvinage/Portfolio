@@ -48,7 +48,8 @@ export default function NewAppointment({
   appointmentId,
 }) {
   const patients = usePatients().patients;
-  const updatePatients = useUpdatePatients();
+  const updatePatients = useUpdatePatients().update;
+  const checkPrices = useUpdatePatients().check;
   const patientsList = patients.map((e) => {
     return e.fullname;
   });
@@ -259,6 +260,8 @@ export default function NewAppointment({
           });
         }
         await addPatients();
+        await updatePatients(token);
+        checkPrices();
         return { success: success, eventId: eventId };
       }
     } catch (e) {
