@@ -260,6 +260,7 @@ export default function AppointmentDetails({
           const res2 = await fetchResponse.json();
           if (res2.success) {
             setOpened(false);
+            updateAppointments(token);
             showNotification({
               title: "Consultation planifiée",
               message:
