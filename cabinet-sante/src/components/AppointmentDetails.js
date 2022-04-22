@@ -80,9 +80,8 @@ export default function AppointmentDetails({
   useEffect(() => {
     if (appointmentId !== 0 && id === 0) {
       // then we get data from the DB and update the from
-
       const thisAppointment = appointments.filter(
-        (e) => e.appointmentId === appointmentId
+        (e) => e.appointmentId.toString() === appointmentId.toString()
       );
       const row = thisAppointment[0];
       setPatient(row.patientId);
