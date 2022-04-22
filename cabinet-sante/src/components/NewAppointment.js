@@ -47,6 +47,7 @@ export default function NewAppointment({
   startingTime,
   appointmentId,
 }) {
+  const appointments = usePatients().appointments;
   const patients = usePatients().patients;
   const updatePatients = useUpdatePatients().update;
   const checkPrices = useUpdatePatients().check;
@@ -93,50 +94,26 @@ export default function NewAppointment({
 
   useEffect(() => {
     if (appointmentId !== 0 && id === 0) {
-      // then we get data from the DB and update the from
-      async function getData() {
-        try {
-          const fetchResponse = await fetch(
-            process.env.REACT_APP_API_DOMAIN + "/GetEventDetails",
-            {
-              method: "POST",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                id: appointmentId,
-                token: token,
-              }),
-            }
-          );
-          const res = await fetchResponse.json();
-
-          if (res.success) {
-            // const row = res.data[0];
-            setId(appointmentId);
-            const row = res.data[0];
-            const patientsList = res.data.map((e) =>
-              getFullnameFromId(patients, e.patientId)
-            );
-            form.setValues({
-              patients: patientsList,
-              title: row.title,
-              date: dateOnly(row.start),
-              timeRange: [timeOnly(row.start), timeOnly(row.end)],
-              important: row.important,
-              comments: row.comments,
-              appointmentType: appointmentTypes.find((e) => e.id === row.idType)
-                .type,
-            });
-          }
-        } catch (e) {
-          return e;
-        }
-      }
-      getData();
+      // then we get data from the context and update the form
+      const thisAppointment = appointments.filter(
+        (e) => e.appointmentId === appointmentId
+      );
+      setId(appointmentId);
+      const row = thisAppointment[0];
+      const patientsList = thisAppointment.map((e) =>
+        getFullnameFromId(patients, e.patientId)
+      );
+      form.setValues({
+        patients: patientsList,
+        title: row.title,
+        date: dateOnly(row.start),
+        timeRange: [timeOnly(row.start), timeOnly(row.end)],
+        important: row.important,
+        comments: row.comments,
+        appointmentType: appointmentTypes.find((e) => e.id === row.idType).type,
+      });
     }
-  }, [appointmentId, id, token, form, appointmentTypes, patientId, patients]);
+  }, [appointmentId, appointments, appointmentTypes, form, id, patients]);
 
   async function deleteAppointment() {
     setDeleteLoader("loading");
