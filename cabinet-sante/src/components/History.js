@@ -21,6 +21,10 @@ export default function History({ patientId }) {
   const [openedDetails, setOpenedDetails] = useState(false);
   const [appointmentId, setAppointmentId] = useState(0);
   const appointmentTypes = useConfig().appointmentTypes;
+  const displayedData = historyData.slice(
+    (activePage - 1) * 10,
+    activePage * 10
+  );
 
   function handleClick(id, multi) {
     setAppointmentId(id);
@@ -89,7 +93,7 @@ export default function History({ patientId }) {
           </tr>
         </thead>
         <tbody>
-          {historyData.map((event) => (
+          {displayedData.map((event) => (
             <tr key={event.id}>
               <td>{event.title}</td>
               <td>{displayDate(new Date(event.start), true)}</td>
