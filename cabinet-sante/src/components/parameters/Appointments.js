@@ -22,7 +22,6 @@ export default function Appointments({ appointmentTypes }) {
   const token = useLogin().token;
   const updateConfigData = useUpdateConfig();
   const appointments = usePatients().appointments;
-  console.log(appointments);
   const [appointmentType, setAppointmentType] = useState("");
   const [appointmentTypeMulti, setAppointmentTypeMulti] = useState(0);
   const [ATSelect, setATselect] = useState("");

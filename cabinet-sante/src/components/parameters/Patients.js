@@ -2,14 +2,16 @@ import "../../styles/styles.css";
 import { useLogin } from "../contexts/AuthContext";
 import { useState } from "react";
 import { TextInput, Button, Modal, Select, Grid, Center } from "@mantine/core";
-import { Pencil, Check, Trash, Plus } from "tabler-icons-react";
+import { Pencil, Check, Trash, Plus, X } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
 import { useUpdateConfig } from "../contexts/ConfigContext";
 import { useEffect } from "react";
 import Confirmation from "../Confirmation";
+import { usePatients } from "../contexts/PatientsContext";
 
 export default function Patients({ patientTypes }) {
   const token = useLogin().token;
+  const appointments = usePatients().appointments;
   const updateConfigData = useUpdateConfig();
   const [patientType, setPatientType] = useState("");
   const [PTSelect, setPTselect] = useState("");
@@ -124,34 +126,48 @@ export default function Patients({ patientTypes }) {
     var index = patientTypes.findIndex((e) => e.type === PTSelect);
     var title = PTSelect;
     var patientTypeId = patientTypes[index].id;
-    try {
-      const fetchResponse = await fetch(
-        process.env.REACT_APP_API_DOMAIN + "/DeletePatientType",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: patientTypeId,
-            token: token,
-          }),
+    if (
+      appointments.findIndex(
+        (e) => e.patientType.toString() === patientTypeId.toString()
+      ) === -1
+    ) {
+      try {
+        const fetchResponse = await fetch(
+          process.env.REACT_APP_API_DOMAIN + "/DeletePatientType",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: patientTypeId,
+              token: token,
+            }),
+          }
+        );
+        const res = await fetchResponse.json();
+        if (res.success) {
+          showNotification({
+            title: title,
+            message: "Le type de profil patient a été supprimé.",
+            color: "green",
+            icon: <Check />,
+          });
+          updateConfigData(token);
+          setPTselect(patientTypes[0].type);
         }
-      );
-      const res = await fetchResponse.json();
-      if (res.success) {
-        showNotification({
-          title: title,
-          message: "Le type de profil patient a été supprimé.",
-          color: "green",
-          icon: <Check />,
-        });
-        updateConfigData(token);
-        setPTselect(patientTypes[0].type);
+      } catch (e) {
+        return e;
       }
-    } catch (e) {
-      return e;
+    } else {
+      showNotification({
+        title: title,
+        message:
+          "Le type de consultation ne peut pas être supprimé car il est utilisé pour certains rendez-vous.",
+        color: "red",
+        icon: <X />,
+      });
     }
   }
 
