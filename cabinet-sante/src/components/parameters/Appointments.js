@@ -17,6 +17,7 @@ import { showNotification } from "@mantine/notifications";
 import { useUpdateConfig } from "../contexts/ConfigContext";
 import { useEffect } from "react";
 import { usePatients } from "../contexts/PatientsContext";
+import { capitalize } from "../Functions";
 
 export default function Appointments({ appointmentTypes }) {
   const token = useLogin().token;
@@ -90,36 +91,50 @@ export default function Appointments({ appointmentTypes }) {
   }
 
   async function addNewType(type, multi, color) {
-    try {
-      const fetchResponse = await fetch(
-        process.env.REACT_APP_API_DOMAIN + "/AddAppointmentType",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            type: type,
-            multi: multi,
-            color: color,
-            token: token,
-          }),
+    if (
+      appointmentTypes.findIndex(
+        (e) => capitalize(e.type) === capitalize(type)
+      ) === -1
+    ) {
+      try {
+        const fetchResponse = await fetch(
+          process.env.REACT_APP_API_DOMAIN + "/AddAppointmentType",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              type: type,
+              multi: multi,
+              color: color,
+              token: token,
+            }),
+          }
+        );
+        const res = await fetchResponse.json();
+        if (res.success) {
+          showNotification({
+            title: type,
+            message: "Le type de consultation a été ajouté.",
+            color: "green",
+            icon: <Check />,
+          });
+          updateConfigData(token);
+          setATselect(appointmentType);
         }
-      );
-      const res = await fetchResponse.json();
-      if (res.success) {
-        showNotification({
-          title: type,
-          message: "Le type de consultation a été ajouté.",
-          color: "green",
-          icon: <Check />,
-        });
-        updateConfigData(token);
-        setATselect(appointmentType);
+      } catch (e) {
+        return e;
       }
-    } catch (e) {
-      return e;
+    } else {
+      showNotification({
+        title: type,
+        message:
+          "Le type de consultation ne peut pas être ajouté à nouveau car elle existe déjà.",
+        color: "red",
+        icon: <X />,
+      });
     }
   }
 

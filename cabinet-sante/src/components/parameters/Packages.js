@@ -16,6 +16,7 @@ import { showNotification } from "@mantine/notifications";
 import { useUpdateConfig } from "../contexts/ConfigContext";
 import { useEffect } from "react";
 import { usePatients } from "../contexts/PatientsContext";
+import { capitalize } from "../Functions";
 
 export default function Packages({ packages }) {
   const token = useLogin().token;
@@ -87,35 +88,48 @@ export default function Packages({ packages }) {
   }
 
   async function addNewPackage(pack, price) {
-    try {
-      const fetchResponse = await fetch(
-        process.env.REACT_APP_API_DOMAIN + "/AddPackage",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            package: pack,
-            price: Math.round(price * 100),
-            token: token,
-          }),
+    if (
+      packages.findIndex((e) => capitalize(e.package) === capitalize(pack)) ===
+      -1
+    ) {
+      try {
+        const fetchResponse = await fetch(
+          process.env.REACT_APP_API_DOMAIN + "/AddPackage",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              package: pack,
+              price: Math.round(price * 100),
+              token: token,
+            }),
+          }
+        );
+        const res = await fetchResponse.json();
+        if (res.success) {
+          showNotification({
+            title: pack,
+            message: "Le forfait a été ajouté.",
+            color: "green",
+            icon: <Check />,
+          });
+          updateConfigData(token);
+          setPackage(pack);
         }
-      );
-      const res = await fetchResponse.json();
-      if (res.success) {
-        showNotification({
-          title: pack,
-          message: "Le forfait a été ajouté.",
-          color: "green",
-          icon: <Check />,
-        });
-        updateConfigData(token);
-        setPackage(pack);
+      } catch (e) {
+        return e;
       }
-    } catch (e) {
-      return e;
+    } else {
+      showNotification({
+        title: pack,
+        message:
+          "Le type de forfait ne peut pas être ajouté à nouveau car il existe déjà.",
+        color: "red",
+        icon: <X />,
+      });
     }
   }
 

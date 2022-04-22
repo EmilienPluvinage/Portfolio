@@ -8,6 +8,7 @@ import { useUpdateConfig } from "../contexts/ConfigContext";
 import { useEffect } from "react";
 import Confirmation from "../Confirmation";
 import { usePatients } from "../contexts/PatientsContext";
+import { capitalize } from "../Functions";
 
 export default function Patients({ patientTypes }) {
   const token = useLogin().token;
@@ -77,34 +78,47 @@ export default function Patients({ patientTypes }) {
   }
 
   async function addNewType(type) {
-    try {
-      const fetchResponse = await fetch(
-        process.env.REACT_APP_API_DOMAIN + "/AddPatientType",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            type: type,
-            token: token,
-          }),
+    if (
+      patientTypes.findIndex((e) => capitalize(e.type) === capitalize(type)) ===
+      -1
+    ) {
+      try {
+        const fetchResponse = await fetch(
+          process.env.REACT_APP_API_DOMAIN + "/AddPatientType",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              type: type,
+              token: token,
+            }),
+          }
+        );
+        const res = await fetchResponse.json();
+        if (res.success) {
+          showNotification({
+            title: type,
+            message: "Le type de consultation a été ajouté.",
+            color: "green",
+            icon: <Check />,
+          });
+          updateConfigData(token);
+          setPTselect(type);
         }
-      );
-      const res = await fetchResponse.json();
-      if (res.success) {
-        showNotification({
-          title: type,
-          message: "Le type de consultation a été ajouté.",
-          color: "green",
-          icon: <Check />,
-        });
-        updateConfigData(token);
-        setPTselect(type);
+      } catch (e) {
+        return e;
       }
-    } catch (e) {
-      return e;
+    } else {
+      showNotification({
+        title: type,
+        message:
+          "Le type de patient ne peut pas être ajouté à nouveau car il existe déjà.",
+        color: "red",
+        icon: <X />,
+      });
     }
   }
 
