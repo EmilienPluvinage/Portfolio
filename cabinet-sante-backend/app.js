@@ -326,9 +326,10 @@ app.post("/AddPriceSchemeRule", (req, res, next) => {
           var userId = rows[0].userId;
           // belongs to that user
           // Now connected and we have the user ID so we do the insert
-          console.log(req.body.packageId);
+          // but first we make sure there isn't already a rule with the same ids
+
           connection.query(
-            "INSERT INTO priceScheme(userId,packageId, appointmentTypeId, patientTypeId, price) VALUES (?,?,?,?,?)",
+            "SELECT price FROM priceScheme WHERE userId=? AND packageId=? AND appointmentTypeId=? AND patientTypeId=?",
             [
               userId,
               req.body.packageId !== undefined ? req.body.packageId : 0,
@@ -336,20 +337,47 @@ app.post("/AddPriceSchemeRule", (req, res, next) => {
                 ? req.body.appointmentTypeId
                 : 0,
               req.body.patientTypeId !== undefined ? req.body.patientTypeId : 0,
-              req.body.price,
             ],
             (err, result) => {
               if (err) throw err;
-              connection.query(
-                "SELECT id FROM priceScheme WHERE userId= ? ORDER BY id DESC LIMIT 0,1",
-                userId,
-                (err, rows) => {
-                  if (err) throw err;
-                  res
-                    .status(201)
-                    .json({ success: true, error: "", id: rows[0].id });
-                }
-              );
+
+              console.log(result);
+              if (result.length > 0) {
+                res.status(201).json({
+                  success: false,
+                  error: "already exists",
+                  price: result[0].price,
+                });
+              } else {
+                connection.query(
+                  "INSERT INTO priceScheme(userId,packageId, appointmentTypeId, patientTypeId, price) VALUES (?,?,?,?,?)",
+                  [
+                    userId,
+                    req.body.packageId !== undefined ? req.body.packageId : 0,
+                    req.body.appointmentTypeId !== undefined
+                      ? req.body.appointmentTypeId
+                      : 0,
+                    req.body.patientTypeId !== undefined
+                      ? req.body.patientTypeId
+                      : 0,
+                    req.body.price !== undefined ? req.body.price : 0,
+                    ,
+                  ],
+                  (err, result) => {
+                    if (err) throw err;
+                    connection.query(
+                      "SELECT id FROM priceScheme WHERE userId= ? ORDER BY id DESC LIMIT 0,1",
+                      userId,
+                      (err, rows) => {
+                        if (err) throw err;
+                        res
+                          .status(201)
+                          .json({ success: true, error: "", id: rows[0].id });
+                      }
+                    );
+                  }
+                );
+              }
             }
           );
         } else {

@@ -11,7 +11,7 @@ import {
   Table,
 } from "@mantine/core";
 import { displayPrice } from "../Functions";
-import { Check, Pencil, Plus, Trash } from "tabler-icons-react";
+import { Check, Pencil, Plus, Trash, X } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
 import Confirmation from "../Confirmation";
 
@@ -151,6 +151,15 @@ export default function PriceScheme() {
         });
         setOpened(false);
         updateConfigData(token);
+      } else if (res.error === "already exists") {
+        showNotification({
+          title: "Cette règle existe déjà",
+          message: `Il y a déjà un prix programmé avec ces paramètres. Il s'agit de ${displayPrice(
+            res.price
+          )} €.`,
+          color: "red",
+          icon: <X />,
+        });
       }
     } catch (e) {
       return e;
