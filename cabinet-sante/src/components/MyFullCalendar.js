@@ -7,11 +7,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { useLogin } from "./contexts/AuthContext";
 import { useState } from "react";
 import { useEffect } from "react";
-import {
-  getAllEvents,
-  concatenateDateTime,
-  displayDateInFrench,
-} from "./Functions";
+import { concatenateDateTime, displayDateInFrench } from "./Functions";
 import NewAppointment from "./NewAppointment";
 import { Modal } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";

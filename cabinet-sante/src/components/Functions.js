@@ -147,28 +147,6 @@ export function displayDateInFrench(date) {
   );
 }
 
-export async function getAllEvents(token) {
-  try {
-    const fetchResponse = await fetch(
-      process.env.REACT_APP_API_DOMAIN + "/GetAllEvents",
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          token: token,
-        }),
-      }
-    );
-    const res = await fetchResponse.json();
-    return res;
-  } catch (e) {
-    return e;
-  }
-}
-
 export function calculateAge(date) {
   const birthdate = new Date(date);
   const now = new Date(Date.now());
