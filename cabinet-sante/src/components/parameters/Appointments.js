@@ -12,14 +12,17 @@ import {
   Center,
   ColorPicker,
 } from "@mantine/core";
-import { Pencil, Check, Trash, Plus } from "tabler-icons-react";
+import { Pencil, Check, Trash, Plus, X } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
 import { useUpdateConfig } from "../contexts/ConfigContext";
 import { useEffect } from "react";
+import { usePatients } from "../contexts/PatientsContext";
 
 export default function Appointments({ appointmentTypes }) {
   const token = useLogin().token;
   const updateConfigData = useUpdateConfig();
+  const appointments = usePatients().appointments;
+  console.log(appointments);
   const [appointmentType, setAppointmentType] = useState("");
   const [appointmentTypeMulti, setAppointmentTypeMulti] = useState(0);
   const [ATSelect, setATselect] = useState("");
@@ -143,34 +146,44 @@ export default function Appointments({ appointmentTypes }) {
     var index = appointmentTypes.findIndex((e) => e.type === ATSelect);
     var title = ATSelect;
     var appointmentTypeId = appointmentTypes[index].id;
-    try {
-      const fetchResponse = await fetch(
-        process.env.REACT_APP_API_DOMAIN + "/DeleteAppointmentType",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: appointmentTypeId,
-            token: token,
-          }),
+    if (appointments.findIndex((e) => e.idType === appointmentTypeId) === -1) {
+      try {
+        const fetchResponse = await fetch(
+          process.env.REACT_APP_API_DOMAIN + "/DeleteAppointmentType",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: appointmentTypeId,
+              token: token,
+            }),
+          }
+        );
+        const res = await fetchResponse.json();
+        if (res.success) {
+          showNotification({
+            title: title,
+            message: "Le type de consultation a été supprimé.",
+            color: "green",
+            icon: <Check />,
+          });
+          updateConfigData(token);
+          setATselect(appointmentTypes[0].type);
         }
-      );
-      const res = await fetchResponse.json();
-      if (res.success) {
-        showNotification({
-          title: title,
-          message: "Le type de consultation a été supprimé.",
-          color: "green",
-          icon: <Check />,
-        });
-        updateConfigData(token);
-        setATselect(appointmentTypes[0].type);
+      } catch (e) {
+        return e;
       }
-    } catch (e) {
-      return e;
+    } else {
+      showNotification({
+        title: title,
+        message:
+          "Le type de consultation ne peut pas être supprimé car il est utilisé pour certains rendez-vous.",
+        color: "red",
+        icon: <X />,
+      });
     }
   }
 
