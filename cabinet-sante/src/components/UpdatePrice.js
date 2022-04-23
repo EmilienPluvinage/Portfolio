@@ -1,18 +1,26 @@
 import "../styles/styles.css";
-import { useUpdatePatients } from "./contexts/PatientsContext";
+import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { Button, NumberInput, Center, Modal } from "@mantine/core";
 import { displayPrice } from "./Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { useState } from "react";
 import { showNotification } from "@mantine/notifications";
 import { Check } from "tabler-icons-react";
+import Confirmation from "./Confirmation";
 
 export default function UpdatePrice({ InitialPrice, priceId }) {
   // This component is going to display the price and offer the possibility to update it
   const token = useLogin().token;
+  const appointments = usePatients().appointments;
   const updateAppointments = useUpdatePatients().update;
   const [price, setPrice] = useState(0);
   const [openedPrice, setOpenedPrice] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [confirmation, setConfirmation] = useState({
+    text: "",
+    title: "",
+    callback: undefined,
+  });
 
   function openPriceModal() {
     setPrice(InitialPrice / 100);
@@ -54,9 +62,32 @@ export default function UpdatePrice({ InitialPrice, priceId }) {
       return e;
     }
   }
+
+  function handleClick() {
+    if (alreadyPayed(priceId)) {
+      setConfirmation({
+        title: "Modifier le prix",
+        text: "Cette consultation a déjà été payée. Êtes-vous sûr(e) de vouloir en changer le prix?",
+        callback: () => openPriceModal(),
+      });
+      setOpen(true);
+    } else {
+      openPriceModal();
+    }
+  }
+
+  function alreadyPayed(priceId) {
+    return appointments.find((e) => e.id === priceId).payed === 1;
+  }
   return (
     <>
-      {" "}
+      <Confirmation
+        text={confirmation.text}
+        title={confirmation.title}
+        callback={confirmation.callback}
+        open={open}
+        close={() => setOpen(false)}
+      />{" "}
       <Modal
         centered
         overlayOpacity={0.3}
@@ -86,7 +117,7 @@ export default function UpdatePrice({ InitialPrice, priceId }) {
           </Center>
         )}
       </Modal>
-      <Button size="xs" variant="default" onClick={() => openPriceModal()}>
+      <Button size="xs" variant="default" onClick={() => handleClick()}>
         {" "}
         {displayPrice(InitialPrice)} €
       </Button>
