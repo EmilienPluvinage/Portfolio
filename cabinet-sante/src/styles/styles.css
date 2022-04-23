@@ -126,7 +126,7 @@ h2 {
 #LoginScreen p {
   margin: 10px;
 }
-#LoginScreen input {
+#LoginScreen .input {
   width: 250px;
 }
 

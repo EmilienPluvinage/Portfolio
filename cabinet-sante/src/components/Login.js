@@ -2,10 +2,18 @@ import "../styles/styles.css";
 import { useState } from "react";
 import { useLogin, useLogging } from "./contexts/AuthContext";
 import { useEffect } from "react";
-import { TextInput, Button, Loader, Text } from "@mantine/core";
+import {
+  TextInput,
+  Button,
+  Loader,
+  Text,
+  Checkbox,
+  Center,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
 import { Check } from "tabler-icons-react";
+import { check } from "prettier";
 
 function Login() {
   const currentToken = localStorage.getItem("token");
@@ -13,6 +21,10 @@ function Login() {
   const logging = useLogging();
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [checked, setChecked] = useState(
+    localStorage.getItem("rememberMe") === "true"
+  );
 
   const form = useForm({
     initialValues: {
@@ -30,7 +42,11 @@ function Login() {
     // if we're not logged in but there is an existing token in local storage
     // it means the user is returning, so we log him in.
     async function returning() {
-      if (currentToken !== null && loggedIn === false) {
+      if (
+        currentToken !== null &&
+        loggedIn === false &&
+        localStorage.getItem("rememberMe") === "true"
+      ) {
         setLoading(true);
         await logging(true, currentToken);
         setLoading(false);
@@ -56,6 +72,7 @@ function Login() {
 
         await logging(true, data.token);
         localStorage.setItem("token", data.token);
+        localStorage.setItem("rememberMe", checked);
         setErrorMessage("");
         form.reset();
         setLoading(false);
@@ -101,6 +118,7 @@ function Login() {
         <div id="LoginContent">
           <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
             <TextInput
+              className="input"
               label="E-mail"
               name="email"
               placeholder="Votre e-mail"
@@ -111,6 +129,7 @@ function Login() {
             />
 
             <TextInput
+              className="input"
               label="Mot de passe :"
               type="password"
               name="password"
@@ -120,6 +139,14 @@ function Login() {
               style={{ margin: "10px" }}
               required
             />
+            <Center>
+              <Checkbox
+                label="Se souvenir de moi"
+                checked={checked}
+                onChange={(event) => setChecked(event.currentTarget.checked)}
+                style={{ margin: "10px" }}
+              />
+            </Center>
 
             <p>{errorMessage}</p>
 
