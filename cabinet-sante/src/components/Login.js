@@ -13,7 +13,6 @@ import {
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
 import { Check } from "tabler-icons-react";
-import { check } from "prettier";
 
 function Login() {
   const currentToken = localStorage.getItem("token");
