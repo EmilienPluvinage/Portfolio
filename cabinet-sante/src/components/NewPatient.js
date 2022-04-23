@@ -9,7 +9,6 @@ import { showNotification } from "@mantine/notifications";
 import {
   Calendar,
   Upload,
-  CurrencyEuro,
   ReportMedical,
   Check,
   ListSearch,
@@ -33,6 +32,7 @@ import { useForm } from "@mantine/form";
 import { DatePicker } from "@mantine/dates";
 import AppointmentDetails from "./AppointmentDetails";
 import History from "./History";
+import Payement from "./Payement";
 
 export default function NewPatient() {
   const navigate = useNavigate();
@@ -219,12 +219,14 @@ export default function NewPatient() {
 
       <form
         onSubmit={form.onSubmit((values) => submitForm(values))}
+        id="new-patient"
         autoComplete="new-password"
       >
         <div className="nav-patient">
           <Button
             leftIcon={<Upload size={18} />}
             type="submit"
+            form="new-patient"
             style={{ margin: "10px" }}
             loading={loading}
           >
@@ -246,12 +248,7 @@ export default function NewPatient() {
               >
                 Historique
               </Button>
-              <Button
-                leftIcon={<CurrencyEuro size={18} />}
-                style={{ margin: "10px" }}
-              >
-                Paiement
-              </Button>{" "}
+              <Payement patientId={id} />
             </>
           )}
         </div>
