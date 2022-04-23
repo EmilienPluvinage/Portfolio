@@ -33,6 +33,7 @@ import { DatePicker } from "@mantine/dates";
 import AppointmentDetails from "./AppointmentDetails";
 import History from "./History";
 import Payement from "./Payement";
+import Balance from "./Balance";
 
 export default function NewPatient() {
   const navigate = useNavigate();
@@ -249,6 +250,7 @@ export default function NewPatient() {
                 Historique
               </Button>
               <Payement patientId={id} />
+              <Balance patientId={id} />
             </>
           )}
         </div>
