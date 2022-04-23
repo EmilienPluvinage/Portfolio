@@ -447,6 +447,56 @@ app.post("/NewParticipant", (req, res, next) => {
   });
 });
 
+app.post("/AddNewPayement", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          const userId = rows[0].userId;
+          // belongs to that user
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "INSERT INTO payements(userId, amount, patientId, date, method, eventId) VALUES (?,?,?,?,?,?)",
+            [
+              userId,
+              req.body.amount,
+              req.body.patientId,
+              Date.now(),
+              req.body.method,
+              req.body.eventId,
+            ],
+            (err, rows) => {
+              if (err) throw err;
+
+              if (req.body.eventId !== 0) {
+                connection.query(
+                  "UPDATE isInAppointment SET payed=1 WHERE id=?",
+                  req.body.eventId,
+                  (err, result) => {
+                    if (err) throw err;
+                  }
+                );
+              }
+              res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({
+            success: false,
+            error: "userId and appointmentId do not match",
+          });
+        }
+      }
+    );
+  });
+});
+
 //////////////
 //   READ   //
 //////////////

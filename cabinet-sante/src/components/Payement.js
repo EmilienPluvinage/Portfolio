@@ -118,8 +118,11 @@ export default function Payement({ patientId }) {
           icon: <Check />,
           color: "green",
         });
-        updateAppointments(token);
         setLoading("");
+        setOpened(false);
+        form.reset();
+        setReason("");
+        updateAppointments(token);
       }
     } catch (e) {
       return e;
@@ -156,8 +159,11 @@ export default function Payement({ patientId }) {
           icon: <Check />,
           color: "green",
         });
-        updateAppointments(token);
         setLoading("");
+        setOpened(false);
+        form.reset();
+        setReason("");
+        updateAppointments(token);
       }
     } catch (e) {
       return e;
