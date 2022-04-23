@@ -467,7 +467,7 @@ app.post("/AddNewPayement", (req, res, next) => {
               userId,
               req.body.amount,
               req.body.patientId,
-              Date.now(),
+              new Date(Date.now()),
               req.body.method,
               req.body.eventId,
             ],
@@ -484,6 +484,72 @@ app.post("/AddNewPayement", (req, res, next) => {
                 );
               }
               res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({
+            success: false,
+            error: "userId and appointmentId do not match",
+          });
+        }
+      }
+    );
+  });
+});
+
+app.post("/AddNewSubscription", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          const userId = rows[0].userId;
+          // belongs to that user
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "INSERT INTO subscription(userId, packageId, date) VALUES (?,?,?)",
+            [userId, req.body.packageId, new Date(Date.now())],
+            (err, rows) => {
+              if (err) throw err;
+
+              connection.query(
+                "SELECT id FROM subscription WHERE userId=? AND packageId=? ORDER BY id DESC LIMIT 0,1",
+                [userId, req.body.packageId],
+                (err, rows) => {
+                  if (err) throw err;
+                  var subscriptionId = rows[0].id;
+
+                  connection.query(
+                    "INSERT INTO hasSubscribed(userId, patientId, subscriptionId) VALUES (?,?,?)",
+                    [userId, req.body.patientId, subscriptionId],
+                    (err, rows) => {
+                      if (err) throw err;
+                    }
+                  );
+
+                  connection.query(
+                    "INSERT INTO payements(userId, amount, patientId, date, method, subscriptionId) VALUES (?,?,?,?,?,?)",
+                    [
+                      userId,
+                      req.body.amount,
+                      req.body.patientId,
+                      new Date(Date.now()),
+                      req.body.method,
+                      subscriptionId,
+                    ],
+                    (err, rows) => {
+                      if (err) throw err;
+
+                      res.status(201).json({ success: true, error: "" });
+                    }
+                  );
+                }
+              );
             }
           );
         } else {
