@@ -27,7 +27,6 @@ const Event = styled.div`
 `;
 
 export default function Caption({ appointmentTypes }) {
-  console.log(appointmentTypes);
   return (
     <Container>
       {appointmentTypes.map((element) => (
