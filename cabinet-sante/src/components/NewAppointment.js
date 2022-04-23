@@ -96,7 +96,7 @@ export default function NewAppointment({
     if (appointmentId !== 0 && id === 0) {
       // then we get data from the context and update the form
       const thisAppointment = appointments.filter(
-        (e) => e.appointmentId === appointmentId
+        (e) => e.appointmentId.toString() === appointmentId.toString()
       );
       setId(appointmentId);
       const row = thisAppointment[0];
