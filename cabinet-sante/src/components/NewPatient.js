@@ -44,7 +44,7 @@ export default function NewPatient() {
   const [loading, setLoading] = useState("");
   const token = useLogin().token;
   const PatientList = usePatients().patients;
-  const getPatients = useUpdatePatients();
+  const getPatients = useUpdatePatients().update;
   const [id, setId] = useState(0);
   const params = useParams();
   const initialValues = {

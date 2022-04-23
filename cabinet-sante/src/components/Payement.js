@@ -12,7 +12,7 @@ import { showNotification } from "@mantine/notifications";
 
 export default function Payement({ patientId }) {
   const token = useLogin().token;
-  const updateAppointments = useUpdatePatients();
+  const updateAppointments = useUpdatePatients().update;
   const [opened, setOpened] = useState(false);
   const appointments = usePatients().appointments;
   const appointmentTypes = useConfig().appointmentTypes;
@@ -118,11 +118,12 @@ export default function Payement({ patientId }) {
           icon: <Check />,
           color: "green",
         });
-        setLoading("");
-        setOpened(false);
+
         form.reset();
         setReason("");
         updateAppointments(token);
+        setLoading("");
+        setOpened(false);
       }
     } catch (e) {
       return e;
@@ -159,11 +160,12 @@ export default function Payement({ patientId }) {
           icon: <Check />,
           color: "green",
         });
-        setLoading("");
-        setOpened(false);
+
         form.reset();
         setReason("");
         updateAppointments(token);
+        setLoading("");
+        setOpened(false);
       }
     } catch (e) {
       return e;
