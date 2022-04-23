@@ -15,6 +15,7 @@ import { Check, X } from "tabler-icons-react";
 import { useConfig } from "./contexts/ConfigContext";
 import AppointmentDetails from "./AppointmentDetails";
 import { usePatients } from "./contexts/PatientsContext";
+import Caption from "./Caption";
 
 export default function MyFullCalendar() {
   const [opened, setOpened] = useState(false);
@@ -179,6 +180,7 @@ export default function MyFullCalendar() {
       </Modal>
       <h2>Agenda</h2>
       <div className="main-content">
+        <Caption appointmentTypes={appointmentTypes} />
         <FullCalendar
           plugins={[timeGridPlugin, interactionPlugin]}
           initialView="timeGridWeek"
