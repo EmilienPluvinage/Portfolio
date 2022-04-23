@@ -95,14 +95,17 @@ function Login() {
 
   async function postLogin(email, password) {
     try {
-      const fetchResponse = await fetch("http://localhost:3001/Login", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: email, password: password }),
-      });
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/Login",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: email, password: password }),
+        }
+      );
       const data = await fetchResponse.json();
       return data;
     } catch (e) {
