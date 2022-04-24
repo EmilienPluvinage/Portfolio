@@ -20,6 +20,7 @@ import { showNotification } from "@mantine/notifications";
 export default function Balance({ patientId }) {
   const token = useLogin().token;
   const [opened, setOpened] = useState(false);
+  const packages = useConfig().packages;
   const patientName = usePatients().patients.find(
     (e) => e.id === patientId
   )?.fullname;
@@ -33,8 +34,20 @@ export default function Balance({ patientId }) {
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState("");
 
-  console.log(appointments);
-  console.log(payements);
+  const packagesData = payements
+    .filter((e) => e.eventId === 0)
+    .map((obj) => ({
+      ...obj,
+      dataType: "package",
+    }));
+
+  var data = appointments.map((obj) => ({ ...obj, dataType: "event" }));
+  function insertPackageIntoArray(array, pack) {
+    var index = array.findIndex((e) => e.start < pack.date);
+    array.splice(index, 0, pack);
+  }
+
+  packagesData.forEach((e) => insertPackageIntoArray(data, e));
 
   const ths = (
     <tr>
@@ -47,22 +60,35 @@ export default function Balance({ patientId }) {
     </tr>
   );
 
-  const rows = appointments.map((element) => (
+  const rows = data.map((element) => (
     <tr key={element.id}>
-      <td>{displayDate(new Date(element.start))}</td>
-      <td>{appointmentTypes.find((e) => e.id === element.idType)?.type}</td>
-      <td style={{ color: "red" }}>- {displayPrice(element.price)} €</td>
-      <td>
-        {element.payed === 1 &&
-          displayPrice(
-            payements.find((e) => e.eventId === element.id)?.amount
-          ) + " €"}
-      </td>
-      <td>
-        {element.payed === 1 &&
-          payements.find((e) => e.eventId === element.id)?.method}
-      </td>
-      <td></td>
+      {element.dataType === "event" ? (
+        <>
+          <td>{displayDate(new Date(element.start))}</td>
+          <td>{appointmentTypes.find((e) => e.id === element.idType)?.type}</td>
+          <td style={{ color: "red" }}>- {displayPrice(element.price)} €</td>
+          <td>
+            {element.payed === 1 &&
+              displayPrice(
+                payements.find((e) => e.eventId === element.id)?.amount
+              ) + " €"}
+          </td>
+          <td>
+            {element.payed === 1 &&
+              payements.find((e) => e.eventId === element.id)?.method}
+          </td>
+          <td></td>
+        </>
+      ) : (
+        <>
+          <td>{displayDate(new Date(element.date))}</td>
+          <td>{packages.find((e) => e.id === element.packageId)?.package}</td>
+          <td></td>
+          <td>{displayPrice(element.amount)} €</td>
+          <td>{element.method}</td>
+          <td></td>
+        </>
+      )}
     </tr>
   ));
 
