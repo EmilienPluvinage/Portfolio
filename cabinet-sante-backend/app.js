@@ -273,6 +273,45 @@ app.post("/AddPatientType", (req, res, next) => {
   });
 });
 
+app.post("/AddParameter", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          var userId = rows[0].userId;
+          // belongs to that user
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "INSERT INTO parameters(name, value, userId) VALUES (?,?, ?)",
+            [req.body.name, req.body.value, userId],
+            (err, result) => {
+              if (err) throw err;
+              connection.query(
+                "SELECT id FROM parameters WHERE userId= ? ORDER BY id DESC LIMIT 0,1",
+                userId,
+                (err, rows) => {
+                  if (err) throw err;
+                  res
+                    .status(201)
+                    .json({ success: true, error: "", id: rows[0].id });
+                }
+              );
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
 app.post("/AddPackage", (req, res, next) => {
   pool.getConnection((err, connection) => {
     if (err) throw err;
@@ -1096,6 +1135,36 @@ app.post("/UpdatePatientType", (req, res, next) => {
   });
 });
 
+app.post("/UpdateParameter", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT * FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          // Now connected and we have the user ID
+          var userId = rows[0].userId;
+          // so we do the update
+          connection.query(
+            "UPDATE parameters SET value=? WHERE id=? and userId=?",
+            [req.body.value, req.body.id, userId],
+            (err, result) => {
+              if (err) throw err;
+              res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
 app.post("/UpdatePackage", (req, res, next) => {
   pool.getConnection((err, connection) => {
     if (err) throw err;
@@ -1486,6 +1555,35 @@ app.post("/DeletePatientType", (req, res, next) => {
           // Now connected and we have the user ID so we do the insert
           connection.query(
             "DELETE FROM patientTypes WHERE userId=? AND id=?",
+            [userId, req.body.id],
+            (err, result) => {
+              res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
+app.post("/DeleteParameter", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          var userId = rows[0].userId;
+          // belongs to that user
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "DELETE FROM parameters WHERE userId=? AND id=?",
             [userId, req.body.id],
             (err, result) => {
               res.status(201).json({ success: true, error: "" });
