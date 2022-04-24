@@ -4,19 +4,67 @@ import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { useConfig } from "./contexts/ConfigContext";
 import { Check, CurrencyEuro, ReportMoney } from "tabler-icons-react";
 
-import { Button, Center, Modal, NumberInput, Select } from "@mantine/core";
+import {
+  Button,
+  Center,
+  Modal,
+  NumberInput,
+  Select,
+  Table,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { displayDateInFrench, displayPrice } from "./Functions";
+import { displayDate, displayDateInFrench, displayPrice } from "./Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { showNotification } from "@mantine/notifications";
 
 export default function Balance({ patientId }) {
   const token = useLogin().token;
   const [opened, setOpened] = useState(false);
-  const appointments = usePatients().appointments;
+  const patientName = usePatients().patients.find(
+    (e) => e.id === patientId
+  )?.fullname;
+  const appointments = usePatients().appointments.filter(
+    (e) => e.patientId === patientId
+  );
+  const payements = usePatients().payements.filter(
+    (e) => e.patientId === patientId
+  );
   const appointmentTypes = useConfig().appointmentTypes;
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState("");
+
+  console.log(appointments);
+  console.log(payements);
+
+  const ths = (
+    <tr>
+      <th>Date</th>
+      <th>Motif</th>
+      <th>Débit</th>
+      <th>Crédit</th>
+      <th>Méthode</th>
+      <th>Solde</th>
+    </tr>
+  );
+
+  const rows = appointments.map((element) => (
+    <tr key={element.id}>
+      <td>{displayDate(new Date(element.start))}</td>
+      <td>{appointmentTypes.find((e) => e.id === element.idType)?.type}</td>
+      <td style={{ color: "red" }}>- {displayPrice(element.price)} €</td>
+      <td>
+        {element.payed === 1 &&
+          displayPrice(
+            payements.find((e) => e.eventId === element.id)?.amount
+          ) + " €"}
+      </td>
+      <td>
+        {element.payed === 1 &&
+          payements.find((e) => e.eventId === element.id)?.method}
+      </td>
+      <td></td>
+    </tr>
+  ));
 
   return (
     <>
@@ -26,11 +74,14 @@ export default function Balance({ patientId }) {
           overlayOpacity={0.3}
           opened={opened}
           onClose={() => setOpened(false)}
-          title={"Historique des paiements"}
+          title={`Historique des paiements de ${patientName}`}
           closeOnClickOutside={false}
           size="50%"
         >
-          Historique
+          <Table striped verticalSpacing="xs">
+            <thead>{ths}</thead>
+            <tbody>{rows}</tbody>
+          </Table>
         </Modal>
       )}
       <Button
