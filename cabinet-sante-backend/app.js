@@ -755,15 +755,25 @@ app.post("/GetConfigData", (req, res, next) => {
                           if (err) throw err;
 
                           var priceScheme = rows;
-                          res.status(201).json({
-                            success: true,
-                            data: {
-                              appointmentTypes: appointmentsTypes,
-                              patientTypes: patientTypes,
-                              packages: packages,
-                              priceScheme: priceScheme,
-                            },
-                          });
+                          connection.query(
+                            "SELECT * FROM parameters WHERE userId=?",
+                            userId,
+                            (err, rows) => {
+                              if (err) throw err;
+
+                              var parameters = rows;
+                              res.status(201).json({
+                                success: true,
+                                data: {
+                                  appointmentTypes: appointmentsTypes,
+                                  patientTypes: patientTypes,
+                                  packages: packages,
+                                  priceScheme: priceScheme,
+                                  parameters: parameters,
+                                },
+                              });
+                            }
+                          );
                         }
                       );
                     }
