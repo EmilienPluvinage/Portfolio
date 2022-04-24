@@ -14,6 +14,7 @@ const mois = [
 ];
 
 export function displayPrice(priceInCents) {
+  if (priceInCents === undefined) return 0;
   // displays the price with a comma and two decimals, unless it's 0, in which case we return 0.
   var i = Math.round(priceInCents).toString().length - 2;
   var result =
