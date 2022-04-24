@@ -16,6 +16,11 @@ export default function Payement({ patientId }) {
   const [opened, setOpened] = useState(false);
   const appointments = usePatients().appointments;
   const appointmentTypes = useConfig().appointmentTypes;
+  const payementMethods = useConfig().parameters.reduce(
+    (acc, item) =>
+      item.name === "payementMethod" ? acc.concat(item.value) : acc,
+    []
+  );
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState("");
 
@@ -215,7 +220,7 @@ export default function Payement({ patientId }) {
               required
             />
             <Select
-              data={["Chèque", "Espèces", "Autre"]}
+              data={payementMethods}
               label="Moyen de paiement"
               name="method"
               {...form.getInputProps("method")}
