@@ -633,7 +633,7 @@ app.post("/GetPatients", (req, res, next) => {
           var userId = rows[0].userId;
           // Now connected and we have the user ID so we do the insert
           connection.query(
-            "SELECT patients.*, subscription.packageId FROM patients LEFT JOIN hasSubscribed ON patients.id = hasSubscribed.patientId LEFT JOIN subscription ON hasSubscribed.subscriptionId = subscription.id WHERE patients.userId = 1",
+            "SELECT patients.*, subscription.packageId, max(subscription.date) FROM patients LEFT JOIN hasSubscribed ON patients.id = hasSubscribed.patientId LEFT JOIN subscription ON hasSubscribed.subscriptionId = subscription.id WHERE patients.userId = 1 GROUP BY id",
             userId,
             (err, rows) => {
               if (err) throw err;
