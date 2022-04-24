@@ -703,7 +703,7 @@ app.post("/GetPayements", (req, res, next) => {
           var userId = rows[0].userId;
           // Now connected and we have the user ID so we do the insert
           connection.query(
-            "SELECT * FROM payements WHERE userId=? ORDER BY date DESC",
+            "SELECT payements.*, subscription.packageId FROM payements LEFT JOIN subscription ON payements.subscriptionId = subscription.id WHERE payements.userId=? ORDER BY date DESC",
             userId,
             (err, rows) => {
               if (err) throw err;
