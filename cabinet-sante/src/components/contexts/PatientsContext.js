@@ -16,11 +16,13 @@ export function useUpdatePatients() {
 export function PatientsProvider({ children }) {
   const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [payements, setPayements] = useState([]);
   const [checkOpen, setCheckOpen] = useState(false);
 
   async function initData(token) {
     updatePatientsList(token);
     updateAppointmentsList(token);
+    updatePayementsList(token);
   }
 
   async function updatePatientsList(token) {
@@ -78,6 +80,28 @@ export function PatientsProvider({ children }) {
     }
   }
 
+  async function updatePayementsList(token) {
+    try {
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/GetPayements",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+          }),
+        }
+      );
+      const res = await fetchResponse.json();
+      setPayements(res.data);
+    } catch (e) {
+      return e;
+    }
+  }
+
   function checkPrices() {
     const checks = appointments.map((e) => {
       return {
@@ -94,7 +118,11 @@ export function PatientsProvider({ children }) {
 
   return (
     <PatientsContext.Provider
-      value={{ patients: patients, appointments: appointments }}
+      value={{
+        patients: patients,
+        appointments: appointments,
+        payements: payements,
+      }}
     >
       <UpdatePatientsContext.Provider
         value={{ update: initData, check: checkPrices }}
