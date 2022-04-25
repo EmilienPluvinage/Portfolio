@@ -506,7 +506,9 @@ app.post("/AddNewPayement", (req, res, next) => {
               userId,
               req.body.amount,
               req.body.patientId,
-              new Date(Date.now()),
+              new Date(
+                req.body.date !== undefined ? req.body.date : Date.now()
+              ),
               req.body.method,
               req.body.eventId,
             ],
@@ -552,7 +554,13 @@ app.post("/AddNewSubscription", (req, res, next) => {
           // Now connected and we have the user ID so we do the insert
           connection.query(
             "INSERT INTO subscription(userId, packageId, date) VALUES (?,?,?)",
-            [userId, req.body.packageId, new Date(Date.now())],
+            [
+              userId,
+              req.body.packageId,
+              new Date(
+                req.body.date !== undefined ? req.body.date : Date.now()
+              ),
+            ],
             (err, rows) => {
               if (err) throw err;
 
@@ -577,7 +585,9 @@ app.post("/AddNewSubscription", (req, res, next) => {
                       userId,
                       req.body.amount,
                       req.body.patientId,
-                      new Date(Date.now()),
+                      new Date(
+                        req.body.date !== undefined ? req.body.date : Date.now()
+                      ),
                       req.body.method,
                       subscriptionId,
                     ],

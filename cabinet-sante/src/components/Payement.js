@@ -2,13 +2,15 @@ import { useState } from "react";
 import "../styles/styles.css";
 import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { useConfig } from "./contexts/ConfigContext";
-import { Check, CurrencyEuro } from "tabler-icons-react";
+import { Calendar, Check, CurrencyEuro } from "tabler-icons-react";
 
 import { Button, Center, Modal, NumberInput, Select } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { displayDateInFrench, displayPrice } from "./Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { showNotification } from "@mantine/notifications";
+import { DatePicker } from "@mantine/dates";
+import { useEffect } from "react";
 
 export default function Payement({ patientId }) {
   const token = useLogin().token;
@@ -31,6 +33,7 @@ export default function Payement({ patientId }) {
         : acc.concat({
             id: item.id,
             defaultValue: item.price,
+            defaultDate: item.start,
             value:
               appointmentTypes.find((e) => e.id === item.idType)?.type +
               " " +
@@ -50,6 +53,7 @@ export default function Payement({ patientId }) {
           return {
             value: e.value,
             defaultValue: e.defaultValue,
+            defaultDate: e.defaultDate,
             type: "appointment",
           };
         })
@@ -61,11 +65,26 @@ export default function Payement({ patientId }) {
   const initialValues = {
     price: "",
     method: "",
+    date: "",
   };
 
   const form = useForm({
     initialValues: initialValues,
   });
+
+  // empties the form when window is closed
+  useEffect(() => {
+    if (
+      opened === false &&
+      (form.values.price !== "" ||
+        form.values.method !== "" ||
+        form.values.date !== "" ||
+        reason !== "")
+    ) {
+      form.reset();
+      setReason("");
+    }
+  }, [opened, form, reason]);
 
   function submitForm(values) {
     setLoading("loading");
@@ -76,24 +95,24 @@ export default function Payement({ patientId }) {
     var option = reasonOptions.find((e) => e.value === reason);
     switch (option?.type) {
       case "other":
-        addNewPayement(0, values.method, values.price);
+        addNewPayement(0, values.method, values.price, values.date);
         break;
       case "appointment":
         // we need to find the event id to link it to the payement
         var eventId = myAppointments.find((e) => e.value === reason).id;
-        addNewPayement(eventId, values.method, values.price);
+        addNewPayement(eventId, values.method, values.price, values.date);
         break;
       case "package":
         // we need to find the packageId to link it to the payement
         var packageId = packages.find((e) => e.package === reason).id;
-        addNewSubscription(packageId, values.method, values.price);
+        addNewSubscription(packageId, values.method, values.price, values.date);
         break;
       default:
         break;
     }
   }
 
-  async function addNewPayement(eventId, method, price) {
+  async function addNewPayement(eventId, method, price, date) {
     try {
       const fetchResponse = await fetch(
         process.env.REACT_APP_API_DOMAIN + "/AddNewPayement",
@@ -108,6 +127,7 @@ export default function Payement({ patientId }) {
             eventId: eventId,
             method: method,
             amount: price * 100,
+            data: date,
             patientId: patientId,
           }),
         }
@@ -135,7 +155,7 @@ export default function Payement({ patientId }) {
     }
   }
 
-  async function addNewSubscription(packageId, method, price) {
+  async function addNewSubscription(packageId, method, price, date) {
     try {
       const fetchResponse = await fetch(
         process.env.REACT_APP_API_DOMAIN + "/AddNewSubscription",
@@ -150,6 +170,7 @@ export default function Payement({ patientId }) {
             packageId: packageId,
             method: method,
             amount: price * 100,
+            date: date,
             patientId: patientId,
           }),
         }
@@ -179,6 +200,15 @@ export default function Payement({ patientId }) {
 
   function handleReasonChange(value) {
     setReason(value);
+    if (reasonOptions.find((e) => e.value === value)?.type === "package") {
+      form.setFieldValue("date", new Date(Date.now()));
+    }
+    if (reasonOptions.find((e) => e.value === value)?.type === "appointment") {
+      form.setFieldValue(
+        "date",
+        new Date(reasonOptions.find((e) => e.value === value)?.defaultDate)
+      );
+    }
     form.setFieldValue(
       "price",
       reasonOptions.find((e) => e.value === value)?.defaultValue / 100
@@ -224,6 +254,16 @@ export default function Payement({ patientId }) {
               label="Moyen de paiement"
               name="method"
               {...form.getInputProps("method")}
+              required
+            />
+            <DatePicker
+              label="Date du paiement"
+              locale="fr"
+              name="date"
+              {...form.getInputProps("date")}
+              inputFormat="DD/MM/YYYY"
+              placeholder="Date du paiement"
+              icon={<Calendar size={16} />}
               required
             />
             <Center>
