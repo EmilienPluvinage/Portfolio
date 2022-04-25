@@ -183,7 +183,7 @@ export default function Payement({ patientId, payementId }) {
             eventId: eventId,
             method: method,
             amount: price * 100,
-            data: date,
+            date: date,
             patientId: patientId,
           }),
         }
