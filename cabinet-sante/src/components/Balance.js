@@ -114,8 +114,8 @@ export default function Balance({ patientId, fullDisplay }) {
   return (
     <>
       {!fullDisplay ? (
-        <span style={{ color: data[0].balance < 0 ? "red" : "inherit" }}>
-          {displayPrice(data[0].balance) + " €"}
+        <span style={{ color: data[0]?.balance < 0 ? "red" : "inherit" }}>
+          {displayPrice(data[0]?.balance) + " €"}
         </span>
       ) : (
         opened && (
@@ -149,8 +149,10 @@ export default function Balance({ patientId, fullDisplay }) {
           onClick={() => setOpened(true)}
           leftIcon={<ReportMoney size={18} />}
           style={{ margin: "10px" }}
+          color={data[0]?.balance < 0 && "red"}
         >
-          Solde {data.length > 0 && ": " + displayPrice(data[0].balance) + " €"}
+          Solde{" "}
+          {data.length > 0 && ": " + displayPrice(data[0]?.balance) + " €"}
         </Button>
       )}
     </>
