@@ -7,6 +7,8 @@ import { useState } from "react";
 import { Pencil } from "tabler-icons-react";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
+import Balance from "./Balance";
+
 export default function PatientList() {
   const token = useLogin().token;
   const [latestEvents, setLatestEvents] = useState([]);
@@ -52,6 +54,7 @@ export default function PatientList() {
         Dernière <br />
         Consultation
       </th>
+      <th>Solde</th>
       <th>Modification</th>
     </tr>
   );
@@ -69,6 +72,9 @@ export default function PatientList() {
         {displayFullDate(
           new Date(latestEvents.find((e) => e.patientId === element.id)?.latest)
         )}
+      </td>
+      <td>
+        <Balance patientId={element.id} fullDisplay={false} />
       </td>
       <td>
         <Link to={"/Nouveau-Patient/" + element.id}>

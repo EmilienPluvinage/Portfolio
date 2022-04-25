@@ -17,7 +17,7 @@ import { displayDate, displayDateInFrench, displayPrice } from "./Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { showNotification } from "@mantine/notifications";
 
-export default function Balance({ patientId }) {
+export default function Balance({ patientId, fullDisplay }) {
   const token = useLogin().token;
   const [opened, setOpened] = useState(false);
   const packages = useConfig().packages;
@@ -42,6 +42,7 @@ export default function Balance({ patientId }) {
     }));
 
   var data = appointments.map((obj) => ({ ...obj, dataType: "event" }));
+
   function insertPackageIntoArray(array, pack) {
     var index = array.findIndex((e) => e.start < pack.date);
     array.splice(index, 0, pack);
@@ -115,29 +116,37 @@ export default function Balance({ patientId }) {
 
   return (
     <>
-      {opened && (
-        <Modal
-          centered
-          overlayOpacity={0.3}
-          opened={opened}
-          onClose={() => setOpened(false)}
-          title={`Historique des paiements de ${patientName}`}
-          closeOnClickOutside={false}
-          size="50%"
-        >
-          <Table striped verticalSpacing="xs">
-            <thead>{ths}</thead>
-            <tbody>{rows}</tbody>
-          </Table>
-        </Modal>
+      {!fullDisplay ? (
+        <span style={{ color: data[0].balance < 0 ? "red" : "inherit" }}>
+          {displayPrice(data[0].balance) + " €"}
+        </span>
+      ) : (
+        opened && (
+          <Modal
+            centered
+            overlayOpacity={0.3}
+            opened={opened}
+            onClose={() => setOpened(false)}
+            title={`Historique des paiements de ${patientName}`}
+            closeOnClickOutside={false}
+            size="50%"
+          >
+            <Table striped verticalSpacing="xs">
+              <thead>{ths}</thead>
+              <tbody>{rows}</tbody>
+            </Table>
+          </Modal>
+        )
       )}
-      <Button
-        onClick={() => setOpened(true)}
-        leftIcon={<ReportMoney size={18} />}
-        style={{ margin: "10px" }}
-      >
-        Solde
-      </Button>{" "}
+      {fullDisplay && (
+        <Button
+          onClick={() => setOpened(true)}
+          leftIcon={<ReportMoney size={18} />}
+          style={{ margin: "10px" }}
+        >
+          Solde {data.length > 0 && ": " + displayPrice(data[0].balance) + " €"}
+        </Button>
+      )}
     </>
   );
 }

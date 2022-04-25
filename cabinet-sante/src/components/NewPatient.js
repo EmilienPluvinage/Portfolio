@@ -250,7 +250,7 @@ export default function NewPatient() {
                 Historique
               </Button>
               <Payement patientId={id} />
-              <Balance patientId={id} />
+              <Balance patientId={id} fullDisplay={true} />
             </>
           )}
         </div>
