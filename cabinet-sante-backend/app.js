@@ -1585,6 +1585,44 @@ app.post("/DeleteAppointmentType", (req, res, next) => {
   });
 });
 
+// DELETE APPOINTMENT TYPE PARAMETER
+
+app.post("/DeletePayement", async (req, res, next) => {
+  res
+    .status(201)
+    .json(await deleteItem("payements", req.body.id, req.body.token));
+});
+
+async function deleteItem(table, id, token) {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          var userId = rows[0].userId;
+          // belongs to that user
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "DELETE FROM ?? WHERE userId=? AND id=?",
+            [table, userId, id],
+            (err, result) => {
+              if (err) throw err;
+              return { success: true, error: "" };
+            }
+          );
+        } else {
+          return { success: false, error: "not connected" };
+        }
+      }
+    );
+  });
+}
+
 // DELETE PRICE SCHEME RULE
 
 app.post("/DeletePriceSchemeRule", (req, res, next) => {
