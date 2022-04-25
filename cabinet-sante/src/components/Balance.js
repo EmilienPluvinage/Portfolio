@@ -6,6 +6,7 @@ import { ReportMoney } from "tabler-icons-react";
 
 import { Button, Modal, Table, Pagination, Center } from "@mantine/core";
 import { displayDate, displayPrice } from "./Functions";
+import Payement from "./Payement";
 
 export default function Balance({ patientId, fullDisplay }) {
   const rowsPerPage = 10;
@@ -82,10 +83,12 @@ export default function Balance({ patientId, fullDisplay }) {
           <td>{appointmentTypes.find((e) => e.id === element.idType)?.type}</td>
           <td style={{ color: "red" }}>- {displayPrice(element.price)} €</td>
           <td>
-            {element.payed === 1 &&
-              displayPrice(
-                payements.find((e) => e.eventId === element.id)?.amount
-              ) + " €"}
+            {element.payed === 1 && (
+              <Payement
+                patientId={patientId}
+                payementId={payements.find((e) => e.eventId === element.id)?.id}
+              />
+            )}
           </td>
           <td>
             {element.payed === 1 &&
@@ -100,7 +103,9 @@ export default function Balance({ patientId, fullDisplay }) {
           <td>{displayDate(new Date(element.date))}</td>
           <td>{packages.find((e) => e.id === element.packageId)?.package}</td>
           <td></td>
-          <td>{displayPrice(element.amount)} €</td>
+          <td>
+            <Payement patientId={patientId} payementId={element.id} />
+          </td>
           <td>{element.method}</td>
 
           <td style={{ color: element.balance < 0 ? "red" : "inherit" }}>
