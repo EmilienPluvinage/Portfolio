@@ -49,6 +49,22 @@ export default function Balance({ patientId }) {
 
   packagesData.forEach((e) => insertPackageIntoArray(data, e));
 
+  const balance = data.reduceRight(
+    (acc, item) =>
+      item.dataType === "event"
+        ? acc.concat(
+            (acc.length > 0 ? acc[acc.length - 1] : 0) -
+              (item.payed === 1 ? 0 : item.price)
+          )
+        : acc.concat((acc.length > 0 ? acc[acc.length - 1] : 0) + item.amount),
+    []
+  );
+
+  data.forEach(
+    (obj, index) =>
+      (data[index] = { ...obj, balance: balance[balance.length - 1 - index] })
+  );
+
   const ths = (
     <tr>
       <th>Date</th>
@@ -77,7 +93,9 @@ export default function Balance({ patientId }) {
             {element.payed === 1 &&
               payements.find((e) => e.eventId === element.id)?.method}
           </td>
-          <td></td>
+          <td style={{ color: element.balance < 0 ? "red" : "inherit" }}>
+            {displayPrice(element.balance)} €
+          </td>
         </>
       ) : (
         <>
@@ -86,7 +104,10 @@ export default function Balance({ patientId }) {
           <td></td>
           <td>{displayPrice(element.amount)} €</td>
           <td>{element.method}</td>
-          <td></td>
+
+          <td style={{ color: element.balance < 0 ? "red" : "inherit" }}>
+            {displayPrice(element.balance)} €
+          </td>
         </>
       )}
     </tr>
