@@ -22,7 +22,7 @@ export default function MyFullCalendar() {
   const [openedDetails, setOpenedDetails] = useState(false);
   const [startingTime, setStartingTime] = useState(new Date());
   const appointments = usePatients().appointments;
-
+  const patients = usePatients().patients;
   const token = useLogin().token;
   const buttonText = { today: "Semaine actuelle" };
   const [events, setEvents] = useState([]);
@@ -39,22 +39,41 @@ export default function MyFullCalendar() {
             ? acc
             : acc.concat({
                 id: item.appointmentId,
+                patientId: item.patientId,
                 userId: item.userId,
                 start: item.start,
                 end: item.end,
-                title: item.title,
                 idType: item.idType,
               }),
         []
       );
-
       events.forEach((element) => {
         var color = appointmentTypes.find((e) => e.id === element.idType).color;
         element.backgroundColor = color;
+        var multi = appointmentTypes.find((e) => e.id === element.idType).multi;
+        if (multi === 0) {
+          element.title = patients.find(
+            (e) => e.id === element.patientId
+          )?.fullname;
+        } else {
+          // we count the number of participants
+          var count = appointments.reduce(
+            (acc, e) => (e.appointmentId === element.id ? acc + 1 : acc),
+            0
+          );
+          element.title = `${count} participant(s)`;
+        }
       });
       setEvents(events);
     }
-  }, [calendarUpdate, opened, openedDetails, appointmentTypes, appointments]);
+  }, [
+    calendarUpdate,
+    opened,
+    openedDetails,
+    appointmentTypes,
+    appointments,
+    patients,
+  ]);
 
   async function updateEventTime(id, startingTime, endingTime, src) {
     var link = process.env.REACT_APP_API_DOMAIN + "/UpdateEventTime";
