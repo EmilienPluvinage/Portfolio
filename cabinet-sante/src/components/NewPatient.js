@@ -27,6 +27,7 @@ import {
   CheckboxGroup,
   Checkbox,
   Select,
+  Text,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { DatePicker } from "@mantine/dates";
@@ -34,11 +35,13 @@ import AppointmentDetails from "./AppointmentDetails";
 import History from "./History";
 import Payement from "./Payement";
 import Balance from "./Balance";
+import { useConfig } from "./contexts/ConfigContext";
 
 export default function NewPatient() {
   const navigate = useNavigate();
   var autoCompleteCities = useGovData().cities;
   var autoCompleteCountries = useGovData().countries;
+  const packages = useConfig().packages;
 
   const [opened, setOpened] = useState(false);
   const [openedHistory, setOpenedHistory] = useState(false);
@@ -341,6 +344,18 @@ export default function NewPatient() {
                 {...form.getInputProps("country")}
                 data={autoCompleteCountries}
               />
+              <Text size="sm" style={{ marginTop: "10px" }}>
+                Forfait en cours:{" "}
+                {
+                  packages.find(
+                    (e) =>
+                      e.id ===
+                      PatientList.find(
+                        (e) => e.id.toString() === params.id.toString()
+                      )?.packageId
+                  )?.package
+                }
+              </Text>
             </div>
           </div>
         </div>
