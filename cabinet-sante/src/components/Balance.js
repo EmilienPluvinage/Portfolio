@@ -4,10 +4,12 @@ import { usePatients } from "./contexts/PatientsContext";
 import { useConfig } from "./contexts/ConfigContext";
 import { ReportMoney } from "tabler-icons-react";
 
-import { Button, Modal, Table } from "@mantine/core";
+import { Button, Modal, Table, Pagination, Center } from "@mantine/core";
 import { displayDate, displayPrice } from "./Functions";
 
 export default function Balance({ patientId, fullDisplay }) {
+  const rowsPerPage = 10;
+  const [activePage, setPage] = useState(1);
   const [opened, setOpened] = useState(false);
   const packages = useConfig().packages;
   const patientName = usePatients().patients.find(
@@ -53,6 +55,14 @@ export default function Balance({ patientId, fullDisplay }) {
       (data[index] = { ...obj, balance: balance[balance.length - 1 - index] })
   );
 
+  const numberOfPages =
+    data.length > 0 ? Math.floor(data.length / rowsPerPage) + 1 : 1;
+
+  const displayedData = data.slice(
+    (activePage - 1) * rowsPerPage,
+    activePage * rowsPerPage
+  );
+
   const ths = (
     <tr>
       <th>Date</th>
@@ -64,7 +74,7 @@ export default function Balance({ patientId, fullDisplay }) {
     </tr>
   );
 
-  const rows = data.map((element) => (
+  const rows = displayedData.map((element) => (
     <tr key={element.id}>
       {element.dataType === "event" ? (
         <>
@@ -118,6 +128,15 @@ export default function Balance({ patientId, fullDisplay }) {
             closeOnClickOutside={false}
             size="50%"
           >
+            <Center>
+              <Pagination
+                style={{ marginBottom: "20px" }}
+                page={activePage}
+                onChange={setPage}
+                total={numberOfPages}
+                size={"sm"}
+              />
+            </Center>
             <Table striped verticalSpacing="xs">
               <thead>{ths}</thead>
               <tbody>{rows}</tbody>
