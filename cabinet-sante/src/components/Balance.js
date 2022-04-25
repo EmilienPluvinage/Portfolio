@@ -1,24 +1,13 @@
 import { useState } from "react";
 import "../styles/styles.css";
-import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
+import { usePatients } from "./contexts/PatientsContext";
 import { useConfig } from "./contexts/ConfigContext";
-import { Check, CurrencyEuro, ReportMoney } from "tabler-icons-react";
+import { ReportMoney } from "tabler-icons-react";
 
-import {
-  Button,
-  Center,
-  Modal,
-  NumberInput,
-  Select,
-  Table,
-} from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { displayDate, displayDateInFrench, displayPrice } from "./Functions";
-import { useLogin } from "./contexts/AuthContext";
-import { showNotification } from "@mantine/notifications";
+import { Button, Modal, Table } from "@mantine/core";
+import { displayDate, displayPrice } from "./Functions";
 
 export default function Balance({ patientId, fullDisplay }) {
-  const token = useLogin().token;
   const [opened, setOpened] = useState(false);
   const packages = useConfig().packages;
   const patientName = usePatients().patients.find(
@@ -31,8 +20,6 @@ export default function Balance({ patientId, fullDisplay }) {
     (e) => e.patientId === patientId
   );
   const appointmentTypes = useConfig().appointmentTypes;
-  const [reason, setReason] = useState("");
-  const [loading, setLoading] = useState("");
 
   const packagesData = payements
     .filter((e) => e.eventId === 0)
