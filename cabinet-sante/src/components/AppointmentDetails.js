@@ -10,6 +10,7 @@ import {
   NumberInput,
   Slider,
   Select,
+  Checkbox,
 } from "@mantine/core";
 import { DatePicker, TimeRangeInput } from "@mantine/dates";
 import { useState } from "react";
@@ -35,8 +36,11 @@ export default function AppointmentDetails({
   patientId, // to be used to pre-fill patient input when appointmentId === 0
   appointmentId,
 }) {
+  const [checked, setChecked] = useState(false);
+  const [payementId, setPayementId] = useState(0);
   const patients = usePatients().patients;
   const appointments = usePatients().appointments;
+  const payements = usePatients().payements;
   const updateAppointments = useUpdatePatients().update;
   const token = useLogin().token;
   const [loading, setLoading] = useState("");
@@ -53,6 +57,11 @@ export default function AppointmentDetails({
   const typesList = appointmentTypesSolo.map((e) => {
     return e.type;
   });
+  const payementMethods = useConfig().parameters.reduce(
+    (acc, item) =>
+      item.name === "payementMethod" ? acc.concat(item.value) : acc,
+    []
+  );
 
   const now = new Date(Date.now());
   const then = dayjs(now).add(60, "minutes").toDate();
@@ -95,6 +104,12 @@ export default function AppointmentDetails({
 
       setEVAbefore(row.EVAbefore);
       setEVAafter(row.EVAafter);
+      setChecked(row.payed === 1);
+      if (row.payed === 1) {
+        setPayementId(payements.find((e) => e.eventId === row.id)?.id);
+      }
+      var method = payements.find((e) => e.eventId === row.id)?.method;
+      var payementDate = payements.find((e) => e.eventId === row.id)?.date;
       form.setValues({
         title: row.title,
         date: dateOnly(row.start),
@@ -107,9 +122,19 @@ export default function AppointmentDetails({
         patientType: patientType,
         appointmentType: appointmentType,
         price: row.price / 100,
+        method: method,
+        payementDate: payementDate,
       });
     }
-  }, [appointmentId, id, form, appointmentTypes, patientTypes, appointments]);
+  }, [
+    appointmentId,
+    id,
+    form,
+    appointmentTypes,
+    patientTypes,
+    appointments,
+    payements,
+  ]);
 
   function checkValues(values) {
     if (values.appointmentType === "") {
@@ -178,6 +203,61 @@ export default function AppointmentDetails({
     }
   }
 
+  async function addPayement(amount, method) {
+    try {
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/AddNewPayement",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+            eventId: payements.find((e) => e.id === payementId)?.eventId,
+            method: method,
+            amount: amount * 100,
+            patientId: patientId,
+          }),
+        }
+      );
+      const res = await fetchResponse.json();
+
+      return res.success;
+    } catch (e) {
+      return e;
+    }
+  }
+
+  async function updatePayement(amount, method) {
+    try {
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/AddNewPayement",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+            id: payementId,
+            date: form.values.payementDate,
+            method: method,
+            amount: amount * 100,
+            patientId: patientId,
+          }),
+        }
+      );
+      const res = await fetchResponse.json();
+
+      return res.success;
+    } catch (e) {
+      return e;
+    }
+  }
+
   async function createEvent(values) {
     const check = checkValues(values);
     if (check.check) {
@@ -209,7 +289,7 @@ export default function AppointmentDetails({
         const res = await fetchResponse.json();
         if (res.success) {
           var eventId = res.id;
-          // Now that the event has been created, we need to add all the participants
+          // Now that the event has been created, we need to the participant
 
           const fetchResponse = await fetch(
             process.env.REACT_APP_API_DOMAIN + "/NewParticipant",
@@ -233,24 +313,31 @@ export default function AppointmentDetails({
                 )?.id,
                 price: Math.round(values.price * 100),
                 priceSetByUser: true,
+                payed: checked,
               }),
             }
           );
           const res2 = await fetchResponse.json();
           if (res2.success) {
-            setOpened(false);
-            updateAppointments(token);
-            showNotification({
-              title: "Consultation planifiée",
-              message:
-                "Le rendez-vous du " +
-                displayDateInFrench(new Date(start)) +
-                "  avec " +
-                getFullnameFromId(patients, patient) +
-                " a bien été enregistré.",
-              icon: <Check />,
-              color: "green",
-            });
+            // finally if the payed checkbox was check we add the new payement
+            if (
+              checked &&
+              (await addPayement(Math.round(values.price * 100), values.method))
+            ) {
+              setOpened(false);
+              updateAppointments(token);
+              showNotification({
+                title: "Consultation planifiée",
+                message:
+                  "Le rendez-vous du " +
+                  displayDateInFrench(new Date(start)) +
+                  "  avec " +
+                  getFullnameFromId(patients, patient) +
+                  " a bien été enregistré.",
+                icon: <Check />,
+                color: "green",
+              });
+            }
           }
         }
       } catch (e) {
@@ -318,24 +405,63 @@ export default function AppointmentDetails({
                 )?.id,
                 price: Math.round(values.price * 100),
                 priceSetByUser: true,
+                payed: checked,
               }),
             }
           );
           const res2 = await fetchResponse.json();
           if (res2.success) {
-            setOpened(false);
-            updateAppointments(token);
-            showNotification({
-              title: "Consultation Modifiée",
-              message:
-                "Le rendez-vous du " +
-                displayDateInFrench(new Date(start)) +
-                "  avec " +
-                getFullnameFromId(patients, patient) +
-                " a bien été modifié.",
-              icon: <Check />,
-              color: "green",
-            });
+            // now we deal with the payement.
+            // either it used to be paid and it's not anymore, in which case we need to delete the payement
+            // or it used to be and it still is, and we need to update the payement
+            // or it was not and not it is and we need to create a new payement
+            // 4th case: we do nothing
+            var success = true;
+            if (payementId !== 0 && !checked) {
+              // delete
+              const fetchResponse = await fetch(
+                process.env.REACT_APP_API_DOMAIN + "/DeletePayement",
+                {
+                  method: "POST",
+                  headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    id: payementId,
+                    token: token,
+                  }),
+                }
+              );
+              success = await fetchResponse.json().success;
+            } else if (payementId !== 0 && checked) {
+              // update
+              success = await updatePayement(
+                Math.round(values.price * 100),
+                values.method
+              );
+            } else if (payementId === 0 && checked) {
+              // add
+              success = await addPayement(
+                Math.round(values.price * 100),
+                values.method
+              );
+            }
+            if (success) {
+              setOpened(false);
+              updateAppointments(token);
+              showNotification({
+                title: "Consultation Modifiée",
+                message:
+                  "Le rendez-vous du " +
+                  displayDateInFrench(new Date(start)) +
+                  "  avec " +
+                  getFullnameFromId(patients, patient) +
+                  " a bien été modifié.",
+                icon: <Check />,
+                color: "green",
+              });
+            }
           }
         }
       } catch (e) {
@@ -414,6 +540,25 @@ export default function AppointmentDetails({
               {...form.getInputProps("price")}
               hideControls
             />
+          </Grid.Col>
+          <Grid.Col span={2}>
+            <Checkbox
+              label="Payé"
+              checked={checked}
+              onChange={(event) => setChecked(event.currentTarget.checked)}
+              style={{ marginTop: "35px" }}
+            />
+          </Grid.Col>
+          <Grid.Col span={3}>
+            {checked === true && (
+              <Select
+                data={payementMethods}
+                label="Moyen de paiement"
+                name="method"
+                {...form.getInputProps("method")}
+                required
+              />
+            )}
           </Grid.Col>
         </Grid>
 

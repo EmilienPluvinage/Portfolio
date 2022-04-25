@@ -450,7 +450,7 @@ app.post("/NewParticipant", (req, res, next) => {
               if (err) throw err;
               if (rows.length === 1) {
                 connection.query(
-                  "INSERT INTO isInAppointment(patientId, appointmentId, size, weight, EVAbefore, EVAafter, reasonDetails, patientType, price, priceSetByUser) VALUES (?,?,?,?,?,?,?,?,?,?)",
+                  "INSERT INTO isInAppointment(patientId, appointmentId, size, weight, EVAbefore, EVAafter, reasonDetails, patientType, price, priceSetByUser, payed) VALUES (?,?,?,?,?,?,?,?,?,?, ?)",
                   [
                     req.body.patientId,
                     req.body.appointmentId,
@@ -464,6 +464,7 @@ app.post("/NewParticipant", (req, res, next) => {
                       : 0,
                     req.body.price,
                     req.body.priceSetByUser,
+                    req.body.payed !== undefined ? req.body.payed : 0,
                   ],
                   (err, result) => {
                     if (err) throw err;
@@ -1398,7 +1399,7 @@ app.post("/UpdateParticipant", (req, res, next) => {
                 // so we do the update
                 // Now connected and we have the user ID so we do the update
                 connection.query(
-                  "UPDATE isInAppointment SET size =?, weight=?, EVAbefore=?, EVAafter=?, reasonDetails=?, patientType=?, price=?, priceSetByUser=? WHERE appointmentId=? AND patientId=?",
+                  "UPDATE isInAppointment SET size =?, weight=?, EVAbefore=?, EVAafter=?, reasonDetails=?, patientType=?, price=?, priceSetByUser=?, payed=? WHERE appointmentId=? AND patientId=?",
                   [
                     req.body.size,
                     req.body.weight,
@@ -1408,6 +1409,7 @@ app.post("/UpdateParticipant", (req, res, next) => {
                     req.body.patientType,
                     req.body.price,
                     req.body.priceSetByUser,
+                    req.body.payed !== undefined ? req.body.payed : 0,
                     req.body.appointmentId,
                     req.body.patientId,
                   ],
