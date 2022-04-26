@@ -136,6 +136,7 @@ export default function NewAppointment({
       const res = await fetchResponse.json();
       if (res.success) {
         setOpened(false);
+        updatePatients(token);
         setDeleteLoader("");
         showNotification({
           title: "Consultation supprimée",
