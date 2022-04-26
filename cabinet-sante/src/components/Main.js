@@ -7,6 +7,7 @@ import MyFullCalendar from "./MyFullCalendar";
 import Parameters from "./parameters/Parameters";
 import CheckForIncorrectPrices from "./CheckForIncorrectPrices";
 import IncorrectPricesList from "./IncorrectPricesList";
+import Home from "./Home";
 
 function Main({ menu }) {
   const loggedIn = useLogin().login;
@@ -20,6 +21,7 @@ function Main({ menu }) {
           <Route exact path="/Listing-Patients" element={<PatientList />} />
           <Route exact path="/Agenda" element={<MyFullCalendar />} />
           <Route exact path="/Parametres" element={<Parameters />} />
+          <Route exact path="/" element={<Home />} />
           <Route
             exact
             path="/Verifier-les-prix"
