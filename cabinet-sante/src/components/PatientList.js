@@ -4,10 +4,11 @@ import { useLogin } from "./contexts/AuthContext";
 import { Pagination, Table, Button, Center } from "@mantine/core";
 import { calculateAge, displayFullDate } from "./Functions";
 import { useState } from "react";
-import { Pencil } from "tabler-icons-react";
+import { User } from "tabler-icons-react";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import Balance from "./Balance";
+import DeletePatient from "./DeletePatient";
 
 export default function PatientList() {
   const token = useLogin().token;
@@ -55,7 +56,8 @@ export default function PatientList() {
         Consultation
       </th>
       <th>Solde</th>
-      <th>Modification</th>
+      <th>Accéder</th>
+      <th>Supprimer</th>
     </tr>
   );
 
@@ -78,10 +80,13 @@ export default function PatientList() {
       </td>
       <td>
         <Link to={"/Nouveau-Patient/" + element.id}>
-          <Button leftIcon={<Pencil size={18} />} compact variant="outline">
-            Modifier
+          <Button leftIcon={<User size={18} />} compact variant="outline">
+            Accéder
           </Button>
         </Link>
+      </td>
+      <td>
+        <DeletePatient patientId={element.id} />
       </td>
     </tr>
   ));
