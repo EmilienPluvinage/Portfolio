@@ -368,10 +368,6 @@ export default function AppointmentDetails({
   }
 
   async function updateEvent(values) {
-    var patientId = appointments.find(
-      (e) => e.appointmentId === appointmentId
-    )?.patientId;
-
     var eventId = appointments.find(
       (e) => e.appointmentId === appointmentId
     )?.id;
