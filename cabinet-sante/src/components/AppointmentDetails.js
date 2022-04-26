@@ -160,6 +160,13 @@ export default function AppointmentDetails({
       };
     }
 
+    if (checked && values.method === undefined) {
+      return {
+        check: false,
+        message: "Merci de sélectionner un moyen de paiement.",
+      };
+    }
+
     return { check: true };
   }
 
@@ -203,7 +210,7 @@ export default function AppointmentDetails({
     }
   }
 
-  async function addPayement(amount, method) {
+  async function addPayement(amount, method, eventId) {
     try {
       const fetchResponse = await fetch(
         process.env.REACT_APP_API_DOMAIN + "/AddNewPayement",
@@ -215,10 +222,10 @@ export default function AppointmentDetails({
           },
           body: JSON.stringify({
             token: token,
-            eventId: payements.find((e) => e.id === payementId)?.eventId,
+            eventId: eventId,
             method: method,
-            amount: amount * 100,
-            patientId: patientId,
+            amount: amount,
+            patientId: patient,
           }),
         }
       );
@@ -233,7 +240,7 @@ export default function AppointmentDetails({
   async function updatePayement(amount, method) {
     try {
       const fetchResponse = await fetch(
-        process.env.REACT_APP_API_DOMAIN + "/AddNewPayement",
+        process.env.REACT_APP_API_DOMAIN + "/UpdatePayement",
         {
           method: "POST",
           headers: {
@@ -245,8 +252,10 @@ export default function AppointmentDetails({
             id: payementId,
             date: form.values.payementDate,
             method: method,
-            amount: amount * 100,
-            patientId: patientId,
+            amount: amount,
+            patientId: appointments.find(
+              (e) => e.appointmentId === appointmentId
+            )?.patientId,
           }),
         }
       );
@@ -320,10 +329,15 @@ export default function AppointmentDetails({
           const res2 = await fetchResponse.json();
           if (res2.success) {
             // finally if the payed checkbox was check we add the new payement
-            if (
-              checked &&
-              (await addPayement(Math.round(values.price * 100), values.method))
-            ) {
+            var result = true;
+            if (checked) {
+              result = await addPayement(
+                Math.round(values.price * 100),
+                values.method,
+                res2.id
+              );
+            }
+            if (result) {
               setOpened(false);
               updateAppointments(token);
               showNotification({
@@ -354,6 +368,14 @@ export default function AppointmentDetails({
   }
 
   async function updateEvent(values) {
+    var patientId = appointments.find(
+      (e) => e.appointmentId === appointmentId
+    )?.patientId;
+
+    var eventId = appointments.find(
+      (e) => e.appointmentId === appointmentId
+    )?.id;
+
     const check = checkValues(values);
     if (check.check) {
       setLoading("loading");
@@ -433,7 +455,8 @@ export default function AppointmentDetails({
                   }),
                 }
               );
-              success = await fetchResponse.json().success;
+              const data = await fetchResponse.json();
+              success = data.success;
             } else if (payementId !== 0 && checked) {
               // update
               success = await updatePayement(
@@ -444,7 +467,8 @@ export default function AppointmentDetails({
               // add
               success = await addPayement(
                 Math.round(values.price * 100),
-                values.method
+                values.method,
+                eventId
               );
             }
             if (success) {
