@@ -2,9 +2,11 @@ import "../styles/styles.css";
 import { usePatients } from "./contexts/PatientsContext";
 import Balance from "./Balance";
 import { Table } from "@mantine/core";
+import { useRef } from "react";
 
 export default function PatientsWarning() {
   const patients = usePatients().patients;
+  const count = useRef(0);
 
   return (
     <div>
@@ -24,8 +26,16 @@ export default function PatientsWarning() {
                 patientId={element.id}
                 fullDisplay={false}
                 warningDisplay={true}
+                count={count}
               />
             ))}
+            {count.current === 0 && (
+              <tr>
+                <td style={{ textAlign: "center" }} colSpan={2}>
+                  Aucun patient
+                </td>
+              </tr>
+            )}
           </tbody>
         </Table>
       </div>

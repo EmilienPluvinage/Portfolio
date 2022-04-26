@@ -8,7 +8,12 @@ import { Button, Modal, Table, Pagination, Center } from "@mantine/core";
 import { displayDate, displayPrice } from "./Functions";
 import Payement from "./Payement";
 
-export default function Balance({ patientId, fullDisplay, warningDisplay }) {
+export default function Balance({
+  patientId,
+  fullDisplay,
+  warningDisplay,
+  count,
+}) {
   const rowsPerPage = 10;
   const [activePage, setPage] = useState(1);
   const [opened, setOpened] = useState(false);
@@ -166,6 +171,7 @@ export default function Balance({ patientId, fullDisplay, warningDisplay }) {
           <td>
             <span style={{ color: data[0]?.balance < 0 ? "red" : "inherit" }}>
               {displayPrice(data[0]?.balance) + " €"}
+              {count.current++}
             </span>
           </td>
         </tr>
