@@ -25,6 +25,7 @@ import {
   capitalize,
   splitname,
   setAutomaticPrice,
+  displayPrice,
 } from "./Functions";
 import {
   Calendar,
@@ -35,6 +36,7 @@ import {
   ListDetails,
   Clock,
   X,
+  ExclamationMark,
 } from "tabler-icons-react";
 import { useForm } from "@mantine/form";
 import AppointmentDetails from "./AppointmentDetails";
@@ -54,6 +56,7 @@ export default function NewAppointment({
   const patientsList = patients.map((e) => {
     return e.fullname;
   });
+
   const [data, setData] = useState(patientsList);
   const appointmentTypes = useConfig().appointmentTypes;
   const priceScheme = useConfig().priceScheme;
@@ -308,6 +311,11 @@ export default function NewAppointment({
 
                 packageId =
                   packageId === null || packageId === undefined ? 0 : packageId;
+                var oldPrice = appointments.find(
+                  (e) =>
+                    e.patientId.toString() === patientId.toString() &&
+                    e.appointmentId.toString() === appointmentId.toString()
+                )?.price;
 
                 var price = setAutomaticPrice(
                   priceScheme,
@@ -339,8 +347,21 @@ export default function NewAppointment({
                   }
                 );
                 const res = await fetchResponse.json();
+
                 if (res.success === false) {
                   success = false;
+                } else if (price !== oldPrice) {
+                  var patientName = patients.find(
+                    (e) => e.id.toString() === patientId.toString()
+                  )?.fullname;
+                  showNotification({
+                    title: "Prix modifié",
+                    message: `Le prix de la séance de ${patientName} est passé de ${displayPrice(
+                      oldPrice
+                    )} € à ${displayPrice(price)} € suite à la modification`,
+                    icon: <ExclamationMark />,
+                    color: "yellow",
+                  });
                 }
               });
             }
