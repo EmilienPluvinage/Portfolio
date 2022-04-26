@@ -44,6 +44,7 @@ export function displayDate(today) {
 }
 
 export function displayFullDate(today) {
+  if (isNaN(today)) return "";
   var day = today.getDate();
   var month = today.getMonth();
   var year = today.getFullYear();
