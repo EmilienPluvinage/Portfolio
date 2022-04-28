@@ -13,6 +13,47 @@ const mois = [
   "Décembre",
 ];
 
+export function getUniqueSharedPatients(sharedBalance, patientId) {
+  var patients = [patientId];
+  var previousLength = 0;
+  var tempPatients = [];
+  while (patients.length > previousLength) {
+    previousLength = patients.length;
+    tempPatients = patients.slice();
+    for (let i = 0; i < patients.length; i++) {
+      tempPatients = tempPatients.concat(
+        getSharedPatients(sharedBalance, patients[i])
+      );
+    }
+    // remove duplicates
+    patients = tempPatients
+      .reduce(
+        (unique, item) => (unique.includes(item) ? unique : [...unique, item]),
+        []
+      )
+      .slice();
+  }
+  return patients;
+}
+
+export function getSharedPatients(sharedBalance, patientId) {
+  // get all the IDs
+  var patients = sharedBalance.reduce(
+    (acc, item) =>
+      item.patientId1 === patientId
+        ? acc.concat(item.patientId2)
+        : item.patientId2 === patientId
+        ? acc.concat(item.patientId1)
+        : acc,
+    []
+  );
+  // removes duplicates if there are any
+  return patients.reduce(
+    (unique, item) => (unique.includes(item) ? unique : [...unique, item]),
+    []
+  );
+}
+
 export function displayPrice(priceInCents) {
   if (priceInCents === undefined) return 0;
   // displays the price with a comma and two decimals, unless it's 0, in which case we return 0.
