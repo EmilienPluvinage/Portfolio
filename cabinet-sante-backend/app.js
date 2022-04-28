@@ -1856,4 +1856,39 @@ app.post("/DeletePackage", (req, res, next) => {
   });
 });
 
+app.post("/DelinkPatients", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          var userId = rows[0].userId;
+          // belongs to that user
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "DELETE FROM sharedBalance WHERE ((patientId1=? AND patientId2=?) OR (patientId1=? AND patientId2=?)) AND userId=?",
+            [
+              req.body.patientId1,
+              req.body.patientId2,
+              req.body.patientId2,
+              req.body.patientId1,
+              userId,
+            ],
+            (err, result) => {
+              res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
 module.exports = app;
