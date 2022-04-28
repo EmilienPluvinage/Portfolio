@@ -126,7 +126,7 @@ export default function ShareBalance({ patientId }) {
         Lier
       </Button>
       {links.map((e) => (
-        <div style={{ marginLeft: "10px", marginBottom: "10px" }}>
+        <div key={e.id} style={{ marginLeft: "10px", marginBottom: "10px" }}>
           <DelinkPatients patientId1={e.id} patientId2={patientId} />
         </div>
       ))}
