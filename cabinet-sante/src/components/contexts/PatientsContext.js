@@ -17,12 +17,14 @@ export function PatientsProvider({ children }) {
   const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [payements, setPayements] = useState([]);
+  const [sharedBalance, setSharedBalance] = useState([]);
   const [checkOpen, setCheckOpen] = useState(false);
 
   async function initData(token) {
     updatePatientsList(token);
     updateAppointmentsList(token);
     updatePayementsList(token);
+    updateSharedBalance(token);
   }
 
   async function updatePatientsList(token) {
@@ -102,6 +104,28 @@ export function PatientsProvider({ children }) {
     }
   }
 
+  async function updateSharedBalance(token) {
+    try {
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/GetSharedBalance",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+          }),
+        }
+      );
+      const res = await fetchResponse.json();
+      setSharedBalance(res.data);
+    } catch (e) {
+      return e;
+    }
+  }
+
   function checkPrices() {
     const checks = appointments.map((e) => {
       return {
@@ -122,6 +146,7 @@ export function PatientsProvider({ children }) {
         patients: patients,
         appointments: appointments,
         payements: payements,
+        sharedBalance: sharedBalance,
       }}
     >
       <UpdatePatientsContext.Provider
