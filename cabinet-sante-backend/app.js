@@ -232,6 +232,56 @@ app.post("/AddAppointmentType", (req, res, next) => {
   });
 });
 
+app.post("/LinkPatients", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          var userId = rows[0].userId;
+          // belongs to that user
+          // Now connected and we have the user ID so we do the insert, but we check that it doesn't already exist
+          connection.query(
+            "SELECT * FROM sharedBalance WHERE ((patientId1=? AND patientId2=?) OR (patientId1=? AND patientId2=?)) AND userId=?",
+            [
+              req.body.patientId1,
+              req.body.patientId2,
+              req.body.patientId2,
+              req.body.patientId1,
+              userId,
+            ],
+            (err, result) => {
+              if (err) throw err;
+              if (result.length === 0) {
+                connection.query(
+                  "INSERT INTO sharedBalance(userId,patientId1,patientId2) VALUES(?,?,?)",
+                  [req.body.patientId1, req.body.patientId2, userId],
+                  (err, rows) => {
+                    if (err) throw err;
+                    res.status(201).json({ success: true, error: "" });
+                  }
+                );
+              } else {
+                res.status(201).json({
+                  success: false,
+                  error: "Ces deux patients sont déjà liés.",
+                });
+              }
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
 // ADD A NEW PATIENT TYPE PARAMETER
 
 app.post("/AddPatientType", (req, res, next) => {
@@ -726,6 +776,37 @@ app.post("/GetPayements", (req, res, next) => {
           // Now connected and we have the user ID so we do the insert
           connection.query(
             "SELECT payements.*, subscription.packageId FROM payements LEFT JOIN subscription ON payements.subscriptionId = subscription.id WHERE payements.userId=? ORDER BY date DESC",
+            userId,
+            (err, rows) => {
+              if (err) throw err;
+              res.status(201).json({ success: true, data: rows });
+            }
+          );
+          // we also update the time of the token
+          updateTokenTime(connection, req.body.token);
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
+app.post("/GetSharedBalance", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          var userId = rows[0].userId;
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "SELECT * FROM sharedBalance WHERE userId=?",
             userId,
             (err, rows) => {
               if (err) throw err;
