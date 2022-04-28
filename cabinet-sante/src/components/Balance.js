@@ -7,6 +7,7 @@ import { ReportMoney } from "tabler-icons-react";
 import { Button, Modal, Table, Pagination, Center } from "@mantine/core";
 import { displayDate, displayPrice } from "./Functions";
 import Payement from "./Payement";
+import ShareBalance from "./ShareBalance";
 
 export default function Balance({
   patientId,
@@ -138,6 +139,7 @@ export default function Balance({
             closeOnClickOutside={false}
             size="50%"
           >
+            <ShareBalance patientId={patientId} />
             <Center>
               <Pagination
                 style={{ marginBottom: "20px" }}
