@@ -260,7 +260,7 @@ app.post("/LinkPatients", (req, res, next) => {
               if (result.length === 0) {
                 connection.query(
                   "INSERT INTO sharedBalance(userId,patientId1,patientId2) VALUES(?,?,?)",
-                  [req.body.patientId1, req.body.patientId2, userId],
+                  [userId, req.body.patientId1, req.body.patientId2],
                   (err, rows) => {
                     if (err) throw err;
                     res.status(201).json({ success: true, error: "" });
