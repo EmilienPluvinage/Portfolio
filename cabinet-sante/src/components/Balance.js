@@ -171,7 +171,7 @@ export default function Balance({
           <td>
             <span style={{ color: data[0]?.balance < 0 ? "red" : "inherit" }}>
               {displayPrice(data[0]?.balance) + " €"}
-              {count.current++}
+              <span style={{ display: "none" }}>{count.current++}</span>
             </span>
           </td>
         </tr>
