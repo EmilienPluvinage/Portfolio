@@ -1,27 +1,19 @@
 import { useState } from "react";
 import "../styles/styles.css";
-import { usePatients } from "./contexts/PatientsContext";
-import { useConfig } from "./contexts/ConfigContext";
-import { Check, Link, ReportMoney, Search, X } from "tabler-icons-react";
-
-import {
-  Button,
-  Modal,
-  Table,
-  Pagination,
-  Center,
-  Select,
-} from "@mantine/core";
-import { displayDate, displayPrice } from "./Functions";
-import Payement from "./Payement";
+import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
+import { Check, Link, Search, X } from "tabler-icons-react";
+import { Button, Modal, Center, Select } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useLogin } from "./contexts/AuthContext";
+import DelinkPatients from "./DelinkPatients";
 
 export default function ShareBalance({ patientId }) {
   const [opened, setOpened] = useState(false);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState("");
   const patients = usePatients().patients;
+  const sharedBalance = usePatients().sharedBalance;
+  const updateContext = useUpdatePatients().update;
   const patientName = patients.find((e) => e.id === patientId)?.fullname;
   const patientsList = patients
     .map((e) => {
@@ -30,9 +22,26 @@ export default function ShareBalance({ patientId }) {
     .filter((e) => e !== patientName);
   const token = useLogin().token;
 
+  var links = [];
+
+  sharedBalance.forEach((e) => {
+    var linkName = "";
+    if (e.patientId1 === patientId) {
+      linkName = patients.find((f) => f.id === e.patientId2)?.fullname;
+      if (links.findIndex((g) => g.fullname === linkName) === -1) {
+        links.push({ fullname: linkName, id: e.patientId2 });
+      }
+    } else if (e.patientId2 === patientId) {
+      linkName = patients.find((f) => f.id === e.patientId1)?.fullname;
+      if (links.findIndex((g) => g.fullname === linkName) === -1) {
+        links.push({ fullname: linkName, id: e.patientId1 });
+      }
+    }
+  });
+
   async function submitForm() {
     setLoading("loading");
-    console.log(search);
+
     const linkId = patients.find((e) => e.fullname === search)?.id;
     try {
       const fetchResponse = await fetch(
@@ -58,6 +67,7 @@ export default function ShareBalance({ patientId }) {
           color: "green",
           icon: <Check />,
         });
+        updateContext(token);
         setLoading("");
         setSearch("");
         setOpened(false);
@@ -115,6 +125,11 @@ export default function ShareBalance({ patientId }) {
       >
         Lier
       </Button>
+      {links.map((e) => (
+        <div style={{ marginLeft: "10px", marginBottom: "10px" }}>
+          <DelinkPatients patientId1={e.id} patientId2={patientId} />
+        </div>
+      ))}
     </>
   );
 }
