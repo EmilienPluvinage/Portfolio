@@ -5,7 +5,11 @@ import { useConfig } from "./contexts/ConfigContext";
 import { ReportMoney } from "tabler-icons-react";
 
 import { Button, Modal, Table, Pagination, Center } from "@mantine/core";
-import { displayDate, displayPrice } from "./Functions";
+import {
+  displayDate,
+  displayPrice,
+  getUniqueSharedPatients,
+} from "./Functions";
 import Payement from "./Payement";
 import ShareBalance from "./ShareBalance";
 
@@ -19,14 +23,18 @@ export default function Balance({
   const [activePage, setPage] = useState(1);
   const [opened, setOpened] = useState(false);
   const packages = useConfig().packages;
+  const sharedBalance = usePatients().sharedBalance;
+
+  const sharedPatients = getUniqueSharedPatients(sharedBalance, patientId);
+  const patients = usePatients().patients;
   const patientName = usePatients().patients.find(
     (e) => e.id === patientId
   )?.fullname;
   const appointments = usePatients().appointments.filter(
-    (e) => e.patientId === patientId
+    (e) => sharedPatients.findIndex((f) => f === e.patientId) !== -1
   );
   const payements = usePatients().payements.filter(
-    (e) => e.patientId === patientId
+    (e) => sharedPatients.findIndex((f) => f === e.patientId) !== -1
   );
   const appointmentTypes = useConfig().appointmentTypes;
 
@@ -73,6 +81,7 @@ export default function Balance({
   const ths = (
     <tr>
       <th>Date</th>
+      {sharedPatients.length > 1 && <th>Patient</th>}
       <th>Motif</th>
       <th>Débit</th>
       <th>Crédit</th>
@@ -86,12 +95,17 @@ export default function Balance({
       {element.dataType === "event" ? (
         <>
           <td>{displayDate(new Date(element.start))}</td>
+          {sharedPatients.length > 1 && (
+            <td>
+              {patients.find((e) => e.id === element.patientId)?.fullname}
+            </td>
+          )}
           <td>{appointmentTypes.find((e) => e.id === element.idType)?.type}</td>
           <td style={{ color: "red" }}>- {displayPrice(element.price)} €</td>
           <td>
             {element.payed === 1 && (
               <Payement
-                patientId={patientId}
+                patientId={element.patientId}
                 payementId={payements.find((e) => e.eventId === element.id)?.id}
               />
             )}
@@ -107,10 +121,15 @@ export default function Balance({
       ) : (
         <>
           <td>{displayDate(new Date(element.date))}</td>
+          {sharedPatients.length > 1 && (
+            <td>
+              {patients.find((e) => e.id === element.patientId)?.fullname}
+            </td>
+          )}
           <td>{packages.find((e) => e.id === element.packageId)?.package}</td>
           <td></td>
           <td>
-            <Payement patientId={patientId} payementId={element.id} />
+            <Payement patientId={element.patientId} payementId={element.id} />
           </td>
           <td>{element.method}</td>
 
@@ -137,7 +156,7 @@ export default function Balance({
             onClose={() => setOpened(false)}
             title={`Historique des paiements de ${patientName}`}
             closeOnClickOutside={false}
-            size="50%"
+            size="80%"
           >
             <ShareBalance patientId={patientId} />
             <Center>
