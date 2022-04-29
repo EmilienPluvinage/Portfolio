@@ -1644,6 +1644,95 @@ app.post("/DeleteAllParticipants", (req, res, next) => {
   });
 });
 
+// DELETE A PATIENT AND ALL ITS DATA
+
+app.post("/DeletePatient", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId, password, salt FROM `tokens` LEFT JOIN users ON users.id = tokens.userId WHERE token=?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          // we check the password
+          const userId = rows[0].userId;
+          var userPwd = rows[0].password;
+          var userSalt = rows[0].salt;
+          var hash = crypto
+            .pbkdf2Sync(req.body.password, userSalt, 1000, 64, `sha512`)
+            .toString(`hex`);
+          if (userPwd === hash) {
+            // right password
+            connection.query(
+              "SELECT * FROM patients WHERE id = ? AND userId=?",
+              [req.body.id, userId],
+              (err, rows) => {
+                if (err) throw err;
+                if (rows.length === 1) {
+                  // Now we start deleting
+                  connection.query(
+                    "DELETE FROM sharedBalance WHERE patientId1=? OR patientId2=?",
+                    [req.body.id, req.body.id],
+                    (err, result) => {
+                      if (err) throw err;
+                      connection.query(
+                        "UPDATE payements SET patientId=0 WHERE patientId=?",
+                        [req.body.id],
+                        (err, result) => {
+                          if (err) throw err;
+                          connection.query(
+                            "DELETE FROM isInAppointment  WHERE patientId=?",
+                            [req.body.id],
+                            (err, result) => {
+                              if (err) throw err;
+                              connection.query(
+                                "DELETE FROM hasSubscribed WHERE patientId=?",
+                                [req.body.id],
+                                (err, result) => {
+                                  if (err) throw err;
+                                  connection.query(
+                                    "DELETE FROM patients WHERE id=?",
+                                    [req.body.id],
+                                    (err, result) => {
+                                      if (err) throw err;
+                                      res.status(201).json({
+                                        success: true,
+                                        error: "",
+                                      });
+                                    }
+                                  );
+                                }
+                              );
+                            }
+                          );
+                        }
+                      );
+                    }
+                  );
+                } else {
+                  res.status(201).json({
+                    success: false,
+                    error: "userId and patientId do not match",
+                  });
+                }
+              }
+            );
+          } else {
+            res
+              .status(201)
+              .json({ success: false, error: "Incorrect Password" });
+          }
+        } else {
+          res.status(201).json({ success: false, error: "User not connected" });
+        }
+      }
+    );
+  });
+});
+
 // DELETE APPOINTMENT TYPE PARAMETER
 
 app.post("/DeleteAppointmentType", (req, res, next) => {
