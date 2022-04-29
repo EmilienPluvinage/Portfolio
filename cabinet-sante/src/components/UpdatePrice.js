@@ -8,7 +8,7 @@ import { showNotification } from "@mantine/notifications";
 import { Check } from "tabler-icons-react";
 import Confirmation from "./Confirmation";
 
-export default function UpdatePrice({ InitialPrice, priceId }) {
+export default function UpdatePrice({ InitialPrice, priceId, displayType }) {
   // This component is going to display the price and offer the possibility to update it
   const token = useLogin().token;
   const appointments = usePatients().appointments;
@@ -98,7 +98,7 @@ export default function UpdatePrice({ InitialPrice, priceId }) {
       >
         {openedPrice && (
           <Center>
-            <form onSubmit={updatePrice}>
+            <form>
               <NumberInput
                 label="Prix"
                 min={0}
@@ -109,7 +109,7 @@ export default function UpdatePrice({ InitialPrice, priceId }) {
                 hideControls
               />
               <Center>
-                <Button style={{ marginTop: "20px" }} type="submit">
+                <Button style={{ marginTop: "20px" }} onClick={updatePrice}>
                   Modifier
                 </Button>
               </Center>
@@ -117,10 +117,22 @@ export default function UpdatePrice({ InitialPrice, priceId }) {
           </Center>
         )}
       </Modal>
-      <Button size="xs" variant="default" onClick={() => handleClick()}>
-        {" "}
-        {displayPrice(InitialPrice)} €
-      </Button>
+      {displayType === "negative" ? (
+        <Button
+          size="xs"
+          color={"red"}
+          variant="outline"
+          onClick={() => handleClick()}
+        >
+          {" "}
+          - {displayPrice(InitialPrice)} €
+        </Button>
+      ) : (
+        <Button size="xs" variant="default" onClick={() => handleClick()}>
+          {" "}
+          {displayPrice(InitialPrice)} €
+        </Button>
+      )}
     </>
   );
 }

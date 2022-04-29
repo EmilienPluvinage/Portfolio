@@ -12,6 +12,7 @@ import {
 } from "./Functions";
 import Payement from "./Payement";
 import ShareBalance from "./ShareBalance";
+import UpdatePrice from "./UpdatePrice";
 
 export default function Balance({
   patientId,
@@ -94,6 +95,7 @@ export default function Balance({
     <tr key={element.id}>
       {element.dataType === "event" ? (
         <>
+          {console.log(element)}
           <td>{displayDate(new Date(element.start))}</td>
           {sharedPatients.length > 1 && (
             <td>
@@ -101,7 +103,14 @@ export default function Balance({
             </td>
           )}
           <td>{appointmentTypes.find((e) => e.id === element.idType)?.type}</td>
-          <td style={{ color: "red" }}>- {displayPrice(element.price)} €</td>
+          <td>
+            {" "}
+            <UpdatePrice
+              InitialPrice={element.price}
+              priceId={element.id}
+              displayType="negative"
+            />
+          </td>
           <td>
             {element.payed === 1 && (
               <Payement
