@@ -90,7 +90,7 @@ export default function DeletePatient({ patientId }) {
             autoComplete="new-password"
             label="Mot de passe"
             value={password}
-            onChange={setPassword}
+            onChange={(event) => setPassword(event.currentTarget.value)}
           />
           <Center style={{ marginTop: "20px" }}>
             <Button loading={loading} color="red" onClick={handleClick}>

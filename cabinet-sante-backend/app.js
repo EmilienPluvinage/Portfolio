@@ -1723,7 +1723,7 @@ app.post("/DeletePatient", (req, res, next) => {
           } else {
             res
               .status(201)
-              .json({ success: false, error: "Incorrect Password" });
+              .json({ success: false, error: "Mot de passe incorrect." });
           }
         } else {
           res.status(201).json({ success: false, error: "User not connected" });
