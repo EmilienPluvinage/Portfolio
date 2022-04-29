@@ -76,7 +76,54 @@ export default function PatientList() {
     </tr>
   );
 
-  const rows = patients.map((element) => (
+  function compare(a, b, field, direction) {
+    var multiplier = direction === "up" ? -1 : 1;
+    var x = a;
+    var y = b;
+    switch (field) {
+      case "firstname":
+        x = a.firstname;
+        y = b.firstname;
+        break;
+      case "lastname":
+        x = a.lastname;
+        y = b.lastname;
+        break;
+      case "birthday":
+        x = a.birthday;
+        y = b.birthday;
+        multiplier *= -1;
+        break;
+      case "city":
+        x = a.city;
+        y = b.city;
+        break;
+      case "latestEvent":
+        x = latestEvent(a);
+        y = latestEvent(b);
+        break;
+      default:
+        x = a.lastname;
+        y = b.lastname;
+        break;
+    }
+    if (x < y) {
+      return -1 * multiplier;
+    }
+    if (x > y) {
+      return 1 * multiplier;
+    }
+    return 0;
+  }
+
+  function latestEvent(element) {
+    return latestEvents.find((e) => e.patientId === element.id)?.latest;
+  }
+
+  var sortedPatients = patients.slice();
+  sortedPatients.sort((a, b) => compare(a, b, sort.field, sort.direction));
+
+  const rows = sortedPatients.map((element) => (
     <tr key={element.id}>
       <td>{element.firstname}</td>
       <td>{element.lastname}</td>
@@ -85,11 +132,7 @@ export default function PatientList() {
       </td>
       <td>{element.city}</td>
       <td>{element.mobilephone}</td>
-      <td>
-        {displayFullDate(
-          new Date(latestEvents.find((e) => e.patientId === element.id)?.latest)
-        )}
-      </td>
+      <td>{displayFullDate(new Date(latestEvent(element)))}</td>
       <td>
         <Balance patientId={element.id} fullDisplay={false} />
       </td>

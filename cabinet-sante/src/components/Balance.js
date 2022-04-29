@@ -95,7 +95,6 @@ export default function Balance({
     <tr key={element.id}>
       {element.dataType === "event" ? (
         <>
-          {console.log(element)}
           <td>{displayDate(new Date(element.start))}</td>
           {sharedPatients.length > 1 && (
             <td>
