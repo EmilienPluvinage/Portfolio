@@ -14,7 +14,7 @@ import SortSelector from "./SortSelector";
 export default function PatientList() {
   const token = useLogin().token;
   const [latestEvents, setLatestEvents] = useState([]);
-  const [sort, setSort] = useState({ field: "latestEvent", direction: "up" });
+  const [sort, setSort] = useState({ field: "lastname", direction: "down" });
   const patientsPerPage = 100;
   const patients = usePatients().patients;
   const numberOfPages =
