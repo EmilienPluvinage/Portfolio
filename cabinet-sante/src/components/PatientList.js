@@ -9,10 +9,12 @@ import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import Balance from "./Balance";
 import DeletePatient from "./DeletePatient";
+import SortSelector from "./SortSelector";
 
 export default function PatientList() {
   const token = useLogin().token;
   const [latestEvents, setLatestEvents] = useState([]);
+  const [sort, setSort] = useState({ field: "latestEvent", direction: "up" });
   const patientsPerPage = 100;
   const patients = usePatients().patients;
   const numberOfPages =
@@ -46,14 +48,27 @@ export default function PatientList() {
 
   const ths = (
     <tr>
-      <th>Prénom</th>
-      <th>Nom</th>
-      <th>Âge</th>
-      <th>Ville</th>
+      <th>
+        Prénom
+        <SortSelector field="firstname" sort={sort} setSort={setSort} />
+      </th>
+      <th>
+        Nom
+        <SortSelector field="lastname" sort={sort} setSort={setSort} />
+      </th>
+      <th>
+        Âge
+        <SortSelector field="birthday" sort={sort} setSort={setSort} />
+      </th>
+      <th>
+        Ville
+        <SortSelector field="city" sort={sort} setSort={setSort} />
+      </th>
       <th>Téléphone</th>
       <th>
         Dernière <br />
         Consultation
+        <SortSelector field="latestEvent" sort={sort} setSort={setSort} />
       </th>
       <th>Solde</th>
       <th>Accéder</th>
