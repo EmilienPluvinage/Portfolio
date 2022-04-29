@@ -30,23 +30,27 @@ export default function MyFullCalendar() {
   const [appointmentId, setAppointmentId] = useState(0);
   const appointmentTypes = useConfig().appointmentTypes;
 
+  console.log(appointments);
+  console.log(events);
   useEffect(() => {
     if (appointmentTypes?.length > 0) {
       // d'abord un accumulateur pour récupérer que les infos qu'on veut
-      var events = appointments.reduce(
-        (acc, item) =>
-          acc.find((e) => e.id === item.appointmentId)
-            ? acc
-            : acc.concat({
-                id: item.appointmentId,
-                patientId: item.patientId,
-                userId: item.userId,
-                start: item.start,
-                end: item.end,
-                idType: item.idType,
-              }),
-        []
-      );
+      var events = appointments
+        .reduce(
+          (acc, item) =>
+            acc.find((e) => e.id === item.appointmentId)
+              ? acc
+              : acc.concat({
+                  id: item.appointmentId,
+                  patientId: item.patientId,
+                  userId: item.userId,
+                  start: item.start,
+                  end: item.end,
+                  idType: item.idType,
+                }),
+          []
+        )
+        .filter((e) => e.id !== null);
       events.forEach((element) => {
         var color = appointmentTypes.find((e) => e.id === element.idType).color;
         element.backgroundColor = color;
