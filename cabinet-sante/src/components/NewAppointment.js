@@ -193,7 +193,7 @@ export default function NewAppointment({
               // it's a new patient
               patientId = await newPatient(element);
               // we also need to update the context
-              await updatePatients(token);
+              updatePatients(token);
             } else {
               // it's not, so we get the id of the existing one.
               patientId = getIdFromFullname(patients, element);
@@ -241,7 +241,7 @@ export default function NewAppointment({
           });
         }
         await addPatients();
-        await updatePatients(token);
+        updatePatients(token);
         checkPrices();
         return { success: success, eventId: eventId };
       }
@@ -351,7 +351,7 @@ export default function NewAppointment({
 
                 if (res.success === false) {
                   success = false;
-                } else if (price !== oldPrice) {
+                } else if (price !== oldPrice && oldPrice !== undefined) {
                   var patientName = patients.find(
                     (e) => e.id?.toString() === patientId?.toString()
                   )?.fullname;
@@ -367,7 +367,7 @@ export default function NewAppointment({
               });
             }
             await addPatients();
-            await updatePatients(token);
+            updatePatients(token);
             return { success: success, eventId: id };
           }
         } catch (e) {
@@ -478,6 +478,7 @@ export default function NewAppointment({
         color: "red",
       });
     }
+    updatePatients(token);
   }
 
   async function openDetails() {
