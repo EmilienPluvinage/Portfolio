@@ -14,12 +14,7 @@ import Payement from "./Payement";
 import ShareBalance from "./ShareBalance";
 import UpdatePrice from "./UpdatePrice";
 
-export default function Balance({
-  patientId,
-  fullDisplay,
-  warningDisplay,
-  count,
-}) {
+export default function Balance({ patientId, fullDisplay, warningDisplay }) {
   const rowsPerPage = 10;
   const [activePage, setPage] = useState(1);
   const [opened, setOpened] = useState(false);
@@ -203,7 +198,6 @@ export default function Balance({
           <td>
             <span style={{ color: data[0]?.balance < 0 ? "red" : "inherit" }}>
               {displayPrice(data[0]?.balance) + " €"}
-              <span style={{ display: "none" }}>{count.current++}</span>
             </span>
           </td>
         </tr>
