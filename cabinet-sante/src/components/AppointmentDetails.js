@@ -90,7 +90,7 @@ export default function AppointmentDetails({
     if (appointmentId !== 0 && id === 0) {
       // then we get data from the DB and update the from
       const thisAppointment = appointments.filter(
-        (e) => e.appointmentId.toString() === appointmentId.toString()
+        (e) => e.appointmentId?.toString() === appointmentId?.toString()
       );
       const row = thisAppointment[0];
       setPatient(row.patientId);
@@ -98,7 +98,7 @@ export default function AppointmentDetails({
         (e) => e.id === row.idType
       ).type;
       var patientType = patientTypes.find(
-        (e) => e.id.toString() === row.patientType.toString()
+        (e) => e.id?.toString() === row.patientType?.toString()
       )?.type;
       setId(appointmentId);
 

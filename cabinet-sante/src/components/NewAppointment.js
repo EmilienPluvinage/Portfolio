@@ -99,7 +99,7 @@ export default function NewAppointment({
     if (appointmentId !== 0 && id === 0) {
       // then we get data from the context and update the form
       const thisAppointment = appointments.filter(
-        (e) => e.appointmentId.toString() === appointmentId.toString()
+        (e) => e.appointmentId?.toString() === appointmentId?.toString()
       );
       setId(appointmentId);
       const row = thisAppointment[0];
@@ -314,8 +314,8 @@ export default function NewAppointment({
                   packageId === null || packageId === undefined ? 0 : packageId;
                 var oldPrice = appointments.find(
                   (e) =>
-                    e.patientId.toString() === patientId.toString() &&
-                    e.appointmentId.toString() === appointmentId.toString()
+                    e.patientId?.toString() === patientId?.toString() &&
+                    e.appointmentId?.toString() === appointmentId?.toString()
                 )?.price;
 
                 var price = setAutomaticPrice(
@@ -353,7 +353,7 @@ export default function NewAppointment({
                   success = false;
                 } else if (price !== oldPrice) {
                   var patientName = patients.find(
-                    (e) => e.id.toString() === patientId.toString()
+                    (e) => e.id?.toString() === patientId?.toString()
                   )?.fullname;
                   showNotification({
                     title: "Prix modifié",

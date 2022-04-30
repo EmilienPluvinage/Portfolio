@@ -87,9 +87,9 @@ export default function NewPatient() {
   });
 
   if (PatientList.length > 0) {
-    if (params?.id !== undefined && params?.id.toString() !== id.toString()) {
+    if (params?.id !== undefined && params?.id?.toString() !== id?.toString()) {
       var patient = PatientList.find(
-        (e) => e.id.toString() === params.id.toString()
+        (e) => e.id?.toString() === params.id?.toString()
       );
       if (patient !== undefined) {
         setId(patient.id);
