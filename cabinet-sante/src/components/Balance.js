@@ -60,7 +60,10 @@ export default function Balance({
       item.dataType === "event"
         ? acc.concat(
             (acc.length > 0 ? acc[acc.length - 1] : 0) -
-              (item.payed === 1 ? 0 : item.price)
+              (item.payed === 1
+                ? item.price -
+                  payements.find((e) => e.eventId === item.id)?.amount
+                : item.price)
           )
         : acc.concat((acc.length > 0 ? acc[acc.length - 1] : 0) + item.amount),
     []
