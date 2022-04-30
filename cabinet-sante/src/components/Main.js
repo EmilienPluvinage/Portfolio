@@ -9,6 +9,7 @@ import CheckForIncorrectPrices from "./CheckForIncorrectPrices";
 import IncorrectPricesList from "./IncorrectPricesList";
 import Home from "./Home";
 import Statistics from "./Statistics";
+import Accountancy from "./Accountancy";
 
 function Main({ menu }) {
   const loggedIn = useLogin().login;
@@ -24,6 +25,7 @@ function Main({ menu }) {
           <Route exact path="/Parametres" element={<Parameters />} />
           <Route exact path="/" element={<Home />} />
           <Route exact path="/Statistiques" element={<Statistics />} />
+          <Route exact path="/Comptabilite" element={<Accountancy />} />
           <Route
             exact
             path="/Verifier-les-prix"
