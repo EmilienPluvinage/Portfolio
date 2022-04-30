@@ -351,7 +351,7 @@ export default function NewPatient() {
                     (e) =>
                       e.id ===
                       PatientList.find(
-                        (e) => e.id.toString() === params.id.toString()
+                        (e) => e.id?.toString() === params.id?.toString()
                       )?.packageId
                   )?.package
                 }
