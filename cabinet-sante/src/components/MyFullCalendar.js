@@ -30,9 +30,10 @@ export default function MyFullCalendar() {
   const [appointmentId, setAppointmentId] = useState(0);
   const appointmentTypes = useConfig().appointmentTypes;
 
-  console.log(appointments);
-  console.log(events);
   useEffect(() => {
+    console.log("update");
+    console.log(appointments);
+    console.log(patients);
     if (appointmentTypes?.length > 0) {
       // d'abord un accumulateur pour récupérer que les infos qu'on veut
       var events = appointments
@@ -181,6 +182,7 @@ export default function MyFullCalendar() {
             startingTime={startingTime}
             patientId={0}
             appointmentId={appointmentId}
+            setCalendarUpdate={setCalendarUpdate}
           />
         )}
       </Modal>

@@ -21,10 +21,12 @@ export function PatientsProvider({ children }) {
   const [checkOpen, setCheckOpen] = useState(false);
 
   async function initData(token) {
+    console.log("enter");
     updatePatientsList(token);
     updateAppointmentsList(token);
     updatePayementsList(token);
     updateSharedBalance(token);
+    console.log("exit");
   }
 
   async function updatePatientsList(token) {

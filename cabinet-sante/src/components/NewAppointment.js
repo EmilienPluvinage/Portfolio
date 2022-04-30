@@ -48,6 +48,7 @@ export default function NewAppointment({
   patientId, // to be used to pre-fill patient input when appointmentId === 0
   startingTime,
   appointmentId,
+  setCalendarUpdate,
 }) {
   const appointments = usePatients().appointments;
   const patients = usePatients().patients;
@@ -193,7 +194,7 @@ export default function NewAppointment({
               // it's a new patient
               patientId = await newPatient(element);
               // we also need to update the context
-              updatePatients(token);
+              await updatePatients(token);
             } else {
               // it's not, so we get the id of the existing one.
               patientId = getIdFromFullname(patients, element);
@@ -241,7 +242,6 @@ export default function NewAppointment({
           });
         }
         await addPatients();
-        updatePatients(token);
         checkPrices();
         return { success: success, eventId: eventId };
       }
@@ -457,7 +457,7 @@ export default function NewAppointment({
       id === 0 ? await addEvent(values) : await UpdateEvent(values);
     if (result.success) {
       const start = concatenateDateTime(values.date, values.timeRange[0]);
-      setOpened(false);
+
       showNotification({
         title: id === 0 ? "Consultation planifiée" : "Consultation modifiée",
         message:
@@ -469,6 +469,10 @@ export default function NewAppointment({
         icon: <Check />,
         color: "green",
       });
+      updatePatients(token);
+      console.log("test");
+      setCalendarUpdate((prev) => prev + 1);
+      setOpened(false);
     } else {
       setLoading("");
       showNotification({
@@ -478,7 +482,6 @@ export default function NewAppointment({
         color: "red",
       });
     }
-    updatePatients(token);
   }
 
   async function openDetails() {
