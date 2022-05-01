@@ -6,6 +6,8 @@ import Patients from "./Patients";
 import Packages from "./Packages";
 import PriceScheme from "./PriceScheme";
 import PayementMethods from "./PayementMethods";
+import Calendar from "./Calendar";
+
 export default function Parameters() {
   const config = useConfig();
   return (
@@ -28,6 +30,7 @@ export default function Parameters() {
               <PayementMethods parameters={config.parameters} />
             </Grid.Col>
           </Grid>
+          <Calendar />
           <PriceScheme />
         </div>
       </div>

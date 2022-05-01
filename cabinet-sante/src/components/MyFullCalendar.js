@@ -29,6 +29,22 @@ export default function MyFullCalendar() {
   const [calendarUpdate, setCalendarUpdate] = useState(0);
   const [appointmentId, setAppointmentId] = useState(0);
   const appointmentTypes = useConfig().appointmentTypes;
+  const parameters = useConfig().parameters;
+  const startingHour = parameters.find((e) => e.name === "startingHour")?.value;
+  const finishingHour = parameters.find(
+    (e) => e.name === "finishingHour"
+  )?.value;
+
+  function convertIntoTimeString(hour) {
+    switch (hour?.toString().length) {
+      case 1:
+        return `0${hour.toString()}:00:00`;
+      case 2:
+        return `${hour.toString()}:00:00`;
+      default:
+        return "00:00:00";
+    }
+  }
 
   useEffect(() => {
     console.log("update");
@@ -214,8 +230,8 @@ export default function MyFullCalendar() {
           eventClick={handleEventClick}
           eventContent={renderEventContent}
           hiddenDays={[0]}
-          slotMinTime={"08:00:00"}
-          slotMaxTime={"21:00:00"}
+          slotMinTime={convertIntoTimeString(startingHour)}
+          slotMaxTime={convertIntoTimeString(finishingHour)}
           contentHeight={"auto"}
           nowIndicator={true}
           allDaySlot={false}
