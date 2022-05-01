@@ -34,6 +34,25 @@ export default function MyFullCalendar() {
   const finishingHour = parameters.find(
     (e) => e.name === "finishingHour"
   )?.value;
+  const daysOfTheWeek = JSON.parse(
+    parameters.find((e) => e.name === "daysOfTheWeek")?.value
+  );
+
+  const daysOfTheWeekList = [
+    "Dimanche",
+    "Lundi",
+    "Mardi",
+    "Mercredi",
+    "Jeudi",
+    "Vendredi",
+    "Samedi",
+  ];
+
+  const daysToExclude = daysOfTheWeekList.reduce(
+    (acc, item, index) =>
+      daysOfTheWeek.includes(item) ? acc : acc.concat([index]),
+    []
+  );
 
   function convertIntoTimeString(hour) {
     switch (hour?.toString().length) {
@@ -229,7 +248,7 @@ export default function MyFullCalendar() {
           dateClick={handleDateClick}
           eventClick={handleEventClick}
           eventContent={renderEventContent}
-          hiddenDays={[0]}
+          hiddenDays={daysToExclude}
           slotMinTime={convertIntoTimeString(startingHour)}
           slotMaxTime={convertIntoTimeString(finishingHour)}
           contentHeight={"auto"}
