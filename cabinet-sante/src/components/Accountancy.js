@@ -81,7 +81,9 @@ export default function Accountancy() {
           patients.find(
             (x) =>
               x.id ===
-              appointments.find((e) => e.id === element.eventId)?.patientId
+              (element.eventId !== 0
+                ? element.eventPatientId
+                : element.packagePatientId)
           )?.fullname
         }
       </td>
