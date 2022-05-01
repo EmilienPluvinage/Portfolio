@@ -1,28 +1,13 @@
 import { useState } from "react";
 import "../styles/styles.css";
 import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
-import { useConfig } from "./contexts/ConfigContext";
-import { Calendar, Check, Copy, CurrencyEuro, X } from "tabler-icons-react";
+import { Calendar, Check, Copy, X } from "tabler-icons-react";
 import dayjs from "dayjs";
-import {
-  Button,
-  Center,
-  Grid,
-  Modal,
-  NumberInput,
-  Select,
-  Text,
-} from "@mantine/core";
-import { useForm } from "@mantine/form";
-import {
-  concatenateDateTime,
-  displayDateInFrench,
-  displayPrice,
-} from "./Functions";
+import { Button, Center, Grid, Modal } from "@mantine/core";
+import { concatenateDateTime, displayDateInFrench } from "./Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { showNotification } from "@mantine/notifications";
 import { DatePicker, TimeRangeInput } from "@mantine/dates";
-import { useEffect } from "react";
 
 export default function DuplicateEvent({ appointmentId, parentSetOpened }) {
   const token = useLogin().token;
