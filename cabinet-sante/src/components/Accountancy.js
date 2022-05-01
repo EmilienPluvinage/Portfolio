@@ -92,9 +92,11 @@ export default function Accountancy() {
     </tr>
   ));
 
+  const total = filteredPayements.reduce((acc, item) => acc + item.amount, 0);
+
   return (
     <>
-      <h2>Compta</h2>
+      <h2>Comptabilité</h2>
       <div className="main-content">
         <Center style={{ flexWrap: "wrap" }}>
           <DateButton setValue={setValue} start={yesterday} end={yesterday}>
@@ -139,7 +141,18 @@ export default function Accountancy() {
         </Center>
         <Table striped verticalSpacing="xs">
           <thead>{ths}</thead>
-          <tbody>{rows}</tbody>
+          <tbody>
+            {rows}
+            <tr key="total" style={{ backgroundColor: "#E3FAFC" }}>
+              <td colSpan={3} style={{ textAlign: "right" }}>
+                <b>Total :</b>
+              </td>
+
+              <td colSpan={2}>
+                <b>{displayPrice(total)} €</b>
+              </td>
+            </tr>
+          </tbody>
         </Table>
       </div>
     </>
