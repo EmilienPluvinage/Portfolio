@@ -174,7 +174,8 @@ export function timeOnly(str) {
   return new Date(0, 0, 0, date.getHours(), date.getMinutes(), 0, 0);
 }
 
-export function displayDateInFrench(date) {
+export function displayDateInFrench(strdate) {
+  var date = new Date(strdate);
   var minutes = date.getMinutes();
 
   return (
