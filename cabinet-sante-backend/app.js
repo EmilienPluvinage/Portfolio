@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const mysql = require("mysql");
 const crypto = require("crypto");
+const { markAsUntransferable } = require("worker_threads");
 
 const pool = mysql.createPool({
   connectionLimit: 100,
@@ -1449,6 +1450,99 @@ app.post("/UpdateEvent", (req, res, next) => {
                       res.status(201).json({ success: false, error: err });
                     } else {
                       res.status(201).json({ success: true, error: "" });
+                    }
+                  }
+                );
+              } else {
+                res.status(201).json({
+                  success: false,
+                  error: "userId and appointmentId do not match",
+                });
+              }
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
+app.post("/DuplicateEvent", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          const userId = rows[0].userId;
+          connection.query(
+            "SELECT * FROM appointments WHERE id = ? AND userId=?",
+            [req.body.appointmentId, userId],
+            (err, rows) => {
+              if (err) throw err;
+              if (rows.length === 1) {
+                // so we do the duplicate
+                // Now connected and we have the user ID so we do the update
+                connection.query(
+                  "INSERT INTO appointments(userId, important, idType, start, end) VALUES(?,?,?,?,?)",
+                  [
+                    userId,
+                    rows[0].important,
+                    rows[0].idType,
+                    req.body.start,
+                    req.body.end,
+                  ],
+                  (err, result) => {
+                    if (err) {
+                      console.log(err);
+                      res.status(201).json({ success: false, error: err });
+                    } else {
+                      // we get the appointment id
+                      connection.query(
+                        "SELECT id FROM appointments WHERE userId=? ORDER BY id DESC LIMIT 0,1",
+                        userId,
+                        (err, result) => {
+                          if (err) throw err;
+                          var newAppointmentId = result[0].id;
+
+                          // We we get the values from isInAppointment (on the old appointment id)
+                          connection.query(
+                            "SELECT * FROM isInAppointment WHERE appointmentId = ?",
+                            req.body.appointmentId,
+                            (err, result) => {
+                              if (err) throw err;
+
+                              // we go through all of them and duplicate them one by one
+                              for (let i = 0; i < result.length; i++) {
+                                let origin = result[i];
+                                connection.query(
+                                  "INSERT INTO isInAppointment(patientId, appointmentId, size, weight, patientType, price, priceSetByUser) VALUES(?,?,?,?,?,?,?)",
+                                  [
+                                    origin.patientId,
+                                    newAppointmentId,
+                                    origin.size,
+                                    origin.weight,
+                                    origin.patientType,
+                                    origin.price,
+                                    origin.priceSetByUser,
+                                  ],
+                                  (err, rows) => {
+                                    if (err) throw err;
+                                  }
+                                );
+                              }
+                              // all done
+                            }
+                          );
+                          res.status(201).json({ success: true, error: "" });
+                        }
+                      );
                     }
                   }
                 );

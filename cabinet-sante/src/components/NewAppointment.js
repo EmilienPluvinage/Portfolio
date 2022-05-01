@@ -40,6 +40,7 @@ import {
 } from "tabler-icons-react";
 import { useForm } from "@mantine/form";
 import AppointmentDetails from "./AppointmentDetails";
+import DuplicateEvent from "./DuplicateEvent";
 import { useConfig } from "./contexts/ConfigContext";
 import { useEffect } from "react";
 
@@ -629,6 +630,7 @@ export default function NewAppointment({
           >
             <Grid.Col span={2}>
               <Button
+                size="sm"
                 leftIcon={<Trash size={18} />}
                 variant="outline"
                 color="red"
@@ -639,7 +641,14 @@ export default function NewAppointment({
               </Button>
             </Grid.Col>
             <Grid.Col span={2}>
+              <DuplicateEvent
+                appointmentId={appointmentId}
+                parentSetOpened={setOpened}
+              />
+            </Grid.Col>
+            <Grid.Col span={2}>
               <Button
+                size="sm"
                 type="submit"
                 leftIcon={<Pencil size={18} />}
                 loading={loading}

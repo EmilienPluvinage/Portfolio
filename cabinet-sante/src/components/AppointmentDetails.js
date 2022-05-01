@@ -30,6 +30,7 @@ import { Calendar, Check, Trash, Pencil, X } from "tabler-icons-react";
 import { useForm } from "@mantine/form";
 import { useEffect } from "react";
 import { useConfig } from "./contexts/ConfigContext";
+import DuplicateEvent from "./DuplicateEvent";
 
 export default function AppointmentDetails({
   setOpened,
@@ -693,6 +694,12 @@ export default function AppointmentDetails({
               >
                 Supprimer
               </Button>
+            </Grid.Col>
+            <Grid.Col span={2}>
+              <DuplicateEvent
+                appointmentId={appointmentId}
+                parentSetOpened={setOpened}
+              />
             </Grid.Col>
             <Grid.Col span={2}>
               <Button
