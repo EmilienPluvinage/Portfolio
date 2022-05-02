@@ -52,7 +52,7 @@ function Login() {
       }
     }
     returning();
-  }, [currentToken, loggedIn, logging]);
+  }, [currentToken, loggedIn, logging, loading]);
 
   async function handleSubmit(values) {
     setLoading(true);
