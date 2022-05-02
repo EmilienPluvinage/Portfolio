@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mysql = require("mysql");
+const crypto = require("crypto");
 
 const pool = mysql.createPool({
   connectionLimit: 100,
