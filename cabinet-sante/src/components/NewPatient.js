@@ -12,6 +12,7 @@ import {
   ReportMedical,
   Check,
   ListSearch,
+  ExclamationMark,
 } from "tabler-icons-react";
 import { useNavigate } from "react-router-dom";
 
@@ -124,66 +125,125 @@ export default function NewPatient() {
   }
 
   async function submitForm(values) {
-    setLoading("loading");
-    var link =
-      process.env.REACT_APP_API_DOMAIN +
-      "/" +
-      (id === 0 ? "NewPatient" : "UpdatePatient");
-    try {
-      const fetchResponse = await fetch(link, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstname: capitalize(values.firstname),
-          lastname: capitalize(values.lastname),
-          birthday: values.birthday,
-          sex: values.sex,
-          mobilephone: values.mobilephone,
-          landline: values.landline,
-          email: values.email,
-          address: values.address,
-          postcode: values.postcode,
-          city: values.city,
-          country: values.country,
-          comments: values.comments,
-          maritalStatus: values.maritalStatus,
-          numberOfChildren: values.numberOfChildren,
-          job: values.job,
-          GP: values.GP,
-          hobbies: values.hobbies,
-          SSNumber: values.SSNumber,
-          healthInsurance: values.healthInsurance,
-          sentBy: values.sentBy,
-          hand: JSON.stringify(values.hand),
-          token: token,
-          id: id,
-        }),
-      });
-      const res = await fetchResponse.json();
-      if (res.success) {
-        getPatients(token);
-        setId(res.id);
-        setLoading("");
-        showNotification({
-          title:
-            id !== 0 ? "Modification enregistrée" : "Nouveau patient ajouté",
-          message: "La fiche de votre patient a bien été mise à jour.",
-          color: "green",
-          icon: <Check />,
+    const check = checkValues(values);
+    if (check.check) {
+      setLoading("loading");
+      var link =
+        process.env.REACT_APP_API_DOMAIN +
+        "/" +
+        (id === 0 ? "NewPatient" : "UpdatePatient");
+      try {
+        const fetchResponse = await fetch(link, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            firstname: capitalize(values.firstname),
+            lastname: capitalize(values.lastname),
+            birthday: values.birthday,
+            sex: values.sex,
+            mobilephone: values.mobilephone,
+            landline: values.landline,
+            email: values.email,
+            address: values.address,
+            postcode: values.postcode,
+            city: values.city,
+            country: values.country,
+            comments: values.comments,
+            maritalStatus: values.maritalStatus,
+            numberOfChildren: values.numberOfChildren,
+            job: values.job,
+            GP: values.GP,
+            hobbies: values.hobbies,
+            SSNumber: values.SSNumber,
+            healthInsurance: values.healthInsurance,
+            sentBy: values.sentBy,
+            hand: JSON.stringify(values.hand),
+            token: token,
+            id: id,
+          }),
         });
-        navigate("/Nouveau-Patient/" + res.id);
+        const res = await fetchResponse.json();
+        if (res.success) {
+          getPatients(token);
+          setId(res.id);
+          setLoading("");
+          showNotification({
+            title:
+              id !== 0 ? "Modification enregistrée" : "Nouveau patient ajouté",
+            message: "La fiche de votre patient a bien été mise à jour.",
+            color: "green",
+            icon: <Check />,
+          });
+          navigate("/Nouveau-Patient/" + res.id);
+        }
+      } catch (e) {
+        return e;
       }
-    } catch (e) {
-      return e;
+    } else {
+      showNotification({
+        title: "Opération impossible",
+        message: check.message,
+        color: "yellow",
+        icon: <ExclamationMark />,
+      });
     }
   }
 
-  // for validation
-  // pattern="0[0-9]{9}|\+[0-9]{11}"
-  // pattern="0[0-9]{9}|\+[0-9]{11}"
+  function checkValues(values) {
+    console.log(values);
+
+    if (values.lastname === "")
+      return {
+        check: false,
+        message: "Vous devez entrez au moins un nom de famille.",
+      };
+
+    // we check if there isn't already a patient with same first and last name, and whose birthday is less an a year to this one
+    var index = PatientList.findIndex(
+      (element) =>
+        capitalize(element?.lastname) === capitalize(values?.lastname) &&
+        capitalize(element?.firstname) === capitalize(values?.firstname) &&
+        element.id !== id
+    );
+    if (index !== -1) {
+      // now we need to look at the birthday. Either the new patient AND the old one don't have birthday sets, in which case there's gonna be an issue
+      if (
+        (values.birthday === "" || values.birthday === null) &&
+        PatientList[index]?.birthday === ""
+      ) {
+        return {
+          check: false,
+          message:
+            "Il existe déjà un patient avec le même nom et prénom. Merci d'indiquer un deuxième prénom ou bien une date de naissance afin de les distinguer.",
+        };
+      }
+      if (
+        values.birthday !== "" &&
+        values.birthday !== null &&
+        PatientList[index]?.birthday !== ""
+      ) {
+        // then we need to make sure that there is at least one year between their two birthdate to make sure at no point they will have the same age.
+        var difference =
+          new Date(values.birthday).getTime() -
+          new Date(PatientList[index]?.birthday).getTime();
+        var days = Math.abs(Math.ceil(difference / (1000 * 3600 * 24)));
+        if (days < 365) {
+          return {
+            check: false,
+            message:
+              "Il existe déjà un patient avec le même nom, prénom, et moins d'un an de différence d'âge. Merci d'indiquer un deuxième prénom afin de les distinguer.",
+          };
+        }
+      }
+      // Finally if one has a birthdate selected and not the other one doesn't it's fine because we can distinguish them based on that,
+      // so we carry on our checks
+    }
+
+    return { check: true };
+  }
 
   return (
     <>
