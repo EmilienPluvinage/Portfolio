@@ -25,6 +25,7 @@ export default function Appointments({ appointmentTypes }) {
   const appointments = usePatients().appointments;
   const [appointmentType, setAppointmentType] = useState("");
   const [appointmentTypeMulti, setAppointmentTypeMulti] = useState(0);
+  const [appointmentTypeAlert, setAppointmentTypeAlert] = useState(0);
   const [ATSelect, setATselect] = useState("");
   const [ATopened, setATOpened] = useState(false);
   const [appointmentTypeId, setAppointmentId] = useState(0);
@@ -48,14 +49,24 @@ export default function Appointments({ appointmentTypes }) {
   function submitAppointmentForm(event) {
     event.preventDefault();
     if (appointmentTypeId === 0) {
-      addNewType(appointmentType, appointmentTypeMulti, color);
+      addNewType(
+        appointmentType,
+        appointmentTypeMulti,
+        color,
+        appointmentTypeAlert
+      );
     } else {
-      updateAppointmentType(appointmentType, appointmentTypeMulti, color);
+      updateAppointmentType(
+        appointmentType,
+        appointmentTypeMulti,
+        color,
+        appointmentTypeAlert
+      );
     }
     setATOpened(false);
   }
 
-  async function updateAppointmentType(type, multi, color) {
+  async function updateAppointmentType(type, multi, color, alert) {
     try {
       const fetchResponse = await fetch(
         process.env.REACT_APP_API_DOMAIN + "/UpdateAppointmentType",
@@ -68,6 +79,7 @@ export default function Appointments({ appointmentTypes }) {
           body: JSON.stringify({
             type: type,
             multi: multi,
+            alert: alert,
             color: color,
             token: token,
             id: appointmentTypeId,
@@ -90,7 +102,7 @@ export default function Appointments({ appointmentTypes }) {
     }
   }
 
-  async function addNewType(type, multi, color) {
+  async function addNewType(type, multi, color, alert) {
     if (
       appointmentTypes.findIndex(
         (e) => capitalize(e.type) === capitalize(type)
@@ -108,6 +120,7 @@ export default function Appointments({ appointmentTypes }) {
             body: JSON.stringify({
               type: type,
               multi: multi,
+              alert: alert,
               color: color,
               token: token,
             }),
@@ -143,6 +156,7 @@ export default function Appointments({ appointmentTypes }) {
     setAppointmentType(ATSelect);
     var index = appointmentTypes.findIndex((e) => e.type === ATSelect);
     setAppointmentTypeMulti(appointmentTypes[index].multi);
+    setAppointmentTypeAlert(appointmentTypes[index].alert);
     setAppointmentId(appointmentTypes[index].id);
     setColor(appointmentTypes[index].color);
     setATOpened(true);
@@ -151,6 +165,7 @@ export default function Appointments({ appointmentTypes }) {
   function addAppointmentType() {
     setAppointmentType("");
     setAppointmentTypeMulti(false);
+    setAppointmentTypeAlert(false);
     setAppointmentId(0);
     setColor("#ffffff");
     setATOpened(true);
@@ -254,7 +269,15 @@ export default function Appointments({ appointmentTypes }) {
               onChange={(event) =>
                 setAppointmentTypeMulti(event.currentTarget.checked)
               }
-              label="collectif"
+              label="Collectif"
+              style={{ margin: "10px" }}
+            />
+            <Checkbox
+              checked={appointmentTypeAlert}
+              onChange={(event) =>
+                setAppointmentTypeAlert(event.currentTarget.checked)
+              }
+              label="Alerte Comptabilité"
               style={{ margin: "10px" }}
             />
           </Center>
