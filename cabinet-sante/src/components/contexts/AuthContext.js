@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { useUpdatePatients } from "./PatientsContext";
 import { useUpdateGovData } from "./GovDataContext";
 import { useUpdateConfig } from "./ConfigContext";
+import { useNavigate } from "react-router-dom";
 
 const LoginContext = React.createContext();
 const LoggingContext = React.createContext();
@@ -15,6 +16,7 @@ export function useLogging() {
 }
 
 export function AuthProvider({ children }) {
+  const navigate = useNavigate();
   const CheckAppointments = useUpdatePatients().check;
   const getPatients = useUpdatePatients().update;
   const getGovData = useUpdateGovData();
@@ -50,12 +52,13 @@ export function AuthProvider({ children }) {
     if (bool) {
       setToken(newToken);
       async function getData() {
-        getPatients(newToken);
-        getGovData();
-        getConfig(newToken);
+        await getPatients(newToken);
+        await getGovData();
+        await getConfig(newToken);
       }
       await getData();
       CheckAppointments();
+      navigate("/");
     } else {
       removeToken(token);
       localStorage.removeItem("token");

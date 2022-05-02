@@ -20,7 +20,6 @@ function Login() {
   const logging = useLogging();
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
-
   const [checked, setChecked] = useState(
     localStorage.getItem("rememberMe") === "true"
   );
@@ -44,7 +43,8 @@ function Login() {
       if (
         currentToken !== null &&
         loggedIn === false &&
-        localStorage.getItem("rememberMe") === "true"
+        localStorage.getItem("rememberMe") === "true" &&
+        loading === false
       ) {
         setLoading(true);
         await logging(true, currentToken);
