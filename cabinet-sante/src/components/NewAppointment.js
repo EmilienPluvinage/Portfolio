@@ -138,7 +138,7 @@ export default function NewAppointment({
       const res = await fetchResponse.json();
       if (res.success) {
         setOpened(false);
-        updatePatients(token);
+
         setDeleteLoader("");
         showNotification({
           title: "Consultation supprimée",
@@ -368,7 +368,7 @@ export default function NewAppointment({
               });
             }
             await addPatients();
-            updatePatients(token);
+
             return { success: success, eventId: id };
           }
         } catch (e) {
@@ -470,7 +470,7 @@ export default function NewAppointment({
         icon: <Check />,
         color: "green",
       });
-      updatePatients(token);
+      await updatePatients(token);
       console.log("test");
       setCalendarUpdate((prev) => prev + 1);
       setOpened(false);
