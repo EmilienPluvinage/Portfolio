@@ -167,7 +167,7 @@ export default function NewPatient() {
         });
         const res = await fetchResponse.json();
         if (res.success) {
-          getPatients(token);
+          await getPatients(token);
           setId(res.id);
           setLoading("");
           showNotification({
@@ -194,6 +194,13 @@ export default function NewPatient() {
 
   function checkValues(values) {
     console.log(values);
+
+    if (values.sex === null || values.sex === undefined || values.sex === "") {
+      return {
+        check: false,
+        message: "Vous devez indiquer le genre de la personne.",
+      };
+    }
 
     if (values.lastname === "")
       return {
