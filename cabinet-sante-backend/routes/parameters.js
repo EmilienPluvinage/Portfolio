@@ -35,11 +35,12 @@ router.post("/UpdateAppointmentType", (req, res, next) => {
           var userId = rows[0].userId;
           // so we do the update
           connection.query(
-            "UPDATE appointmentTypes SET type=?, multi=?, color=? WHERE id=? and userId=?",
+            "UPDATE appointmentTypes SET type=?, multi=?, color=?, alert=? WHERE id=? and userId=?",
             [
               req.body.type,
               req.body.multi,
               req.body.color,
+              req.body.alert,
               req.body.id,
               userId,
             ],
@@ -197,8 +198,14 @@ router.post("/AddAppointmentType", (req, res, next) => {
           // belongs to that user
           // Now connected and we have the user ID so we do the insert
           connection.query(
-            "INSERT INTO appointmentTypes(type, userId, multi, color) VALUES (?,?,?,?)",
-            [req.body.type, userId, req.body.multi, req.body.color],
+            "INSERT INTO appointmentTypes(type, userId, multi, alert, color) VALUES (?,?,?,?,?)",
+            [
+              req.body.type,
+              userId,
+              req.body.multi,
+              req.body.alert,
+              req.body.color,
+            ],
             (err, result) => {
               if (err) throw err;
               connection.query(
