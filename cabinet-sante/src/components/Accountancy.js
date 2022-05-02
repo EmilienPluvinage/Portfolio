@@ -94,6 +94,29 @@ export default function Accountancy() {
 
   const total = filteredPayements.reduce((acc, item) => acc + item.amount, 0);
 
+  // Finally we check if there are any appointments that have not been paid (payed === 0) and need to be displayed (alert === 1)
+  // We won't count them in the total but we just display them as information
+
+  const filteredAppointments = appointments
+    .filter(
+      (e) =>
+        new Date(e.start) >= value[0] &&
+        new Date(e.start) <= value[1] &&
+        e.payed === 0 &&
+        appointmentTypes.find((f) => f.id === e.idType)?.alert === 1
+    )
+    .sort(compareDate);
+
+  const alertRows = filteredAppointments.map((element) => (
+    <tr key={"event" + element.id} style={{ backgroundColor: "#FFE3E3" }}>
+      <td>{displayFullDate(new Date(element.start))}</td>
+      <td>{appointmentTypes.find((f) => f.id === element.idType)?.type}</td>
+      <td>{patients.find((e) => e.id === element.patientId)?.fullname}</td>
+      <td>{displayPrice(element.price)} €</td>
+      <td>Non réglé</td>
+    </tr>
+  ));
+
   return (
     <>
       <h2>Comptabilité</h2>
@@ -142,6 +165,7 @@ export default function Accountancy() {
         <Table striped verticalSpacing="xs">
           <thead>{ths}</thead>
           <tbody>
+            {alertRows}
             {rows}
             <tr key="total" style={{ backgroundColor: "#E3FAFC" }}>
               <td colSpan={3} style={{ textAlign: "right" }}>
