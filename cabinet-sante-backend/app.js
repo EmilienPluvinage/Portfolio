@@ -228,8 +228,6 @@ app.post("/Login", (req, res, next) => {
   });
 });
 
-// LIST OF PATIENTS
-
 app.post("/GetPayements", (req, res, next) => {
   pool.getConnection((err, connection) => {
     if (err) throw err;
