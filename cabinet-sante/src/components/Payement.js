@@ -405,7 +405,7 @@ export default function Payement({ patientId, payementId }) {
       ) : (
         <Button size="xs" variant="default" onClick={() => setOpened(true)}>
           {" "}
-          {displayPrice(payement.amount)} €
+          {displayPrice(payement?.amount)} €
         </Button>
       )}
     </>

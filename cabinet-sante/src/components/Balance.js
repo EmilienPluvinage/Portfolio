@@ -60,7 +60,7 @@ export default function Balance({ patientId, fullDisplay, warningDisplay }) {
                   payements.find((e) => e.eventId === item.id)?.amount
                 : item.price)
           )
-        : acc.concat((acc.length > 0 ? acc[acc.length - 1] : 0) + item.amount),
+        : acc.concat((acc.length > 0 ? acc[acc.length - 1] : 0) + item?.amount),
     []
   );
 
