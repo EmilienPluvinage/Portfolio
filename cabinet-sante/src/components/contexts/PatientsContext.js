@@ -22,10 +22,10 @@ export function PatientsProvider({ children }) {
 
   async function initData(token) {
     console.log("enter");
-    updatePatientsList(token);
-    updateAppointmentsList(token);
-    updatePayementsList(token);
-    updateSharedBalance(token);
+    await updatePatientsList(token);
+    await updateAppointmentsList(token);
+    await updatePayementsList(token);
+    await updateSharedBalance(token);
     console.log("exit");
   }
 
