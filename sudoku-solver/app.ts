@@ -62,7 +62,11 @@ class Grid {
 
   // Method that adds a value to the current grid
   addValue(cell: Cell) {
-    this.values.push(cell);
+    if (this.isThereADuplicate(cell)) {
+      throw new Error("Duplicate value found.");
+    } else {
+      this.values.push(cell);
+    }
   }
 
   // Method that checks if the value already exists on the row, the column, or the smaller square
@@ -110,6 +114,21 @@ class Grid {
         if (aCell.value === cell.value) {
           // and the values are the same, we return true;
           result = true;
+        }
+      }
+    }
+    return result;
+  }
+
+  isComplete() {
+    // for the grid to be complete, there should be 81 cells, and no duplicates.
+    var result = false;
+    if (this.values.length === numberOfRows * numberOfRows) {
+      // we set result to true. And then we check for duplicates.
+      var result = true;
+      for (const value of this.values) {
+        if (this.isThereADuplicate(value)) {
+          result = false;
         }
       }
     }
