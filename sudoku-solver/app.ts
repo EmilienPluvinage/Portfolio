@@ -1,5 +1,15 @@
 const numberOfRows = 9;
 
+// definitions
+// a cell is the smallest entity.
+// A grid is made of a maximum of 9*9=81 cells.
+// A square is a "smaller grid" of only 9 cells.
+// => A grid is made of 9 squares
+
+////////////
+/// CELL ///
+////////////
+
 class Cell {
   coordinates: [number, number];
   value: number;
@@ -20,7 +30,25 @@ class Cell {
     }
     return result;
   }
+
+  // return the coordinates of the square in which the cell is
+  squareCoordinates(): [number, number] {
+    // this.coordinates.map((e) => Math.floor((e - 1) / 3) + 1); was nice but map doesn't preserve the type of the tuple...
+    return [
+      Math.floor((this.coordinates[0] - 1) / 3) + 1,
+      Math.floor((this.coordinates[1] - 1) / 3) + 1,
+    ];
+  }
+
+  areSquareCoordinatesIdentical(coord1: [number, number]) {
+    const coord2 = this.squareCoordinates();
+    return coord1[0] === coord2[0] && coord1[1] === coord2[1];
+  }
 }
+
+////////////
+/// GRID ///
+////////////
 
 class Grid {
   complete: boolean = false;
@@ -76,7 +104,14 @@ class Grid {
 
   isThereADuplicateInSquare(cell: Cell) {
     var result = false;
-    for (let value of this.values) {
+    for (let aCell of this.values) {
+      // if we are in the same square
+      if (aCell.areSquareCoordinatesIdentical(cell.squareCoordinates())) {
+        if (aCell.value === cell.value) {
+          // and the values are the same, we return true;
+          result = true;
+        }
+      }
     }
     return result;
   }
