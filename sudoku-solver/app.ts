@@ -1,0 +1,83 @@
+const numberOfRows = 9;
+
+class Cell {
+  coordinates: [number, number];
+  value: number;
+  constructor(xy: [number, number], v: number) {
+    if (!this.isInRange(...xy, v)) {
+      throw new Error("Values passed to the constructor are outside of range");
+    }
+    this.coordinates = xy;
+    this.value = v;
+  }
+  // Check if a set of numbers is within [1,9]
+  isInRange(...n: number[]) {
+    let result = true;
+    for (const i of n) {
+      if (i < 1 || i > numberOfRows) {
+        result = false;
+      }
+    }
+    return result;
+  }
+}
+
+class Grid {
+  complete: boolean = false;
+  values: Cell[];
+
+  // Creates and empty array and then adds the first value
+  constructor(cell: Cell) {
+    this.values = [];
+    this.addValue(cell);
+  }
+
+  // Method that adds a value to the current grid
+  addValue(cell: Cell) {
+    this.values.push(cell);
+  }
+
+  // Method that checks if the value already exists on the row, the column, or the smaller square
+  isThereADuplicate(cell: Cell) {
+    return (
+      this.isThereADuplicateInColumn(cell) ||
+      this.isThereADuplicateInRow(cell) ||
+      this.isThereADuplicateInSquare(cell)
+    );
+  }
+
+  isThereADuplicateInRow(cell: Cell) {
+    var result = false;
+    // We check on the row number (first value of cell coordinate) to see if the value already exists.
+    for (let value of this.values) {
+      if (value.coordinates[0] === cell.coordinates[0]) {
+        // then we check the value
+        if (value.value === cell.value) {
+          result = true;
+        }
+      }
+    }
+    return result;
+  }
+
+  isThereADuplicateInColumn(cell: Cell) {
+    var result = false;
+    // We check on the row number (first value of cell coordinate) to see if the value already exists.
+    for (let value of this.values) {
+      if (value.coordinates[1] === cell.coordinates[1]) {
+        // then we check the value
+        if (value.value === cell.value) {
+          result = true;
+        }
+      }
+    }
+    return result;
+  }
+
+  isThereADuplicateInSquare(cell: Cell) {
+    var result = false;
+    for (let value of this.values) {
+    }
+    return result;
+  }
+}
