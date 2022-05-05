@@ -201,16 +201,31 @@ class SolvableGrid extends Grid {
 
   solveOne() {
     // we go through all the rows
+    var found = false;
     loop: for (let i = 1; i <= numberOfRows; i++) {
-      if (this.solveRow(i)) break loop;
+      if (this.solveRowColumn(i, true)) {
+        found = true;
+        break loop;
+      }
+    }
+    if (!found) {
+      // we go through all the columns
+      loop: for (let i = 1; i <= numberOfRows; i++) {
+        if (this.solveRowColumn(i, false)) {
+          found = true;
+          break loop;
+        }
+      }
     }
   }
 
-  solveRow(n: number) {
+  solveRowColumn(n: number, row: boolean) {
+    var x = row === true ? 0 : 1;
+    var y = row === true ? 1 : 0;
     // check row n and see if there is one missing value
     const starter: Cell[] = [];
     const cells = this.values.reduce(
-      (acc, item) => (item.coordinates[0] === n ? acc.concat([item]) : acc),
+      (acc, item) => (item.coordinates[x] === n ? acc.concat([item]) : acc),
       starter
     );
     if (cells.length === numberOfRows - 1) {
@@ -228,13 +243,17 @@ class SolvableGrid extends Grid {
       index = 0;
       var column = 0;
       for (let i = 1; i <= numberOfRows; i++) {
-        index = cells.findIndex((c) => c.coordinates[1] === i);
+        index = cells.findIndex((c) => c.coordinates[y] === i);
         if (index === -1) {
           column = i;
         }
       }
       // finally we add our new value
-      this.addValue(new Cell([n, column], value));
+      if (row === true) {
+        this.addValue(new Cell([n, column], value));
+      } else {
+        this.addValue(new Cell([column, n], value));
+      }
 
       // and we update the display
       this.updateDisplay();

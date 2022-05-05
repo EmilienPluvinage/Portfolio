@@ -207,15 +207,29 @@ var SolvableGrid = /** @class */ (function (_super) {
     }
     SolvableGrid.prototype.solveOne = function () {
         // we go through all the rows
+        var found = false;
         loop: for (var i = 1; i <= numberOfRows; i++) {
-            if (this.solveRow(i))
+            if (this.solveRowColumn(i, true)) {
+                found = true;
                 break loop;
+            }
+        }
+        if (!found) {
+            // we go through all the columns
+            loop: for (var i = 1; i <= numberOfRows; i++) {
+                if (this.solveRowColumn(i, false)) {
+                    found = true;
+                    break loop;
+                }
+            }
         }
     };
-    SolvableGrid.prototype.solveRow = function (n) {
+    SolvableGrid.prototype.solveRowColumn = function (n, row) {
+        var x = row === true ? 0 : 1;
+        var y = row === true ? 1 : 0;
         // check row n and see if there is one missing value
         var starter = [];
-        var cells = this.values.reduce(function (acc, item) { return (item.coordinates[0] === n ? acc.concat([item]) : acc); }, starter);
+        var cells = this.values.reduce(function (acc, item) { return (item.coordinates[x] === n ? acc.concat([item]) : acc); }, starter);
         if (cells.length === numberOfRows - 1) {
             // we add the missing value
             var index = 0;
@@ -234,7 +248,7 @@ var SolvableGrid = /** @class */ (function (_super) {
             index = 0;
             var column = 0;
             var _loop_4 = function (i) {
-                index = cells.findIndex(function (c) { return c.coordinates[1] === i; });
+                index = cells.findIndex(function (c) { return c.coordinates[y] === i; });
                 if (index === -1) {
                     column = i;
                 }
@@ -243,7 +257,12 @@ var SolvableGrid = /** @class */ (function (_super) {
                 _loop_4(i);
             }
             // finally we add our new value
-            this.addValue(new Cell([n, column], value));
+            if (row === true) {
+                this.addValue(new Cell([n, column], value));
+            }
+            else {
+                this.addValue(new Cell([column, n], value));
+            }
             // and we update the display
             this.updateDisplay();
             return true;
