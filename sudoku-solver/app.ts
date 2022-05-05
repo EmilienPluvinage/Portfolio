@@ -217,6 +217,73 @@ class SolvableGrid extends Grid {
         }
       }
     }
+
+    if (!found) {
+      // we go through all the squares
+      loop: for (let i = 1; i <= numberOfRows / 3; i++) {
+        loop2: for (let j = 1; j <= numberOfRows / 3; j++) {
+          if (this.solveSquare(i, j)) {
+            found = true;
+            break loop;
+            break loop2;
+          }
+        }
+      }
+    }
+
+    if (!found) {
+      // we go through all the values
+      loop: for (let i = 1; i <= numberOfRows; i++) {
+        if (this.solveValue(i)) {
+          found = true;
+          break loop;
+        }
+      }
+    }
+  }
+
+  solveSquare(i: number, j: number) {
+    // we check the cells  i*3-2, i*3-1, i*3
+    const starter: Cell[] = [];
+    // cells in the square
+    const cells = this.values.reduce(
+      (acc, item) =>
+        item.coordinates[0] >= i * 3 - 2 &&
+        item.coordinates[0] <= i * 3 &&
+        item.coordinates[1] >= j * 3 - 2 &&
+        item.coordinates[1] <= j * 3
+          ? acc.concat([item])
+          : acc,
+      starter
+    );
+    if (cells.length === numberOfRows - 1) {
+      // then we can complete it
+      // we need to find the coordinates
+      var index = 0;
+      var value = 0;
+      for (let x = i * 3 - 2; x <= i * 3; x++) {
+        for (let y = j * 3 - 2; y <= j * 3; y++) {
+          index = cells.findIndex(
+            (c) => c.coordinates[0] === x && c.coordinates[1] === y
+          );
+          if (index === -1) {
+            // it means x and y are our coordinates
+            // we loop from 1 to 9 and check which one would not result in a duplicate in our square
+            value = 0;
+            for (let k = 1; k <= numberOfRows; k++) {
+              if (!this.isThereADuplicateInSquare(new Cell([x, y], k))) {
+                value = k;
+              }
+            }
+            this.addValue(new Cell([x, y], value));
+            this.updateDisplay();
+          }
+        }
+      }
+      return true;
+    } else {
+      return false;
+    }
   }
 
   solveRowColumn(n: number, row: boolean) {
@@ -263,8 +330,60 @@ class SolvableGrid extends Grid {
       return false;
     }
   }
-}
 
+  solveValue(n: number) {
+    for (let i = 1; i <= numberOfRows / 3; i++) {
+      for (let j = 1; j <= numberOfRows / 3; j++) {
+        if (this.solveValueInSquare(n, [i, j])) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  solveValueInSquare(n: number, coord: [number, number]) {
+    const [i, j] = coord;
+
+    // we get all the empty cells from the square
+
+    var emptyCells: Cell[] = [];
+    var index = 0;
+    for (let x = i * 3 - 2; x <= i * 3; x++) {
+      for (let y = j * 3 - 2; y <= j * 3; y++) {
+        index = this.values.findIndex(
+          (c) => c.coordinates[0] === x && c.coordinates[1] === y
+        );
+        if (index === -1) {
+          // then it's an empty cell
+
+          emptyCells.push(new Cell([x, y], n));
+        }
+      }
+    }
+
+    var potentialCells: Cell[] = [];
+    // now, out of all the empty cells, we need to get all the cells for which could receive number n.
+    // if it's only one, then we can solve this one.
+    emptyCells.forEach((cell) => {
+      if (
+        !this.isThereADuplicateInColumn(cell) &&
+        !this.isThereADuplicateInRow(cell) &&
+        !this.isThereADuplicateInSquare(cell)
+      ) {
+        potentialCells.push(cell);
+      }
+    });
+
+    if (potentialCells.length === 1) {
+      this.addValue(potentialCells[0]);
+      this.updateDisplay();
+      return true;
+    }
+
+    return false;
+  }
+}
 /////////////////////
 ///   FUNCTIONS   ///
 /////////////////////
@@ -303,7 +422,6 @@ function start(button: HTMLButtonElement) {
 }
 
 function solveOne() {
-  console.log("solveOne");
   sudoku.solveOne();
   console.log(sudoku);
 }

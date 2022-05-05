@@ -223,6 +223,74 @@ var SolvableGrid = /** @class */ (function (_super) {
                 }
             }
         }
+        if (!found) {
+            // we go through all the squares
+            loop: for (var i = 1; i <= numberOfRows / 3; i++) {
+                loop2: for (var j = 1; j <= numberOfRows / 3; j++) {
+                    if (this.solveSquare(i, j)) {
+                        found = true;
+                        break loop;
+                        break loop2;
+                    }
+                }
+            }
+        }
+        if (!found) {
+            // we go through all the values
+            loop: for (var i = 1; i <= numberOfRows; i++) {
+                if (this.solveValue(i)) {
+                    found = true;
+                    break loop;
+                }
+            }
+        }
+    };
+    SolvableGrid.prototype.solveSquare = function (i, j) {
+        // we check the cells  i*3-2, i*3-1, i*3
+        var starter = [];
+        // cells in the square
+        var cells = this.values.reduce(function (acc, item) {
+            return item.coordinates[0] >= i * 3 - 2 &&
+                item.coordinates[0] <= i * 3 &&
+                item.coordinates[1] >= j * 3 - 2 &&
+                item.coordinates[1] <= j * 3
+                ? acc.concat([item])
+                : acc;
+        }, starter);
+        if (cells.length === numberOfRows - 1) {
+            // then we can complete it
+            // we need to find the coordinates
+            var index = 0;
+            var value = 0;
+            var _loop_3 = function (x) {
+                var _loop_4 = function (y) {
+                    index = cells.findIndex(function (c) { return c.coordinates[0] === x && c.coordinates[1] === y; });
+                    if (index === -1) {
+                        // it means x and y are our coordinates
+                        // we loop from 1 to 9 and check which one would not result in a duplicate in our square
+                        value = 0;
+                        for (var k = 1; k <= numberOfRows; k++) {
+                            if (!this_2.isThereADuplicateInSquare(new Cell([x, y], k))) {
+                                value = k;
+                            }
+                        }
+                        this_2.addValue(new Cell([x, y], value));
+                        this_2.updateDisplay();
+                    }
+                };
+                for (var y = j * 3 - 2; y <= j * 3; y++) {
+                    _loop_4(y);
+                }
+            };
+            var this_2 = this;
+            for (var x = i * 3 - 2; x <= i * 3; x++) {
+                _loop_3(x);
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
     };
     SolvableGrid.prototype.solveRowColumn = function (n, row) {
         var x = row === true ? 0 : 1;
@@ -234,7 +302,7 @@ var SolvableGrid = /** @class */ (function (_super) {
             // we add the missing value
             var index = 0;
             var value = 0;
-            var _loop_3 = function (i) {
+            var _loop_5 = function (i) {
                 index = cells.findIndex(function (c) { return c.value === i; });
                 if (index === -1) {
                     value = i;
@@ -242,19 +310,19 @@ var SolvableGrid = /** @class */ (function (_super) {
             };
             // first we look for the missing value
             for (var i = 1; i <= numberOfRows; i++) {
-                _loop_3(i);
+                _loop_5(i);
             }
             // then look for the empty columnn number
             index = 0;
             var column = 0;
-            var _loop_4 = function (i) {
+            var _loop_6 = function (i) {
                 index = cells.findIndex(function (c) { return c.coordinates[y] === i; });
                 if (index === -1) {
                     column = i;
                 }
             };
             for (var i = 1; i <= numberOfRows; i++) {
-                _loop_4(i);
+                _loop_6(i);
             }
             // finally we add our new value
             if (row === true) {
@@ -270,6 +338,55 @@ var SolvableGrid = /** @class */ (function (_super) {
         else {
             return false;
         }
+    };
+    SolvableGrid.prototype.solveValue = function (n) {
+        for (var i = 1; i <= numberOfRows / 3; i++) {
+            for (var j = 1; j <= numberOfRows / 3; j++) {
+                if (this.solveValueInSquare(n, [i, j])) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+    SolvableGrid.prototype.solveValueInSquare = function (n, coord) {
+        var _this = this;
+        var i = coord[0], j = coord[1];
+        // we get all the empty cells from the square
+        var emptyCells = [];
+        var index = 0;
+        var _loop_7 = function (x) {
+            var _loop_8 = function (y) {
+                index = this_3.values.findIndex(function (c) { return c.coordinates[0] === x && c.coordinates[1] === y; });
+                if (index === -1) {
+                    // then it's an empty cell
+                    emptyCells.push(new Cell([x, y], n));
+                }
+            };
+            for (var y = j * 3 - 2; y <= j * 3; y++) {
+                _loop_8(y);
+            }
+        };
+        var this_3 = this;
+        for (var x = i * 3 - 2; x <= i * 3; x++) {
+            _loop_7(x);
+        }
+        var potentialCells = [];
+        // now, out of all the empty cells, we need to get all the cells for which could receive number n.
+        // if it's only one, then we can solve this one.
+        emptyCells.forEach(function (cell) {
+            if (!_this.isThereADuplicateInColumn(cell) &&
+                !_this.isThereADuplicateInRow(cell) &&
+                !_this.isThereADuplicateInSquare(cell)) {
+                potentialCells.push(cell);
+            }
+        });
+        if (potentialCells.length === 1) {
+            this.addValue(potentialCells[0]);
+            this.updateDisplay();
+            return true;
+        }
+        return false;
     };
     return SolvableGrid;
 }(Grid));
@@ -309,7 +426,6 @@ function start(button) {
     button.disabled = true;
 }
 function solveOne() {
-    console.log("solveOne");
     sudoku.solveOne();
     console.log(sudoku);
 }
