@@ -13,6 +13,7 @@ const numberOfRows = 9;
 class Cell {
   coordinates: [number, number];
   value: number;
+  private disabled: boolean = false;
   constructor(xy: [number, number], v: number) {
     if (!this.isInRange(...xy, v)) {
       throw new Error("Values passed to the constructor are outside of range");
@@ -24,11 +25,15 @@ class Cell {
   isInRange(...n: number[]) {
     let result = true;
     for (const i of n) {
-      if (i < 1 || i > numberOfRows) {
+      if (i < 0 || i > numberOfRows) {
         result = false;
       }
     }
     return result;
+  }
+
+  disable() {
+    this.disabled = true;
   }
 
   // return the coordinates of the square in which the cell is
@@ -58,20 +63,42 @@ class Cell {
 ////////////
 
 class Grid {
-  protected complete: boolean = false;
+  protected complete: boolean;
   protected values: Cell[];
 
-  // Creates and empty array and then adds the first value
+  // Creates and empty array
   constructor() {
+    this.complete = false;
     this.values = [];
   }
 
   // Method that adds a value to the current grid
   addValue(cell: Cell) {
+    // we start by removing any pre-existing value
+    this.removeValue(cell);
+
     if (this.isThereADuplicate(cell)) {
       throw new Error("Duplicate value found.");
     } else {
       this.values.push(cell);
+    }
+  }
+
+  removeValue(cell: Cell) {
+    var index = this.values.findIndex((c) => c.hasTheSameCoordinates(cell));
+    if (index !== -1) {
+      this.values.splice(index, 1);
+    }
+  }
+
+  disableAll() {
+    for (const value of this.values) {
+      value.disable();
+      (
+        document.getElementById(
+          value.coordinates[0] + "-" + value.coordinates[1]
+        ) as HTMLInputElement
+      ).disabled = true;
     }
   }
 
@@ -138,9 +165,90 @@ class Grid {
         }
       }
     }
+    this.complete = result;
     return result;
   }
+
+  updateDisplay() {
+    var cell: Cell | undefined;
+    var input: HTMLInputElement | null;
+    for (let i = 1; i <= numberOfRows; i++) {
+      for (let j = 1; j <= numberOfRows; j++) {
+        cell = this.values.find(
+          (c) => c.coordinates[0] === i && c.coordinates[1] === j
+        );
+        if (cell) {
+          input = document.getElementById(
+            cell.coordinates[0] + "-" + cell.coordinates[1]
+          ) as HTMLInputElement;
+          if (input) {
+            input.value = cell.value.toString();
+          }
+        }
+      }
+    }
+  }
 }
+
+/////////////////////
+/// SOLVABLE GRID ///
+/////////////////////
+
+class SolvableGrid extends Grid {
+  constructor() {
+    super();
+  }
+
+  solveOne() {
+    // we go through all the rows
+    loop: for (let i = 1; i <= numberOfRows; i++) {
+      if (this.solveRow(i)) break loop;
+    }
+  }
+
+  solveRow(n: number) {
+    // check row n and see if there is one missing value
+    const starter: Cell[] = [];
+    const cells = this.values.reduce(
+      (acc, item) => (item.coordinates[0] === n ? acc.concat([item]) : acc),
+      starter
+    );
+    if (cells.length === numberOfRows - 1) {
+      // we add the missing value
+      var index = 0;
+      var value = 0;
+      // first we look for the missing value
+      for (let i = 1; i <= numberOfRows; i++) {
+        index = cells.findIndex((c) => c.value === i);
+        if (index === -1) {
+          value = i;
+        }
+      }
+      // then look for the empty columnn number
+      index = 0;
+      var column = 0;
+      for (let i = 1; i <= numberOfRows; i++) {
+        index = cells.findIndex((c) => c.coordinates[1] === i);
+        if (index === -1) {
+          column = i;
+        }
+      }
+      // finally we add our new value
+      this.addValue(new Cell([n, column], value));
+
+      // and we update the display
+      this.updateDisplay();
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+/////////////////////
+///   FUNCTIONS   ///
+/////////////////////
 
 function displayInputs() {
   const grid = document.getElementById("grid");
@@ -155,13 +263,29 @@ function displayInputs() {
   if (grid) grid.innerHTML = inputs;
 }
 
-const sudoku = new Grid();
+const sudoku = new SolvableGrid();
 
 function update(value: number, id: [number, number]) {
-  console.log("update");
+  const cell = new Cell(id, value);
   if (value !== 0) {
-    sudoku.addValue(new Cell(id, value));
+    sudoku.addValue(cell);
+  } else {
+    sudoku.removeValue(cell);
   }
+  console.log(sudoku);
+  if (sudoku.isComplete()) alert("Gagné");
+}
+
+function start(button: HTMLButtonElement) {
+  // function whose point is to go through the grid and disable all values since we now start the game
+  // and we don't want the player to modify the "template"
+  sudoku.disableAll();
+  button.disabled = true;
+}
+
+function solveOne() {
+  console.log("solveOne");
+  sudoku.solveOne();
   console.log(sudoku);
 }
 
