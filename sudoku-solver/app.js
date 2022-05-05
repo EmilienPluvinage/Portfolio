@@ -51,6 +51,10 @@ var Cell = /** @class */ (function () {
         var coord2 = this.squareCoordinates();
         return coord1[0] === coord2[0] && coord1[1] === coord2[1];
     };
+    Cell.prototype.hasTheSameCoordinates = function (cell) {
+        return (this.coordinates[0] === cell.coordinates[0] &&
+            this.coordinates[1] === cell.coordinates[1]);
+    };
     return Cell;
 }());
 ////////////
@@ -58,10 +62,9 @@ var Cell = /** @class */ (function () {
 ////////////
 var Grid = /** @class */ (function () {
     // Creates and empty array and then adds the first value
-    function Grid(cell) {
+    function Grid() {
         this.complete = false;
         this.values = [];
-        this.addValue(cell);
     }
     // Method that adds a value to the current grid
     Grid.prototype.addValue = function (cell) {
@@ -137,3 +140,25 @@ var Grid = /** @class */ (function () {
     };
     return Grid;
 }());
+function displayInputs() {
+    var grid = document.getElementById("grid");
+    var inputs = "";
+    for (var i = 1; i <= numberOfRows; i++) {
+        inputs += "<div>";
+        for (var j = 1; j <= numberOfRows; j++) {
+            inputs += "<input onchange=\"update(+this.value, this.id.split('-').map((e)=> +e));\" type=\"number\" id=\"".concat(i, "-").concat(j, "\" />");
+        }
+        inputs += "</div>";
+    }
+    if (grid)
+        grid.innerHTML = inputs;
+}
+var sudoku = new Grid();
+function update(value, id) {
+    console.log("update");
+    if (value !== 0) {
+        sudoku.addValue(new Cell(id, value));
+    }
+    console.log(sudoku);
+}
+displayInputs();

@@ -44,6 +44,13 @@ class Cell {
     const coord2 = this.squareCoordinates();
     return coord1[0] === coord2[0] && coord1[1] === coord2[1];
   }
+
+  hasTheSameCoordinates(cell: Cell) {
+    return (
+      this.coordinates[0] === cell.coordinates[0] &&
+      this.coordinates[1] === cell.coordinates[1]
+    );
+  }
 }
 
 ////////////
@@ -51,13 +58,12 @@ class Cell {
 ////////////
 
 class Grid {
-  complete: boolean = false;
-  values: Cell[];
+  protected complete: boolean = false;
+  protected values: Cell[];
 
   // Creates and empty array and then adds the first value
-  constructor(cell: Cell) {
+  constructor() {
     this.values = [];
-    this.addValue(cell);
   }
 
   // Method that adds a value to the current grid
@@ -135,3 +141,28 @@ class Grid {
     return result;
   }
 }
+
+function displayInputs() {
+  const grid = document.getElementById("grid");
+  var inputs = "";
+  for (let i = 1; i <= numberOfRows; i++) {
+    inputs += "<div>";
+    for (let j = 1; j <= numberOfRows; j++) {
+      inputs += `<input onchange="update(+this.value, this.id.split('-').map((e)=> +e));" type="number" id="${i}-${j}" />`;
+    }
+    inputs += "</div>";
+  }
+  if (grid) grid.innerHTML = inputs;
+}
+
+const sudoku = new Grid();
+
+function update(value: number, id: [number, number]) {
+  console.log("update");
+  if (value !== 0) {
+    sudoku.addValue(new Cell(id, value));
+  }
+  console.log(sudoku);
+}
+
+displayInputs();
