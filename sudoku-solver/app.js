@@ -447,6 +447,7 @@ function displayInputs() {
     }
     if (grid)
         grid.innerHTML = inputs;
+    document.getElementById("start").disabled = false;
 }
 var sudoku = new SolvableGrid();
 function update(value, id) {
