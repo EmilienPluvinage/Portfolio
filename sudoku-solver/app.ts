@@ -290,6 +290,10 @@ class SolvableGrid extends Grid {
     return found;
   }
 
+  solveAll() {
+    while (this.solveOne()) {}
+  }
+
   solveSquare(i: number, j: number) {
     // we check the cells  i*3-2, i*3-1, i*3
     const starter: Cell[] = [];
@@ -476,6 +480,10 @@ function solveOne() {
   console.log(sudoku);
 }
 
+function solveAll() {
+  sudoku.solveAll();
+  console.log(sudoku);
+}
 function solveGrid(grid: SolvableGrid) {
   // start by solving the grid with "level 1" technics, for as long as we can
   while (grid.solveOne()) {}

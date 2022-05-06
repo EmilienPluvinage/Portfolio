@@ -285,6 +285,9 @@ var SolvableGrid = /** @class */ (function (_super) {
         }
         return found;
     };
+    SolvableGrid.prototype.solveAll = function () {
+        while (this.solveOne()) { }
+    };
     SolvableGrid.prototype.solveSquare = function (i, j) {
         // we check the cells  i*3-2, i*3-1, i*3
         var starter = [];
@@ -469,6 +472,10 @@ function start(button) {
 }
 function solveOne() {
     sudoku.solveOne();
+    console.log(sudoku);
+}
+function solveAll() {
+    sudoku.solveAll();
     console.log(sudoku);
 }
 function solveGrid(grid) {
