@@ -58,6 +58,20 @@ var Cell = /** @class */ (function () {
     Cell.prototype.disable = function () {
         this.disabled = true;
     };
+    Cell.prototype.save = function (name) {
+        localStorage.setItem(name + "-coordinates", JSON.stringify(this.coordinates));
+        localStorage.setItem(name + "-value", this.value.toString());
+    };
+    Cell.prototype.load = function (name) {
+        var storedCoordinates = localStorage.getItem("".concat(name, "-coordinates"));
+        if (storedCoordinates) {
+            this.coordinates = JSON.parse(storedCoordinates);
+        }
+        var storedValue = localStorage.getItem("".concat(name, "-value"));
+        if (storedValue) {
+            this.value = +storedValue;
+        }
+    };
     // return the coordinates of the square in which the cell is
     Cell.prototype.squareCoordinates = function () {
         // this.coordinates.map((e) => Math.floor((e - 1) / 3) + 1); was nice but map doesn't preserve the type of the tuple...
@@ -195,6 +209,26 @@ var Grid = /** @class */ (function () {
             _loop_1(i);
         }
     };
+    Grid.prototype.save = function () {
+        for (var i = 0; i < this.values.length; i++) {
+            this.values[i].save(i.toString());
+        }
+        localStorage.setItem("complete", this.complete.toString());
+        localStorage.setItem("length", this.values.length.toString());
+    };
+    Grid.prototype.load = function () {
+        var length = localStorage.getItem("length");
+        var cell;
+        if (length) {
+            this.complete = localStorage.getItem("complete") === "true";
+            this.values = [];
+            for (var i = 0; i < +length; i++) {
+                cell = new Cell([0, 0], 0);
+                cell.load(i.toString());
+                this.values.push(cell);
+            }
+        }
+    };
     return Grid;
 }());
 /////////////////////
@@ -244,6 +278,7 @@ var SolvableGrid = /** @class */ (function (_super) {
                 }
             }
         }
+        return found;
     };
     SolvableGrid.prototype.solveSquare = function (i, j) {
         // we check the cells  i*3-2, i*3-1, i*3
@@ -292,12 +327,14 @@ var SolvableGrid = /** @class */ (function (_super) {
             return false;
         }
     };
-    SolvableGrid.prototype.solveRowColumn = function (n, row) {
+    SolvableGrid.prototype.solveRowColumn = function (n, row, power) {
+        if (power === void 0) { power = 1; }
         var x = row === true ? 0 : 1;
         var y = row === true ? 1 : 0;
         // check row n and see if there is one missing value
         var starter = [];
         var cells = this.values.reduce(function (acc, item) { return (item.coordinates[x] === n ? acc.concat([item]) : acc); }, starter);
+        //
         if (cells.length === numberOfRows - 1) {
             // we add the missing value
             var index = 0;
@@ -428,5 +465,17 @@ function start(button) {
 function solveOne() {
     sudoku.solveOne();
     console.log(sudoku);
+}
+function solveGrid(grid) {
+    // start by solving the grid with "level 1" technics, for as long as we can
+    while (grid.solveOne()) { }
+    grid.updateDisplay();
+}
+function save() {
+    sudoku.save();
+}
+function reload() {
+    sudoku.load();
+    sudoku.updateDisplay();
 }
 displayInputs();
