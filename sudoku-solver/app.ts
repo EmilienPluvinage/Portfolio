@@ -111,6 +111,7 @@ class Grid {
     } else {
       this.values.push(cell);
     }
+    if (this.isComplete()) alert("Gagné");
   }
 
   removeValue(cell: Cell) {
@@ -182,12 +183,7 @@ class Grid {
     var result = false;
     if (this.values.length === numberOfRows * numberOfRows) {
       // we set result to true. And then we check for duplicates.
-      var result = true;
-      for (const value of this.values) {
-        if (this.isThereADuplicate(value)) {
-          result = false;
-        }
-      }
+      result = true;
     }
     this.complete = result;
     return result;
@@ -233,6 +229,11 @@ class Grid {
         this.values.push(cell);
       }
     }
+  }
+
+  clear() {
+    this.values = [];
+    this.complete = false;
   }
 }
 
@@ -448,6 +449,7 @@ function displayInputs() {
   }
   if (grid) grid.innerHTML = inputs;
   (document.getElementById("start") as HTMLInputElement).disabled = false;
+  sudoku.clear();
 }
 
 const sudoku = new SolvableGrid();
@@ -460,7 +462,6 @@ function update(value: number, id: [number, number]) {
     sudoku.removeValue(cell);
   }
   console.log(sudoku);
-  if (sudoku.isComplete()) alert("Gagné");
 }
 
 function start(button: HTMLButtonElement) {

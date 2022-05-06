@@ -115,6 +115,8 @@ var Grid = /** @class */ (function () {
         else {
             this.values.push(cell);
         }
+        if (this.isComplete())
+            alert("Gagné");
     };
     Grid.prototype.removeValue = function (cell) {
         var index = this.values.findIndex(function (c) { return c.hasTheSameCoordinates(cell); });
@@ -181,13 +183,7 @@ var Grid = /** @class */ (function () {
         var result = false;
         if (this.values.length === numberOfRows * numberOfRows) {
             // we set result to true. And then we check for duplicates.
-            var result = true;
-            for (var _i = 0, _a = this.values; _i < _a.length; _i++) {
-                var value = _a[_i];
-                if (this.isThereADuplicate(value)) {
-                    result = false;
-                }
-            }
+            result = true;
         }
         this.complete = result;
         return result;
@@ -233,6 +229,10 @@ var Grid = /** @class */ (function () {
                 this.values.push(cell);
             }
         }
+    };
+    Grid.prototype.clear = function () {
+        this.values = [];
+        this.complete = false;
     };
     return Grid;
 }());
@@ -448,6 +448,7 @@ function displayInputs() {
     if (grid)
         grid.innerHTML = inputs;
     document.getElementById("start").disabled = false;
+    sudoku.clear();
 }
 var sudoku = new SolvableGrid();
 function update(value, id) {
@@ -459,8 +460,6 @@ function update(value, id) {
         sudoku.removeValue(cell);
     }
     console.log(sudoku);
-    if (sudoku.isComplete())
-        alert("Gagné");
 }
 function start(button) {
     // function whose point is to go through the grid and disable all values since we now start the game
