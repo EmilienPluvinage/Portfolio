@@ -57,19 +57,25 @@ var Cell = /** @class */ (function () {
     };
     Cell.prototype.disable = function () {
         this.disabled = true;
+        document.getElementById(this.coordinates[0] + "-" + this.coordinates[1]).disabled = true;
     };
     Cell.prototype.save = function (name) {
         localStorage.setItem(name + "-coordinates", JSON.stringify(this.coordinates));
         localStorage.setItem(name + "-value", this.value.toString());
+        localStorage.setItem(name + "-disabled", this.disabled.toString());
     };
     Cell.prototype.load = function (name) {
         var storedCoordinates = localStorage.getItem("".concat(name, "-coordinates"));
+        var disabled = localStorage.getItem("".concat(name, "-disabled")) === "true";
         if (storedCoordinates) {
             this.coordinates = JSON.parse(storedCoordinates);
         }
         var storedValue = localStorage.getItem("".concat(name, "-value"));
         if (storedValue) {
             this.value = +storedValue;
+        }
+        if (disabled) {
+            this.disable();
         }
     };
     // return the coordinates of the square in which the cell is
@@ -120,7 +126,6 @@ var Grid = /** @class */ (function () {
         for (var _i = 0, _a = this.values; _i < _a.length; _i++) {
             var value = _a[_i];
             value.disable();
-            document.getElementById(value.coordinates[0] + "-" + value.coordinates[1]).disabled = true;
         }
     };
     // Method that checks if the value already exists on the row, the column, or the smaller square
@@ -475,6 +480,7 @@ function save() {
     sudoku.save();
 }
 function reload() {
+    displayInputs();
     sudoku.load();
     sudoku.updateDisplay();
 }

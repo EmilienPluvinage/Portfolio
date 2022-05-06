@@ -34,6 +34,11 @@ class Cell {
 
   disable() {
     this.disabled = true;
+    (
+      document.getElementById(
+        this.coordinates[0] + "-" + this.coordinates[1]
+      ) as HTMLInputElement
+    ).disabled = true;
   }
 
   save(name: string) {
@@ -42,16 +47,21 @@ class Cell {
       JSON.stringify(this.coordinates)
     );
     localStorage.setItem(name + "-value", this.value.toString());
+    localStorage.setItem(name + "-disabled", this.disabled.toString());
   }
 
   load(name: string) {
     const storedCoordinates = localStorage.getItem(`${name}-coordinates`);
+    const disabled = localStorage.getItem(`${name}-disabled`) === "true";
     if (storedCoordinates) {
       this.coordinates = JSON.parse(storedCoordinates);
     }
     const storedValue = localStorage.getItem(`${name}-value`);
     if (storedValue) {
       this.value = +storedValue;
+    }
+    if (disabled) {
+      this.disable();
     }
   }
 
@@ -113,11 +123,6 @@ class Grid {
   disableAll() {
     for (const value of this.values) {
       value.disable();
-      (
-        document.getElementById(
-          value.coordinates[0] + "-" + value.coordinates[1]
-        ) as HTMLInputElement
-      ).disabled = true;
     }
   }
 
@@ -480,6 +485,7 @@ function save() {
 }
 
 function reload() {
+  displayInputs();
   sudoku.load();
   sudoku.updateDisplay();
 }
