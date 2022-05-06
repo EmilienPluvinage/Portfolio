@@ -101,6 +101,16 @@ class Grid {
     this.values = [];
   }
 
+  clone(grid: Grid) {
+    this.complete = grid.complete;
+    this.values = [];
+    for (const cell of grid.values) {
+      this.addValue(
+        new Cell([cell.coordinates[0], cell.coordinates[1]], cell.value)
+      );
+    }
+  }
+
   // Method that adds a value to the current grid
   addValue(cell: Cell) {
     // we start by removing any pre-existing value
@@ -292,6 +302,7 @@ class SolvableGrid extends Grid {
 
   solveAll() {
     while (this.solveOne()) {}
+    return this;
   }
 
   solveSquare(i: number, j: number) {
@@ -481,13 +492,12 @@ function solveOne() {
 }
 
 function solveAll() {
-  sudoku.solveAll();
-  console.log(sudoku);
+  const sudoku2 = sudoku.solveAll();
+  console.log(sudoku2);
 }
-function solveGrid(grid: SolvableGrid) {
-  // start by solving the grid with "level 1" technics, for as long as we can
-  while (grid.solveOne()) {}
-  grid.updateDisplay();
+
+function tryRecurse() {
+  recursiveSolve(sudoku);
 }
 
 function save() {
@@ -498,6 +508,30 @@ function reload() {
   displayInputs();
   sudoku.load();
   sudoku.updateDisplay();
+}
+
+function recursiveSolve(grid: SolvableGrid) {
+  var tempGrid = new SolvableGrid();
+  tempGrid.clone(grid);
+  tempGrid.solveAll();
+  if (tempGrid.isComplete()) {
+    tempGrid.updateDisplay();
+  } else {
+    var tryGrid = new SolvableGrid();
+    // it means we can't solve it through "basic" methods, so we need to make some assumptions and try them
+    // we go through all 81 cells and, for all 9 values, check whether there is a duplicate, and if there isn't we add the value and try to solve it like this.
+    for (let x = 1; x <= numberOfRows; x++) {
+      for (let y = 1; y <= numberOfRows; y++) {
+        for (let n = 1; n <= numberOfRows; n++) {
+          if (!tempGrid.isThereADuplicate(new Cell([x, y], n))) {
+            // this value is "possible", so we try it.
+            tryGrid.clone(tempGrid);
+            recursiveSolve(tryGrid);
+          }
+        }
+      }
+    }
+  }
 }
 
 displayInputs();

@@ -105,6 +105,14 @@ var Grid = /** @class */ (function () {
         this.complete = false;
         this.values = [];
     }
+    Grid.prototype.clone = function (grid) {
+        this.complete = grid.complete;
+        this.values = [];
+        for (var _i = 0, _a = grid.values; _i < _a.length; _i++) {
+            var cell = _a[_i];
+            this.addValue(new Cell([cell.coordinates[0], cell.coordinates[1]], cell.value));
+        }
+    };
     // Method that adds a value to the current grid
     Grid.prototype.addValue = function (cell) {
         // we start by removing any pre-existing value
@@ -287,6 +295,7 @@ var SolvableGrid = /** @class */ (function (_super) {
     };
     SolvableGrid.prototype.solveAll = function () {
         while (this.solveOne()) { }
+        return this;
     };
     SolvableGrid.prototype.solveSquare = function (i, j) {
         // we check the cells  i*3-2, i*3-1, i*3
@@ -475,13 +484,11 @@ function solveOne() {
     console.log(sudoku);
 }
 function solveAll() {
-    sudoku.solveAll();
-    console.log(sudoku);
+    var sudoku2 = sudoku.solveAll();
+    console.log(sudoku2);
 }
-function solveGrid(grid) {
-    // start by solving the grid with "level 1" technics, for as long as we can
-    while (grid.solveOne()) { }
-    grid.updateDisplay();
+function tryRecurse() {
+    recursiveSolve(sudoku);
 }
 function save() {
     sudoku.save();
@@ -490,5 +497,29 @@ function reload() {
     displayInputs();
     sudoku.load();
     sudoku.updateDisplay();
+}
+function recursiveSolve(grid) {
+    var tempGrid = new SolvableGrid();
+    tempGrid.clone(grid);
+    tempGrid.solveAll();
+    if (tempGrid.isComplete()) {
+        tempGrid.updateDisplay();
+    }
+    else {
+        var tryGrid = new SolvableGrid();
+        // it means we can't solve it through "basic" methods, so we need to make some assumptions and try them
+        // we go through all 81 cells and, for all 9 values, check whether there is a duplicate, and if there isn't we add the value and try to solve it like this.
+        for (var x = 1; x <= numberOfRows; x++) {
+            for (var y = 1; y <= numberOfRows; y++) {
+                for (var n = 1; n <= numberOfRows; n++) {
+                    if (!tempGrid.isThereADuplicate(new Cell([x, y], n))) {
+                        // this value is "possible", so we try it.
+                        tryGrid.clone(tempGrid);
+                        recursiveSolve(tryGrid);
+                    }
+                }
+            }
+        }
+    }
 }
 displayInputs();
