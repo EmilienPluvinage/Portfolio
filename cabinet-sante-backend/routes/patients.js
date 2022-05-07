@@ -193,11 +193,27 @@ router.post("/GetPatients", (req, res, next) => {
           var userId = rows[0].userId;
           // Now connected and we have the user ID so we do the insert
           connection.query(
-            "SELECT patients.*, subscription.packageId, max(subscription.date) FROM patients LEFT JOIN hasSubscribed ON patients.id = hasSubscribed.patientId LEFT JOIN subscription ON hasSubscribed.subscriptionId = subscription.id WHERE patients.userId = 1 GROUP BY id",
+            "SELECT patients.* FROM patients WHERE patients.userId = ?",
             userId,
             (err, rows) => {
               if (err) throw err;
-              res.status(201).json({ success: true, data: rows });
+
+              // we also need to get the latest package id and merge it with rows
+              connection.query(
+                "SELECT subscription.packageId, subscription.date, hasSubscribed.patientId FROM subscription LEFT JOIN hasSubscribed ON hasSubscribed.subscriptionId = subscription.id WHERE hasSubscribed.userId = ? ORDER BY subscription.date DESC",
+                userId,
+                (err, result) => {
+                  if (err) throw err;
+
+                  // now we need to go through rows, and for each rows, add a field "packageId" with the latest packageId from result
+                  rows.forEach((element) => {
+                    element.packageId = result.find(
+                      (package) => package.patientId === element.id
+                    )?.packageId;
+                  });
+                  res.status(201).json({ success: true, data: rows });
+                }
+              );
             }
           );
           // we also update the time of the token
