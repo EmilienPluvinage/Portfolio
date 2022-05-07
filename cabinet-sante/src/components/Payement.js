@@ -316,7 +316,7 @@ export default function Payement({ patientId, payementId }) {
               id: payementId,
               method: values.method,
               amount: values.price * 100,
-              date: new Date(values.date),
+              date: dayjs(values.date).add(12, "hours").toDate(),
               patientId: patientId,
             }),
           }
