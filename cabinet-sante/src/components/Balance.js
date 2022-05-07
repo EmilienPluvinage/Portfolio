@@ -15,6 +15,7 @@ import ShareBalance from "./ShareBalance";
 import UpdatePrice from "./UpdatePrice";
 
 export default function Balance({ patientId, fullDisplay, warningDisplay }) {
+  const today = new Date();
   const rowsPerPage = 10;
   const [activePage, setPage] = useState(1);
   const [opened, setOpened] = useState(false);
@@ -147,11 +148,16 @@ export default function Balance({ patientId, fullDisplay, warningDisplay }) {
     </tr>
   ));
 
+  const balanceAsOfToday = data.filter(
+    (element) =>
+      new Date(element?.date) <= today || new Date(element?.start) <= today
+  )[0]?.balance;
+
   return (
     <>
       {!fullDisplay && !warningDisplay ? (
-        <span style={{ color: data[0]?.balance < 0 ? "red" : "inherit" }}>
-          {displayPrice(data[0]?.balance) + " €"}
+        <span style={{ color: balanceAsOfToday < 0 ? "red" : "inherit" }}>
+          {displayPrice(balanceAsOfToday) + " €"}
         </span>
       ) : (
         opened && (
@@ -186,18 +192,18 @@ export default function Balance({ patientId, fullDisplay, warningDisplay }) {
           onClick={() => setOpened(true)}
           leftIcon={<ReportMoney size={18} />}
           style={{ margin: "10px" }}
-          color={data[0]?.balance < 0 && "red"}
+          color={balanceAsOfToday < 0 && "red"}
         >
           Solde{" "}
-          {data.length > 0 && ": " + displayPrice(data[0]?.balance) + " €"}
+          {data.length > 0 && ": " + displayPrice(balanceAsOfToday) + " €"}
         </Button>
       )}
-      {warningDisplay && data[0]?.balance < 0 && (
-        <tr key={data[0].id}>
+      {warningDisplay && balanceAsOfToday < 0 && (
+        <tr key={balanceAsOfToday}>
           <td>{patientName}</td>
           <td>
-            <span style={{ color: data[0]?.balance < 0 ? "red" : "inherit" }}>
-              {displayPrice(data[0]?.balance) + " €"}
+            <span style={{ color: balanceAsOfToday < 0 ? "red" : "inherit" }}>
+              {displayPrice(balanceAsOfToday) + " €"}
             </span>
           </td>
         </tr>
