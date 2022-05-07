@@ -363,6 +363,7 @@ export default function NewAppointment({
                     )} € à ${displayPrice(price)} € suite à la modification`,
                     icon: <ExclamationMark />,
                     color: "yellow",
+                    autoClose: 10000,
                   });
                 }
               });

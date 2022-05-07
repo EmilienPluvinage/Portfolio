@@ -188,6 +188,7 @@ export default function NewPatient() {
         message: check.message,
         color: "yellow",
         icon: <ExclamationMark />,
+        autoClose: 10000,
       });
     }
   }
