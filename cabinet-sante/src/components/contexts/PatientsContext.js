@@ -22,10 +22,12 @@ export function PatientsProvider({ children }) {
 
   async function initData(token) {
     console.log("enter");
-    await updatePatientsList(token);
-    await updateAppointmentsList(token);
-    await updatePayementsList(token);
-    await updateSharedBalance(token);
+    await Promise.allSettled(
+      updatePatientsList(token),
+      updateAppointmentsList(token),
+      updatePayementsList(token),
+      updateSharedBalance(token)
+    );
     console.log("exit");
   }
 
