@@ -71,7 +71,7 @@ export default function Balance({ patientId, fullDisplay, warningDisplay }) {
   );
 
   const numberOfPages =
-    data.length > 0 ? Math.floor(data.length / rowsPerPage) + 1 : 1;
+    data.length > 0 ? Math.ceil(data.length / rowsPerPage) : 1;
 
   const displayedData = data.slice(
     (activePage - 1) * rowsPerPage,
