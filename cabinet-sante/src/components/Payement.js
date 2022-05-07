@@ -3,7 +3,7 @@ import "../styles/styles.css";
 import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { useConfig } from "./contexts/ConfigContext";
 import { Calendar, Check, CurrencyEuro } from "tabler-icons-react";
-
+import dayjs from "dayjs";
 import {
   Button,
   Center,
@@ -18,10 +18,19 @@ import { useLogin } from "./contexts/AuthContext";
 import { showNotification } from "@mantine/notifications";
 import { DatePicker } from "@mantine/dates";
 import { useEffect } from "react";
+import Confirmation from "./Confirmation";
 
 export default function Payement({ patientId, payementId }) {
+  const startOfMonth = dayjs(new Date()).startOf("month").toDate();
+  const endOfPreviousMonth = dayjs(startOfMonth).subtract(1, "days").toDate();
   const token = useLogin().token;
   const updateAppointments = useUpdatePatients().update;
+  const [open, setOpen] = useState(false);
+  const [confirmation, setConfirmation] = useState({
+    text: "",
+    title: "",
+    callback: undefined,
+  });
   const [opened, setOpened] = useState(false);
   const appointments = usePatients().appointments;
   const appointmentTypes = useConfig().appointmentTypes;
@@ -107,7 +116,7 @@ export default function Payement({ patientId, payementId }) {
         method: payement?.method,
         date: new Date(payement?.date),
       });
-      console.log(payement);
+
       if (
         payement.eventId === 0 ||
         payement.eventId === undefined ||
@@ -143,28 +152,48 @@ export default function Payement({ patientId, payementId }) {
   }, [opened, form, reason]);
 
   function submitForm(values) {
-    setLoading("loading");
     // there's going to be 3 cases
     // either it's an independant payement "other", in which case we just add it
     // or it's in relation to an appointment, in which case we need to link them together
     // finally if it's in relation to a package, we also need to create a new subscription
-    var option = reasonOptions.find((e) => e.value === reason);
-    switch (option?.type) {
-      case "other":
-        addNewPayement(0, values.method, values.price, values.date);
-        break;
-      case "appointment":
-        // we need to find the event id to link it to the payement
-        var eventId = myAppointments.find((e) => e.value === reason).id;
-        addNewPayement(eventId, values.method, values.price, values.date);
-        break;
-      case "package":
-        // we need to find the packageId to link it to the payement
-        var packageId = packages.find((e) => e.package === reason).id;
-        addNewSubscription(packageId, values.method, values.price, values.date);
-        break;
-      default:
-        break;
+
+    function handleValues(values) {
+      setLoading("loading");
+      var option = reasonOptions.find((e) => e.value === reason);
+      switch (option?.type) {
+        case "other":
+          addNewPayement(0, values.method, values.price, values.date);
+          break;
+        case "appointment":
+          // we need to find the event id to link it to the payement
+          var eventId = myAppointments.find((e) => e.value === reason).id;
+          addNewPayement(eventId, values.method, values.price, values.date);
+          break;
+        case "package":
+          // we need to find the packageId to link it to the payement
+          var packageId = packages.find((e) => e.package === reason).id;
+          addNewSubscription(
+            packageId,
+            values.method,
+            values.price,
+            values.date
+          );
+          break;
+        default:
+          break;
+      }
+    }
+
+    if (new Date(values?.date) <= endOfPreviousMonth) {
+      // we want to ask confirmation to the user because maybe they've already declared their income for last month
+      setConfirmation({
+        title: "Mois précédent",
+        text: "Ce paiement concerne le mois précédent. Si jamais vous avez déjà déclaré votre chiffre d'affaire, il faudra modifier votre déclaration. Voulez-vous poursuivre l'opération?",
+        callback: () => handleValues(values),
+      });
+      setOpen(true);
+    } else {
+      handleValues(values);
     }
   }
 
@@ -272,50 +301,71 @@ export default function Payement({ patientId, payementId }) {
   }
 
   async function updatePayement(values) {
-    try {
-      const fetchResponse = await fetch(
-        process.env.REACT_APP_API_DOMAIN + "/updatePayement",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            token: token,
-            id: payementId,
-            method: values.method,
-            amount: values.price * 100,
-            date: new Date(values.date),
-            patientId: patientId,
-          }),
+    async function handleValues(values) {
+      try {
+        const fetchResponse = await fetch(
+          process.env.REACT_APP_API_DOMAIN + "/updatePayement",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token: token,
+              id: payementId,
+              method: values.method,
+              amount: values.price * 100,
+              date: new Date(values.date),
+              patientId: patientId,
+            }),
+          }
+        );
+        const res = await fetchResponse.json();
+
+        if (res.success) {
+          showNotification({
+            title: "Paiement Modifié",
+            message: `Le paiement de ${displayPrice(values.price * 100)} en ${
+              values.method
+            } a bien été modifié.`,
+            icon: <Check />,
+            color: "green",
+          });
+
+          form.reset();
+          setReason("");
+          updateAppointments(token);
+          setLoading("");
+          setOpened(false);
         }
-      );
-      const res = await fetchResponse.json();
-
-      if (res.success) {
-        showNotification({
-          title: "Paiement Modifié",
-          message: `Le paiement de ${displayPrice(values.price * 100)} en ${
-            values.method
-          } a bien été modifié.`,
-          icon: <Check />,
-          color: "green",
-        });
-
-        form.reset();
-        setReason("");
-        updateAppointments(token);
-        setLoading("");
-        setOpened(false);
+      } catch (e) {
+        return e;
       }
-    } catch (e) {
-      return e;
+    }
+
+    if (new Date(values?.date) <= endOfPreviousMonth) {
+      // we want to ask confirmation to the user because maybe they've already declared their income for last month
+      setConfirmation({
+        title: "Mois précédent",
+        text: "Ce paiement concerne le mois précédent. Si jamais vous avez déjà déclaré votre chiffre d'affaire, il faudra modifier votre déclaration. Voulez-vous poursuivre l'opération?",
+        callback: () => handleValues(values),
+      });
+      setOpen(true);
+    } else {
+      handleValues(values);
     }
   }
 
   return (
     <>
+      <Confirmation
+        text={confirmation.text}
+        title={confirmation.title}
+        callback={confirmation.callback}
+        open={open}
+        close={() => setOpen(false)}
+      />
       {opened && (
         <Modal
           centered
