@@ -473,7 +473,9 @@ export default function NewAppointment({
       });
       await updatePatients(token);
       console.log("test");
-      setCalendarUpdate((prev) => prev + 1);
+      if (setCalendarUpdate) {
+        setCalendarUpdate((prev) => prev + 1);
+      }
       setOpened(false);
     } else {
       setLoading("");
