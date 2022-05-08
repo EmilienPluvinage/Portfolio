@@ -680,37 +680,37 @@ export default function AppointmentDetails({
             </Button>
           </Center>
         ) : (
-          <Grid
-            justify="space-between"
-            style={{ marginTop: "10px", marginRight: "45px" }}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              marginTop: "10px",
+              justifyContent: "space-between",
+            }}
           >
-            <Grid.Col span={2}>
-              <Button
-                leftIcon={<Trash size={18} />}
-                variant="outline"
-                color="red"
-                onClick={deleteAppointment}
-                loading={deleteLoader}
-              >
-                Supprimer
-              </Button>
-            </Grid.Col>
-            <Grid.Col span={2}>
-              <DuplicateEvent
-                appointmentId={appointmentId}
-                parentSetOpened={setOpened}
-              />
-            </Grid.Col>
-            <Grid.Col span={2}>
-              <Button
-                type="submit"
-                leftIcon={<Pencil size={18} />}
-                loading={loading}
-              >
-                Enregistrer
-              </Button>
-            </Grid.Col>
-          </Grid>
+            <Button
+              leftIcon={<Trash size={18} />}
+              variant="outline"
+              color="red"
+              onClick={deleteAppointment}
+              loading={deleteLoader}
+            >
+              Supprimer
+            </Button>
+
+            <DuplicateEvent
+              appointmentId={appointmentId}
+              parentSetOpened={setOpened}
+            />
+
+            <Button
+              type="submit"
+              leftIcon={<Pencil size={18} />}
+              loading={loading}
+            >
+              Enregistrer
+            </Button>
+          </div>
         )}
       </form>
     </>
