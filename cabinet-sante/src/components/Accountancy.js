@@ -40,8 +40,15 @@ export default function Accountancy() {
   const [value, setValue] = useState([startOfMonth, now]);
 
   function compareDate(a, b) {
-    var x = new Date(a.date);
-    var y = new Date(b.date);
+    var x = new Date();
+    var y = new Date();
+    if (a.date) {
+      x = new Date(a.date);
+      y = new Date(b.date);
+    } else {
+      x = new Date(a.start);
+      y = new Date(b.start);
+    }
     if (x < y) {
       return -1;
     }
