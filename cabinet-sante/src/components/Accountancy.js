@@ -23,6 +23,7 @@ function DateButton({ children, setValue, start, end }) {
 export default function Accountancy() {
   const patients = usePatients().patients;
   const payements = usePatients().payements;
+  console.log(payements);
   const appointmentTypes = useConfig().appointmentTypes;
   const packages = useConfig().packages;
   const appointments = usePatients().appointments;
@@ -61,7 +62,12 @@ export default function Accountancy() {
   );
 
   const filteredPayements = payements
-    .filter((e) => new Date(e.date) >= value[0] && new Date(e.date) <= value[1])
+    .filter(
+      (e) =>
+        new Date(e.date) >=
+          dayjs(value[0]).subtract(1, "days").hour(23).minute(59).toDate() &&
+        new Date(e.date) <= dayjs(value[1]).hour(23).minute(59).toDate()
+    )
     .sort(compareDate);
 
   const rows = filteredPayements.map((element) => (
