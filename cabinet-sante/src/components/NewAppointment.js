@@ -138,7 +138,9 @@ export default function NewAppointment({
       const res = await fetchResponse.json();
       if (res.success) {
         setOpened(false);
-
+        if (setCalendarUpdate) {
+          setCalendarUpdate((prev) => prev + 1);
+        }
         setDeleteLoader("");
         showNotification({
           title: "Consultation supprimée",
@@ -194,8 +196,6 @@ export default function NewAppointment({
             if (index === -1) {
               // it's a new patient
               patientId = await newPatient(element);
-              // we also need to update the context
-              await updatePatients(token);
             } else {
               // it's not, so we get the id of the existing one.
               patientId = getIdFromFullname(patients, element);
@@ -471,10 +471,12 @@ export default function NewAppointment({
         icon: <Check />,
         color: "green",
       });
-      await updatePatients(token);
+
       console.log("test");
       if (setCalendarUpdate) {
         setCalendarUpdate((prev) => prev + 1);
+      } else {
+        await updatePatients(token);
       }
       setOpened(false);
     } else {

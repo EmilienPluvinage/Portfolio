@@ -1,12 +1,11 @@
 import "../styles/styles.css";
 import "../styles/FullCalendar.css";
-import React from "react";
+import React, { useEffect } from "react";
 import FullCalendar from "@fullcalendar/react"; // must go before plugins
 import timeGridPlugin from "@fullcalendar/timegrid"; // a plugin!
 import interactionPlugin from "@fullcalendar/interaction";
 import { useLogin } from "./contexts/AuthContext";
 import { useState } from "react";
-import { useEffect } from "react";
 import { concatenateDateTime, displayDateInFrench } from "./Functions";
 import NewAppointment from "./NewAppointment";
 import { Modal } from "@mantine/core";
@@ -14,18 +13,18 @@ import { showNotification } from "@mantine/notifications";
 import { Check, X } from "tabler-icons-react";
 import { useConfig } from "./contexts/ConfigContext";
 import AppointmentDetails from "./AppointmentDetails";
-import { usePatients } from "./contexts/PatientsContext";
+import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import Caption from "./Caption";
 
 export default function MyFullCalendar() {
   const [opened, setOpened] = useState(false);
+  const updateContext = useUpdatePatients().update;
   const [openedDetails, setOpenedDetails] = useState(false);
   const [startingTime, setStartingTime] = useState(new Date());
   const appointments = usePatients().appointments;
   const patients = usePatients().patients;
   const token = useLogin().token;
   const buttonText = { today: "Semaine actuelle" };
-  const [events, setEvents] = useState([]);
   const [calendarUpdate, setCalendarUpdate] = useState(0);
   const [appointmentId, setAppointmentId] = useState(0);
   const appointmentTypes = useConfig().appointmentTypes;
@@ -37,6 +36,19 @@ export default function MyFullCalendar() {
   const daysOfTheWeek = JSON.parse(
     parameters.find((e) => e.name === "daysOfTheWeek")?.value
   );
+
+  useEffect(() => {
+    if (calendarUpdate !== 0) {
+      setCalendarUpdate(0);
+      async function update() {
+        await updateContext(token);
+      }
+      update();
+      console.log("update");
+    }
+  }, [token, updateContext, calendarUpdate]);
+
+  console.log(appointments);
 
   const daysOfTheWeekList = [
     "Dimanche",
@@ -65,55 +77,40 @@ export default function MyFullCalendar() {
     }
   }
 
-  useEffect(() => {
-    console.log("update");
-    console.log(appointments);
-    console.log(patients);
-    if (appointmentTypes?.length > 0) {
-      // d'abord un accumulateur pour récupérer que les infos qu'on veut
-      var events = appointments
-        .reduce(
-          (acc, item) =>
-            acc.find((e) => e.id === item.appointmentId)
-              ? acc
-              : acc.concat({
-                  id: item.appointmentId,
-                  patientId: item.patientId,
-                  userId: item.userId,
-                  start: item.start,
-                  end: item.end,
-                  idType: item.idType,
-                }),
-          []
-        )
-        .filter((e) => e.id !== null);
-      events.forEach((element) => {
-        var color = appointmentTypes.find((e) => e.id === element.idType).color;
-        element.backgroundColor = color;
-        var multi = appointmentTypes.find((e) => e.id === element.idType).multi;
-        if (multi === 0) {
-          element.title = patients.find(
-            (e) => e.id === element.patientId
-          )?.fullname;
-        } else {
-          // we count the number of participants
-          var count = appointments.reduce(
-            (acc, e) => (e.appointmentId === element.id ? acc + 1 : acc),
-            0
-          );
-          element.title = `${count} participant(s)`;
-        }
-      });
-      setEvents(events);
+  // d'abord un accumulateur pour récupérer que les infos qu'on veut
+  var events = appointments
+    .reduce(
+      (acc, item) =>
+        acc.find((e) => e.id === item.appointmentId)
+          ? acc
+          : acc.concat({
+              id: item.appointmentId,
+              patientId: item.patientId,
+              userId: item.userId,
+              start: item.start,
+              end: item.end,
+              idType: item.idType,
+            }),
+      []
+    )
+    .filter((e) => e.id !== null);
+  events.forEach((element) => {
+    var color = appointmentTypes.find((e) => e.id === element.idType).color;
+    element.backgroundColor = color;
+    var multi = appointmentTypes.find((e) => e.id === element.idType).multi;
+    if (multi === 0) {
+      element.title = patients.find(
+        (e) => e.id === element.patientId
+      )?.fullname;
+    } else {
+      // we count the number of participants
+      var count = appointments.reduce(
+        (acc, e) => (e.appointmentId === element.id ? acc + 1 : acc),
+        0
+      );
+      element.title = `${count} participant(s)`;
     }
-  }, [
-    calendarUpdate,
-    opened,
-    openedDetails,
-    appointmentTypes,
-    appointments,
-    patients,
-  ]);
+  });
 
   async function updateEventTime(id, startingTime, endingTime, src) {
     var link = process.env.REACT_APP_API_DOMAIN + "/UpdateEventTime";
