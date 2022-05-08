@@ -23,9 +23,9 @@ function DateButton({ children, setValue, start, end }) {
 export default function Accountancy() {
   const patients = usePatients().patients;
   const payements = usePatients().payements;
-  console.log(payements);
   const appointmentTypes = useConfig().appointmentTypes;
   const packages = useConfig().packages;
+  const parameters = useConfig().parameters;
   const appointments = usePatients().appointments;
   const now = new Date();
   const yesterday = dayjs(now).subtract(1, "days").toDate();
@@ -60,7 +60,8 @@ export default function Accountancy() {
 
   const ths = (
     <tr>
-      <th>Date</th>
+      <th>Date du paiement</th>
+      <th>Date du rendez-vous</th>
       <th>Type</th>
       <th>Patient</th>
       <th>Montant</th>
@@ -80,6 +81,12 @@ export default function Accountancy() {
   const rows = filteredPayements.map((element) => (
     <tr key={element.id}>
       <td>{displayFullDate(new Date(element.date))}</td>
+      <td>
+        {element?.eventId !== 0 &&
+          displayFullDate(
+            new Date(appointments.find((e) => e.id === element?.eventId)?.start)
+          )}
+      </td>
       <td>
         {element.eventId !== 0
           ? appointmentTypes.find(
@@ -105,7 +112,22 @@ export default function Accountancy() {
     </tr>
   ));
 
+  // calculating overall total
   const total = filteredPayements.reduce((acc, item) => acc + item.amount, 0);
+
+  // calculating total by payement methods
+  const payementMethods = parameters.filter((e) => e.name === "payementMethod");
+  var totalsByMethod = new Array(payementMethods?.length).fill(0);
+  filteredPayements.forEach((element) => {
+    var index = payementMethods.findIndex(
+      (method) => method.value === element.method
+    );
+    if (index !== -1) {
+      totalsByMethod[index] += element.amount;
+    } else {
+      totalsByMethod[totalsByMethod?.length - 1] += element.amount;
+    }
+  });
 
   // Finally we check if there are any appointments that have not been paid (payed === 0) and need to be displayed (alert === 1)
   // We won't count them in the total but we just display them as information
@@ -122,6 +144,7 @@ export default function Accountancy() {
 
   const alertRows = filteredAppointments.map((element) => (
     <tr key={"event" + element.id} style={{ backgroundColor: "#FFE3E3" }}>
+      <td></td>
       <td>{displayFullDate(new Date(element.start))}</td>
       <td>{appointmentTypes.find((f) => f.id === element.idType)?.type}</td>
       <td>{patients.find((e) => e.id === element.patientId)?.fullname}</td>
@@ -180,8 +203,18 @@ export default function Accountancy() {
           <tbody>
             {alertRows}
             {rows}
+            {payementMethods.map((element, index) => (
+              <tr key={element.value} style={{ backgroundColor: "#E3FAFC" }}>
+                <td colSpan={4} style={{ textAlign: "right" }}>
+                  {element.value} :
+                </td>
+                <td colSpan={2}>
+                  <b>{displayPrice(totalsByMethod[index])} €</b>
+                </td>
+              </tr>
+            ))}
             <tr key="total" style={{ backgroundColor: "#E3FAFC" }}>
-              <td colSpan={3} style={{ textAlign: "right" }}>
+              <td colSpan={4} style={{ textAlign: "right" }}>
                 <b>Total :</b>
               </td>
 
