@@ -44,12 +44,8 @@ export default function Balance({ patientId, fullDisplay, warningDisplay }) {
 
   var data = appointments.map((obj) => ({ ...obj, dataType: "event" }));
 
-  console.log(data);
-  console.log(packagesData);
   function insertPackageIntoArray(array, pack) {
     var index = array.findIndex((e) => e.start < pack.date);
-    console.log(pack.date);
-    console.log("index : %i", index);
     if (index !== -1) {
       array.splice(index, 0, pack);
     } else {
