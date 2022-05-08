@@ -18,25 +18,26 @@ export default function PatientList() {
     patients.length > 0 ? Math.floor(patients.length / patientsPerPage) + 1 : 1;
   const [activePage, setPage] = useState(1);
 
-  function compareDate(a, b) {
+  function compareDate(a, b, n) {
     var x = new Date(a.start);
     var y = new Date(b.start);
 
     if (x < y) {
-      return 1;
+      return 1 * n;
     }
     if (x > y) {
-      return -1;
+      return -1 * n;
     }
     return 0;
   }
 
+  // we want to display the latest appointment to date
   // first we filter out all the future events
   const pastEvents = appointments.filter(
     (e) => new Date(e.start) <= new Date()
   );
   // then we sort so that the latest event for each patient is at the begging of the array
-  const sortedEvents = pastEvents.sort(compareDate);
+  const sortedEvents = pastEvents.sort((a, b) => compareDate(a, b, 1));
 
   // finally we take only the first row for each patient
   const latestEvents = sortedEvents.reduce(
@@ -47,7 +48,25 @@ export default function PatientList() {
     []
   );
 
+  // we also want to display the next event to date. Same as before but inverted.
+  // first we filter out all the past events
+  const futureEvents = appointments.filter(
+    (e) => new Date(e.start) > new Date()
+  );
+  // then we sort so that the next event for each patient is at the begging of the array
+  const sortedFutureEvents = futureEvents.sort((a, b) => compareDate(a, b, -1));
+
+  // finally we take only the first row for each patient
+  const nextEvents = sortedFutureEvents.reduce(
+    (acc, element) =>
+      acc.find((e) => e.patientId === element.patientId)
+        ? acc
+        : acc.concat([{ patientId: element.patientId, next: element.start }]),
+    []
+  );
+
   console.log(latestEvents);
+  console.log(nextEvents);
 
   const ths = (
     <tr>
@@ -72,6 +91,11 @@ export default function PatientList() {
         Dernière <br />
         Consultation
         <SortSelector field="latestEvent" sort={sort} setSort={setSort} />
+      </th>
+      <th>
+        Prochaine <br />
+        Consultation
+        <SortSelector field="nextEvent" sort={sort} setSort={setSort} />
       </th>
       <th>Solde</th>
       <th>Accéder</th>
@@ -105,6 +129,11 @@ export default function PatientList() {
         x = latestEvent(a);
         y = latestEvent(b);
         break;
+      case "nextEvent":
+        x = nextEvent(a);
+        y = nextEvent(b);
+        break;
+
       default:
         x = a.lastname;
         y = b.lastname;
@@ -123,6 +152,10 @@ export default function PatientList() {
     return latestEvents.find((e) => e.patientId === element.id)?.latest;
   }
 
+  function nextEvent(element) {
+    return nextEvents.find((e) => e.patientId === element.id)?.next;
+  }
+
   var sortedPatients = patients.slice();
   sortedPatients.sort((a, b) => compare(a, b, sort.field, sort.direction));
 
@@ -136,6 +169,7 @@ export default function PatientList() {
       <td>{element.city}</td>
       <td>{element.mobilephone}</td>
       <td>{displayFullDate(new Date(latestEvent(element)))}</td>
+      <td>{displayFullDate(new Date(nextEvent(element)))}</td>
       <td>
         <Balance patientId={element.id} fullDisplay={false} />
       </td>
