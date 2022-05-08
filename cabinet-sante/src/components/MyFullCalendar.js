@@ -8,9 +8,9 @@ import { useLogin } from "./contexts/AuthContext";
 import { useState } from "react";
 import { concatenateDateTime, displayDateInFrench } from "./Functions";
 import NewAppointment from "./NewAppointment";
-import { Modal } from "@mantine/core";
+import { Button, Modal } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { Check, X } from "tabler-icons-react";
+import { Check, Refresh, X } from "tabler-icons-react";
 import { useConfig } from "./contexts/ConfigContext";
 import AppointmentDetails from "./AppointmentDetails";
 import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
@@ -235,6 +235,12 @@ export default function MyFullCalendar() {
           />
         )}
       </Modal>
+      <Button
+        style={{ marginTop: "10px", marginLeft: "20px" }}
+        onClick={() => setCalendarUpdate((prev) => prev + 1)}
+      >
+        <Refresh size={25} />
+      </Button>
       <h2>Agenda</h2>
       <div className="main-content">
         <Caption appointmentTypes={appointmentTypes} />
