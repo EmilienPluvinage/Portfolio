@@ -1,19 +1,16 @@
 import "../styles/styles.css";
 import { usePatients } from "./contexts/PatientsContext";
-import { useLogin } from "./contexts/AuthContext";
 import { Pagination, Table, Button, Center } from "@mantine/core";
 import { calculateAge, displayFullDate } from "./Functions";
 import { useState } from "react";
 import { User } from "tabler-icons-react";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
 import Balance from "./Balance";
 import DeletePatient from "./DeletePatient";
 import SortSelector from "./SortSelector";
 
 export default function PatientList() {
-  const token = useLogin().token;
-  const [latestEvents, setLatestEvents] = useState([]);
+  const appointments = usePatients().appointments;
   const [sort, setSort] = useState({ field: "lastname", direction: "down" });
   const patientsPerPage = 100;
   const patients = usePatients().patients;
@@ -21,30 +18,36 @@ export default function PatientList() {
     patients.length > 0 ? Math.floor(patients.length / patientsPerPage) + 1 : 1;
   const [activePage, setPage] = useState(1);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const fetchResponse = await fetch(
-          process.env.REACT_APP_API_DOMAIN + "/GetLatestEvents",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              token: token,
-            }),
-          }
-        );
-        const res = await fetchResponse.json();
-        setLatestEvents(res.data);
-      } catch (e) {
-        return e;
-      }
+  function compareDate(a, b) {
+    var x = new Date(a.start);
+    var y = new Date(b.start);
+
+    if (x < y) {
+      return 1;
     }
-    fetchData();
-  }, [token]);
+    if (x > y) {
+      return -1;
+    }
+    return 0;
+  }
+
+  // first we filter out all the future events
+  const pastEvents = appointments.filter(
+    (e) => new Date(e.start) <= new Date()
+  );
+  // then we sort so that the latest event for each patient is at the begging of the array
+  const sortedEvents = pastEvents.sort(compareDate);
+
+  // finally we take only the first row for each patient
+  const latestEvents = sortedEvents.reduce(
+    (acc, element) =>
+      acc.find((e) => e.patientId === element.patientId)
+        ? acc
+        : acc.concat([{ patientId: element.patientId, latest: element.start }]),
+    []
+  );
+
+  console.log(latestEvents);
 
   const ths = (
     <tr>
