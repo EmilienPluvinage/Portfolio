@@ -44,9 +44,18 @@ export default function Balance({ patientId, fullDisplay, warningDisplay }) {
 
   var data = appointments.map((obj) => ({ ...obj, dataType: "event" }));
 
+  console.log(data);
+  console.log(packagesData);
   function insertPackageIntoArray(array, pack) {
     var index = array.findIndex((e) => e.start < pack.date);
-    array.splice(index, 0, pack);
+    console.log(pack.date);
+    console.log("index : %i", index);
+    if (index !== -1) {
+      array.splice(index, 0, pack);
+    } else {
+      // pack.date is the oldest event, we push it at the end of the array
+      array.push(pack);
+    }
   }
 
   packagesData.forEach((e) => insertPackageIntoArray(data, e));
