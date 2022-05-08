@@ -100,13 +100,12 @@ export default function DeletePatient({ patientId }) {
         </Modal>
       )}
       <Button
-        leftIcon={<Trash size={18} />}
         compact
         variant="outline"
         color="red"
         onClick={() => setOpened(true)}
       >
-        Supprimer
+        <Trash size={18} />
       </Button>
     </>
   );

@@ -138,8 +138,8 @@ export default function PatientList() {
       </td>
       <td>
         <Link to={"/Nouveau-Patient/" + element.id}>
-          <Button leftIcon={<User size={18} />} compact variant="outline">
-            Accéder
+          <Button compact variant="outline">
+            <User size={18} />
           </Button>
         </Link>
       </td>
