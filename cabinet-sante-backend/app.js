@@ -273,7 +273,7 @@ router.post("/GetPathologiesList", (req, res, next) => {
           var userId = rows[0].userId;
           // Now connected and we have the user ID so we do the insert
           connection.query(
-            "SELECT * FROM pathologies LEFT JOIN pathologyGroups ON pathologies.groupId = pathologyGroups.id WHERE pathologies.userId = ?",
+            "SELECT pathologies.*, pathologyGroups.name FROM pathologies LEFT JOIN pathologyGroups ON pathologies.groupId = pathologyGroups.id WHERE pathologies.userId = ?",
             userId,
             (err, rows) => {
               if (err) throw err;
