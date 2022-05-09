@@ -51,12 +51,13 @@ export function AuthProvider({ children }) {
   async function logging(bool, newToken) {
     if (bool) {
       setToken(newToken);
-      async function getData() {
-        await getPatients(newToken);
-        await getGovData();
-        await getConfig(newToken);
-      }
-      await getData();
+
+      await Promise.allSettled([
+        getPatients(newToken),
+        getGovData(),
+        getConfig(newToken),
+      ]);
+
       CheckAppointments();
       navigate("/");
     } else {
