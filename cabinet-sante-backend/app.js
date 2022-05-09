@@ -259,7 +259,7 @@ app.post("/GetPayements", (req, res, next) => {
   });
 });
 
-router.post("/GetPathologiesList", (req, res, next) => {
+app.post("/GetPathologiesList", (req, res, next) => {
   pool.getConnection((err, connection) => {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
