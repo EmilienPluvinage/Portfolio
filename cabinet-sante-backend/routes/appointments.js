@@ -332,13 +332,16 @@ router.post("/UpdateParticipant", (req, res, next) => {
                 // so we do the update
                 // Now connected and we have the user ID so we do the update
                 connection.query(
-                  "UPDATE isInAppointment SET size =?, weight=?, EVAbefore=?, EVAafter=?, reasonDetails=?, patientType=?, price=?, priceSetByUser=?, payed=? WHERE appointmentId=? AND patientId=?",
+                  "UPDATE isInAppointment SET size =?, weight=?, EVAbefore=?, EVAafter=?, reasonDetails=?, tests=?, treatment=?, remarks=?, patientType=?, price=?, priceSetByUser=?, payed=? WHERE appointmentId=? AND patientId=?",
                   [
                     req.body.size,
                     req.body.weight,
                     req.body.EVAbefore,
                     req.body.EVAafter,
                     req.body.reasonDetails,
+                    req.body.tests,
+                    req.body.treatment,
+                    req.body.remarks,
                     req.body.patientType,
                     req.body.price,
                     req.body.priceSetByUser,
@@ -487,7 +490,7 @@ router.post("/NewParticipant", (req, res, next) => {
               if (err) throw err;
               if (rows.length === 1) {
                 connection.query(
-                  "INSERT INTO isInAppointment(patientId, appointmentId, size, weight, EVAbefore, EVAafter, reasonDetails, patientType, price, priceSetByUser, payed) VALUES (?,?,?,?,?,?,?,?,?,?, ?)",
+                  "INSERT INTO isInAppointment(patientId, appointmentId, size, weight, EVAbefore, EVAafter, reasonDetails, tests, treatment, remarks, patientType, price, priceSetByUser, payed) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?, ?)",
                   [
                     req.body.patientId,
                     req.body.appointmentId,
@@ -496,6 +499,9 @@ router.post("/NewParticipant", (req, res, next) => {
                     req.body.EVAbefore,
                     req.body.EVAafter,
                     req.body.reasonDetails,
+                    req.body.tests,
+                    req.body.treatment,
+                    req.body.remarks,
                     req.body.patientType !== undefined
                       ? req.body.patientType
                       : 0,

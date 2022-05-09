@@ -78,6 +78,9 @@ export default function AppointmentDetails({
     weight: 0,
     EVAafter: 0,
     reasonDetails: "",
+    tests: "",
+    treatment: "",
+    remarks: "",
     patientType: "",
     appointmentType: "",
     price: 0,
@@ -120,6 +123,9 @@ export default function AppointmentDetails({
         size: row.size,
         weight: row.weight,
         reasonDetails: row.reasonDetails,
+        tests: row.tests,
+        treatment: row.treatment,
+        remarks: row.remarks,
         patientType: patientType,
         appointmentType: appointmentType,
         price: row.price / 100,
@@ -318,6 +324,9 @@ export default function AppointmentDetails({
                 EVAbefore: EVAbefore,
                 EVAafter: EVAafter,
                 reasonDetails: values.reasonDetails,
+                tests: values.tests,
+                treatment: values.treatment,
+                remarks: values.remarks,
                 patientType: patientTypes.find(
                   (e) => e.type === values.patientType
                 )?.id,
@@ -419,6 +428,9 @@ export default function AppointmentDetails({
                 EVAbefore: EVAbefore,
                 EVAafter: EVAafter,
                 reasonDetails: values.reasonDetails,
+                tests: values.tests,
+                treatment: values.treatment,
+                remarks: values.remarks,
                 patientType: patientTypes.find(
                   (e) => e.type === values.patientType
                 )?.id,
@@ -667,6 +679,21 @@ export default function AppointmentDetails({
           label="Motif de consultation"
           name="reasonDetails"
           {...form.getInputProps("reasonDetails")}
+        />
+        <Textarea
+          label="Test Ostéopathiques"
+          name="tests"
+          {...form.getInputProps("tests")}
+        />
+        <Textarea
+          label="Traitements"
+          name="treatment"
+          {...form.getInputProps("treatment")}
+        />
+        <Textarea
+          label="Remarques"
+          name="remarks"
+          {...form.getInputProps("remarks")}
         />
 
         {appointmentId === 0 ? (
