@@ -1,6 +1,8 @@
 import React from "react";
 import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import {
+  ThemeIcon,
+  Accordion,
   TextInput,
   Textarea,
   Button,
@@ -26,7 +28,16 @@ import {
   timeOnly,
   setAutomaticPrice,
 } from "./Functions";
-import { Calendar, Check, Trash, Pencil, X } from "tabler-icons-react";
+import {
+  Calendar,
+  Check,
+  Trash,
+  Pencil,
+  X,
+  ListSearch,
+  Plus,
+  MedicalCross,
+} from "tabler-icons-react";
 import { useForm } from "@mantine/form";
 import { useEffect } from "react";
 import { useConfig } from "./contexts/ConfigContext";
@@ -81,6 +92,7 @@ export default function AppointmentDetails({
     tests: "",
     treatment: "",
     remarks: "",
+    drawing: "",
     patientType: "",
     appointmentType: "",
     price: 0,
@@ -126,6 +138,7 @@ export default function AppointmentDetails({
         tests: row.tests,
         treatment: row.treatment,
         remarks: row.remarks,
+        drawing: row.drawing,
         patientType: patientType,
         appointmentType: appointmentType,
         price: row.price / 100,
@@ -327,6 +340,7 @@ export default function AppointmentDetails({
                 tests: values.tests,
                 treatment: values.treatment,
                 remarks: values.remarks,
+                drawing: values.drawing,
                 patientType: patientTypes.find(
                   (e) => e.type === values.patientType
                 )?.id,
@@ -431,6 +445,7 @@ export default function AppointmentDetails({
                 tests: values.tests,
                 treatment: values.treatment,
                 remarks: values.remarks,
+                drawing: values.drawing,
                 patientType: patientTypes.find(
                   (e) => e.type === values.patientType
                 )?.id,
@@ -675,27 +690,92 @@ export default function AppointmentDetails({
             </div>
           </Grid.Col>
         </Grid>
-        <Textarea
-          label="Motif de consultation"
-          name="reasonDetails"
-          {...form.getInputProps("reasonDetails")}
-        />
-        <Textarea
-          label="Test Ostéopathiques"
-          name="tests"
-          {...form.getInputProps("tests")}
-        />
-        <Textarea
-          label="Traitements"
-          name="treatment"
-          {...form.getInputProps("treatment")}
-        />
-        <Textarea
-          label="Remarques"
-          name="remarks"
-          {...form.getInputProps("remarks")}
-        />
-
+        <Accordion multiple offsetIcon={false} disableIconRotation>
+          <Accordion.Item
+            label="Motif de consultation"
+            icon={
+              <ThemeIcon
+                color="cyan"
+                variant={form.values.reasonDetails === "" ? "light" : "filled"}
+                radius="xl"
+              >
+                <ListSearch size={18} />
+              </ThemeIcon>
+            }
+          >
+            <Textarea
+              label="Motif de consultation"
+              name="reasonDetails"
+              {...form.getInputProps("reasonDetails")}
+            />
+          </Accordion.Item>
+          <Accordion.Item
+            label="Tests Ostéopathiques"
+            icon={
+              <ThemeIcon
+                color="cyan"
+                variant={form.values.tests === "" ? "light" : "filled"}
+                radius="xl"
+              >
+                <Check size={18} />
+              </ThemeIcon>
+            }
+          >
+            <Textarea
+              label="Test Ostéopathiques"
+              name="tests"
+              {...form.getInputProps("tests")}
+            />
+          </Accordion.Item>
+          <Accordion.Item
+            label="Traitements"
+            icon={
+              <ThemeIcon
+                color="cyan"
+                variant={form.values.treatment === "" ? "light" : "filled"}
+                radius="xl"
+              >
+                <MedicalCross size={18} />
+              </ThemeIcon>
+            }
+          >
+            <Textarea
+              label="Traitements"
+              name="treatment"
+              {...form.getInputProps("treatment")}
+            />
+          </Accordion.Item>
+          <Accordion.Item
+            label="Remarques"
+            icon={
+              <ThemeIcon
+                color="cyan"
+                variant={form.values.remarks === "" ? "light" : "filled"}
+                radius="xl"
+              >
+                <Plus size={18} />
+              </ThemeIcon>
+            }
+          >
+            <Textarea
+              label="Remarques"
+              name="remarks"
+              {...form.getInputProps("remarks")}
+            />
+          </Accordion.Item>
+          <Accordion.Item
+            label="Schéma"
+            icon={
+              <ThemeIcon
+                color="cyan"
+                variant={form.values.drawing === "" ? "light" : "filled"}
+                radius="xl"
+              >
+                <Pencil size={18} />
+              </ThemeIcon>
+            }
+          ></Accordion.Item>
+        </Accordion>
         {appointmentId === 0 ? (
           <Center>
             <Button
