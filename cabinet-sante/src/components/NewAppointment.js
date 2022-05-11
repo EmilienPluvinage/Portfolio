@@ -187,62 +187,67 @@ export default function NewAppointment({
         var success = true;
         var eventId = res.id;
         // Now that the event has been created, we need to add all the participants
-        async function addPatients() {
-          values.patients.forEach(async (element) => {
-            // first we check if this is a new patient, as in : is it already in the patients list:
-            var patientId = 0;
-            var index = patientsList.findIndex((e) => e === element);
 
-            if (index === -1) {
-              // it's a new patient
-              patientId = await newPatient(element);
-            } else {
-              // it's not, so we get the id of the existing one.
-              patientId = getIdFromFullname(patients, element);
+        const findPackage = (x) => patients.find((e) => e.id === x)?.packageId;
+
+        for (const element of values.patients) {
+          // first we check if this is a new patient, as in : is it already in the patients list:
+          var patientId = 0;
+          var index = patientsList.findIndex((e) => e === element);
+
+          if (index === -1) {
+            // it's a new patient
+            patientId = await newPatient(element);
+          } else {
+            // it's not, so we get the id of the existing one.
+            patientId = getIdFromFullname(patients, element);
+          }
+
+          var packageId = findPackage(patientId);
+
+          packageId =
+            packageId === null || packageId === undefined ? 0 : packageId;
+
+          var price = setAutomaticPrice(
+            priceScheme,
+            0,
+            appointmentTypeId,
+            packageId
+          );
+
+          const fetchResponse = await fetch(
+            process.env.REACT_APP_API_DOMAIN + "/NewParticipant",
+            {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                patientId: patientId,
+                appointmentId: eventId,
+                size: 0,
+                weight: 0,
+                EVAbefore: 0,
+                EVAafter: 0,
+                reasonDetails: "",
+                tests: "",
+                treatment: "",
+                remarks: "",
+                drawing: "",
+                patientType: "",
+                token: token,
+                price: price,
+                priceSetByUser: false,
+              }),
             }
-
-            var packageId = patients.find((e) => e.id === patientId)?.packageId;
-
-            packageId =
-              packageId === null || packageId === undefined ? 0 : packageId;
-
-            var price = setAutomaticPrice(
-              priceScheme,
-              0,
-              appointmentTypeId,
-              packageId
-            );
-
-            const fetchResponse = await fetch(
-              process.env.REACT_APP_API_DOMAIN + "/NewParticipant",
-              {
-                method: "POST",
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  patientId: patientId,
-                  appointmentId: eventId,
-                  size: 0,
-                  weight: 0,
-                  EVAbefore: 0,
-                  EVAafter: 0,
-                  reasonDetails: "",
-                  patientType: "",
-                  token: token,
-                  price: price,
-                  priceSetByUser: false,
-                }),
-              }
-            );
-            const res = await fetchResponse.json();
-            if (res.success === false) {
-              success = false;
-            }
-          });
+          );
+          const res = await fetchResponse.json();
+          if (res.success === false) {
+            success = false;
+          }
         }
-        await addPatients();
+
         checkPrices();
         return { success: success, eventId: eventId };
       }
@@ -341,6 +346,10 @@ export default function NewAppointment({
                       EVAbefore: 0,
                       EVAafter: 0,
                       reasonDetails: "",
+                      tests: "",
+                      treatment: "",
+                      remarks: "",
+                      drawing: "",
                       patientType: "",
                       token: token,
                       price: price,
