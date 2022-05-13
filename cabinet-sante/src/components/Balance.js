@@ -9,21 +9,19 @@ import {
   displayDate,
   displayPrice,
   getUniqueSharedPatients,
+  calculateBalance,
+  insertPackageIntoArray,
 } from "./Functions";
 import Payement from "./Payement";
 import ShareBalance from "./ShareBalance";
 import UpdatePrice from "./UpdatePrice";
 
 export default function Balance({ patientId, fullDisplay, warningDisplay }) {
-  const today = new Date();
-  const rowsPerPage = 10;
-  const [activePage, setPage] = useState(1);
-  const [opened, setOpened] = useState(false);
+  // data from context
   const packages = useConfig().packages;
   const sharedBalance = usePatients().sharedBalance;
-
-  const sharedPatients = getUniqueSharedPatients(sharedBalance, patientId);
   const patients = usePatients().patients;
+  const sharedPatients = getUniqueSharedPatients(sharedBalance, patientId);
   const patientName = usePatients().patients.find(
     (e) => e.id === patientId
   )?.fullname;
@@ -35,6 +33,14 @@ export default function Balance({ patientId, fullDisplay, warningDisplay }) {
   );
   const appointmentTypes = useConfig().appointmentTypes;
 
+  // navigation
+  const rowsPerPage = 10;
+  const [activePage, setPage] = useState(1);
+  const [opened, setOpened] = useState(false);
+
+  // used to exclude future appointments into balance calculation
+  const today = new Date();
+
   const packagesData = payements
     .filter((e) => e.eventId === 0)
     .map((obj) => ({
@@ -44,36 +50,9 @@ export default function Balance({ patientId, fullDisplay, warningDisplay }) {
 
   var data = appointments.map((obj) => ({ ...obj, dataType: "event" }));
 
-  function insertPackageIntoArray(array, pack) {
-    var index = array.findIndex((e) => e.start < pack.date);
-    if (index !== -1) {
-      array.splice(index, 0, pack);
-    } else {
-      // pack.date is the oldest event, we push it at the end of the array
-      array.push(pack);
-    }
-  }
-
   packagesData.forEach((e) => insertPackageIntoArray(data, e));
 
-  const balance = data.reduceRight(
-    (acc, item) =>
-      item.dataType === "event"
-        ? acc.concat(
-            (acc.length > 0 ? acc[acc.length - 1] : 0) -
-              (item.payed === 1
-                ? item.price -
-                  payements.find((e) => e.eventId === item.id)?.amount
-                : item.price)
-          )
-        : acc.concat((acc.length > 0 ? acc[acc.length - 1] : 0) + item?.amount),
-    []
-  );
-
-  data.forEach(
-    (obj, index) =>
-      (data[index] = { ...obj, balance: balance[balance.length - 1 - index] })
-  );
+  calculateBalance(data, payements);
 
   const numberOfPages =
     data.length > 0 ? Math.ceil(data.length / rowsPerPage) : 1;

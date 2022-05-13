@@ -282,3 +282,36 @@ export function setAutomaticPrice(
 
   return price;
 }
+
+// functions used in balance calculation
+
+export function calculateBalance(data, payementsData) {
+  const balance = data.reduceRight(
+    (acc, item) =>
+      item.dataType === "event"
+        ? acc.concat(
+            (acc.length > 0 ? acc[acc.length - 1] : 0) -
+              (item.payed === 1
+                ? item.price -
+                  payementsData.find((e) => e.eventId === item.id)?.amount
+                : item.price)
+          )
+        : acc.concat((acc.length > 0 ? acc[acc.length - 1] : 0) + item?.amount),
+    []
+  );
+
+  data.forEach(
+    (obj, index) =>
+      (data[index] = { ...obj, balance: balance[balance.length - 1 - index] })
+  );
+}
+
+export function insertPackageIntoArray(array, pack) {
+  var index = array.findIndex((e) => e.start < pack.date);
+  if (index !== -1) {
+    array.splice(index, 0, pack);
+  } else {
+    // pack.date is the oldest event, we push it at the end of the array
+    array.push(pack);
+  }
+}
