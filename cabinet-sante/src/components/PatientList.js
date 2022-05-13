@@ -133,11 +133,16 @@ export default function PatientList() {
         x = nextEvent(a);
         y = nextEvent(b);
         break;
-
       default:
         x = a.lastname;
         y = b.lastname;
         break;
+    }
+    if (x === undefined) {
+      return -1 * multiplier;
+    }
+    if (y === undefined) {
+      return 1 * multiplier;
     }
     if (x < y) {
       return -1 * multiplier;
