@@ -94,6 +94,7 @@ export default function MyFullCalendar() {
       []
     )
     .filter((e) => e.id !== null);
+
   events.forEach((element) => {
     var color = appointmentTypes.find((e) => e.id === element.idType).color;
     element.backgroundColor = color;

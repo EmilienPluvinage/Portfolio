@@ -481,7 +481,6 @@ export default function NewAppointment({
         color: "green",
       });
 
-      console.log("test");
       if (setCalendarUpdate) {
         setCalendarUpdate((prev) => prev + 1);
       } else {
@@ -503,6 +502,7 @@ export default function NewAppointment({
     setDeleteLoader("loading");
     const result = await addEvent(form.values);
     if (result.success) {
+      await updatePatients(token);
       setAppointment(result.eventId);
       setOpenedDetails(true);
     } else {
