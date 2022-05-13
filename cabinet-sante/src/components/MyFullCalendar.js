@@ -17,18 +17,26 @@ import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import Caption from "./Caption";
 
 export default function MyFullCalendar() {
+  // triggers modal opening
   const [opened, setOpened] = useState(false);
-  const updateContext = useUpdatePatients().update;
   const [openedDetails, setOpenedDetails] = useState(false);
-  const [startingTime, setStartingTime] = useState(new Date());
+
+  // data from our contexts
   const appointments = usePatients().appointments;
   const patients = usePatients().patients;
   const token = useLogin().token;
-  const buttonText = { today: "Semaine actuelle" };
-  const [calendarUpdate, setCalendarUpdate] = useState(0);
-  const [appointmentId, setAppointmentId] = useState(0);
   const appointmentTypes = useConfig().appointmentTypes;
   const parameters = useConfig().parameters;
+  const updateContext = useUpdatePatients().update;
+
+  // state
+  const [calendarUpdate, setCalendarUpdate] = useState(0); // triggers calendar update when incremented (with useEffect)
+  const [appointmentId, setAppointmentId] = useState(0); // to know which appointment to update when clicking on it
+  const [startingTime, setStartingTime] = useState(new Date()); // to know when to start a new appointment when clicking on an empty slot
+
+  // input data for FullCalendarJS
+  const buttonText = { today: "Semaine actuelle" };
+
   const startingHour = parameters.find((e) => e.name === "startingHour")?.value;
   const finishingHour = parameters.find(
     (e) => e.name === "finishingHour"
@@ -36,19 +44,6 @@ export default function MyFullCalendar() {
   const daysOfTheWeek = JSON.parse(
     parameters.find((e) => e.name === "daysOfTheWeek")?.value
   );
-
-  useEffect(() => {
-    if (calendarUpdate !== 0) {
-      setCalendarUpdate(0);
-      async function update() {
-        await updateContext(token);
-      }
-      update();
-      console.log("update");
-    }
-  }, [token, updateContext, calendarUpdate]);
-
-  console.log(appointments);
 
   const daysOfTheWeekList = [
     "Dimanche",
@@ -60,12 +55,26 @@ export default function MyFullCalendar() {
     "Samedi",
   ];
 
+  // Our days of the week list from the SQL DB contains the days we want to show, but fullCalendar.JS wants the days NOT to show
   const daysToExclude = daysOfTheWeekList.reduce(
     (acc, item, index) =>
       daysOfTheWeek.includes(item) ? acc : acc.concat([index]),
     []
   );
 
+  // update the context storing the appointments, thus updating the calendar, every time something is added, removed or updated.
+  useEffect(() => {
+    if (calendarUpdate !== 0) {
+      setCalendarUpdate(0);
+      async function update() {
+        await updateContext(token);
+      }
+      update();
+      console.log("update");
+    }
+  }, [token, updateContext, calendarUpdate]);
+
+  //Convert an hour (number) into a string that fullCalendar can read (hh:mm:ss)
   function convertIntoTimeString(hour) {
     switch (hour?.toString().length) {
       case 1:
@@ -77,7 +86,7 @@ export default function MyFullCalendar() {
     }
   }
 
-  // d'abord un accumulateur pour récupérer que les infos qu'on veut
+  // we transform the appointments list from the DB into events formatted nicely for fullCalendar to work
   var events = appointments
     .reduce(
       (acc, item) =>
@@ -93,8 +102,9 @@ export default function MyFullCalendar() {
             }),
       []
     )
-    .filter((e) => e.id !== null);
+    .filter((e) => e.id !== null); // we remove empty appointments, that appear for example we the user removes a patient.
 
+  // we add extra info to our events such as color and multi in order to display them correctly
   events.forEach((element) => {
     var color = appointmentTypes.find((e) => e.id === element.idType).color;
     element.backgroundColor = color;
@@ -113,6 +123,7 @@ export default function MyFullCalendar() {
     }
   });
 
+  // update the time of an event when dragged by user in another slot
   async function updateEventTime(id, startingTime, endingTime, src) {
     var link = process.env.REACT_APP_API_DOMAIN + "/UpdateEventTime";
     const start = concatenateDateTime(startingTime, startingTime);
@@ -176,7 +187,7 @@ export default function MyFullCalendar() {
     }
   }
   function handleDateClick(arg) {
-    // when users clicks somewhere on the calendar (outside an event)
+    // when users clicks somewhere on the calendar (outside an event), we create a new appointment
     setStartingTime(arg.dateStr);
     setAppointmentId(0);
     setOpened(true);
