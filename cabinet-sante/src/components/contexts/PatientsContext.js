@@ -19,6 +19,7 @@ export function PatientsProvider({ children }) {
   const [payements, setPayements] = useState([]);
   const [sharedBalance, setSharedBalance] = useState([]);
   const [checkOpen, setCheckOpen] = useState(false);
+  const [relatives, setRelatives] = useState([]);
 
   async function initData(token) {
     console.log("enter");
@@ -27,6 +28,7 @@ export function PatientsProvider({ children }) {
       updateAppointmentsList(token),
       updatePayementsList(token),
       updateSharedBalance(token),
+      updateRelatives(token),
     ]);
     console.log("exit");
   }
@@ -130,6 +132,28 @@ export function PatientsProvider({ children }) {
     }
   }
 
+  async function updateRelatives(token) {
+    try {
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/GetRelatives",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+          }),
+        }
+      );
+      const res = await fetchResponse.json();
+      setRelatives(res.data);
+    } catch (e) {
+      return e;
+    }
+  }
+
   function checkPrices() {
     const checks = appointments.map((e) => {
       return {
@@ -151,6 +175,7 @@ export function PatientsProvider({ children }) {
         appointments: appointments,
         payements: payements,
         sharedBalance: sharedBalance,
+        relatives: relatives,
       }}
     >
       <UpdatePatientsContext.Provider
