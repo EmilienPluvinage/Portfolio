@@ -22,7 +22,6 @@ export default function Relationships({ patientId }) {
   // we define the list of availables relationships base on the patient sex
   const sex = patients.find((e) => e.id === patientId).sex;
   let relationshipsList = [];
-  console.log(relationships);
   switch (sex) {
     case "homme":
       relationships.forEach((e) => {
@@ -65,9 +64,17 @@ export default function Relationships({ patientId }) {
   }
 
   // controlled form values
+  const [id, setId] = useState(patientId);
   const [relative, setRelative] = useState("");
   const [relationship, setRelationship] = useState("");
   const [loading, setLoading] = useState("");
+
+  // if we changed patient, we reset the form
+  if (patientId !== id) {
+    setId(patientId);
+    setRelative("");
+    setRelationship("");
+  }
 
   async function addRelationship() {
     setLoading("loading");
@@ -126,7 +133,6 @@ export default function Relationships({ patientId }) {
   }
 
   async function removeRelationship(relationshipId) {
-    console.log(relationshipId);
     setLoading("loading");
     try {
       const fetchResponse = await fetch(
