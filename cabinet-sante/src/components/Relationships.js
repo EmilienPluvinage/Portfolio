@@ -197,16 +197,23 @@ export default function Relationships({ patientId }) {
               </Button>
             </div>
             {relatives.map((element) => (
-              <>
-                <Button
-                  compact
-                  variant="outline"
-                  color="red"
-                  onClick={() => removeRelationship(element.id)}
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                {(element.patientId === patientId ||
+                  element.childId === patientId) && (
+                  <Button
+                    compact
+                    variant="outline"
+                    color="red"
+                    onClick={() => removeRelationship(element.id)}
+                    style={{ margin: "5px" }}
+                  >
+                    <Trash size={18} />
+                  </Button>
+                )}
+                <Text
+                  size="sm"
+                  style={{ marginTop: "auto", marginBottom: "auto" }}
                 >
-                  <Trash size={18} />
-                </Button>
-                <Text size="sm">
                   {element.patientId === patientId
                     ? (sex === "homme"
                         ? relationships.find(
@@ -245,7 +252,7 @@ export default function Relationships({ patientId }) {
                       patients.find((f) => f.id === element.patientId)?.fullname
                     : null}
                 </Text>
-              </>
+              </div>
             ))}
           </div>
         </div>
