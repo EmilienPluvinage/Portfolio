@@ -129,6 +129,42 @@ router.post("/NewPatientSimplified", (req, res, next) => {
   });
 });
 
+// ADDS A NEW RELATIVE
+router.post("/NewRelative", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          var userId = rows[0].userId;
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "INSERT INTO IsRelatedWith(userId, patientId, childId, relationshipId) VALUES (?,?,?,?)",
+            [
+              userId,
+              req.body.patientId,
+              req.body.childId,
+              req.body.relationshipId,
+            ],
+            (err, result) => {
+              if (err) throw err;
+
+              res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
 router.post("/LinkPatients", (req, res, next) => {
   pool.getConnection((err, connection) => {
     if (err) throw err;
