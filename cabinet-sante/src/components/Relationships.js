@@ -126,6 +126,7 @@ export default function Relationships({ patientId }) {
   }
 
   async function removeRelationship(relationshipId) {
+    console.log(relationshipId);
     setLoading("loading");
     try {
       const fetchResponse = await fetch(

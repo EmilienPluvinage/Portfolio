@@ -531,7 +531,7 @@ router.post("/RemoveRelative", (req, res, next) => {
           // belongs to that user
           // Now connected and we have the user ID so we do the insert
           connection.query(
-            "DELETE FROM IsRelativeWith WHERE id=? AND userId=?",
+            "DELETE FROM IsRelatedWith WHERE id=? AND userId=?",
             [req.body.id, userId],
             (err, result) => {
               res.status(201).json({ success: true, error: "" });
