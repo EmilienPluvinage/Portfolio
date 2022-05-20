@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Select, Text } from "@mantine/core";
-import { Check, Plus } from "tabler-icons-react";
+import { Check, Plus, Trash } from "tabler-icons-react";
 import { useConfig } from "./contexts/ConfigContext";
 import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { showNotification } from "@mantine/notifications";
@@ -125,6 +125,39 @@ export default function Relationships({ patientId }) {
     }
   }
 
+  async function removeRelationship(relationshipId) {
+    setLoading("loading");
+    try {
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/RemoveRelative",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: relationshipId,
+            token: token,
+          }),
+        }
+      );
+      const res = await fetchResponse.json();
+      if (res.success) {
+        // we clear the form, update the context and display a notification
+        await updateContext(token);
+        setLoading("");
+        showNotification({
+          title: "Lien de parenté supprimé",
+          message: "Le lien de parenté a bien été supprimé.",
+          color: "green",
+          icon: <Check />,
+        });
+      }
+    } catch (e) {
+      return e;
+    }
+  }
   return (
     <>
       {patientId !== 0 && (
@@ -164,45 +197,55 @@ export default function Relationships({ patientId }) {
               </Button>
             </div>
             {relatives.map((element) => (
-              <Text size="sm">
-                {element.patientId === patientId
-                  ? (sex === "homme"
-                      ? relationships.find(
-                          (f) => f.id === element.relationshipId
-                        )?.parentM
-                      : sex === "femme"
-                      ? relationships.find(
-                          (f) => f.id === element.relationshipId
-                        )?.parentF
-                      : relationships.find(
-                          (f) => f.id === element.relationshipId
-                        )?.parentM +
-                        "/" +
-                        relationships.find(
-                          (f) => f.id === element.relationshipId
-                        )?.parentF) +
-                    " de " +
-                    patients.find((f) => f.id === element.childId)?.fullname
-                  : element.childId === patientId
-                  ? (sex === "homme"
-                      ? relationships.find(
-                          (f) => f.id === element.relationshipId
-                        )?.childM
-                      : sex === "femme"
-                      ? relationships.find(
-                          (f) => f.id === element.relationshipId
-                        )?.childF
-                      : relationships.find(
-                          (f) => f.id === element.relationshipId
-                        )?.childM +
-                        "/" +
-                        relationships.find(
-                          (f) => f.id === element.relationshipId
-                        )?.childF) +
-                    " de " +
-                    patients.find((f) => f.id === element.patientId)?.fullname
-                  : null}
-              </Text>
+              <>
+                <Button
+                  compact
+                  variant="outline"
+                  color="red"
+                  onClick={() => removeRelationship(element.id)}
+                >
+                  <Trash size={18} />
+                </Button>
+                <Text size="sm">
+                  {element.patientId === patientId
+                    ? (sex === "homme"
+                        ? relationships.find(
+                            (f) => f.id === element.relationshipId
+                          )?.parentM
+                        : sex === "femme"
+                        ? relationships.find(
+                            (f) => f.id === element.relationshipId
+                          )?.parentF
+                        : relationships.find(
+                            (f) => f.id === element.relationshipId
+                          )?.parentM +
+                          "/" +
+                          relationships.find(
+                            (f) => f.id === element.relationshipId
+                          )?.parentF) +
+                      " de " +
+                      patients.find((f) => f.id === element.childId)?.fullname
+                    : element.childId === patientId
+                    ? (sex === "homme"
+                        ? relationships.find(
+                            (f) => f.id === element.relationshipId
+                          )?.childM
+                        : sex === "femme"
+                        ? relationships.find(
+                            (f) => f.id === element.relationshipId
+                          )?.childF
+                        : relationships.find(
+                            (f) => f.id === element.relationshipId
+                          )?.childM +
+                          "/" +
+                          relationships.find(
+                            (f) => f.id === element.relationshipId
+                          )?.childF) +
+                      " de " +
+                      patients.find((f) => f.id === element.patientId)?.fullname
+                    : null}
+                </Text>
+              </>
             ))}
           </div>
         </div>
