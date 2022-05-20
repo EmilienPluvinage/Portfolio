@@ -2,12 +2,13 @@ import { useState } from "react";
 import { Button, Select, Text } from "@mantine/core";
 import { Check, Plus } from "tabler-icons-react";
 import { useConfig } from "./contexts/ConfigContext";
-import { usePatients } from "./contexts/PatientsContext";
+import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { showNotification } from "@mantine/notifications";
+import { useLogin } from "./contexts/AuthContext";
 
 export default function Relationships({ patientId }) {
   // data from context
-  const token = usePatients().token;
+  const token = useLogin().token;
   const relationships = useConfig().relationships;
   const patients = usePatients().patients;
   const patientsList = patients
@@ -15,7 +16,7 @@ export default function Relationships({ patientId }) {
     .map((e) => {
       return e.fullname;
     });
-  const updateContext = usePatients().update;
+  const updateContext = useUpdatePatients().update;
 
   // we define the list of availables relationships base on the patient sex
   const sex = patients.find((e) => e.id === patientId).sex;
