@@ -391,6 +391,22 @@ export default function NewAppointment({
   }
 
   async function newPatient(fullname) {
+    // we check if there's already a patient with the same fullname
+    var index = patients.findIndex(
+      (patient) => patient?.fullname?.toUpperCase() === fullname.toUpperCase()
+    );
+    if (index !== -1) {
+      // it means there is already a patient with the same fullname, so we had a 2 and show a notification
+
+      showNotification({
+        title: "Nom identique",
+        message: `Il existait déjà un patient avec le nom ${fullname}, le nouveau a donc été renommé en ${fullname}2, pensez à le renommer (en ajoutant par exemple un deuxième prénom).`,
+        icon: <ExclamationMark />,
+        color: "yellow",
+      });
+      fullname = fullname + "2";
+    }
+
     const name = splitname(fullname);
 
     try {
