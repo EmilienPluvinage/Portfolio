@@ -18,11 +18,13 @@ export function ConfigurationProvider({ children }) {
   const [priceScheme, setPriceScheme] = useState([]);
   const [parameters, setParameters] = useState([]);
   const [pathologies, setPathologies] = useState([]);
+  const [relationships, setRelationships] = useState([]);
 
   async function initData(token) {
     await Promise.allSettled([
       updateAppointmentTypesList(token),
       getPathologiesList(token),
+      getRelationshipsList(token),
     ]);
   }
 
@@ -78,6 +80,30 @@ export function ConfigurationProvider({ children }) {
     }
   }
 
+  async function getRelationshipsList(token) {
+    try {
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/GetRelationshipsList",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+          }),
+        }
+      );
+      const res = await fetchResponse.json();
+      if (res.success) {
+        setRelationships(res.data);
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
   return (
     <ConfigContext.Provider
       value={{
@@ -87,6 +113,7 @@ export function ConfigurationProvider({ children }) {
         priceScheme: priceScheme,
         parameters: parameters,
         pathologies: pathologies,
+        relationships: relationships,
       }}
     >
       <UpdateConfigContext.Provider value={initData}>
