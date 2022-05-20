@@ -10,6 +10,7 @@ export default function Relationships({ patientId }) {
   // data from context
   const token = useLogin().token;
   const relationships = useConfig().relationships;
+  const relatives = usePatients().relatives;
   const patients = usePatients().patients;
   const patientsList = patients
     .filter((e) => e.id !== patientId)
@@ -130,6 +131,7 @@ export default function Relationships({ patientId }) {
         <div className="new-patient" style={{ marginTop: "10px" }}>
           <div className="form-column">
             <Text size="sm">Liens de parenté</Text>
+
             <div style={{ display: "flex", flexDirection: "row" }}>
               <Select
                 style={{ width: "fit-content" }}
@@ -161,6 +163,47 @@ export default function Relationships({ patientId }) {
                 <Plus size={16} />
               </Button>
             </div>
+            {relatives.map((element) => (
+              <Text size="sm">
+                {element.patientId === patientId
+                  ? (sex === "homme"
+                      ? relationships.find(
+                          (f) => f.id === element.relationshipId
+                        )?.parentM
+                      : sex === "femme"
+                      ? relationships.find(
+                          (f) => f.id === element.relationshipId
+                        )?.parentF
+                      : relationships.find(
+                          (f) => f.id === element.relationshipId
+                        )?.parentM +
+                        "/" +
+                        relationships.find(
+                          (f) => f.id === element.relationshipId
+                        )?.parentF) +
+                    " de " +
+                    patients.find((f) => f.id === element.childId)?.fullname
+                  : element.childId === patientId
+                  ? (sex === "homme"
+                      ? relationships.find(
+                          (f) => f.id === element.relationshipId
+                        )?.childM
+                      : sex === "femme"
+                      ? relationships.find(
+                          (f) => f.id === element.relationshipId
+                        )?.childF
+                      : relationships.find(
+                          (f) => f.id === element.relationshipId
+                        )?.childM +
+                        "/" +
+                        relationships.find(
+                          (f) => f.id === element.relationshipId
+                        )?.childF) +
+                    " de " +
+                    patients.find((f) => f.id === element.patientId)?.fullname
+                  : null}
+              </Text>
+            ))}
           </div>
         </div>
       )}
