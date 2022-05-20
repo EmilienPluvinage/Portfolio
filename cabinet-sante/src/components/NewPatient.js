@@ -36,6 +36,7 @@ import AppointmentDetails from "./AppointmentDetails";
 import History from "./History";
 import Payement from "./Payement";
 import Balance from "./Balance";
+import Relationships from "./Relationships";
 import { useConfig } from "./contexts/ConfigContext";
 
 export default function NewPatient() {
@@ -53,7 +54,6 @@ export default function NewPatient() {
   const [id, setId] = useState(0);
   const params = useParams();
   const pathologies = useConfig().pathologies;
-  console.log(pathologies);
   const initialValues = {
     lastname: "",
     firstname: "",
@@ -196,8 +196,6 @@ export default function NewPatient() {
   }
 
   function checkValues(values) {
-    console.log(values);
-
     if (values.sex === null || values.sex === undefined || values.sex === "") {
       return {
         check: false,
@@ -496,6 +494,7 @@ export default function NewPatient() {
               </CheckboxGroup>
             </div>
           </div>
+          <Relationships patientId={id} />
         </div>
         <h2>Antécédents</h2>
         <div className="main-content">
