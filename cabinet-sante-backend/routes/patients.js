@@ -37,12 +37,13 @@ router.post("/NewPatient", (req, res, next) => {
           var userId = rows[0].userId;
           // Now connected and we have the user ID so we do the insert
           connection.query(
-            "INSERT INTO patients(userId, firstname, lastname, birthday, sex, mobilephone, landline, email, address, city, country, comments, maritalStatus, numberOfChildren, job, GP, hobbies, SSNumber, healthInsurance, sentBy, hand) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            "INSERT INTO patients(userId, firstname, lastname, birthday, death, sex, mobilephone, landline, email, address, city, country, comments, maritalStatus, numberOfChildren, job, GP, hobbies, SSNumber, healthInsurance, sentBy, hand) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [
               userId,
               req.body.firstname,
               req.body.lastname,
               req.body.birthday,
+              req.body.death,
               req.body.sex,
               req.body.mobilephone,
               req.body.landline,
@@ -345,11 +346,12 @@ router.post("/UpdatePatient", (req, res, next) => {
               if (rows.length === 1) {
                 // so we do the update
                 connection.query(
-                  "UPDATE patients SET firstname=?, lastname=?, birthday=?, sex=?, mobilephone=?, landline=?, email=?, address=?, city=?, country=?,comments=?, maritalStatus=?,numberofChildren=?,job=?,GP=?,hobbies=?,SSNumber=?,healthInsurance=?,sentBy=?,hand=? WHERE id=?",
+                  "UPDATE patients SET firstname=?, lastname=?, birthday=?, death=?, sex=?, mobilephone=?, landline=?, email=?, address=?, city=?, country=?,comments=?, maritalStatus=?,numberofChildren=?,job=?,GP=?,hobbies=?,SSNumber=?,healthInsurance=?,sentBy=?,hand=? WHERE id=?",
                   [
                     req.body.firstname,
                     req.body.lastname,
                     req.body.birthday,
+                    req.body.death,
                     req.body.sex,
                     req.body.mobilephone,
                     req.body.landline,
