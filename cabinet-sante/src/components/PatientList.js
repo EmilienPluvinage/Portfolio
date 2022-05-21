@@ -165,17 +165,23 @@ export default function PatientList() {
   sortedPatients.sort((a, b) => compare(a, b, sort.field, sort.direction));
 
   const rows = sortedPatients.map((element) => (
-    <tr key={element.id}>
+    <tr
+      key={element.id}
+      style={element.death !== "" ? { color: "gray" } : null}
+    >
       <td>{element.firstname}</td>
       <td>{element.lastname}</td>
       <td>
-        {element.birthday !== "" ? calculateAge(element.birthday) + " ans" : ""}
+        {element.birthday !== ""
+          ? calculateAge(element.birthday, element.death) + " ans"
+          : ""}{" "}
+        {element.death !== "" && "✞"}
       </td>
       <td>{element.city}</td>
       <td>{element.mobilephone}</td>
       <td>{displayFullDate(new Date(latestEvent(element)))}</td>
       <td>{displayFullDate(new Date(nextEvent(element)))}</td>
-      <td>
+      <td style={{ whiteSpace: "nowrap" }}>
         <Balance patientId={element.id} fullDisplay={false} />
       </td>
       <td>
