@@ -191,10 +191,16 @@ export function displayDateInFrench(strdate) {
   );
 }
 
-export function calculateAge(date) {
+export function calculateAge(date, death) {
   const birthdate = new Date(date);
   const now = new Date(Date.now());
-  var diff = new Date(now - birthdate);
+  var diff = 0;
+  const deathdate = new Date(death);
+  if (death === "") {
+    diff = new Date(now - birthdate);
+  } else {
+    diff = new Date(deathdate - birthdate);
+  }
   return diff.getFullYear() - 1970;
 }
 

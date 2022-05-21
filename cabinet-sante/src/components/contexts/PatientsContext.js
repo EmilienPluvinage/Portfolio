@@ -55,7 +55,7 @@ export function PatientsProvider({ children }) {
           " " +
           element.lastname +
           (element.birthday !== ""
-            ? " (" + calculateAge(element.birthday) + " ans)"
+            ? " (" + calculateAge(element.birthday, element.death) + " ans)"
             : "");
         // we stringify this before storing it in DB since this is an array of 0 to 2 values.
         element.hand = element.hand === "" ? "" : JSON.parse(element.hand);
