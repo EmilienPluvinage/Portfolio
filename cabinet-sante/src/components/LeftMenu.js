@@ -45,6 +45,7 @@ function LeftMenu() {
     if (index !== -1) {
       navigate("/Nouveau-patient/" + patients[index].id);
     }
+    setSearch(null);
   }
 
   return (
