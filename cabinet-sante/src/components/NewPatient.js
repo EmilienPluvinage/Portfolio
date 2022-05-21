@@ -58,6 +58,7 @@ export default function NewPatient() {
     lastname: "",
     firstname: "",
     birthday: "",
+    death: "",
     sex: "",
     mobilephone: "",
     landline: "",
@@ -100,6 +101,7 @@ export default function NewPatient() {
           firstname: patient.firstname,
           lastname: patient.lastname,
           birthday: patient.birthday !== "" ? new Date(patient.birthday) : "",
+          death: patient.death !== "" ? new Date(patient.death) : "",
           sex: patient.sex,
           mobilephone: patient.mobilephone,
           landline: patient.landline,
@@ -122,6 +124,7 @@ export default function NewPatient() {
     } else if (params?.id === undefined && id !== 0) {
       form.reset();
       form.setFieldValue("birthday", null);
+      form.setFieldValue("death", null);
       setId(0);
     }
   }
@@ -145,6 +148,7 @@ export default function NewPatient() {
             firstname: capitalize(values.firstname),
             lastname: capitalize(values.lastname),
             birthday: values.birthday,
+            death: values.death,
             sex: values.sex,
             mobilephone: values.mobilephone,
             landline: values.landline,
@@ -347,6 +351,16 @@ export default function NewPatient() {
                 locale="fr"
                 name="birthday"
                 {...form.getInputProps("birthday")}
+                inputFormat="DD/MM/YYYY"
+                placeholder="Choisissez une date"
+                icon={<Calendar size={16} />}
+                allowFreeInput
+              />
+              <DatePicker
+                label="Date de décès"
+                locale="fr"
+                name="death"
+                {...form.getInputProps("death")}
                 inputFormat="DD/MM/YYYY"
                 placeholder="Choisissez une date"
                 icon={<Calendar size={16} />}
