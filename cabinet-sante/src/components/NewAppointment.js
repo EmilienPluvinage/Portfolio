@@ -51,13 +51,23 @@ export default function NewAppointment({
   appointmentId,
   setCalendarUpdate,
 }) {
+  const now = new Date(
+    startingTime === 0 ? Date.now() : timeOnly(startingTime)
+  );
+  const then = dayjs(now).add(60, "minutes").toDate();
+  const date = new Date(
+    startingTime === 0 ? Date.now() : dateOnly(startingTime)
+  );
+
   const appointments = usePatients().appointments;
   const patients = usePatients().patients;
   const updatePatients = useUpdatePatients().update;
   const checkPrices = useUpdatePatients().check;
-  const patientsList = patients.map((e) => {
-    return e.fullname;
-  });
+  const patientsList = patients
+    .filter((e) => e.death === "" || new Date(e.death) >= date)
+    .map((e) => {
+      return e.fullname;
+    });
 
   const [data, setData] = useState(patientsList);
   const appointmentTypes = useConfig().appointmentTypes;
@@ -71,14 +81,6 @@ export default function NewAppointment({
   const [openedDetails, setOpenedDetails] = useState(false);
   const [appointment, setAppointment] = useState(appointmentId);
   const [id, setId] = useState(0);
-
-  const now = new Date(
-    startingTime === 0 ? Date.now() : timeOnly(startingTime)
-  );
-  const then = dayjs(now).add(60, "minutes").toDate();
-  const date = new Date(
-    startingTime === 0 ? Date.now() : dateOnly(startingTime)
-  );
 
   const initialValues = {
     patients: patientId === 0 ? [] : [getFullnameFromId(patients, patientId)],

@@ -21,9 +21,11 @@ import NewAppointment from "./NewAppointment";
 function LeftMenu() {
   const navigate = useNavigate();
   const patients = usePatients().patients;
-  const patientsList = patients.map((e) => {
-    return e.fullname;
-  });
+  const patientsList = patients
+    .filter((e) => e.death === "")
+    .map((e) => {
+      return e.fullname;
+    });
 
   const [opened, setOpened] = useState(false);
   const [search, setSearch] = useState("");
