@@ -20,6 +20,7 @@ export function PatientsProvider({ children }) {
   const [sharedBalance, setSharedBalance] = useState([]);
   const [checkOpen, setCheckOpen] = useState(false);
   const [relatives, setRelatives] = useState([]);
+  const [reminders, setReminders] = useState([]);
 
   async function initData(token) {
     console.log("enter");
@@ -29,6 +30,7 @@ export function PatientsProvider({ children }) {
       updatePayementsList(token),
       updateSharedBalance(token),
       updateRelatives(token),
+      updateReminders(token),
     ]);
     console.log("exit");
   }
@@ -154,6 +156,28 @@ export function PatientsProvider({ children }) {
     }
   }
 
+  async function updateReminders(token) {
+    try {
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/GetReminders",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+          }),
+        }
+      );
+      const res = await fetchResponse.json();
+      setReminders(res.data);
+    } catch (e) {
+      return e;
+    }
+  }
+
   function checkPrices() {
     const checks = appointments.map((e) => {
       return {
@@ -176,6 +200,7 @@ export function PatientsProvider({ children }) {
         payements: payements,
         sharedBalance: sharedBalance,
         relatives: relatives,
+        reminders: reminders,
       }}
     >
       <UpdatePatientsContext.Provider
