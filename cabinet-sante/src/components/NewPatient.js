@@ -38,6 +38,7 @@ import Payement from "./Payement";
 import Balance from "./Balance";
 import Relationships from "./Relationships";
 import { useConfig } from "./contexts/ConfigContext";
+import Reminders from "./Reminders";
 
 export default function NewPatient() {
   const navigate = useNavigate();
@@ -508,7 +509,12 @@ export default function NewPatient() {
               </CheckboxGroup>
             </div>
           </div>
-          <Relationships patientId={id} />
+          {id !== 0 && (
+            <div className="new-patient" style={{ marginTop: "10px" }}>
+              <Relationships patientId={id} />
+              <Reminders patientId={id} />
+            </div>
+          )}
         </div>
         <h2>Antécédents</h2>
         <div className="main-content">
