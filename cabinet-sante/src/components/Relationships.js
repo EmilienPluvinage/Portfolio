@@ -168,100 +168,98 @@ export default function Relationships({ patientId }) {
   return (
     <>
       {patientId !== 0 && (
-        <div className="new-patient" style={{ marginTop: "10px" }}>
-          <div className="form-column">
-            <Text size="sm">Liens de parenté</Text>
+        <div className="form-column">
+          <Text size="sm">Liens de parenté</Text>
 
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <Select
-                style={{ width: "fit-content" }}
-                limit={5}
-                searchable
-                clearable
-                label="Patient"
-                placeholder="Patient"
-                data={patientsList}
-                value={relative}
-                onChange={setRelative}
-              />
-              <Select
-                style={{ width: "fit-content" }}
-                searchable
-                clearable
-                label="Lien"
-                placeholder="Lien"
-                data={relationshipsList}
-                value={relationship}
-                onChange={setRelationship}
-              />
-              <Button
-                variant="outline"
-                style={{ marginLeft: "5px", marginTop: "auto" }}
-                onClick={addRelationship}
-                loading={loading}
-              >
-                <Plus size={16} />
-              </Button>
-            </div>
-            {relatives.map((element) => (
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                {(element.patientId === patientId ||
-                  element.childId === patientId) && (
-                  <Button
-                    compact
-                    variant="outline"
-                    color="red"
-                    onClick={() => removeRelationship(element.id)}
-                    style={{ margin: "5px" }}
-                  >
-                    <Trash size={18} />
-                  </Button>
-                )}
-                <Text
-                  size="sm"
-                  style={{ marginTop: "auto", marginBottom: "auto" }}
-                >
-                  {element.patientId === patientId
-                    ? (sex === "homme"
-                        ? relationships.find(
-                            (f) => f.id === element.relationshipId
-                          )?.parentM
-                        : sex === "femme"
-                        ? relationships.find(
-                            (f) => f.id === element.relationshipId
-                          )?.parentF
-                        : relationships.find(
-                            (f) => f.id === element.relationshipId
-                          )?.parentM +
-                          "/" +
-                          relationships.find(
-                            (f) => f.id === element.relationshipId
-                          )?.parentF) +
-                      " de " +
-                      patients.find((f) => f.id === element.childId)?.fullname
-                    : element.childId === patientId
-                    ? (sex === "homme"
-                        ? relationships.find(
-                            (f) => f.id === element.relationshipId
-                          )?.childM
-                        : sex === "femme"
-                        ? relationships.find(
-                            (f) => f.id === element.relationshipId
-                          )?.childF
-                        : relationships.find(
-                            (f) => f.id === element.relationshipId
-                          )?.childM +
-                          "/" +
-                          relationships.find(
-                            (f) => f.id === element.relationshipId
-                          )?.childF) +
-                      " de " +
-                      patients.find((f) => f.id === element.patientId)?.fullname
-                    : null}
-                </Text>
-              </div>
-            ))}
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            <Select
+              style={{ width: "fit-content" }}
+              limit={5}
+              searchable
+              clearable
+              label="Patient"
+              placeholder="Patient"
+              data={patientsList}
+              value={relative}
+              onChange={setRelative}
+            />
+            <Select
+              style={{ width: "fit-content" }}
+              searchable
+              clearable
+              label="Lien"
+              placeholder="Lien"
+              data={relationshipsList}
+              value={relationship}
+              onChange={setRelationship}
+            />
+            <Button
+              variant="outline"
+              style={{ marginLeft: "5px", marginTop: "auto" }}
+              onClick={addRelationship}
+              loading={loading}
+            >
+              <Plus size={16} />
+            </Button>
           </div>
+          {relatives.map((element) => (
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              {(element.patientId === patientId ||
+                element.childId === patientId) && (
+                <Button
+                  compact
+                  variant="outline"
+                  color="red"
+                  onClick={() => removeRelationship(element.id)}
+                  style={{ margin: "5px" }}
+                >
+                  <Trash size={18} />
+                </Button>
+              )}
+              <Text
+                size="sm"
+                style={{ marginTop: "auto", marginBottom: "auto" }}
+              >
+                {element.patientId === patientId
+                  ? (sex === "homme"
+                      ? relationships.find(
+                          (f) => f.id === element.relationshipId
+                        )?.parentM
+                      : sex === "femme"
+                      ? relationships.find(
+                          (f) => f.id === element.relationshipId
+                        )?.parentF
+                      : relationships.find(
+                          (f) => f.id === element.relationshipId
+                        )?.parentM +
+                        "/" +
+                        relationships.find(
+                          (f) => f.id === element.relationshipId
+                        )?.parentF) +
+                    " de " +
+                    patients.find((f) => f.id === element.childId)?.fullname
+                  : element.childId === patientId
+                  ? (sex === "homme"
+                      ? relationships.find(
+                          (f) => f.id === element.relationshipId
+                        )?.childM
+                      : sex === "femme"
+                      ? relationships.find(
+                          (f) => f.id === element.relationshipId
+                        )?.childF
+                      : relationships.find(
+                          (f) => f.id === element.relationshipId
+                        )?.childM +
+                        "/" +
+                        relationships.find(
+                          (f) => f.id === element.relationshipId
+                        )?.childF) +
+                    " de " +
+                    patients.find((f) => f.id === element.patientId)?.fullname
+                  : null}
+              </Text>
+            </div>
+          ))}
         </div>
       )}
     </>
