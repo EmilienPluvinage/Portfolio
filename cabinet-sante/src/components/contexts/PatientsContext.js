@@ -21,6 +21,7 @@ export function PatientsProvider({ children }) {
   const [checkOpen, setCheckOpen] = useState(false);
   const [relatives, setRelatives] = useState([]);
   const [reminders, setReminders] = useState([]);
+  const [pathologies, setPathologies] = useState([]);
 
   async function initData(token) {
     console.log("enter");
@@ -31,6 +32,7 @@ export function PatientsProvider({ children }) {
       updateSharedBalance(token),
       updateRelatives(token),
       updateReminders(token),
+      updatePathologies(token),
     ]);
     console.log("exit");
   }
@@ -178,6 +180,28 @@ export function PatientsProvider({ children }) {
     }
   }
 
+  async function updatePathologies(token) {
+    try {
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/GetPathologies",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+          }),
+        }
+      );
+      const res = await fetchResponse.json();
+      setPathologies(res.data);
+    } catch (e) {
+      return e;
+    }
+  }
+
   function checkPrices() {
     const checks = appointments.map((e) => {
       return {
@@ -201,6 +225,7 @@ export function PatientsProvider({ children }) {
         sharedBalance: sharedBalance,
         relatives: relatives,
         reminders: reminders,
+        pathologies: pathologies,
       }}
     >
       <UpdatePatientsContext.Provider
