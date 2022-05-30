@@ -50,12 +50,15 @@ export default function NewPatient() {
   const token = useLogin().token;
   const PatientList = usePatients().patients;
   const getPatients = useUpdatePatients().update;
+  const hasPathologies = usePatients().pathologies;
 
+  const [background, setBackground] = useState([]);
   const [opened, setOpened] = useState(false);
   const [openedHistory, setOpenedHistory] = useState(false);
   const [loading, setLoading] = useState("");
   const [id, setId] = useState(0);
   const params = useParams();
+
   const initialValues = {
     lastname: "",
     firstname: "",
@@ -99,6 +102,17 @@ export default function NewPatient() {
       );
       if (patient !== undefined) {
         setId(patient.id);
+        const patientPathologies = hasPathologies.filter(
+          (e) => e.patientId === patient.id
+        );
+        setBackground(
+          patientPathologies.map((element) => {
+            return {
+              pathologyId: element.pathologyId,
+              description: element.description,
+            };
+          })
+        );
         form.setValues({
           firstname: patient.firstname,
           lastname: patient.lastname,
@@ -129,6 +143,65 @@ export default function NewPatient() {
       form.setFieldValue("death", null);
       setId(0);
     }
+  }
+
+  async function addOnePathology(pathology, patientId) {
+    if (pathology.description !== "") {
+      try {
+        const fetchResponse = await fetch(
+          process.env.REACT_APP_API_DOMAIN + "/AddPathology",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              description: pathology.description,
+              token: token,
+              pathologyId: pathology.pathologyId,
+              patientId: patientId,
+            }),
+          }
+        );
+        const res = await fetchResponse.json();
+        return res.success;
+      } catch (e) {
+        return e;
+      }
+    } else {
+      await removeOnePathology(pathology, patientId);
+    }
+  }
+
+  async function removeOnePathology(pathology, patientId) {
+    try {
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/RemovePathology",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+            pathologyId: pathology.pathologyId,
+            patientId: patientId,
+          }),
+        }
+      );
+      const res = await fetchResponse.json();
+      return res.success;
+    } catch (e) {
+      return e;
+    }
+  }
+
+  async function addPathologies(patientId) {
+    await Promise.allSettled(
+      background.map((pathology) => addOnePathology(pathology, patientId))
+    );
   }
 
   async function submitForm(values) {
@@ -176,6 +249,7 @@ export default function NewPatient() {
         const res = await fetchResponse.json();
         if (res.success) {
           await getPatients(token);
+          await addPathologies(res.id);
           setId(res.id);
           setLoading("");
           showNotification({
@@ -517,7 +591,7 @@ export default function NewPatient() {
             </div>
           )}
         </div>
-        <Background />
+        <Background background={background} />
       </form>
     </>
   );
