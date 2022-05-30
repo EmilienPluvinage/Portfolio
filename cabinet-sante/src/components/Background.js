@@ -2,18 +2,22 @@ import "../styles/styles.css";
 import { useConfig } from "./contexts/ConfigContext";
 import { Textarea } from "@mantine/core";
 
-export default function Background({ background }) {
+export default function Background({ background, setBackground }) {
   // data from context
   const pathologies = useConfig().pathologies;
 
   function handleChange(pathologyId, description) {
+    let tempBackground = background.slice(0);
     let index = background.findIndex((e) => e.pathologyId === pathologyId);
     if (index === -1) {
-      background.push({ pathologyId: pathologyId, description: description });
+      tempBackground.push({
+        pathologyId: pathologyId,
+        description: description,
+      });
     } else {
-      background[index].description = description;
+      tempBackground[index].description = description;
     }
-    console.log(background);
+    setBackground(tempBackground);
   }
 
   return (
@@ -86,7 +90,7 @@ export default function Background({ background }) {
                 {pathologies
                   .filter((e) => e.groupId === 5)
                   .map((element) => (
-                    <tr key={element.pathology}>
+                    <tr key={"pathologie" + element.pathology}>
                       <td style={{ textAlign: "right" }}>
                         {element.pathology}
                       </td>
@@ -186,7 +190,7 @@ export default function Background({ background }) {
               .filter((e) => e.groupId === 0)
               .slice(0, 3)
               .map((element) => (
-                <Textarea label={element.pathology} />
+                <Textarea label={element.pathology} key={element.pathology} />
               ))}
           </div>
           <div className="form-column">
@@ -194,7 +198,7 @@ export default function Background({ background }) {
               .filter((e) => e.groupId === 0)
               .slice(3, 6)
               .map((element) => (
-                <Textarea label={element.pathology} />
+                <Textarea label={element.pathology} key={element.pathology} />
               ))}
           </div>
           <div className="form-column">
@@ -202,7 +206,7 @@ export default function Background({ background }) {
               .filter((e) => e.groupId === 0)
               .slice(6)
               .map((element) => (
-                <Textarea label={element.pathology} />
+                <Textarea label={element.pathology} key={element.pathology} />
               ))}
           </div>
         </div>

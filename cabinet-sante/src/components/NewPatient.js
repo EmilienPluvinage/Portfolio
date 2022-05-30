@@ -146,6 +146,7 @@ export default function NewPatient() {
   }
 
   async function addOnePathology(pathology, patientId) {
+    console.log(pathology);
     if (pathology.description !== "") {
       try {
         const fetchResponse = await fetch(
@@ -591,7 +592,7 @@ export default function NewPatient() {
             </div>
           )}
         </div>
-        <Background background={background} />
+        <Background background={background} setBackground={setBackground} />
       </form>
     </>
   );
