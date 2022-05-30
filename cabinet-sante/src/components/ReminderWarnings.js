@@ -16,7 +16,7 @@ export default function ReminderWarnings() {
           <Text size="sm">Aucun rappel actuellement</Text>
         ) : (
           reminders.map((element) => (
-            <Text size="sm">
+            <Text size="sm" key={element.id}>
               <AlertCircle
                 size={18}
                 color="red"
