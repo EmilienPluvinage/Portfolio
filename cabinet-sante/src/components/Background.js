@@ -1,10 +1,20 @@
 import "../styles/styles.css";
 import { useConfig } from "./contexts/ConfigContext";
-import { Checkbox, Textarea } from "@mantine/core";
+import { Textarea } from "@mantine/core";
 
-export default function Background() {
+export default function Background({ background }) {
   // data from context
   const pathologies = useConfig().pathologies;
+
+  function handleChange(pathologyId, description) {
+    let index = background.findIndex((e) => e.pathologyId === pathologyId);
+    if (index === -1) {
+      background.push({ pathologyId: pathologyId, description: description });
+    } else {
+      background[index].description = description;
+    }
+    console.log(background);
+  }
 
   return (
     <>
@@ -16,7 +26,7 @@ export default function Background() {
               <thead>
                 <tr>
                   <th
-                    colSpan={3}
+                    colSpan={2}
                     style={{
                       border: "1px solid lightgray",
                       background: "lightgray",
@@ -37,14 +47,19 @@ export default function Background() {
                         {element.pathology}
                       </td>
                       <td>
-                        <Checkbox />
-                      </td>
-                      <td>
                         <Textarea
                           rows={1}
                           maxRows={1}
                           minRows={1}
                           style={{ lineHeight: "normal" }}
+                          value={
+                            background?.find(
+                              (e) => e.pathologyId === element.id
+                            )?.description
+                          }
+                          onChange={(event) =>
+                            handleChange(element.id, event.currentTarget.value)
+                          }
                         />
                       </td>
                     </tr>
@@ -55,7 +70,7 @@ export default function Background() {
               <thead>
                 <tr>
                   <th
-                    colSpan={3}
+                    colSpan={2}
                     style={{
                       border: "1px solid lightgray",
                       padding: "5px",
@@ -76,9 +91,6 @@ export default function Background() {
                         {element.pathology}
                       </td>
                       <td>
-                        <Checkbox />
-                      </td>
-                      <td>
                         <Textarea
                           rows={1}
                           maxRows={1}
@@ -96,7 +108,7 @@ export default function Background() {
               <thead>
                 <tr>
                   <th
-                    colSpan={3}
+                    colSpan={2}
                     style={{
                       border: "1px solid lightgray",
                       padding: "5px",
@@ -117,9 +129,6 @@ export default function Background() {
                         {element.pathology}
                       </td>
                       <td>
-                        <Checkbox />
-                      </td>
-                      <td>
                         <Textarea
                           rows={1}
                           maxRows={1}
@@ -137,7 +146,7 @@ export default function Background() {
               <thead>
                 <tr>
                   <th
-                    colSpan={3}
+                    colSpan={2}
                     style={{
                       border: "1px solid lightgray",
                       padding: "5px",
@@ -156,9 +165,6 @@ export default function Background() {
                     <tr key={element.pathology}>
                       <td style={{ textAlign: "right" }}>
                         {element.pathology}
-                      </td>
-                      <td>
-                        <Checkbox />
                       </td>
                       <td>
                         <Textarea
