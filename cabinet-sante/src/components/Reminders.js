@@ -124,7 +124,10 @@ export default function Reminders({ patientId }) {
             </Button>
           </div>
           {reminders.map((element) => (
-            <div style={{ display: "flex", flexDirection: "row" }}>
+            <div
+              style={{ display: "flex", flexDirection: "row" }}
+              key={"reminder" + element.id}
+            >
               <Button
                 compact
                 variant="outline"

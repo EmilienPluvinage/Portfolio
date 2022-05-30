@@ -203,7 +203,10 @@ export default function Relationships({ patientId }) {
             </Button>
           </div>
           {relatives.map((element) => (
-            <div style={{ display: "flex", flexDirection: "row" }}>
+            <div
+              style={{ display: "flex", flexDirection: "row" }}
+              key={"relative" + element.id}
+            >
               {(element.patientId === patientId ||
                 element.childId === patientId) && (
                 <Button
