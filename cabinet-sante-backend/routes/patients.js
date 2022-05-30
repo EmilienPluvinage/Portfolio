@@ -325,6 +325,75 @@ router.post("/GetSharedBalance", (req, res, next) => {
   });
 });
 
+router.post("/AddPathology", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          var userId = rows[0].userId;
+          // Now connected and we have the user ID
+          // we check if it's an update or an insert
+          connection.query(
+            "SELECT * FROM hasPathology WHERE userId=? AND pathologyId=? AND patientId=?",
+            [userId, req.body.pathologyId, req.body.patientId],
+            (err, rows) => {
+              if (err) throw err;
+              if (rows.length === 0) {
+                // we add it
+                connection.query(
+                  "INSERT INTO hasPathology(userId, patientId, pathologyId, description) VALUES(?,?,?,?)",
+                  [
+                    userId,
+                    req.body.patientId,
+                    req.body.pathologyId,
+                    description,
+                  ],
+                  (err, rows) => {
+                    if (err) throw err;
+                    res.status(201).json({ success: true });
+                  }
+                );
+              } else if (rows.length === 1) {
+                // we update it
+                connection.query(
+                  "UPDATE hasPathology SET description = ? WHERE userId=? AND pathologyId=? AND patientId=?",
+                  [
+                    req.body.description,
+                    userId,
+                    req.body.pathologyId,
+                    req.body.patientId,
+                  ],
+                  (err, rows) => {
+                    if (err) throw err;
+                    res.status(201).json({ success: true });
+                  }
+                );
+                res.status(201).json({ success: true });
+              } else {
+                // error
+                res.status(201).json({
+                  success: false,
+                  error: "more than one entry to update",
+                });
+              }
+            }
+          );
+          // we also update the time of the token
+          updateTokenTime(connection, req.body.token);
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
 router.post("/GetRelatives", (req, res, next) => {
   pool.getConnection((err, connection) => {
     if (err) throw err;
@@ -657,6 +726,35 @@ router.post("/RemoveReminder", (req, res, next) => {
           connection.query(
             "DELETE FROM reminders WHERE id=? AND userId=?",
             [req.body.id, userId],
+            (err, result) => {
+              res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
+router.post("/RemovePathology", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          var userId = rows[0].userId;
+          // belongs to that user
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "DELETE FROM hasPathology WHERE pathologyId=? AND userId=? AND patientId=?",
+            [req.body.pathologyId, userId, patientId],
             (err, result) => {
               res.status(201).json({ success: true, error: "" });
             }
