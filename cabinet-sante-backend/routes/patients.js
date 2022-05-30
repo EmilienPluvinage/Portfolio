@@ -754,7 +754,7 @@ router.post("/RemovePathology", (req, res, next) => {
           // Now connected and we have the user ID so we do the insert
           connection.query(
             "DELETE FROM hasPathologies WHERE pathologyId=? AND userId=? AND patientId=?",
-            [req.body.pathologyId, userId, patientId],
+            [req.body.pathologyId, userId, req.body.patientId],
             (err, result) => {
               res.status(201).json({ success: true, error: "" });
             }
