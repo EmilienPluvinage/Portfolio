@@ -340,19 +340,19 @@ router.post("/AddPathology", (req, res, next) => {
           // Now connected and we have the user ID
           // we check if it's an update or an insert
           connection.query(
-            "SELECT * FROM hasPathology WHERE userId=? AND pathologyId=? AND patientId=?",
+            "SELECT * FROM hasPathologies WHERE userId=? AND pathologyId=? AND patientId=?",
             [userId, req.body.pathologyId, req.body.patientId],
             (err, rows) => {
               if (err) throw err;
               if (rows.length === 0) {
                 // we add it
                 connection.query(
-                  "INSERT INTO hasPathology(userId, patientId, pathologyId, description) VALUES(?,?,?,?)",
+                  "INSERT INTO hasPathologies(userId, patientId, pathologyId, description) VALUES(?,?,?,?)",
                   [
                     userId,
                     req.body.patientId,
                     req.body.pathologyId,
-                    description,
+                    req.body.description,
                   ],
                   (err, rows) => {
                     if (err) throw err;
@@ -362,7 +362,7 @@ router.post("/AddPathology", (req, res, next) => {
               } else if (rows.length === 1) {
                 // we update it
                 connection.query(
-                  "UPDATE hasPathology SET description = ? WHERE userId=? AND pathologyId=? AND patientId=?",
+                  "UPDATE hasPathologies SET description = ? WHERE userId=? AND pathologyId=? AND patientId=?",
                   [
                     req.body.description,
                     userId,
@@ -753,7 +753,7 @@ router.post("/RemovePathology", (req, res, next) => {
           // belongs to that user
           // Now connected and we have the user ID so we do the insert
           connection.query(
-            "DELETE FROM hasPathology WHERE pathologyId=? AND userId=? AND patientId=?",
+            "DELETE FROM hasPathologies WHERE pathologyId=? AND userId=? AND patientId=?",
             [req.body.pathologyId, userId, patientId],
             (err, result) => {
               res.status(201).json({ success: true, error: "" });
