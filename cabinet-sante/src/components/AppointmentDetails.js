@@ -79,7 +79,8 @@ export default function AppointmentDetails({
   const now = new Date(Date.now());
   const then = dayjs(now).add(60, "minutes").toDate();
   const date = new Date(Date.now());
-
+  const [drawing, setDrawing] = useState("");
+  console.log(drawing);
   const initialValues = {
     title: "",
     date: date,
@@ -93,7 +94,6 @@ export default function AppointmentDetails({
     tests: "",
     treatment: "",
     remarks: "",
-    drawing: "",
     patientType: "",
     appointmentType: "",
     price: 0,
@@ -127,6 +127,7 @@ export default function AppointmentDetails({
       }
       var method = payements.find((e) => e.eventId === row.id)?.method;
       var payementDate = payements.find((e) => e.eventId === row.id)?.date;
+      setDrawing(row.drawing);
       form.setValues({
         title: row.title,
         date: dateOnly(row.start),
@@ -139,7 +140,6 @@ export default function AppointmentDetails({
         tests: row.tests,
         treatment: row.treatment,
         remarks: row.remarks,
-        drawing: row.drawing,
         patientType: patientType,
         appointmentType: appointmentType,
         price: row.price / 100,
@@ -341,7 +341,7 @@ export default function AppointmentDetails({
                 tests: values.tests,
                 treatment: values.treatment,
                 remarks: values.remarks,
-                drawing: values.drawing,
+                drawing: drawing,
                 patientType: patientTypes.find(
                   (e) => e.type === values.patientType
                 )?.id,
@@ -446,7 +446,7 @@ export default function AppointmentDetails({
                 tests: values.tests,
                 treatment: values.treatment,
                 remarks: values.remarks,
-                drawing: values.drawing,
+                drawing: drawing,
                 patientType: patientTypes.find(
                   (e) => e.type === values.patientType
                 )?.id,
@@ -769,15 +769,21 @@ export default function AppointmentDetails({
             icon={
               <ThemeIcon
                 color="cyan"
-                variant={form.values.drawing === "" ? "light" : "filled"}
+                variant={
+                  drawing === "" || JSON.parse(drawing)?.lines?.length === 0
+                    ? "light"
+                    : "filled"
+                }
                 radius="xl"
               >
                 <Pencil size={18} />
               </ThemeIcon>
             }
-          ></Accordion.Item>
+          >
+            <MyCanvas drawing={drawing} setDrawing={setDrawing} />
+          </Accordion.Item>
         </Accordion>
-        <MyCanvas />
+
         {appointmentId === 0 ? (
           <Center>
             <Button

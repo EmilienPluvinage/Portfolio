@@ -18,6 +18,11 @@ export default class MyCanvas extends Component {
     ],
   };
 
+  save() {
+    this.props.setDrawing(this.saveableCanvas.getSaveData());
+    this.setState({ open: false });
+  }
+
   open() {
     this.setState({ open: true });
   }
@@ -48,6 +53,8 @@ export default class MyCanvas extends Component {
               lazyRadius={this.state.lazyRadius}
               canvasWidth={this.state.width}
               canvasHeight={this.state.height}
+              saveData={this.props.drawing}
+              immediateLoading={true}
             />
           </Center>
           <Center>
@@ -59,12 +66,7 @@ export default class MyCanvas extends Component {
             >
               Effacer
             </Button>
-            <Button
-              style={{ margin: "10px" }}
-              onClick={() => {
-                console.log(this.saveableCanvas.getSaveData());
-              }}
-            >
+            <Button style={{ margin: "10px" }} onClick={() => this.save()}>
               Sauvegarder
             </Button>
             <Button style={{ margin: "10px" }} onClick={() => this.close()}>
