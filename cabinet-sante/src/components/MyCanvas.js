@@ -1,4 +1,4 @@
-import { Center, Button } from "@mantine/core";
+import { Center, Button, Modal } from "@mantine/core";
 import React, { Component } from "react";
 import CanvasDraw from "react-canvas-draw";
 
@@ -31,33 +31,43 @@ export default class MyCanvas extends Component {
       <Button onClick={() => this.open()}>Ajouter un schéma</Button>
     ) : (
       <>
-        <Center>
-          <CanvasDraw
-            ref={(canvasDraw) => (this.saveableCanvas = canvasDraw)}
-            brushColor={this.state.color}
-            brushRadius={this.state.brushRadius}
-            lazyRadius={this.state.lazyRadius}
-            canvasWidth={this.state.width}
-            canvasHeight={this.state.height}
-          />
-        </Center>
-        <Center>
-          <Button
-            onClick={() => {
-              this.saveableCanvas.eraseAll();
-            }}
-          >
-            Erase
-          </Button>
-          <Button
-            onClick={() => {
-              console.log(this.saveableCanvas.getSaveData());
-            }}
-          >
-            Save
-          </Button>
-          <Button onClick={() => this.close()}>Close</Button>
-        </Center>
+        <Modal
+          centered
+          overlayOpacity={0.3}
+          opened={this.open}
+          onClose={() => this.close()}
+          title={"Schéma"}
+          closeOnClickOutside={false}
+          size="95%"
+        >
+          <Center>
+            <CanvasDraw
+              ref={(canvasDraw) => (this.saveableCanvas = canvasDraw)}
+              brushColor={this.state.color}
+              brushRadius={this.state.brushRadius}
+              lazyRadius={this.state.lazyRadius}
+              canvasWidth={this.state.width}
+              canvasHeight={this.state.height}
+            />
+          </Center>
+          <Center>
+            <Button
+              onClick={() => {
+                this.saveableCanvas.eraseAll();
+              }}
+            >
+              Effacer
+            </Button>
+            <Button
+              onClick={() => {
+                console.log(this.saveableCanvas.getSaveData());
+              }}
+            >
+              Sauvegarder
+            </Button>
+            <Button onClick={() => this.close()}>Annuler</Button>
+          </Center>
+        </Modal>
       </>
     );
   }
