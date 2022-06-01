@@ -52,6 +52,7 @@ export default class MyCanvas extends Component {
           </Center>
           <Center>
             <Button
+              style={{ margin: "10px" }}
               onClick={() => {
                 this.saveableCanvas.eraseAll();
               }}
@@ -59,13 +60,16 @@ export default class MyCanvas extends Component {
               Effacer
             </Button>
             <Button
+              style={{ margin: "10px" }}
               onClick={() => {
                 console.log(this.saveableCanvas.getSaveData());
               }}
             >
               Sauvegarder
             </Button>
-            <Button onClick={() => this.close()}>Annuler</Button>
+            <Button style={{ margin: "10px" }} onClick={() => this.close()}>
+              Annuler
+            </Button>
           </Center>
         </Modal>
       </>
