@@ -6,8 +6,8 @@ export default class MyCanvas extends Component {
   state = {
     open: false,
     color: "#1098AD",
-    width: 600,
-    height: 400,
+    width: 1000,
+    height: 500,
     brushRadius: 2,
     lazyRadius: 2,
     backgroundImg:
@@ -33,7 +33,15 @@ export default class MyCanvas extends Component {
 
   render() {
     return this.state.open === false ? (
-      <Button onClick={() => this.open()}>Ajouter un schéma</Button>
+      this.props.drawing === "" ||
+      JSON.parse(this.props.drawing)?.lines?.length === 0 ? (
+        <Button onClick={() => this.open()}>Ajouter</Button>
+      ) : (
+        <>
+          <Button onClick={() => this.open()}>Modifier</Button>
+          <Button onClick={() => this.props.setDrawing("")}>Supprimer</Button>
+        </>
+      )
     ) : (
       <>
         <Modal
