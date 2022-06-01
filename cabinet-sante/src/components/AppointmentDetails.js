@@ -80,7 +80,6 @@ export default function AppointmentDetails({
   const then = dayjs(now).add(60, "minutes").toDate();
   const date = new Date(Date.now());
   const [drawing, setDrawing] = useState("");
-  console.log(drawing);
   const initialValues = {
     title: "",
     date: date,
