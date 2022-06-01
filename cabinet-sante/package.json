@@ -19,6 +19,7 @@
     "crypto": "^1.0.1",
     "dayjs": "^1.11.0",
     "react": "^18.0.0",
+    "react-canvas-draw": "^1.2.1",
     "react-chartjs-2": "^4.1.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.3.0",
