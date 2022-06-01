@@ -42,6 +42,7 @@ import { useForm } from "@mantine/form";
 import { useEffect } from "react";
 import { useConfig } from "./contexts/ConfigContext";
 import DuplicateEvent from "./DuplicateEvent";
+import MyCanvas from "./MyCanvas";
 
 export default function AppointmentDetails({
   setOpened,
@@ -776,6 +777,7 @@ export default function AppointmentDetails({
             }
           ></Accordion.Item>
         </Accordion>
+        <MyCanvas />
         {appointmentId === 0 ? (
           <Center>
             <Button
