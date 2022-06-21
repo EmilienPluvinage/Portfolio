@@ -1,11 +1,11 @@
-import { Center, Button, Modal } from "@mantine/core";
+import { Center, Button, Modal, ColorInput } from "@mantine/core";
 import React, { Component } from "react";
 import CanvasDraw from "react-canvas-draw";
 
 export default class MyCanvas extends Component {
   state = {
     open: false,
-    color: "#1098AD",
+    color: "#15aabf",
     width: 1000,
     height: 500,
     brushRadius: 2,
@@ -23,6 +23,10 @@ export default class MyCanvas extends Component {
 
   close() {
     this.setState({ open: false });
+  }
+
+  changeColor(color) {
+    this.setState({ color: color });
   }
 
   render() {
@@ -75,6 +79,32 @@ export default class MyCanvas extends Component {
             <Button style={{ margin: "10px" }} onClick={() => this.close()}>
               Annuler
             </Button>
+            <ColorInput
+              style={{ margin: "10px" }}
+              placeholder="Choix de la couleur"
+              value={this.state.color}
+              onChange={(event) => this.changeColor(event)}
+              disallowInput
+              withPicker={false}
+              format="hex"
+              swatchesPerRow={14}
+              swatches={[
+                "#25262b",
+                "#868e96",
+                "#fa5252",
+                "#e64980",
+                "#be4bdb",
+                "#7950f2",
+                "#4c6ef5",
+                "#228be6",
+                "#15aabf",
+                "#12b886",
+                "#40c057",
+                "#82c91e",
+                "#fab005",
+                "#fd7e14",
+              ]}
+            />
           </Center>
         </Modal>
       </>
