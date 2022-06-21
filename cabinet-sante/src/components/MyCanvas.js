@@ -33,11 +33,33 @@ export default class MyCanvas extends Component {
     return this.state.open === false ? (
       this.props.drawing === "" ||
       JSON.parse(this.props.drawing)?.lines?.length === 0 ? (
-        <Button onClick={() => this.open()}>Ajouter</Button>
+        <Button
+          compact
+          variant="outline"
+          style={{ margin: "5px" }}
+          onClick={() => this.open()}
+        >
+          Ajouter
+        </Button>
       ) : (
         <>
-          <Button onClick={() => this.open()}>Modifier</Button>
-          <Button onClick={() => this.props.setDrawing("")}>Supprimer</Button>
+          <Button
+            compact
+            variant="outline"
+            style={{ margin: "5px" }}
+            onClick={() => this.open()}
+          >
+            Modifier
+          </Button>
+          <Button
+            compact
+            variant="outline"
+            style={{ margin: "5px" }}
+            color="red"
+            onClick={() => this.props.setDrawing("")}
+          >
+            Supprimer
+          </Button>
         </>
       )
     ) : (
