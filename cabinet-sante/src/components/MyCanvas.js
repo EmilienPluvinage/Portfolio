@@ -1,6 +1,7 @@
 import { Center, Button, Modal, ColorInput } from "@mantine/core";
 import React, { Component } from "react";
 import CanvasDraw from "react-canvas-draw";
+import Confirmation from "./Confirmation";
 
 export default class MyCanvas extends Component {
   state = {
@@ -10,6 +11,10 @@ export default class MyCanvas extends Component {
     height: 500,
     brushRadius: 2,
     lazyRadius: 2,
+    confirmationOpen: false,
+    text: "",
+    title: "",
+    callback: undefined,
   };
 
   save() {
@@ -23,6 +28,24 @@ export default class MyCanvas extends Component {
 
   close() {
     this.setState({ open: false });
+  }
+
+  closeConfirmation() {
+    this.setState({
+      confirmationOpen: false,
+      text: "",
+      title: "",
+      callback: undefined,
+    });
+  }
+
+  openConfirmation() {
+    this.setState({ title: "Suppression" });
+    this.setState({ text: "Êtes vous sûr(e) de vouloir supprimer ce schéma?" });
+    this.setState({ callback: () => this.props.setDrawing("") });
+    this.setState({
+      confirmationOpen: true,
+    });
   }
 
   changeColor(color) {
@@ -43,6 +66,13 @@ export default class MyCanvas extends Component {
         </Button>
       ) : (
         <>
+          <Confirmation
+            text={this.state.text}
+            title={this.state.title}
+            callback={this.state.callback}
+            open={this.state.confirmationOpen}
+            close={() => this.closeConfirmation()}
+          />
           <Button
             compact
             variant="outline"
@@ -56,7 +86,7 @@ export default class MyCanvas extends Component {
             variant="outline"
             style={{ margin: "5px" }}
             color="red"
-            onClick={() => this.props.setDrawing("")}
+            onClick={() => this.openConfirmation()}
           >
             Supprimer
           </Button>
