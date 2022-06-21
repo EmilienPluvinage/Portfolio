@@ -10,12 +10,6 @@ export default class MyCanvas extends Component {
     height: 500,
     brushRadius: 2,
     lazyRadius: 2,
-    backgroundImg:
-      "https://upload.wikimedia.org/wikipedia/commons/a/a1/Nepalese_Mhapuja_Mandala.jpg",
-    imgs: [
-      "https://upload.wikimedia.org/wikipedia/commons/a/a1/Nepalese_Mhapuja_Mandala.jpg",
-      "https://i.imgur.com/a0CGGVC.jpg",
-    ],
   };
 
   save() {
@@ -63,6 +57,7 @@ export default class MyCanvas extends Component {
               canvasHeight={this.state.height}
               saveData={this.props.drawing}
               immediateLoading={true}
+              imgSrc="https://emilienpluvinage.com/CabinetSante/img/canvas.jpg"
             />
           </Center>
           <Center>
