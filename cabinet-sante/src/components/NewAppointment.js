@@ -571,7 +571,10 @@ export default function NewAppointment({
       };
     }
 
-    if (appointmentTypeMulti === 0 && values.patients.length > 1) {
+    if (
+      appointmentTypeMulti === 0 &&
+      values.patients.length + values.absents.length > 1
+    ) {
       return {
         check: false,
         message:
@@ -778,7 +781,8 @@ export default function NewAppointment({
               {form?.values?.patients?.length <= 1 &&
                 appointmentTypes.find(
                   (e) => e.type === form?.values?.appointmentType
-                )?.multi === 0 && (
+                )?.multi === 0 &&
+                form?.values?.absents?.length === 0 && (
                   <Button
                     leftIcon={<ListDetails size={18} />}
                     onClick={openDetails}
