@@ -4,7 +4,7 @@ import { usePatients } from "./contexts/PatientsContext";
 import { useConfig } from "./contexts/ConfigContext";
 import { ReportMoney } from "tabler-icons-react";
 
-import { Button, Modal, Table, Pagination, Center } from "@mantine/core";
+import { Button, Modal, Table, Pagination, Center, Text } from "@mantine/core";
 import {
   displayDate,
   displayPrice,
@@ -25,9 +25,18 @@ export default function Balance({ patientId, fullDisplay, warningDisplay }) {
   const patientName = usePatients().patients.find(
     (e) => e.id === patientId
   )?.fullname;
-  const appointments = usePatients().appointments.filter(
-    (e) => sharedPatients.findIndex((f) => f === e.patientId) !== -1
-  );
+  let notMissedAppointments = usePatients().appointments;
+  let missedAppointments = usePatients().missedAppointments;
+  for (const element of notMissedAppointments) {
+    element.missed = false;
+  }
+  for (const element of missedAppointments) {
+    element.missed = true;
+  }
+
+  const appointments = notMissedAppointments
+    .concat(missedAppointments)
+    .filter((e) => sharedPatients.findIndex((f) => f === e.patientId) !== -1);
   const payements = usePatients().payements.filter(
     (e) => sharedPatients.findIndex((f) => f === e.patientId) !== -1
   );
@@ -84,12 +93,16 @@ export default function Balance({ patientId, fullDisplay, warningDisplay }) {
               {patients.find((e) => e.id === element.patientId)?.fullname}
             </td>
           )}
-          <td>{appointmentTypes.find((e) => e.id === element.idType)?.type}</td>
+          <td>
+            {appointmentTypes.find((e) => e.id === element.idType)?.type}{" "}
+            {element.missed && "*"}
+          </td>
           <td>
             {" "}
             <UpdatePrice
               InitialPrice={element.price}
               priceId={element.id}
+              missed={element.missed}
               displayType="negative"
             />
           </td>
@@ -168,6 +181,10 @@ export default function Balance({ patientId, fullDisplay, warningDisplay }) {
               <thead>{ths}</thead>
               <tbody>{rows}</tbody>
             </Table>
+            <Text size="xs" style={{ marginTop: "5px" }}>
+              * Cours où le patient a été absent et n'a pas justifié ou a
+              prévenu trop tard.
+            </Text>
           </Modal>
         )
       )}

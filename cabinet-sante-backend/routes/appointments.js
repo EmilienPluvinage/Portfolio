@@ -397,13 +397,16 @@ router.post("/UpdatePrice", (req, res, next) => {
           var userId = rows[0].userId;
 
           // check that this appointments corresponds to the right userId
+          let table = req.body.missed
+            ? "isNotInAppointment"
+            : "isInAppointment";
           connection.query(
-            "SELECT * FROM isInAppointment LEFT JOIN appointments ON inInAppointment.appointmentId = appointments.id WHERE isInAppointment.id=? AND appointments.userId=?",
+            `SELECT * FROM ${table} LEFT JOIN appointments ON ${table}.appointmentId = appointments.id WHERE ${table}.id=? AND appointments.userId=?`,
             [req.body.id, userId],
             (err, result) => {
               if (rows.length === 1) {
                 connection.query(
-                  "UPDATE isInAppointment SET price=?, priceSetByUser=? WHERE id=?",
+                  `UPDATE ${table} SET price=?, priceSetByUser=? WHERE id=?`,
                   [req.body.price, req.body.priceSetByUser, req.body.id],
                   (err, result) => {
                     if (err) throw err;
@@ -413,7 +416,7 @@ router.post("/UpdatePrice", (req, res, next) => {
               } else {
                 res.status(201).json({
                   success: false,
-                  error: "isInAppointment id and user id do not match",
+                  error: `${table} id and user id do not match`,
                 });
               }
             }
@@ -647,7 +650,7 @@ router.post("/GetHistory", (req, res, next) => {
   });
 });
 
-//
+// missed appointment history
 
 router.post("/GetMissedAppointments", (req, res, next) => {
   pool.getConnection((err, connection) => {
@@ -663,7 +666,7 @@ router.post("/GetMissedAppointments", (req, res, next) => {
           var userId = rows[0].userId;
           // Now connected and we have the user ID so we do the insert
           connection.query(
-            "SELECT * FROM isNotInAppointment WHERE userId = ?",
+            "SELECT * FROM appointments LEFT JOIN isNotInAppointment ON appointments.id = isNotInAppointment.appointmentId WHERE appointments.userId = ? ORDER BY appointments.start DESC",
             userId,
             (err, rows) => {
               if (err) throw err;

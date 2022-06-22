@@ -8,10 +8,18 @@ import { showNotification } from "@mantine/notifications";
 import { Check } from "tabler-icons-react";
 import Confirmation from "./Confirmation";
 
-export default function UpdatePrice({ InitialPrice, priceId, displayType }) {
+export default function UpdatePrice({
+  InitialPrice,
+  priceId,
+  missed,
+  displayType,
+}) {
   // This component is going to display the price and offer the possibility to update it
   const token = useLogin().token;
-  const appointments = usePatients().appointments;
+  const missedAppointments = usePatients().missedAppointments;
+  const notMissedAppointments = usePatients().appointments;
+  const appointments = missed ? missedAppointments : notMissedAppointments;
+
   const updateAppointments = useUpdatePatients().update;
   const [price, setPrice] = useState(0);
   const [openedPrice, setOpenedPrice] = useState(false);
@@ -43,6 +51,7 @@ export default function UpdatePrice({ InitialPrice, priceId, displayType }) {
             price: Math.round(price * 100),
             priceSetByUser: true,
             token: token,
+            missed: missed,
           }),
         }
       );

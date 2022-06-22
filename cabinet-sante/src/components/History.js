@@ -11,7 +11,35 @@ import UpdatePrice from "./UpdatePrice";
 export default function History({ patientId }) {
   const rowsPerPage = 10;
   const appointments = usePatients().appointments;
-  const historyData = appointments.filter((e) => e.patientId === patientId);
+  const missedAppointments = usePatients().missedAppointments;
+  let appointmentsData = appointments.filter((e) => e.patientId === patientId);
+  for (const element of appointmentsData) {
+    element.missed = false;
+  }
+  let missedAppointmentsData = missedAppointments.filter(
+    (e) => e.patientId === patientId
+  );
+  for (const element of missedAppointmentsData) {
+    element.missed = true;
+  }
+
+  let historyData = appointmentsData.concat(missedAppointmentsData);
+
+  function compareDate(a, b) {
+    let x = new Date(a.start);
+    let y = new Date(b.start);
+
+    if (x < y) {
+      return 1;
+    }
+    if (x > y) {
+      return -1;
+    }
+    return 0;
+  }
+
+  historyData.sort((a, b) => compareDate(a, b));
+
   const numberOfPages =
     historyData.length > 0
       ? Math.floor(historyData.length / rowsPerPage) + 1
@@ -94,7 +122,10 @@ export default function History({ patientId }) {
         </thead>
         <tbody>
           {displayedData.map((event) => (
-            <tr key={event.id}>
+            <tr
+              key={event.id}
+              style={event.missed ? { color: "red" } : { color: "black" }}
+            >
               <td>{event.title}</td>
               <td>{displayDate(new Date(event.start), true)}</td>
               <td>{displayTime(new Date(event.start))}</td>
@@ -103,7 +134,11 @@ export default function History({ patientId }) {
                 {appointmentTypes.find((e) => e.id === event.idType).type}
               </td>
               <td>
-                <UpdatePrice InitialPrice={event.price} priceId={event.id} />
+                <UpdatePrice
+                  InitialPrice={event.price}
+                  priceId={event.id}
+                  missed={event.missed}
+                />
               </td>
               <td>
                 <Button
