@@ -95,15 +95,14 @@ router.post("/DeleteAllParticipants", (req, res, next) => {
                   [req.body.appointmentId],
                   (err, result) => {
                     if (err) throw err;
-                    res.status(201).json({ success: true, error: "" });
-                  }
-                );
-                connection.query(
-                  "DELETE FROM isNotInAppointment WHERE appointmentId=?",
-                  [req.body.appointmentId],
-                  (err, result) => {
-                    if (err) throw err;
-                    res.status(201).json({ success: true, error: "" });
+                    connection.query(
+                      "DELETE FROM isNotInAppointment WHERE appointmentId=?",
+                      [req.body.appointmentId],
+                      (err, result) => {
+                        if (err) throw err;
+                        res.status(201).json({ success: true, error: "" });
+                      }
+                    );
                   }
                 );
               } else {
