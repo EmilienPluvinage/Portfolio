@@ -16,6 +16,7 @@ export function useUpdatePatients() {
 export function PatientsProvider({ children }) {
   const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [missedAppointments, setMissedAppointments] = useState([]);
   const [payements, setPayements] = useState([]);
   const [sharedBalance, setSharedBalance] = useState([]);
   const [checkOpen, setCheckOpen] = useState(false);
@@ -33,6 +34,7 @@ export function PatientsProvider({ children }) {
       updateRelatives(token),
       updateReminders(token),
       updatePathologies(token),
+      updateMissedAppointments(token),
     ]);
     console.log("exit");
   }
@@ -87,6 +89,28 @@ export function PatientsProvider({ children }) {
       );
       const res = await fetchResponse.json();
       setAppointments(res.data);
+    } catch (e) {
+      return e;
+    }
+  }
+
+  async function updateMissedAppointments(token) {
+    try {
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/GetMissedAppointments",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+          }),
+        }
+      );
+      const res = await fetchResponse.json();
+      setMissedAppointments(res.data);
     } catch (e) {
       return e;
     }
@@ -221,6 +245,7 @@ export function PatientsProvider({ children }) {
       value={{
         patients: patients,
         appointments: appointments,
+        missedAppointments: missedAppointments,
         payements: payements,
         sharedBalance: sharedBalance,
         relatives: relatives,
