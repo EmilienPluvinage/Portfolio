@@ -374,7 +374,6 @@ router.post("/AddPathology", (req, res, next) => {
                     res.status(201).json({ success: true });
                   }
                 );
-                res.status(201).json({ success: true });
               } else {
                 // error
                 res.status(201).json({
