@@ -55,13 +55,13 @@ function Login() {
   }, [currentToken, loggedIn, logging, loading]);
 
   async function handleSubmit(values) {
-    setLoading(true);
     try {
       const data = await postLogin(
         values.email.toLowerCase(),
         values.password.toLowerCase()
       );
       if (data.loggedIn) {
+        setLoading(true);
         showNotification({
           title: "Connexion réussie",
           message: "Bienvenue sur votre espace client.",
