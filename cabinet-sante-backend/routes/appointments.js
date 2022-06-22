@@ -574,7 +574,7 @@ router.post("/NewAbsent", (req, res, next) => {
               if (err) throw err;
               if (rows.length === 1) {
                 connection.query(
-                  "INSERT INTO isNotInAppointment(user, patientId, appointmentId, price, priceSetByUser, payed) VALUES (?,?,?,?,?,?)",
+                  "INSERT INTO isNotInAppointment(userId, patientId, appointmentId, price, priceSetByUser, payed) VALUES (?,?,?,?,?,?)",
                   [
                     userId,
                     req.body.patientId,
