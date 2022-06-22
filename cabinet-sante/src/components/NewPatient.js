@@ -113,12 +113,14 @@ export default function NewPatient() {
           (e) => e.patientId === patient.id
         );
         setBackground(
-          patientPathologies.map((element) => {
-            return {
-              pathologyId: element.pathologyId,
-              description: element.description,
-            };
-          })
+          patientPathologies
+            .filter((f) => f.groupId === 0)
+            .map((element) => {
+              return {
+                pathologyId: element.pathologyId,
+                description: element.description,
+              };
+            })
         );
         form.setValues({
           firstname: patient.firstname,
@@ -622,7 +624,11 @@ export default function NewPatient() {
             </div>
           )}
         </div>
-        <Background background={background} setBackground={setBackground} />
+        <Background
+          background={background}
+          setBackground={setBackground}
+          patientId={id}
+        />
       </form>
     </>
   );
