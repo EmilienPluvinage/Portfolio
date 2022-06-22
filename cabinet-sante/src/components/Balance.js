@@ -34,9 +34,25 @@ export default function Balance({ patientId, fullDisplay, warningDisplay }) {
     element.missed = true;
   }
 
-  const appointments = notMissedAppointments
+  let appointments = notMissedAppointments
     .concat(missedAppointments)
     .filter((e) => sharedPatients.findIndex((f) => f === e.patientId) !== -1);
+
+  function compareDate(a, b) {
+    let x = new Date(a.start);
+    let y = new Date(b.start);
+
+    if (x < y) {
+      return 1;
+    }
+    if (x > y) {
+      return -1;
+    }
+    return 0;
+  }
+
+  appointments.sort((a, b) => compareDate(a, b));
+
   const payements = usePatients().payements.filter(
     (e) => sharedPatients.findIndex((f) => f === e.patientId) !== -1
   );
