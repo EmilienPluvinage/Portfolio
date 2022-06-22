@@ -594,6 +594,16 @@ export default function NewAppointment({
       };
     }
 
+    for (const element of values.patients) {
+      if (values.absents.find((e) => e === element)) {
+        return {
+          check: false,
+          message:
+            "Au moins un patient est à la fois absent et présent. Merci de le retirer d'une des deux listes.",
+        };
+      }
+    }
+
     return { check: true };
   }
 
