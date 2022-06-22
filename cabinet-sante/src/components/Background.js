@@ -2,7 +2,7 @@ import "../styles/styles.css";
 import { useConfig } from "./contexts/ConfigContext";
 import { Button, Select, Text, Textarea } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { Check, Pencil, Plus, Trash } from "tabler-icons-react";
+import { Check, Plus, Trash } from "tabler-icons-react";
 import { useLogin } from "./contexts/AuthContext";
 import { showNotification } from "@mantine/notifications";
 import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
@@ -89,8 +89,6 @@ export default function Background({ background, setBackground, patientId }) {
     }
   }
   async function removeOnePathology(pathology, patientId) {
-    console.log(pathology);
-    console.log(patientId);
     try {
       const fetchResponse = await fetch(
         process.env.REACT_APP_API_DOMAIN + "/RemovePathology",
@@ -132,7 +130,17 @@ export default function Background({ background, setBackground, patientId }) {
               .filter((e) => e.groupId === 0)
               .slice(0, 3)
               .map((element) => (
-                <Textarea label={element.pathology} key={element.pathology} />
+                <Textarea
+                  label={element.pathology}
+                  key={element.pathology}
+                  onChange={(event) =>
+                    handleChange(element.id, event.target.value)
+                  }
+                  value={
+                    background.find((e) => e.pathologyId === element.id)
+                      ?.description
+                  }
+                />
               ))}
           </div>
           <div className="form-column">
@@ -140,7 +148,17 @@ export default function Background({ background, setBackground, patientId }) {
               .filter((e) => e.groupId === 0)
               .slice(3, 6)
               .map((element) => (
-                <Textarea label={element.pathology} key={element.pathology} />
+                <Textarea
+                  label={element.pathology}
+                  key={element.pathology}
+                  onChange={(event) =>
+                    handleChange(element.id, event.target.value)
+                  }
+                  value={
+                    background.find((e) => e.pathologyId === element.id)
+                      ?.description
+                  }
+                />
               ))}
           </div>
           <div className="form-column">
@@ -148,7 +166,17 @@ export default function Background({ background, setBackground, patientId }) {
               .filter((e) => e.groupId === 0)
               .slice(6)
               .map((element) => (
-                <Textarea label={element.pathology} key={element.pathology} />
+                <Textarea
+                  label={element.pathology}
+                  key={element.pathology}
+                  onChange={(event) =>
+                    handleChange(element.id, event.target.value)
+                  }
+                  value={
+                    background.find((e) => e.pathologyId === element.id)
+                      ?.description
+                  }
+                />
               ))}
           </div>
         </div>
