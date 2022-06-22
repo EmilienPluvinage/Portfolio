@@ -429,6 +429,43 @@ router.post("/UpdatePrice", (req, res, next) => {
   });
 });
 
+// Update the payed status
+
+router.post("/UpdatePayed", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT * FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          // Now connected and we have the user ID`
+          var userId = rows[0].userId;
+          let table = "";
+          if (req.body.missed) {
+            table = "isNotInAppointment";
+          } else {
+            table = "isInAppointment";
+          }
+          connection.query(
+            `UPDATE ${table} SET payed=? WHERE appointmentId=? AND patientId=?`,
+            [req.body.payed, req.body.id, req.body.patientId],
+            (err, result) => {
+              if (err) throw err;
+              res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
 // ADD A NEW APPOINTMENT
 
 router.post("/NewEvent", (req, res, next) => {

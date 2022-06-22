@@ -20,7 +20,13 @@ import { DatePicker } from "@mantine/dates";
 import { useEffect } from "react";
 import Confirmation from "./Confirmation";
 
-export default function Payement({ patientId, payementId }) {
+export default function Payement({
+  patientId,
+  payementId,
+  eventId,
+  subscriptionId,
+  missed,
+}) {
   const startOfMonth = dayjs(new Date()).startOf("month").toDate();
   const endOfPreviousMonth = dayjs(startOfMonth).subtract(1, "days").toDate();
   const token = useLogin().token;
@@ -357,6 +363,93 @@ export default function Payement({ patientId, payementId }) {
     }
   }
 
+  async function deletePayement() {
+    try {
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/DeletePayement",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+            id: payementId,
+            patientId: patientId,
+          }),
+        }
+      );
+      const res = await fetchResponse.json();
+
+      if (res.success) {
+        // either it's an event, and we need to switch it to payed = 0, or it's a subscription and we need to remove it completely
+        var success = true;
+        if (eventId !== 0) {
+          // it's an event
+          const fetchResponse = await fetch(
+            process.env.REACT_APP_API_DOMAIN + "/UpdatePayed",
+            {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                token: token,
+                id: eventId,
+                payed: 0,
+                missed: missed,
+                patientId: patientId,
+              }),
+            }
+          );
+          const res2 = await fetchResponse.json();
+          if (!res2.success) {
+            success = false;
+          }
+        } else {
+          // it's a subscription
+          const fetchResponse = await fetch(
+            process.env.REACT_APP_API_DOMAIN + "/DeleteSubscription",
+            {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                token: token,
+                id: subscriptionId,
+                patientId: patientId,
+              }),
+            }
+          );
+          const res2 = await fetchResponse.json();
+          if (!res2.success) {
+            success = false;
+          }
+        }
+
+        if (success) {
+          showNotification({
+            title: "Paiement Supprimé",
+            message: `Le paiement a bien été supprimé.`,
+            icon: <Check />,
+            color: "green",
+          });
+
+          form.reset();
+          setReason("");
+          updateAppointments(token);
+          setOpened(false);
+        }
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
   return (
     <>
       <Confirmation
@@ -420,8 +513,9 @@ export default function Payement({ patientId, payementId }) {
               icon={<Calendar size={16} />}
               required
             />
-            <Center>
-              {payementId === 0 ? (
+
+            {payementId === 0 ? (
+              <Center>
                 <Button
                   loading={loading}
                   form="payement"
@@ -430,17 +524,41 @@ export default function Payement({ patientId, payementId }) {
                 >
                   Encaisser
                 </Button>
-              ) : (
+              </Center>
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Button
+                  onClick={deletePayement}
+                  variant="outline"
+                  color="red"
+                  style={{
+                    marginTop: "20px",
+
+                    marginRight: "auto",
+                  }}
+                >
+                  Supprimer
+                </Button>
                 <Button
                   loading={loading}
                   form="payement"
                   onClick={form.onSubmit((values) => updatePayement(values))}
-                  style={{ marginTop: "20px" }}
+                  style={{
+                    marginTop: "20px",
+
+                    marginLeft: "auto",
+                  }}
                 >
                   Modifier
                 </Button>
-              )}
-            </Center>
+              </div>
+            )}
           </form>
         </Modal>
       )}

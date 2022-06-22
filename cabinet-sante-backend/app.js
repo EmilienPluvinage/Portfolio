@@ -358,6 +358,66 @@ app.post("/UpdatePayement", (req, res, next) => {
   });
 });
 
+app.post("/DeletePayement", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT * FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          // Now connected and we have the user ID
+          var userId = rows[0].userId;
+          // so we do the update
+          connection.query(
+            "DELETE FROM payements WHERE id=? AND userId=? AND patientId=? ",
+            [req.body.id, userId, req.body.patientId],
+            (err, result) => {
+              if (err) throw err;
+              res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
+app.post("/DeleteSubscription", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT * FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          // Now connected and we have the user ID
+          var userId = rows[0].userId;
+          // so we do the update
+          connection.query(
+            "DELETE FROM hasSubscribed WHERE id=? AND userId=? AND patientId=? ",
+            [req.body.id, userId, req.body.patientId],
+            (err, result) => {
+              if (err) throw err;
+              res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
 app.post("/DeleteToken", (req, res, next) => {
   pool.getConnection((err, connection) => {
     if (err) throw err;
@@ -369,35 +429,6 @@ app.post("/DeleteToken", (req, res, next) => {
         connection.release(); // return the connection to pool
         if (err) throw err;
         res.status(201).json({ success: true });
-      }
-    );
-  });
-});
-
-app.post("/DeletePayement", async (req, res, next) => {
-  pool.getConnection((err, connection) => {
-    if (err) throw err;
-    console.log("connected as id " + connection.threadId);
-    connection.query(
-      "SELECT userId FROM tokens WHERE token= ?",
-      req.body.token,
-      (err, rows) => {
-        connection.release(); // return the connection to pool
-        if (err) throw err;
-        if (rows.length === 1) {
-          var userId = rows[0].userId;
-          // belongs to that user
-          // Now connected and we have the user ID so we do the insert
-          connection.query(
-            "DELETE FROM payements WHERE userId=? AND id=?",
-            [userId, req.body.id],
-            (err, result) => {
-              res.status(201).json({ success: true, error: "" });
-            }
-          );
-        } else {
-          res.status(201).json({ success: false, error: "not connected" });
-        }
       }
     );
   });

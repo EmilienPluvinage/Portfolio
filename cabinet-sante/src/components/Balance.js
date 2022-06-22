@@ -111,6 +111,9 @@ export default function Balance({ patientId, fullDisplay, warningDisplay }) {
               <Payement
                 patientId={element.patientId}
                 payementId={payements.find((e) => e.eventId === element.id)?.id}
+                eventId={element.appointmentId}
+                subscriptionId={0}
+                missed={element.missed}
               />
             )}
           </td>
@@ -133,7 +136,13 @@ export default function Balance({ patientId, fullDisplay, warningDisplay }) {
           <td>{packages.find((e) => e.id === element.packageId)?.package}</td>
           <td></td>
           <td>
-            <Payement patientId={element.patientId} payementId={element.id} />
+            <Payement
+              patientId={element.patientId}
+              payementId={element.id}
+              eventId={0}
+              subscriptionId={element.subscriptionId}
+              missed={element.missed}
+            />
           </td>
           <td>{element.method}</td>
 
