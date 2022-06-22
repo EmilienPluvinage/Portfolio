@@ -214,8 +214,11 @@ export default function NewPatient() {
   }
 
   async function submitForm(values) {
+    console.log(1);
     const check = checkValues(values);
+    console.log(2);
     if (check.check) {
+      console.log(3);
       // we check if there isn't already a patient with same first and last name
       var index = PatientList.findIndex(
         (element) =>
@@ -223,75 +226,81 @@ export default function NewPatient() {
           capitalize(element?.firstname) === capitalize(values?.firstname) &&
           element.id !== id
       );
+      console.log(4);
+
+      async function addOrUpdatePatient(values) {
+        console.log(6);
+        setLoading("loading");
+        var link =
+          process.env.REACT_APP_API_DOMAIN +
+          "/" +
+          (id === 0 ? "NewPatient" : "UpdatePatient");
+        try {
+          const fetchResponse = await fetch(link, {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              firstname: capitalize(values.firstname),
+              lastname: capitalize(values.lastname),
+              birthday: values.birthday,
+              death: values.death,
+              sex: values.sex,
+              mobilephone: values.mobilephone,
+              landline: values.landline,
+              email: values.email,
+              address: values.address,
+              postcode: values.postcode,
+              city: values.city,
+              country: values.country,
+              comments: values.comments,
+              maritalStatus: values.maritalStatus,
+              numberOfChildren: values.numberOfChildren,
+              job: values.job,
+              GP: values.GP,
+              hobbies: values.hobbies,
+              SSNumber: values.SSNumber,
+              healthInsurance: values.healthInsurance,
+              sentBy: values.sentBy,
+              hand: JSON.stringify(values.hand),
+              token: token,
+              id: id,
+            }),
+          });
+          const res = await fetchResponse.json();
+          if (res.success) {
+            await getPatients(token);
+            await addPathologies(res.id);
+            setId(res.id);
+            setLoading("");
+            showNotification({
+              title:
+                id !== 0
+                  ? "Modification enregistrée"
+                  : "Nouveau patient ajouté",
+              message: "La fiche de votre patient a bien été mise à jour.",
+              color: "green",
+              icon: <Check />,
+            });
+            navigate("/Nouveau-Patient/" + res.id);
+          }
+        } catch (e) {
+          return e;
+        }
+      }
+
       if (index !== -1) {
+        console.log(5);
         setConfirmation({
           title: "Confirmer l'ajout",
           text: "Un patient existe déjà avec ce nom là. Êtes-vous sûr(e) de vouloir en ajouter un nouveau?",
           callback: () => addOrUpdatePatient(values),
         });
         setOpen(true);
-
-        async function addOrUpdatePatient(values) {
-          setLoading("loading");
-          var link =
-            process.env.REACT_APP_API_DOMAIN +
-            "/" +
-            (id === 0 ? "NewPatient" : "UpdatePatient");
-          try {
-            const fetchResponse = await fetch(link, {
-              method: "POST",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                firstname: capitalize(values.firstname),
-                lastname: capitalize(values.lastname),
-                birthday: values.birthday,
-                death: values.death,
-                sex: values.sex,
-                mobilephone: values.mobilephone,
-                landline: values.landline,
-                email: values.email,
-                address: values.address,
-                postcode: values.postcode,
-                city: values.city,
-                country: values.country,
-                comments: values.comments,
-                maritalStatus: values.maritalStatus,
-                numberOfChildren: values.numberOfChildren,
-                job: values.job,
-                GP: values.GP,
-                hobbies: values.hobbies,
-                SSNumber: values.SSNumber,
-                healthInsurance: values.healthInsurance,
-                sentBy: values.sentBy,
-                hand: JSON.stringify(values.hand),
-                token: token,
-                id: id,
-              }),
-            });
-            const res = await fetchResponse.json();
-            if (res.success) {
-              await getPatients(token);
-              await addPathologies(res.id);
-              setId(res.id);
-              setLoading("");
-              showNotification({
-                title:
-                  id !== 0
-                    ? "Modification enregistrée"
-                    : "Nouveau patient ajouté",
-                message: "La fiche de votre patient a bien été mise à jour.",
-                color: "green",
-                icon: <Check />,
-              });
-              navigate("/Nouveau-Patient/" + res.id);
-            }
-          } catch (e) {
-            return e;
-          }
-        }
+      } else {
+        addOrUpdatePatient(values);
       }
     } else {
       showNotification({
