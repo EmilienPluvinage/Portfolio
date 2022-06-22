@@ -159,6 +159,8 @@ export default function NewAppointment({
         setOpened(false);
         if (setCalendarUpdate) {
           setCalendarUpdate((prev) => prev + 1);
+        } else {
+          await updatePatients(token);
         }
         setDeleteLoader("");
         showNotification({
