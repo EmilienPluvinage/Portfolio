@@ -42,7 +42,7 @@ router.post("/NewPatient", (req, res, next) => {
               userId,
               req.body.firstname,
               req.body.lastname,
-              req.body.birthday,
+              req.body.birthday ? req.body.birthday : "",
               req.body.death,
               req.body.sex,
               req.body.mobilephone,
@@ -512,7 +512,7 @@ router.post("/UpdatePatient", (req, res, next) => {
                   [
                     req.body.firstname,
                     req.body.lastname,
-                    req.body.birthday,
+                    req.body.birthday ? req.body.birthday : "",
                     req.body.death,
                     req.body.sex,
                     req.body.mobilephone,
