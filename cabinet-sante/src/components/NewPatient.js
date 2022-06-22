@@ -214,11 +214,8 @@ export default function NewPatient() {
   }
 
   async function submitForm(values) {
-    console.log(1);
     const check = checkValues(values);
-    console.log(2);
     if (check.check) {
-      console.log(3);
       // we check if there isn't already a patient with same first and last name
       var index = PatientList.findIndex(
         (element) =>
@@ -226,7 +223,6 @@ export default function NewPatient() {
           capitalize(element?.firstname) === capitalize(values?.firstname) &&
           element.id !== id
       );
-      console.log(4);
 
       async function addOrUpdatePatient(values) {
         console.log(6);
