@@ -98,6 +98,14 @@ router.post("/DeleteAllParticipants", (req, res, next) => {
                     res.status(201).json({ success: true, error: "" });
                   }
                 );
+                connection.query(
+                  "DELETE FROM isNotInAppointment WHERE appointmentId=?",
+                  [req.body.appointmentId],
+                  (err, result) => {
+                    if (err) throw err;
+                    res.status(201).json({ success: true, error: "" });
+                  }
+                );
               } else {
                 res.status(201).json({
                   success: false,
@@ -516,6 +524,70 @@ router.post("/NewParticipant", (req, res, next) => {
 
                     connection.query(
                       "SELECT id FROM isInAppointment WHERE patientId=? AND appointmentId=? ORDER BY id LIMIT 0,1",
+                      [req.body.patientId, req.body.appointmentId],
+                      (err, result) => {
+                        if (err) throw err;
+
+                        res
+                          .status(201)
+                          .json({ success: true, error: "", id: result[0].id });
+                      }
+                    );
+                  }
+                );
+              } else {
+                res.status(201).json({
+                  success: false,
+                  error: "userId and appointmentId do not match",
+                });
+              }
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
+// ADD A NEW ABSENT PARTICIPANT TO AN APPOINTMENT
+
+router.post("/NewAbsent", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          const userId = rows[0].userId;
+          // belongs to that user
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "SELECT * FROM appointments WHERE id = ? AND userId=?",
+            [req.body.appointmentId, userId],
+            (err, rows) => {
+              if (err) throw err;
+              if (rows.length === 1) {
+                connection.query(
+                  "INSERT INTO isNotInAppointment(user, patientId, appointmentId, price, priceSetByUser, payed) VALUES (?,?,?,?,?,?)",
+                  [
+                    userId,
+                    req.body.patientId,
+                    req.body.appointmentId,
+                    req.body.price,
+                    req.body.priceSetByUser,
+                    req.body.payed !== undefined ? req.body.payed : 0,
+                  ],
+                  (err, result) => {
+                    if (err) throw err;
+
+                    connection.query(
+                      "SELECT id FROM isNotInAppointment WHERE patientId=? AND appointmentId=? ORDER BY id LIMIT 0,1",
                       [req.body.patientId, req.body.appointmentId],
                       (err, result) => {
                         if (err) throw err;

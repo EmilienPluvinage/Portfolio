@@ -60,6 +60,7 @@ export default function NewAppointment({
   );
 
   const appointments = usePatients().appointments;
+  const missedAppointments = usePatients().missedAppointments;
   const patients = usePatients().patients;
   const updatePatients = useUpdatePatients().update;
   const checkPrices = useUpdatePatients().check;
@@ -84,6 +85,7 @@ export default function NewAppointment({
 
   const initialValues = {
     patients: patientId === 0 ? [] : [getFullnameFromId(patients, patientId)],
+    absents: [],
     title: "",
     date: date,
     timeRange: [now, then],
@@ -105,13 +107,20 @@ export default function NewAppointment({
       const thisAppointment = appointments.filter(
         (e) => e.appointmentId?.toString() === appointmentId?.toString()
       );
+      const missedThisAppointment = missedAppointments.filter(
+        (e) => e.appointmentId?.toString() === appointmentId?.toString()
+      );
       setId(appointmentId);
       const row = thisAppointment[0];
       const patientsList = thisAppointment.map((e) =>
         getFullnameFromId(patients, e.patientId)
       );
+      const missedPatients = missedThisAppointment.map((e) =>
+        getFullnameFromId(patients, e.patientId)
+      );
       form.setValues({
         patients: patientsList,
+        absents: missedPatients,
         title: row.title,
         date: dateOnly(row.start),
         timeRange: [timeOnly(row.start), timeOnly(row.end)],
@@ -120,7 +129,15 @@ export default function NewAppointment({
         appointmentType: appointmentTypes.find((e) => e.id === row.idType).type,
       });
     }
-  }, [appointmentId, appointments, appointmentTypes, form, id, patients]);
+  }, [
+    appointmentId,
+    appointments,
+    missedAppointments,
+    appointmentTypes,
+    form,
+    id,
+    patients,
+  ]);
 
   async function deleteAppointment() {
     setDeleteLoader("loading");
@@ -238,6 +255,46 @@ export default function NewAppointment({
                 remarks: "",
                 drawing: "",
                 patientType: "",
+                token: token,
+                price: price,
+                priceSetByUser: false,
+              }),
+            }
+          );
+          const res = await fetchResponse.json();
+          if (res.success === false) {
+            success = false;
+          }
+        }
+
+        // then we add the patients who missed the appointment
+
+        for (const element of values.absents) {
+          patientId = getIdFromFullname(patients, element);
+
+          packageId = findPackage(patientId);
+
+          packageId =
+            packageId === null || packageId === undefined ? 0 : packageId;
+
+          price = setAutomaticPrice(
+            priceScheme,
+            0,
+            appointmentTypeId,
+            packageId
+          );
+
+          const fetchResponse = await fetch(
+            process.env.REACT_APP_API_DOMAIN + "/NewAbsent",
+            {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                patientId: patientId,
+                appointmentId: eventId,
                 token: token,
                 price: price,
                 priceSetByUser: false,
@@ -380,6 +437,66 @@ export default function NewAppointment({
               });
             }
             await addPatients();
+
+            async function addMissedPatients() {
+              values.absents.forEach(async (element) => {
+                var patientId = getIdFromFullname(patients, element);
+                var packageId = patients.find(
+                  (e) => e.id === patientId
+                )?.packageId;
+
+                packageId =
+                  packageId === null || packageId === undefined ? 0 : packageId;
+                var oldPrice = missedAppointments.find(
+                  (e) =>
+                    e.patientId?.toString() === patientId?.toString() &&
+                    e.appointmentId?.toString() === appointmentId?.toString()
+                )?.price;
+
+                var price = setAutomaticPrice(
+                  priceScheme,
+                  0,
+                  appointmentTypeId,
+                  packageId
+                );
+                const fetchResponse = await fetch(
+                  process.env.REACT_APP_API_DOMAIN + "/NewAbsent",
+                  {
+                    method: "POST",
+                    headers: {
+                      Accept: "application/json",
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      patientId: patientId,
+                      appointmentId: id,
+                      token: token,
+                      price: price,
+                      priceSetByUser: false,
+                    }),
+                  }
+                );
+                const res = await fetchResponse.json();
+
+                if (res.success === false) {
+                  success = false;
+                } else if (price !== oldPrice && oldPrice !== undefined) {
+                  var patientName = patients.find(
+                    (e) => e.id?.toString() === patientId?.toString()
+                  )?.fullname;
+                  showNotification({
+                    title: "Prix modifié",
+                    message: `Le prix de la séance de ${patientName} est passé de ${displayPrice(
+                      oldPrice
+                    )} € à ${displayPrice(price)} € suite à la modification`,
+                    icon: <ExclamationMark />,
+                    color: "yellow",
+                    autoClose: 10000,
+                  });
+                }
+              });
+            }
+            await addMissedPatients();
 
             return { success: success, eventId: id };
           }
@@ -575,6 +692,19 @@ export default function NewAppointment({
           limit={5}
           maxDropdownHeight={160}
           {...form.getInputProps("patients")}
+        />
+        <MultiSelect
+          required
+          dropdownPosition="top"
+          name="absents"
+          icon={<UserPlus size={16} />}
+          data={data}
+          label="Absent(s) (injustifiés)"
+          placeholder="Ajouter"
+          searchable
+          limit={5}
+          maxDropdownHeight={160}
+          {...form.getInputProps("absents")}
         />
         <Grid grow>
           <Grid.Col span={2}>
