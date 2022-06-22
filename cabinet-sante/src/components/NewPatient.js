@@ -40,6 +40,7 @@ import Relationships from "./Relationships";
 import { useConfig } from "./contexts/ConfigContext";
 import Reminders from "./Reminders";
 import Background from "./Background";
+import Confirmation from "./Confirmation";
 
 export default function NewPatient() {
   // data from context
@@ -58,6 +59,12 @@ export default function NewPatient() {
   const [loading, setLoading] = useState("");
   const [id, setId] = useState(0);
   const params = useParams();
+  const [confirmation, setConfirmation] = useState({
+    text: "",
+    title: "",
+    callback: undefined,
+  });
+  const [open, setOpen] = useState(false);
 
   const initialValues = {
     lastname: "",
@@ -146,7 +153,6 @@ export default function NewPatient() {
   }
 
   async function addOnePathology(pathology, patientId) {
-    console.log(pathology);
     if (pathology.description !== "") {
       try {
         const fetchResponse = await fetch(
@@ -208,62 +214,82 @@ export default function NewPatient() {
   async function submitForm(values) {
     const check = checkValues(values);
     if (check.check) {
-      setLoading("loading");
-      var link =
-        process.env.REACT_APP_API_DOMAIN +
-        "/" +
-        (id === 0 ? "NewPatient" : "UpdatePatient");
-      try {
-        const fetchResponse = await fetch(link, {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            firstname: capitalize(values.firstname),
-            lastname: capitalize(values.lastname),
-            birthday: values.birthday,
-            death: values.death,
-            sex: values.sex,
-            mobilephone: values.mobilephone,
-            landline: values.landline,
-            email: values.email,
-            address: values.address,
-            postcode: values.postcode,
-            city: values.city,
-            country: values.country,
-            comments: values.comments,
-            maritalStatus: values.maritalStatus,
-            numberOfChildren: values.numberOfChildren,
-            job: values.job,
-            GP: values.GP,
-            hobbies: values.hobbies,
-            SSNumber: values.SSNumber,
-            healthInsurance: values.healthInsurance,
-            sentBy: values.sentBy,
-            hand: JSON.stringify(values.hand),
-            token: token,
-            id: id,
-          }),
+      // we check if there isn't already a patient with same first and last name
+      var index = PatientList.findIndex(
+        (element) =>
+          capitalize(element?.lastname) === capitalize(values?.lastname) &&
+          capitalize(element?.firstname) === capitalize(values?.firstname) &&
+          element.id !== id
+      );
+      if (index !== -1) {
+        setConfirmation({
+          title: "Confirmer l'ajout",
+          text: "Un patient existe déjà avec ce nom là. Êtes-vous sûr(e) de vouloir en ajouter un nouveau?",
+          callback: () => addOrUpdatePatient(values),
         });
-        const res = await fetchResponse.json();
-        if (res.success) {
-          await getPatients(token);
-          await addPathologies(res.id);
-          setId(res.id);
-          setLoading("");
-          showNotification({
-            title:
-              id !== 0 ? "Modification enregistrée" : "Nouveau patient ajouté",
-            message: "La fiche de votre patient a bien été mise à jour.",
-            color: "green",
-            icon: <Check />,
-          });
-          navigate("/Nouveau-Patient/" + res.id);
+        setOpen(true);
+
+        async function addOrUpdatePatient(values) {
+          setLoading("loading");
+          var link =
+            process.env.REACT_APP_API_DOMAIN +
+            "/" +
+            (id === 0 ? "NewPatient" : "UpdatePatient");
+          try {
+            const fetchResponse = await fetch(link, {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                firstname: capitalize(values.firstname),
+                lastname: capitalize(values.lastname),
+                birthday: values.birthday,
+                death: values.death,
+                sex: values.sex,
+                mobilephone: values.mobilephone,
+                landline: values.landline,
+                email: values.email,
+                address: values.address,
+                postcode: values.postcode,
+                city: values.city,
+                country: values.country,
+                comments: values.comments,
+                maritalStatus: values.maritalStatus,
+                numberOfChildren: values.numberOfChildren,
+                job: values.job,
+                GP: values.GP,
+                hobbies: values.hobbies,
+                SSNumber: values.SSNumber,
+                healthInsurance: values.healthInsurance,
+                sentBy: values.sentBy,
+                hand: JSON.stringify(values.hand),
+                token: token,
+                id: id,
+              }),
+            });
+            const res = await fetchResponse.json();
+            if (res.success) {
+              await getPatients(token);
+              await addPathologies(res.id);
+              setId(res.id);
+              setLoading("");
+              showNotification({
+                title:
+                  id !== 0
+                    ? "Modification enregistrée"
+                    : "Nouveau patient ajouté",
+                message: "La fiche de votre patient a bien été mise à jour.",
+                color: "green",
+                icon: <Check />,
+              });
+              navigate("/Nouveau-Patient/" + res.id);
+            }
+          } catch (e) {
+            return e;
+          }
         }
-      } catch (e) {
-        return e;
       }
     } else {
       showNotification({
@@ -299,10 +325,7 @@ export default function NewPatient() {
     );
     if (index !== -1) {
       // now we need to look at the birthday. Either the new patient AND the old one don't have birthday sets, in which case there's gonna be an issue
-      if (
-        (values.birthday === "" || values.birthday === null) &&
-        PatientList[index]?.birthday === ""
-      ) {
+      if (values.birthday === "" || values.birthday === null) {
         return {
           check: false,
           message:
@@ -336,6 +359,14 @@ export default function NewPatient() {
 
   return (
     <>
+      {" "}
+      <Confirmation
+        text={confirmation.text}
+        title={confirmation.title}
+        callback={confirmation.callback}
+        open={open}
+        close={() => setOpen(false)}
+      />
       {id !== 0 && (
         <>
           <Modal
@@ -369,7 +400,6 @@ export default function NewPatient() {
           </Modal>
         </>
       )}
-
       <form
         onSubmit={form.onSubmit((values) => submitForm(values))}
         id="new-patient"
