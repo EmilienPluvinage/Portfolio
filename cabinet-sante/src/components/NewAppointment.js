@@ -775,15 +775,18 @@ export default function NewAppointment({
             style={{ marginTop: "10px", marginRight: "70px" }}
           >
             <Grid.Col span={2}>
-              {form?.values?.patients?.length <= 1 && (
-                <Button
-                  leftIcon={<ListDetails size={18} />}
-                  onClick={openDetails}
-                  loading={deleteLoader}
-                >
-                  Détails
-                </Button>
-              )}
+              {form?.values?.patients?.length <= 1 &&
+                appointmentTypes.find(
+                  (e) => e.type === form?.values?.appointmentType
+                )?.multi === 0 && (
+                  <Button
+                    leftIcon={<ListDetails size={18} />}
+                    onClick={openDetails}
+                    loading={deleteLoader}
+                  >
+                    Détails
+                  </Button>
+                )}
             </Grid.Col>
             <Grid.Col span={2}>
               <Button
