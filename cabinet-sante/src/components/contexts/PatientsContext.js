@@ -28,13 +28,13 @@ export function PatientsProvider({ children }) {
     console.log("enter");
     await Promise.allSettled([
       updatePatientsList(token),
-      updateAppointmentsList(token),
-      updatePayementsList(token),
-      updateSharedBalance(token),
-      updateRelatives(token),
-      updateReminders(token),
-      updatePathologies(token),
-      updateMissedAppointments(token),
+      getData(token, "/GetHistory", setAppointments),
+      getData(token, "/GetPayements", setPayements),
+      getData(token, "/GetSharedBalance", setSharedBalance),
+      getData(token, "/GetRelatives", setRelatives),
+      getData(token, "/GetReminders", setReminders),
+      getData(token, "/GetPathologies", setPathologies),
+      getData(token, "/GetMissedAppointments", setMissedAppointments),
     ]);
     console.log("exit");
   }
@@ -72,10 +72,10 @@ export function PatientsProvider({ children }) {
     }
   }
 
-  async function updateAppointmentsList(token) {
+  async function getData(token, path, callback) {
     try {
       const fetchResponse = await fetch(
-        process.env.REACT_APP_API_DOMAIN + "/GetHistory",
+        process.env.REACT_APP_API_DOMAIN + path,
         {
           method: "POST",
           headers: {
@@ -88,139 +88,7 @@ export function PatientsProvider({ children }) {
         }
       );
       const res = await fetchResponse.json();
-      setAppointments(res.data);
-    } catch (e) {
-      return e;
-    }
-  }
-
-  async function updateMissedAppointments(token) {
-    try {
-      const fetchResponse = await fetch(
-        process.env.REACT_APP_API_DOMAIN + "/GetMissedAppointments",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            token: token,
-          }),
-        }
-      );
-      const res = await fetchResponse.json();
-      setMissedAppointments(res.data);
-    } catch (e) {
-      return e;
-    }
-  }
-
-  async function updatePayementsList(token) {
-    try {
-      const fetchResponse = await fetch(
-        process.env.REACT_APP_API_DOMAIN + "/GetPayements",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            token: token,
-          }),
-        }
-      );
-      const res = await fetchResponse.json();
-      setPayements(res.data);
-    } catch (e) {
-      return e;
-    }
-  }
-
-  async function updateSharedBalance(token) {
-    try {
-      const fetchResponse = await fetch(
-        process.env.REACT_APP_API_DOMAIN + "/GetSharedBalance",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            token: token,
-          }),
-        }
-      );
-      const res = await fetchResponse.json();
-      setSharedBalance(res.data);
-    } catch (e) {
-      return e;
-    }
-  }
-
-  async function updateRelatives(token) {
-    try {
-      const fetchResponse = await fetch(
-        process.env.REACT_APP_API_DOMAIN + "/GetRelatives",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            token: token,
-          }),
-        }
-      );
-      const res = await fetchResponse.json();
-      setRelatives(res.data);
-    } catch (e) {
-      return e;
-    }
-  }
-
-  async function updateReminders(token) {
-    try {
-      const fetchResponse = await fetch(
-        process.env.REACT_APP_API_DOMAIN + "/GetReminders",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            token: token,
-          }),
-        }
-      );
-      const res = await fetchResponse.json();
-      setReminders(res.data);
-    } catch (e) {
-      return e;
-    }
-  }
-
-  async function updatePathologies(token) {
-    try {
-      const fetchResponse = await fetch(
-        process.env.REACT_APP_API_DOMAIN + "/GetPathologies",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            token: token,
-          }),
-        }
-      );
-      const res = await fetchResponse.json();
-      setPathologies(res.data);
+      callback(res.data);
     } catch (e) {
       return e;
     }
