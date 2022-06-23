@@ -50,8 +50,8 @@ export default function History({ patientId }) {
   const [appointmentId, setAppointmentId] = useState(0);
   const appointmentTypes = useConfig().appointmentTypes;
   const displayedData = historyData.slice(
-    (activePage - 1) * 10,
-    activePage * 10
+    (activePage - 1) * rowsPerPage,
+    activePage * rowsPerPage
   );
 
   function handleClick(id, multi) {
