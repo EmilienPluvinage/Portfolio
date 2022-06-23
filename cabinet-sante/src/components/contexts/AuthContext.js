@@ -59,7 +59,7 @@ export function AuthProvider({ children }) {
       ]);
 
       CheckAppointments();
-      navigate("/");
+      navigate("/CabinetSante/");
     } else {
       removeToken(token);
       localStorage.removeItem("token");
