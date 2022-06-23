@@ -88,14 +88,18 @@ function LeftMenu() {
             />
           </Center>
           <ul>
-            <Link to="/" className="text-link">
-              <li className={path === "/" ? "clicked" : ""}>
+            <Link to="/CabinetSante/" className="text-link">
+              <li className={path === "/CabinetSante/" ? "clicked" : ""}>
                 <Home size={iconsSize} style={iconsStyle} />
                 Accueil
               </li>
             </Link>
-            <Link to="/Nouveau-Patient" className="text-link">
-              <li className={path === "/Nouveau-Patient" ? "clicked" : ""}>
+            <Link to="/CabinetSante/Nouveau-Patient" className="text-link">
+              <li
+                className={
+                  path === "/CabinetSante/Nouveau-Patient" ? "clicked" : ""
+                }
+              >
                 <UserPlus size={iconsSize} style={iconsStyle} />
                 Nouveau Patient
               </li>
@@ -105,8 +109,12 @@ function LeftMenu() {
               <ReportMedical size={iconsSize} style={iconsStyle} />
               Nouvelle Consultation
             </li>
-            <Link to="/Listing-Patients" className="text-link">
-              <li className={path === "/Listing-Patients" ? "clicked" : ""}>
+            <Link to="/CabinetSante/Listing-Patients" className="text-link">
+              <li
+                className={
+                  path === "/CabinetSante/Listing-Patients" ? "clicked" : ""
+                }
+              >
                 <List size={iconsSize} style={iconsStyle} />
                 Liste des patients{" "}
                 <Badge
@@ -118,26 +126,36 @@ function LeftMenu() {
                 </Badge>
               </li>
             </Link>
-            <Link to="/Agenda" className="text-link">
-              <li className={path === "/Agenda" ? "clicked" : ""}>
+            <Link to="/CabinetSante/Agenda" className="text-link">
+              <li className={path === "/CabinetSante/Agenda" ? "clicked" : ""}>
                 <CalendarStats size={iconsSize} style={iconsStyle} />
                 Agenda
               </li>
             </Link>
-            <Link to="/Comptabilite" className="text-link">
-              <li className={path === "/Comptabilite" ? "clicked" : ""}>
+            <Link to="/CabinetSante/Comptabilite" className="text-link">
+              <li
+                className={
+                  path === "/CabinetSante/Comptabilite" ? "clicked" : ""
+                }
+              >
                 <Calculator size={iconsSize} style={iconsStyle} />
                 Comptabilité
               </li>
             </Link>
-            <Link to="/Statistiques" className="text-link">
-              <li className={path === "/Statistiques" ? "clicked" : ""}>
+            <Link to="/CabinetSante/Statistiques" className="text-link">
+              <li
+                className={
+                  path === "/CabinetSante/Statistiques" ? "clicked" : ""
+                }
+              >
                 <ChartBar size={iconsSize} style={iconsStyle} />
                 Statistiques
               </li>
             </Link>
-            <Link to="/Parametres" className="text-link">
-              <li className={path === "/Parametres" ? "clicked" : ""}>
+            <Link to="/CabinetSante/Parametres" className="text-link">
+              <li
+                className={path === "/CabinetSante/Parametres" ? "clicked" : ""}
+              >
                 <Settings size={iconsSize} style={iconsStyle} />
                 Paramètres
               </li>
