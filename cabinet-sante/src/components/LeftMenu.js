@@ -43,7 +43,7 @@ function LeftMenu() {
     setSearch(value);
     var index = patients.findIndex((e) => e.fullname === value);
     if (index !== -1) {
-      navigate("/Nouveau-patient/" + patients[index].id);
+      navigate("/CabinetSante/Nouveau-patient/" + patients[index].id);
     }
     setSearch(null);
   }

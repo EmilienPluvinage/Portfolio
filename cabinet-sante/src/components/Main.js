@@ -18,17 +18,45 @@ function Main({ menu }) {
       <div id="Main">
         <CheckForIncorrectPrices />
         <Routes>
-          <Route exact path="/Nouveau-Patient/:id" element={<NewPatient />} />
-          <Route exact path="/Nouveau-Patient" element={<NewPatient />} />
-          <Route exact path="/Listing-Patients" element={<PatientList />} />
-          <Route exact path="/Agenda" element={<MyFullCalendar />} />
-          <Route exact path="/Parametres" element={<Parameters />} />
-          <Route exact path="/" element={<Home />} />
-          <Route exact path="/Statistiques" element={<Statistics />} />
-          <Route exact path="/Comptabilite" element={<Accountancy />} />
           <Route
             exact
-            path="/Verifier-les-prix"
+            path="/CabinetSante/Nouveau-Patient/:id"
+            element={<NewPatient />}
+          />
+          <Route
+            exact
+            path="/CabinetSante/Nouveau-Patient"
+            element={<NewPatient />}
+          />
+          <Route
+            exact
+            path="/CabinetSante/Listing-Patients"
+            element={<PatientList />}
+          />
+          <Route
+            exact
+            path="/CabinetSante/Agenda"
+            element={<MyFullCalendar />}
+          />
+          <Route
+            exact
+            path="/CabinetSante/Parametres"
+            element={<Parameters />}
+          />
+          <Route exact path="/CabinetSante/" element={<Home />} />
+          <Route
+            exact
+            path="/CabinetSante/Statistiques"
+            element={<Statistics />}
+          />
+          <Route
+            exact
+            path="/CabinetSante/Comptabilite"
+            element={<Accountancy />}
+          />
+          <Route
+            exact
+            path="/CabinetSante/Verifier-les-prix"
             element={<IncorrectPricesList />}
           />
           {menu.map(({ link, name }) => (

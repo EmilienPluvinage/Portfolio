@@ -280,7 +280,7 @@ export default function NewPatient() {
               color: "green",
               icon: <Check />,
             });
-            navigate("CabinetSante/Nouveau-Patient/" + res.id);
+            navigate("/CabinetSante/Nouveau-Patient/" + res.id);
           }
         } catch (e) {
           return e;
