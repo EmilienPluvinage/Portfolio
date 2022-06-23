@@ -12,7 +12,7 @@ import SortSelector from "./SortSelector";
 export default function PatientList() {
   const appointments = usePatients().appointments;
   const [sort, setSort] = useState({ field: "lastname", direction: "down" });
-  const patientsPerPage = 100;
+  const patientsPerPage = 20;
   const patients = usePatients().patients;
   const numberOfPages =
     patients.length > 0 ? Math.floor(patients.length / patientsPerPage) + 1 : 1;
