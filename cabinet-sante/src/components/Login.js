@@ -56,10 +56,7 @@ function Login() {
 
   async function handleSubmit(values) {
     try {
-      const data = await postLogin(
-        values.email.toLowerCase(),
-        values.password.toLowerCase()
-      );
+      const data = await postLogin(values.email.toLowerCase(), values.password);
       if (data.loggedIn) {
         setLoading(true);
         showNotification({
