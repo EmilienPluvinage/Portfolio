@@ -42,7 +42,7 @@ export default function History({ patientId }) {
 
   const numberOfPages =
     historyData.length > 0
-      ? Math.floor(historyData.length / rowsPerPage) + 1
+      ? Math.floor((historyData.length - 1) / rowsPerPage) + 1
       : 1;
   const [activePage, setPage] = useState(1);
   const [opened, setOpened] = useState(false);

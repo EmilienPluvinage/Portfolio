@@ -12,10 +12,12 @@ import SortSelector from "./SortSelector";
 export default function PatientList() {
   const appointments = usePatients().appointments;
   const [sort, setSort] = useState({ field: "lastname", direction: "down" });
-  const patientsPerPage = 20;
+  const patientsPerPage = 50;
   const patients = usePatients().patients;
   const numberOfPages =
-    patients.length > 0 ? Math.floor(patients.length / patientsPerPage) + 1 : 1;
+    patients.length > 0
+      ? Math.floor((patients.length - 1) / patientsPerPage) + 1
+      : 1;
   const [activePage, setPage] = useState(1);
 
   function compareDate(a, b, n) {
@@ -64,9 +66,6 @@ export default function PatientList() {
         : acc.concat([{ patientId: element.patientId, next: element.start }]),
     []
   );
-
-  console.log(latestEvents);
-  console.log(nextEvents);
 
   const ths = (
     <tr>
@@ -163,8 +162,11 @@ export default function PatientList() {
 
   var sortedPatients = patients.slice();
   sortedPatients.sort((a, b) => compare(a, b, sort.field, sort.direction));
-
-  const rows = sortedPatients.map((element) => (
+  const displayedPatients = sortedPatients.slice(
+    (activePage - 1) * patientsPerPage,
+    activePage * patientsPerPage
+  );
+  const rows = displayedPatients.map((element) => (
     <tr
       key={element.id}
       style={element.death !== "" ? { color: "gray" } : null}
