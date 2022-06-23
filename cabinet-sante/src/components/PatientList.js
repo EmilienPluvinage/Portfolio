@@ -185,7 +185,7 @@ export default function PatientList() {
         <Balance patientId={element.id} fullDisplay={false} />
       </td>
       <td>
-        <Link to={"/Nouveau-Patient/" + element.id}>
+        <Link to={"/CabinetSante/Nouveau-Patient/" + element.id}>
           <Button compact variant="outline">
             <User size={18} />
           </Button>
