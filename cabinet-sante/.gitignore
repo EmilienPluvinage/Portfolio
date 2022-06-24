@@ -13,7 +13,8 @@
 
 # misc
 .env
-.env copie
+.env server
+.env local
 .DS_Store
 .env.local
 .env.development.local
