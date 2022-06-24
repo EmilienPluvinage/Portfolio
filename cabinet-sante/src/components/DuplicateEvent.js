@@ -64,8 +64,8 @@ export default function DuplicateEvent({ appointmentId, parentSetOpened }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          start: start,
-          end: end,
+          start: new Date(start),
+          end: new Date(end),
           appointmentId: appointmentId,
           token: token,
         }),
