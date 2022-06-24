@@ -13,7 +13,7 @@ import { capitalize } from "../Functions";
 export default function Patients({ patientTypes }) {
   const token = useLogin().token;
   const appointments = usePatients().appointments;
-  const updateConfigData = useUpdateConfig();
+  const updateConfigData = useUpdateConfig().initData;
   const [patientType, setPatientType] = useState("");
   const [PTSelect, setPTselect] = useState("");
   const [PTopened, setPTOpened] = useState(false);

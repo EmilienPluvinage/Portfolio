@@ -20,6 +20,16 @@ export function ConfigurationProvider({ children }) {
   const [pathologies, setPathologies] = useState([]);
   const [relationships, setRelationships] = useState([]);
 
+  function clear() {
+    setAppointmentTypes([]);
+    setPatientTypes([]);
+    setPackages([]);
+    setPriceScheme([]);
+    setParameters([]);
+    setPathologies([]);
+    setRelationships([]);
+  }
+
   async function initData(token) {
     await Promise.allSettled([
       updateAppointmentTypesList(token),
@@ -116,7 +126,9 @@ export function ConfigurationProvider({ children }) {
         relationships: relationships,
       }}
     >
-      <UpdateConfigContext.Provider value={initData}>
+      <UpdateConfigContext.Provider
+        value={{ initData: initData, clear: clear }}
+      >
         {children}
       </UpdateConfigContext.Provider>
     </ConfigContext.Provider>

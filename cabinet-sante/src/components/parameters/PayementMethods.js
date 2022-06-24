@@ -11,7 +11,7 @@ import { capitalize } from "../Functions";
 
 export default function PayementMethods({ parameters }) {
   const token = useLogin().token;
-  const updateConfigData = useUpdateConfig();
+  const updateConfigData = useUpdateConfig().initData;
   const [parameter, setParameter] = useState("");
   const [select, setSelect] = useState("");
   const [opened, setOpened] = useState(false);

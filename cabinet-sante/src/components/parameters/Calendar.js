@@ -20,7 +20,7 @@ export default function Calendar() {
   const token = useLogin().token;
   const parameters = useConfig().parameters;
   const [loading, setLoading] = useState("");
-  const updateConfigData = useUpdateConfig();
+  const updateConfigData = useUpdateConfig().initData;
   const [startingHour, setStartingHours] = useState(
     parseInt(parameters.find((e) => e.name === "startingHour")?.value)
   );

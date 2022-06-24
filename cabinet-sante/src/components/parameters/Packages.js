@@ -20,7 +20,7 @@ import { capitalize } from "../Functions";
 
 export default function Packages({ packages }) {
   const token = useLogin().token;
-  const updateConfigData = useUpdateConfig();
+  const updateConfigData = useUpdateConfig().initData;
   const patients = usePatients().patients;
   const [pack, setPackage] = useState("");
   const [price, setPrice] = useState(0);

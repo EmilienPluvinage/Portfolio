@@ -39,6 +39,17 @@ export function PatientsProvider({ children }) {
     console.log("exit");
   }
 
+  function clear() {
+    setPatients([]);
+    setAppointments([]);
+    setMissedAppointments([]);
+    setPayements([]);
+    setSharedBalance([]);
+    setRelatives([]);
+    setReminders([]);
+    setPathologies([]);
+  }
+
   async function updatePatientsList(token) {
     try {
       const fetchResponse = await fetch(
@@ -122,7 +133,7 @@ export function PatientsProvider({ children }) {
       }}
     >
       <UpdatePatientsContext.Provider
-        value={{ update: initData, check: checkPrices }}
+        value={{ update: initData, check: checkPrices, clear: clear }}
       >
         <CheckForIncorrectPrices open={checkOpen} setOpen={setCheckOpen} />
         {children}

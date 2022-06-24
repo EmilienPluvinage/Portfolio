@@ -17,7 +17,7 @@ import Confirmation from "../Confirmation";
 
 export default function PriceScheme() {
   const token = useLogin().token;
-  const updateConfigData = useUpdateConfig();
+  const updateConfigData = useUpdateConfig().initData;
   const config = useConfig();
   const [opened, setOpened] = useState(false);
   const [id, setId] = useState(0);

@@ -19,8 +19,10 @@ export function AuthProvider({ children }) {
   const navigate = useNavigate();
   const CheckAppointments = useUpdatePatients().check;
   const getPatients = useUpdatePatients().update;
+  const clearPatients = useUpdatePatients().clear;
+  const clearConfig = useUpdateConfig().clear;
   const getGovData = useUpdateGovData();
-  const getConfig = useUpdateConfig();
+  const getConfig = useUpdateConfig().initData;
   // True or False
   const [login, setLogin] = useState(false);
   // Token to be passed to any SQL query and compared with the one in DB
@@ -61,6 +63,8 @@ export function AuthProvider({ children }) {
       CheckAppointments();
       navigate("/CabinetSante/");
     } else {
+      clearConfig();
+      clearPatients();
       removeToken(token);
       localStorage.removeItem("token");
       setToken(null);
