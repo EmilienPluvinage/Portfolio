@@ -195,8 +195,8 @@ export default function NewAppointment({
         },
         body: JSON.stringify({
           important: values.important,
-          start: start,
-          end: end,
+          start: new Date(start),
+          end: new Date(end),
           title: values.title,
           comments: values.comments,
           idType: appointmentTypeId,
@@ -325,6 +325,7 @@ export default function NewAppointment({
     var link = process.env.REACT_APP_API_DOMAIN + "/UpdateEvent";
     const start = concatenateDateTime(values.date, values.timeRange[0]);
     const end = concatenateDateTime(values.date, values.timeRange[1]);
+
     const appointmentTypeId = appointmentTypes.find(
       (e) => e.type === values.appointmentType
     ).id;
@@ -337,8 +338,8 @@ export default function NewAppointment({
         },
         body: JSON.stringify({
           important: values.important,
-          start: start,
-          end: end,
+          start: new Date(start),
+          end: new Date(end),
           title: values.title,
           comments: values.comments,
           idType: appointmentTypeId,

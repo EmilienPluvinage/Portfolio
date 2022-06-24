@@ -307,8 +307,8 @@ export default function AppointmentDetails({
           },
           body: JSON.stringify({
             important: values.important,
-            start: start,
-            end: end,
+            start: new Date(start),
+            end: new Date(end),
             title: values.title,
             comments: values.comments,
             idType: appointmentTypeId,
@@ -415,8 +415,8 @@ export default function AppointmentDetails({
           body: JSON.stringify({
             appointmentId: id,
             important: values.important,
-            start: start,
-            end: end,
+            start: new Date(start),
+            end: new Date(end),
             title: values.title,
             comments: values.comments,
             idType: appointmentTypeId,
