@@ -218,7 +218,7 @@ export default function Payement({
             eventId: eventId,
             method: method,
             amount: price * 100,
-            date: date,
+            date: dayjs(date).add(12, "hours").toDate(),
             patientId: patientId,
           }),
         }
@@ -261,7 +261,7 @@ export default function Payement({
             packageId: packageId,
             method: method,
             amount: price * 100,
-            date: date,
+            date: dayjs(date).add(12, "hours").toDate(),
             patientId: patientId,
           }),
         }
