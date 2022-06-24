@@ -371,20 +371,32 @@ export default function NewAppointment({
           );
           const resClear = await fetchResponse.json();
           if (resClear.success) {
+            const findPackage = (x) =>
+              patients.find((e) => e.id === x)?.packageId;
+
+            const findPrice = (patientId, appointmentId, appointments) =>
+              appointments.find(
+                (e) =>
+                  e.patientId?.toString() === patientId?.toString() &&
+                  e.appointmentId?.toString() === appointmentId?.toString()
+              )?.price;
+
+            const findFullName = (x) =>
+              patients.find((e) => e.id?.toString() === x?.toString())
+                ?.fullname;
+
             async function addPatients() {
-              values.patients.forEach(async (element) => {
+              for (const element of values.patients) {
                 var patientId = getIdFromFullname(patients, element);
-                var packageId = patients.find(
-                  (e) => e.id === patientId
-                )?.packageId;
+                var packageId = findPackage(patientId);
 
                 packageId =
                   packageId === null || packageId === undefined ? 0 : packageId;
-                var oldPrice = appointments.find(
-                  (e) =>
-                    e.patientId?.toString() === patientId?.toString() &&
-                    e.appointmentId?.toString() === appointmentId?.toString()
-                )?.price;
+                var oldPrice = findPrice(
+                  patientId,
+                  appointmentId,
+                  appointments
+                );
 
                 var price = setAutomaticPrice(
                   priceScheme,
@@ -424,9 +436,8 @@ export default function NewAppointment({
                 if (res.success === false) {
                   success = false;
                 } else if (price !== oldPrice && oldPrice !== undefined) {
-                  var patientName = patients.find(
-                    (e) => e.id?.toString() === patientId?.toString()
-                  )?.fullname;
+                  var patientName = findFullName(patientId);
+
                   showNotification({
                     title: "Prix modifié",
                     message: `Le prix de la séance de ${patientName} est passé de ${displayPrice(
@@ -437,24 +448,22 @@ export default function NewAppointment({
                     autoClose: 10000,
                   });
                 }
-              });
+              }
             }
             await addPatients();
 
             async function addMissedPatients() {
-              values.absents.forEach(async (element) => {
+              for (const element of values.absents) {
                 var patientId = getIdFromFullname(patients, element);
-                var packageId = patients.find(
-                  (e) => e.id === patientId
-                )?.packageId;
+                var packageId = findPackage(patientId);
 
                 packageId =
                   packageId === null || packageId === undefined ? 0 : packageId;
-                var oldPrice = missedAppointments.find(
-                  (e) =>
-                    e.patientId?.toString() === patientId?.toString() &&
-                    e.appointmentId?.toString() === appointmentId?.toString()
-                )?.price;
+                var oldPrice = findPrice(
+                  patientId,
+                  appointmentId,
+                  missedAppointments
+                );
 
                 var price = setAutomaticPrice(
                   priceScheme,
@@ -484,9 +493,8 @@ export default function NewAppointment({
                 if (res.success === false) {
                   success = false;
                 } else if (price !== oldPrice && oldPrice !== undefined) {
-                  var patientName = patients.find(
-                    (e) => e.id?.toString() === patientId?.toString()
-                  )?.fullname;
+                  var patientName = findFullName(patientId);
+
                   showNotification({
                     title: "Prix modifié",
                     message: `Le prix de la séance de ${patientName} est passé de ${displayPrice(
@@ -497,7 +505,7 @@ export default function NewAppointment({
                     autoClose: 10000,
                   });
                 }
-              });
+              }
             }
             await addMissedPatients();
 
@@ -633,8 +641,10 @@ export default function NewAppointment({
       });
 
       if (setCalendarUpdate) {
+        console.log("calendar Update ++");
         setCalendarUpdate((prev) => prev + 1);
       } else {
+        console.log("await update patients");
         await updatePatients(token);
       }
       setOpened(false);
