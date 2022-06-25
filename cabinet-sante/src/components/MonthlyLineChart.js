@@ -40,7 +40,7 @@ export default function MonthlyLineChart({ data }) {
             key={key}
             type="monotone"
             dataKey={key}
-            stroke={COLORS[index]}
+            stroke={COLORS[index % COLORS.length]}
           />
         ))}
         <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
