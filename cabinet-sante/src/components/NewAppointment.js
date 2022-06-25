@@ -210,7 +210,8 @@ export default function NewAppointment({
         // Now that the event has been created, we need to add all the participants
 
         const findPackage = (x) => patients.find((e) => e.id === x)?.packageId;
-
+        let returnPatientIds = [];
+        let returnPrices = [];
         for (const element of values.patients) {
           // first we check if this is a new patient, as in : is it already in the patients list:
           var patientId = 0;
@@ -223,6 +224,7 @@ export default function NewAppointment({
             // it's not, so we get the id of the existing one.
             patientId = getIdFromFullname(patients, element);
           }
+          returnPatientIds.push(patientId);
 
           var packageId = findPackage(patientId);
 
@@ -236,37 +238,27 @@ export default function NewAppointment({
             packageId
           );
 
-          const fetchResponse = await fetch(
-            process.env.REACT_APP_API_DOMAIN + "/NewParticipant",
-            {
-              method: "POST",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                patientId: patientId,
-                appointmentId: eventId,
-                size: 0,
-                weight: 0,
-                EVAbefore: 0,
-                EVAafter: 0,
-                reasonDetails: "",
-                tests: "",
-                treatment: "",
-                remarks: "",
-                drawing: "",
-                patientType: "",
-                token: token,
-                price: price,
-                priceSetByUser: false,
-              }),
-            }
-          );
-          const res = await fetchResponse.json();
-          if (res.success === false) {
-            success = false;
+          returnPrices.push(price);
+        }
+        const fetchResponse = await fetch(
+          process.env.REACT_APP_API_DOMAIN + "/NewListOfParticipants",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              patientId: returnPatientIds,
+              appointmentId: eventId,
+              token: token,
+              price: returnPrices,
+            }),
           }
+        );
+        const res2 = await fetchResponse.json();
+        if (res2.success === false) {
+          success = false;
         }
 
         // then we add the patients who missed the appointment
@@ -617,6 +609,7 @@ export default function NewAppointment({
     setLoading("loading");
     const result =
       id === 0 ? await addEvent(values) : await UpdateEvent(values);
+
     if (result.success) {
       const start = concatenateDateTime(values.date, values.timeRange[0]);
 
@@ -633,10 +626,8 @@ export default function NewAppointment({
       });
 
       if (setCalendarUpdate) {
-        console.log("calendar Update ++");
         setCalendarUpdate((prev) => prev + 1);
       } else {
-        console.log("await update patients");
         await updatePatients(token);
       }
       setOpened(false);

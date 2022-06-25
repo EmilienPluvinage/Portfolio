@@ -486,8 +486,8 @@ router.post("/NewEvent", (req, res, next) => {
             "INSERT INTO appointments(userId, start, end, title, important, comments, idType) VALUES (?,?,?,?,?,?,?)",
             [
               userId,
-              req.body.start,
-              req.body.end,
+              new Date(req.body.start),
+              new Date(req.body.end),
               req.body.title,
               req.body.important,
               req.body.comments,
