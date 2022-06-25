@@ -273,9 +273,6 @@ export default function AppointmentDetails({
             date: form.values.payementDate,
             method: method,
             amount: amount,
-            patientId: appointments.find(
-              (e) => e.appointmentId === appointmentId
-            )?.patientId,
           }),
         }
       );
@@ -393,7 +390,7 @@ export default function AppointmentDetails({
 
   async function updateEvent(values) {
     var eventId = appointments.find(
-      (e) => e.appointmentId === appointmentId
+      (e) => e.appointmentId === +appointmentId
     )?.id;
 
     const check = checkValues(values);

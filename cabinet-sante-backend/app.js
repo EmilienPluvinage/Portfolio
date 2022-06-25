@@ -353,6 +353,7 @@ app.post("/GetHistoricalData", (req, res, next) => {
 });
 
 app.post("/UpdatePayement", (req, res, next) => {
+  console.log(req.body);
   pool.getConnection((err, connection) => {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
@@ -367,14 +368,13 @@ app.post("/UpdatePayement", (req, res, next) => {
           var userId = rows[0].userId;
           // so we do the update
           connection.query(
-            "UPDATE payements SET method=?, amount=?, date=? WHERE id=? AND userId=? AND patientId=? ",
+            "UPDATE payements SET method=?, amount=?, date=? WHERE id=? AND userId=?",
             [
               req.body.method,
               req.body.amount,
               req.body.date,
               req.body.id,
               userId,
-              req.body.patientId,
             ],
             (err, result) => {
               if (err) throw err;
@@ -404,8 +404,8 @@ app.post("/DeletePayement", (req, res, next) => {
           var userId = rows[0].userId;
           // so we do the update
           connection.query(
-            "DELETE FROM payements WHERE id=? AND userId=? AND patientId=? ",
-            [req.body.id, userId, req.body.patientId],
+            "DELETE FROM payements WHERE id=? AND userId=? ",
+            [req.body.id, userId],
             (err, result) => {
               if (err) throw err;
               res.status(201).json({ success: true, error: "" });
