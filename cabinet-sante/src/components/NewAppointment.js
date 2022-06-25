@@ -82,7 +82,6 @@ export default function NewAppointment({
   const [openedDetails, setOpenedDetails] = useState(false);
   const [appointment, setAppointment] = useState(appointmentId);
   const [id, setId] = useState(0);
-  let timestamp = Date.now();
 
   const initialValues = {
     patients: patientId === 0 ? [] : [getFullnameFromId(patients, patientId)],
@@ -319,7 +318,6 @@ export default function NewAppointment({
   }
 
   async function UpdateEvent(values) {
-    checkpoint("Enter Update Event Function");
     const check = checkValues(values);
     if (!check.check) {
       return { success: false, message: check.message };
@@ -353,7 +351,6 @@ export default function NewAppointment({
       if (res.success) {
         var success = true;
 
-        checkpoint("Event Updated");
         // Now that the event has been updated, we need to update all the participants,
         // Easy solution for now : delete all the participants and re-add them.
         // We'll see later if this creates any issue in which case we'll go through all of them one by one
@@ -374,7 +371,6 @@ export default function NewAppointment({
           );
           const resClear = await fetchResponse.json();
           if (resClear.success) {
-            checkpoint("Participants Deleted");
             const findPackage = (x) =>
               patients.find((e) => e.id === x)?.packageId;
 
@@ -390,11 +386,12 @@ export default function NewAppointment({
                 ?.fullname;
 
             async function addPatients() {
-              checkpoint("Entered addPatients function");
+              let returnPatientIds = [];
+              let returnPrices = [];
               for (const element of values.patients) {
-                checkpoint("Entered loop");
                 var patientId = getIdFromFullname(patients, element);
                 var packageId = findPackage(patientId);
+                returnPatientIds.push(patientId);
 
                 packageId =
                   packageId === null || packageId === undefined ? 0 : packageId;
@@ -410,40 +407,9 @@ export default function NewAppointment({
                   appointmentTypeId,
                   packageId
                 );
-                checkpoint("before fetch request");
-                const fetchResponse = await fetch(
-                  process.env.REACT_APP_API_DOMAIN + "/NewParticipant",
-                  {
-                    method: "POST",
-                    headers: {
-                      Accept: "application/json",
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      patientId: patientId,
-                      appointmentId: id,
-                      size: 0,
-                      weight: 0,
-                      EVAbefore: 0,
-                      EVAafter: 0,
-                      reasonDetails: "",
-                      tests: "",
-                      treatment: "",
-                      remarks: "",
-                      drawing: "",
-                      patientType: "",
-                      token: token,
-                      price: price,
-                      priceSetByUser: false,
-                    }),
-                  }
-                );
-                const res = await fetchResponse.json();
-                checkpoint("after fetch request");
+                returnPrices.push(price);
 
-                if (res.success === false) {
-                  success = false;
-                } else if (price !== oldPrice && oldPrice !== undefined) {
+                if (price !== oldPrice && oldPrice !== undefined) {
                   var patientName = findFullName(patientId);
 
                   showNotification({
@@ -457,11 +423,28 @@ export default function NewAppointment({
                   });
                 }
               }
+              const fetchResponse = await fetch(
+                process.env.REACT_APP_API_DOMAIN + "/NewListOfParticipants",
+                {
+                  method: "POST",
+                  headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    patientId: returnPatientIds,
+                    appointmentId: id,
+                    token: token,
+                    price: returnPrices,
+                  }),
+                }
+              );
+              const res = await fetchResponse.json();
+              return res.success;
             }
             await addPatients();
 
             async function addMissedPatients() {
-              checkpoint("Entered addMissedPatients function");
               for (const element of values.absents) {
                 var patientId = getIdFromFullname(patients, element);
                 var packageId = findPackage(patientId);
@@ -630,14 +613,7 @@ export default function NewAppointment({
     return { check: true };
   }
 
-  function checkpoint(name) {
-    let timestampNow = Date.now();
-    let interval = (timestampNow - timestamp) / 1000;
-    console.log(`Checkpoint ${name} : ${interval} seconds.`);
-  }
-
   async function submitForm(values) {
-    timestamp = Date.now();
     setLoading("loading");
     const result =
       id === 0 ? await addEvent(values) : await UpdateEvent(values);
@@ -663,7 +639,6 @@ export default function NewAppointment({
         console.log("await update patients");
         await updatePatients(token);
       }
-      checkpoint("Fin");
       setOpened(false);
     } else {
       setLoading("");

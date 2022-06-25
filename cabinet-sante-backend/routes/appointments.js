@@ -193,8 +193,8 @@ router.post("/UpdateEvent", (req, res, next) => {
                   "UPDATE appointments SET important =?, start=?, end=?, title=?, comments=?, idType=? WHERE id=?",
                   [
                     req.body.important,
-                    req.body.start,
-                    req.body.end,
+                    new Date(req.body.start),
+                    new Date(req.body.end),
                     req.body.title,
                     req.body.comments,
                     req.body.idType,
@@ -574,6 +574,73 @@ router.post("/NewParticipant", (req, res, next) => {
                     );
                   }
                 );
+              } else {
+                res.status(201).json({
+                  success: false,
+                  error: "userId and appointmentId do not match",
+                });
+              }
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
+// ADD A LIST OF PARTICIPANTS TO AN APPOINTMENT
+
+router.post("/NewListOfParticipants", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          const userId = rows[0].userId;
+          // belongs to that user
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "SELECT * FROM appointments WHERE id = ? AND userId=?",
+            [req.body.appointmentId, userId],
+            (err, rows) => {
+              if (err) throw err;
+              if (rows.length === 1) {
+                for (let i = 0; i < req.body.patientId.length; i++) {
+                  connection.query(
+                    "INSERT INTO isInAppointment(patientId, appointmentId, size, weight, EVAbefore, EVAafter, reasonDetails, tests, treatment, remarks, drawing, patientType, price, priceSetByUser, payed) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    [
+                      req.body.patientId[i],
+                      req.body.appointmentId,
+                      0,
+                      0,
+                      0,
+                      0,
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      0,
+                      req.body.price[i],
+                      false,
+                      0,
+                    ],
+                    (err, result) => {
+                      if (err) throw err;
+                    }
+                  );
+                }
+                res.status(201).json({
+                  success: true,
+                  error: "",
+                });
               } else {
                 res.status(201).json({
                   success: false,
