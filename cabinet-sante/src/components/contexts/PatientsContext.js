@@ -23,6 +23,7 @@ export function PatientsProvider({ children }) {
   const [relatives, setRelatives] = useState([]);
   const [reminders, setReminders] = useState([]);
   const [pathologies, setPathologies] = useState([]);
+  const [historicalData, setHistoricalData] = useState([]);
 
   async function initData(token) {
     await Promise.allSettled([
@@ -34,6 +35,7 @@ export function PatientsProvider({ children }) {
       getData(token, "/GetReminders", setReminders),
       getData(token, "/GetPathologies", setPathologies),
       getData(token, "/GetMissedAppointments", setMissedAppointments),
+      getData(token, "/GetHistoricalData", setHistoricalData),
     ]);
   }
 
@@ -46,6 +48,7 @@ export function PatientsProvider({ children }) {
     setRelatives([]);
     setReminders([]);
     setPathologies([]);
+    setHistoricalData([]);
   }
 
   async function updatePatientsList(token) {
@@ -128,6 +131,7 @@ export function PatientsProvider({ children }) {
         relatives: relatives,
         reminders: reminders,
         pathologies: pathologies,
+        historicalData: historicalData,
       }}
     >
       <UpdatePatientsContext.Provider
