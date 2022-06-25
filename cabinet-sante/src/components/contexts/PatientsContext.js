@@ -25,7 +25,6 @@ export function PatientsProvider({ children }) {
   const [pathologies, setPathologies] = useState([]);
 
   async function initData(token) {
-    console.log("enter");
     await Promise.allSettled([
       updatePatientsList(token),
       getData(token, "/GetHistory", setAppointments),
@@ -36,7 +35,6 @@ export function PatientsProvider({ children }) {
       getData(token, "/GetPathologies", setPathologies),
       getData(token, "/GetMissedAppointments", setMissedAppointments),
     ]);
-    console.log("exit");
   }
 
   function clear() {
