@@ -1,79 +1,79 @@
-import {
-  LineChart,
-  Line,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import MonthlyLineChart from "./MonthlyLineChart";
 import { usePatients } from "./contexts/PatientsContext";
-
-const COLORS = [
-  "#15AABF",
-  "#E64980",
-  "#7950F2",
-  "#82C91E",
-  "#FAB005",
-  "#228BE6",
-];
+import { Center } from "@mantine/core";
 
 export default function MonthlyPerformance() {
-  let data = [
-    { name: "Janvier" },
-    { name: "Février" },
-    { name: "Mars" },
-    { name: "Avril" },
-    { name: "Mai" },
-    { name: "Juin" },
-    { name: "Juillet" },
-    { name: "Août" },
-    { name: "Septembre" },
-    { name: "Octobre" },
-    { name: "Novembre" },
-    { name: "Décembre" },
-  ];
-
   // Historical data exported from WebOsteo, from Jan 21 to May 22.
   const history = usePatients().historicalData;
-  for (const element of history) {
-    let thisDate = new Date(element.date);
-    data[thisDate.getMonth()][thisDate.getFullYear()] = element.value / 100;
+
+  function createCategories() {
+    const months = [
+      { name: "Janvier" },
+      { name: "Février" },
+      { name: "Mars" },
+      { name: "Avril" },
+      { name: "Mai" },
+      { name: "Juin" },
+      { name: "Juillet" },
+      { name: "Août" },
+      { name: "Septembre" },
+      { name: "Octobre" },
+      { name: "Novembre" },
+      { name: "Décembre" },
+    ];
+    return months.slice();
   }
 
+  function addHistoricalData(array) {
+    for (const element of history) {
+      let thisDate = new Date(element.date);
+      array[thisDate.getMonth()][thisDate.getFullYear()] = element.value / 100;
+    }
+  }
+
+  // performance data, not taking into account treasury
+  let perfData = createCategories();
+  addHistoricalData(perfData);
+
   // Actual data from our own app, from Jun 22 onwards.
+  const appointments = usePatients().appointments;
+  for (const element of appointments) {
+    let thisDate = new Date(element.start);
+    if (perfData[thisDate.getMonth()][thisDate.getFullYear()]) {
+      perfData[thisDate.getMonth()][thisDate.getFullYear()] +=
+        element.price / 100;
+    } else {
+      perfData[thisDate.getMonth()][thisDate.getFullYear()] =
+        element.price / 100;
+    }
+  }
+
+  // payementData, depends only on payement dates and not when the appointments happen
+  let payementData = createCategories();
+  addHistoricalData(payementData);
+
+  const payements = usePatients().payements;
+  for (const element of payements) {
+    let thisDate = new Date(element.date);
+    if (payementData[thisDate.getMonth()][thisDate.getFullYear()]) {
+      payementData[thisDate.getMonth()][thisDate.getFullYear()] +=
+        element.amount / 100;
+    } else {
+      payementData[thisDate.getMonth()][thisDate.getFullYear()] =
+        element.amount / 100;
+    }
+  }
 
   return (
     <>
-      <ResponsiveContainer aspect={3}>
-        <LineChart
-          width={1000}
-          height={300}
-          data={data}
-          margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
-        >
-          <Line type="monotone" dataKey="2021" stroke={COLORS[0]} />
-          <Line type="monotone" dataKey="2022" stroke={COLORS[1]} />
-          <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-          <XAxis
-            dataKey="name"
-            interval="preserveStartEnd"
-            tickFormatter={(value) => value.slice(0, 3) + "."}
-          />
-          <YAxis
-            tickFormatter={(value) =>
-              new Intl.NumberFormat("fr").format(value) + " €"
-            }
-          />
-          <Tooltip
-            formatter={(value) =>
-              new Intl.NumberFormat("fr").format(value) + " €"
-            }
-          />
-          <Legend />
-        </LineChart>
-      </ResponsiveContainer>
+      <Center>
+        <h2>Performance</h2>
+      </Center>
+      <MonthlyLineChart data={perfData} />
+      <Center>
+        <h2>Encaissements</h2>
+      </Center>
+      <MonthlyLineChart data={payementData} />
     </>
   );
 }
