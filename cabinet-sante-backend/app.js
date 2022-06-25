@@ -353,7 +353,6 @@ app.post("/GetHistoricalData", (req, res, next) => {
 });
 
 app.post("/UpdatePayement", (req, res, next) => {
-  console.log(req.body);
   pool.getConnection((err, connection) => {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
