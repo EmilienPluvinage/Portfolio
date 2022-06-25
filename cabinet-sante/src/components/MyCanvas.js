@@ -113,7 +113,7 @@ export default class MyCanvas extends Component {
               canvasHeight={this.state.height}
               saveData={this.props.drawing}
               immediateLoading={true}
-              imgSrc="https://emilienpluvinage.com/CabinetSante/img/canvas.jpg"
+              imgSrc="https://i.ibb.co/7nHBJvT/canvas.jpg"
             />
           </Center>
           <Center>
