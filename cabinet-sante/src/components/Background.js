@@ -180,61 +180,65 @@ export default function Background({ background, setBackground, patientId }) {
               ))}
           </div>
         </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            margin: "20px",
-          }}
-        >
-          <Select
-            searchable
-            clearable
-            label="Ajouter un antécédent"
-            placeholder="Pathologie"
-            data={data}
-            value={pathology}
-            onChange={setPathology}
-          />
-          <Textarea
-            style={{ marginRight: "5px", marginLeft: "5px", flex: 1 }}
-            label="Description"
-            value={description}
-            onChange={(event) => setDescription(event.currentTarget.value)}
-          />
-          <Button
-            variant="outline"
-            style={{ marginTop: "26px" }}
-            onClick={addBackground}
-            loading={loading}
-          >
-            {hasPathologies.find((e) => e.pathologyId === pathology) ? (
-              <Check size={16} />
-            ) : (
-              <Plus size={16} />
-            )}
-          </Button>
-        </div>
-        {hasPathologies.map((pathology) => (
-          <Text key={"pathology" + pathology.id}>
-            <Button
-              compact
-              variant="outline"
-              color="red"
-              onClick={() =>
-                removeOnePathology(pathology.pathologyId, patientId)
-              }
-              style={{ margin: "5px" }}
+        {patientId !== 0 && (
+          <>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                margin: "20px",
+              }}
             >
-              <Trash size={18} />
-            </Button>
-            {
-              allPathologies.find((e) => e.id === pathology.pathologyId)
-                ?.pathology
-            }{" "}
-            : {pathology.description}
-          </Text>
-        ))}
+              <Select
+                searchable
+                clearable
+                label="Ajouter un antécédent"
+                placeholder="Pathologie"
+                data={data}
+                value={pathology}
+                onChange={setPathology}
+              />
+              <Textarea
+                style={{ marginRight: "5px", marginLeft: "5px", flex: 1 }}
+                label="Description"
+                value={description}
+                onChange={(event) => setDescription(event.currentTarget.value)}
+              />
+              <Button
+                variant="outline"
+                style={{ marginTop: "26px" }}
+                onClick={addBackground}
+                loading={loading}
+              >
+                {hasPathologies.find((e) => e.pathologyId === pathology) ? (
+                  <Check size={16} />
+                ) : (
+                  <Plus size={16} />
+                )}
+              </Button>
+            </div>
+            {hasPathologies.map((pathology) => (
+              <Text key={"pathology" + pathology.id}>
+                <Button
+                  compact
+                  variant="outline"
+                  color="red"
+                  onClick={() =>
+                    removeOnePathology(pathology.pathologyId, patientId)
+                  }
+                  style={{ margin: "5px" }}
+                >
+                  <Trash size={18} />
+                </Button>
+                {
+                  allPathologies.find((e) => e.id === pathology.pathologyId)
+                    ?.pathology
+                }{" "}
+                : {pathology.description}
+              </Text>
+            ))}
+          </>
+        )}
       </div>
     </>
   );
