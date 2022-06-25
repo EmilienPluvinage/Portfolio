@@ -33,7 +33,7 @@ export default function MonthlyLineChart({ data }) {
   }
 
   return (
-    <ResponsiveContainer aspect={3.5}>
+    <ResponsiveContainer width="98%" aspect={3.5}>
       <LineChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
         {keys.map((key, index) => (
           <Line
