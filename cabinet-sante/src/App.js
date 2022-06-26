@@ -12,16 +12,6 @@ import { NotificationsProvider } from "@mantine/notifications";
 import { MantineProvider } from "@mantine/core";
 
 function App() {
-  const menu = [
-    { link: "/", name: "Accueil" },
-    { link: "/Nouveau-Patient", name: "Nouveau Patient" },
-    { link: "/Listing-Patients", name: "Listing Patients" },
-    { link: "/Agenda", name: "Agenda" },
-    { link: "/Comptabilite", name: "Comptabilité" },
-    { link: "/Statistiques", name: "Statistiques" },
-    { link: "/Parametres", name: "Paramètres" },
-  ];
-
   return (
     <div id="App">
       <Router>
@@ -38,7 +28,7 @@ function App() {
                     <Header />
                     <div id="parent">
                       <LeftMenu />
-                      <Main menu={menu} />
+                      <Main />
                       <Login />
                     </div>
                   </AuthProvider>

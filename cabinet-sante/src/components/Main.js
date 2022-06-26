@@ -59,19 +59,6 @@ function Main({ menu }) {
             path="/CabinetSante/Verifier-les-prix"
             element={<IncorrectPricesList />}
           />
-          {menu.map(({ link, name }) => (
-            <Route
-              key={link}
-              exact
-              path={link}
-              element={
-                <div>
-                  <h2>{name}</h2>
-                  <div className="main-content"> {name}</div>
-                </div>
-              }
-            />
-          ))}
         </Routes>
       </div>
     )
