@@ -11,10 +11,12 @@ import {
   Center,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { showNotification } from "@mantine/notifications";
-import { Check } from "tabler-icons-react";
+import { cleanNotifications, showNotification } from "@mantine/notifications";
+import { Check, ExclamationMark } from "tabler-icons-react";
+import { useLocation } from "react-router-dom";
 
 function Login() {
+  const path = useLocation().pathname;
   const currentToken = localStorage.getItem("token");
   const loggedIn = useLogin().login;
   const logging = useLogging();
@@ -37,6 +39,22 @@ function Login() {
   });
 
   useEffect(() => {
+    console.log(path);
+    if (path === "/CabinetSante/Demo") {
+      const timer = setTimeout(() => {
+        showNotification({
+          title: "Version de démonstration",
+          message:
+            "Si vous souhaitez accéder à la version de démonstration, veuillez rentrer comme adresse e-mail demo@demo.com et comme mot de passe Demo suivi de l'année d'adoption de l'accord de Paris sur le climat.",
+          icon: <ExclamationMark />,
+          autoClose: false,
+        });
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [path]);
+
+  useEffect(() => {
     // if we're not logged in but there is an existing token in local storage
     // it means the user is returning, so we log him in.
     async function returning() {
@@ -54,11 +72,14 @@ function Login() {
     returning();
   }, [currentToken, loggedIn, logging, loading]);
 
+  // if not logged in and the path is Demo then we display a notification to advise the visitor of the username and password
+
   async function handleSubmit(values) {
     try {
       const data = await postLogin(values.email.toLowerCase(), values.password);
       if (data.loggedIn) {
         setLoading(true);
+        cleanNotifications();
         showNotification({
           title: "Connexion réussie",
           message: "Bienvenue sur votre espace client.",
