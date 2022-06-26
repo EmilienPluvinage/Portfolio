@@ -13,10 +13,8 @@ import {
 import { useForm } from "@mantine/form";
 import { cleanNotifications, showNotification } from "@mantine/notifications";
 import { Check, ExclamationMark } from "tabler-icons-react";
-import { useLocation } from "react-router-dom";
 
 function Login() {
-  const path = useLocation().pathname;
   const currentToken = localStorage.getItem("token");
   const loggedIn = useLogin().login;
   const logging = useLogging();
@@ -38,20 +36,16 @@ function Login() {
     },
   });
 
-  useEffect(() => {
-    if (path === "/CabinetSante/Demo") {
-      const timer = setTimeout(() => {
-        showNotification({
-          title: "Version de démonstration",
-          message:
-            "Si vous souhaitez accéder à la version de démonstration, veuillez rentrer comme adresse e-mail demo@demo.com et comme mot de passe Demo suivi de l'année d'adoption de l'accord de Paris sur le climat.",
-          icon: <ExclamationMark />,
-          autoClose: false,
-        });
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [path]);
+  function displayNotification() {
+    cleanNotifications();
+    showNotification({
+      title: "Version de démonstration",
+      message:
+        "Si vous souhaitez accéder à la version de démonstration, veuillez rentrer comme adresse e-mail demo@demo.com et comme mot de passe Demo suivi de l'année d'adoption de l'accord de Paris sur le climat.",
+      icon: <ExclamationMark />,
+      autoClose: false,
+    });
+  }
 
   useEffect(() => {
     // if we're not logged in but there is an existing token in local storage
@@ -167,11 +161,28 @@ function Login() {
               />
             </Center>
 
-            <p>{errorMessage}</p>
-
-            <Button type="submit" style={{ margin: "10px" }}>
-              Connexion
-            </Button>
+            <p style={{ color: "red" }}>{errorMessage}</p>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Button
+                variant="outline"
+                onClick={() => displayNotification()}
+                style={{ marginTop: "10px", marginBottom: "10px" }}
+              >
+                Demo
+              </Button>
+              <Button
+                type="submit"
+                style={{ marginTop: "10px", marginBottom: "10px" }}
+              >
+                Connexion
+              </Button>
+            </div>
           </form>
         </div>
       </div>
