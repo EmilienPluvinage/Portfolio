@@ -39,7 +39,6 @@ function Login() {
   });
 
   useEffect(() => {
-    console.log(path);
     if (path === "/CabinetSante/Demo") {
       const timer = setTimeout(() => {
         showNotification({
