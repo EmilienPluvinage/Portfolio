@@ -1,6 +1,6 @@
 import "../styles/styles.css";
 import "../styles/FullCalendar.css";
-import React, { useEffect } from "react";
+import React from "react";
 import FullCalendar from "@fullcalendar/react"; // must go before plugins
 import timeGridPlugin from "@fullcalendar/timegrid"; // a plugin!
 import interactionPlugin from "@fullcalendar/interaction";
@@ -20,7 +20,6 @@ export default function MyFullCalendar() {
   // triggers modal opening
   const [opened, setOpened] = useState(false);
   const [openedDetails, setOpenedDetails] = useState(false);
-
   // data from our contexts
   const appointments = usePatients().appointments;
   const patients = usePatients().patients;
@@ -30,7 +29,6 @@ export default function MyFullCalendar() {
   const updateContext = useUpdatePatients().update;
 
   // state
-  const [calendarUpdate, setCalendarUpdate] = useState(0); // triggers calendar update when incremented (with useEffect)
   const [appointmentId, setAppointmentId] = useState(0); // to know which appointment to update when clicking on it
   const [startingTime, setStartingTime] = useState(new Date()); // to know when to start a new appointment when clicking on an empty slot
 
@@ -61,18 +59,6 @@ export default function MyFullCalendar() {
       daysOfTheWeek.includes(item) ? acc : acc.concat([index]),
     []
   );
-
-  // update the context storing the appointments, thus updating the calendar, every time something is added, removed or updated.
-  useEffect(() => {
-    if (calendarUpdate !== 0) {
-      setCalendarUpdate(0);
-      async function update() {
-        await updateContext(token);
-      }
-      update();
-      console.log("update");
-    }
-  }, [token, updateContext, calendarUpdate]);
 
   //Convert an hour (number) into a string that fullCalendar can read (hh:mm:ss)
   function convertIntoTimeString(hour) {
@@ -137,8 +123,8 @@ export default function MyFullCalendar() {
         },
         body: JSON.stringify({
           id: id,
-          start: start,
-          end: end,
+          start: new Date(start),
+          end: new Date(end),
           token: token,
         }),
       });
@@ -156,7 +142,7 @@ export default function MyFullCalendar() {
           icon: <Check />,
           color: "green",
         });
-        setCalendarUpdate((e) => e + 1);
+        await updateContext(token);
       } else {
         showNotification({
           title: "Erreur",
@@ -226,7 +212,6 @@ export default function MyFullCalendar() {
             startingTime={startingTime}
             patientId={0}
             appointmentId={appointmentId}
-            setCalendarUpdate={setCalendarUpdate}
           />
         )}
       </Modal>

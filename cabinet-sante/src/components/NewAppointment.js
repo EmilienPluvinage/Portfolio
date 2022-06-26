@@ -49,7 +49,6 @@ export default function NewAppointment({
   patientId, // to be used to pre-fill patient input when appointmentId === 0
   startingTime,
   appointmentId,
-  setCalendarUpdate,
 }) {
   const now = new Date(
     startingTime === 0 ? Date.now() : timeOnly(startingTime)
@@ -157,11 +156,7 @@ export default function NewAppointment({
       const res = await fetchResponse.json();
       if (res.success) {
         setOpened(false);
-        if (setCalendarUpdate) {
-          setCalendarUpdate((prev) => prev + 1);
-        } else {
-          await updatePatients(token);
-        }
+        await updatePatients(token);
         setDeleteLoader("");
         showNotification({
           title: "Consultation supprimée",
@@ -173,6 +168,39 @@ export default function NewAppointment({
     } catch (e) {
       return e;
     }
+  }
+
+  async function newParticipant(id, eventId, price, i) {
+    const fetchResponse = await fetch(
+      process.env.REACT_APP_API_DOMAIN + "/NewParticipant",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          patientId: id,
+          appointmentId: eventId,
+          size: 0,
+          weight: 0,
+          EVAbefore: 0,
+          EVAafter: 0,
+          reasonDetails: "",
+          tests: "",
+          treatment: "",
+          remarks: "",
+          drawing: "",
+          patientType: 0,
+          token: token,
+          price: price,
+          priceSetByUser: false,
+          payed: 0,
+        }),
+      }
+    );
+    const res = await fetchResponse.json();
+    return res.success;
   }
 
   async function addEvent(values) {
@@ -240,27 +268,15 @@ export default function NewAppointment({
 
           returnPrices.push(price);
         }
-        const fetchResponse = await fetch(
-          process.env.REACT_APP_API_DOMAIN + "/NewListOfParticipants",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              patientId: returnPatientIds,
-              appointmentId: eventId,
-              token: token,
-              price: returnPrices,
-            }),
-          }
-        );
-        const res2 = await fetchResponse.json();
-        if (res2.success === false) {
-          success = false;
+
+        let queries = [];
+        for (let i = 0; i < returnPatientIds.length; i++) {
+          queries.push(
+            newParticipant(returnPatientIds[i], eventId, returnPrices[i], i)
+          );
         }
 
+        await Promise.allSettled(queries);
         // then we add the patients who missed the appointment
 
         for (const element of values.absents) {
@@ -415,24 +431,14 @@ export default function NewAppointment({
                   });
                 }
               }
-              const fetchResponse = await fetch(
-                process.env.REACT_APP_API_DOMAIN + "/NewListOfParticipants",
-                {
-                  method: "POST",
-                  headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    patientId: returnPatientIds,
-                    appointmentId: id,
-                    token: token,
-                    price: returnPrices,
-                  }),
-                }
-              );
-              const res = await fetchResponse.json();
-              return res.success;
+              let queries = [];
+              for (let i = 0; i < returnPatientIds.length; i++) {
+                queries.push(
+                  newParticipant(returnPatientIds[i], id, returnPrices[i], i)
+                );
+              }
+
+              await Promise.allSettled(queries);
             }
             await addPatients();
 
@@ -625,11 +631,7 @@ export default function NewAppointment({
         color: "green",
       });
 
-      if (setCalendarUpdate) {
-        setCalendarUpdate((prev) => prev + 1);
-      } else {
-        await updatePatients(token);
-      }
+      await updatePatients(token);
       setOpened(false);
     } else {
       setLoading("");
