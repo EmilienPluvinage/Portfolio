@@ -230,7 +230,7 @@ export default function AppointmentDetails({
     }
   }
 
-  async function addPayement(amount, method, eventId) {
+  async function addPayement(amount, method, eventId, date) {
     try {
       const fetchResponse = await fetch(
         process.env.REACT_APP_API_DOMAIN + "/AddNewPayement",
@@ -246,6 +246,7 @@ export default function AppointmentDetails({
             method: method,
             amount: amount,
             patientId: patient,
+            date: date,
           }),
         }
       );
@@ -355,7 +356,8 @@ export default function AppointmentDetails({
               result = await addPayement(
                 Math.round(values.price * 100),
                 values.method,
-                res2.id
+                res2.id,
+                new Date(start)
               );
             }
             if (result) {
@@ -489,7 +491,8 @@ export default function AppointmentDetails({
               success = await addPayement(
                 Math.round(values.price * 100),
                 values.method,
-                eventId
+                eventId,
+                new Date(start)
               );
             }
             if (success) {
