@@ -15,6 +15,7 @@ import {
 import Payement from "./Payement";
 import ShareBalance from "./ShareBalance";
 import UpdatePrice from "./UpdatePrice";
+import { Link } from "react-router-dom";
 
 export default function Balance({ patientId, fullDisplay, warningDisplay }) {
   // data from context
@@ -226,7 +227,14 @@ export default function Balance({ patientId, fullDisplay, warningDisplay }) {
       )}
       {warningDisplay && balanceAsOfToday < 0 && (
         <tr key={balanceAsOfToday}>
-          <td>{patientName}</td>
+          <td>
+            <Link
+              to={"/CabinetSante/Nouveau-Patient/" + patientId}
+              className="link"
+            >
+              {patientName}
+            </Link>
+          </td>
           <td>
             <span style={{ color: balanceAsOfToday < 0 ? "red" : "inherit" }}>
               {displayPrice(balanceAsOfToday) + " €"}

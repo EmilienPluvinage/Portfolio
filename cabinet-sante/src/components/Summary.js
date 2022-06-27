@@ -6,6 +6,7 @@ import { usePatients } from "./contexts/PatientsContext";
 import { useConfig } from "./contexts/ConfigContext";
 import { displayFullDate, displayPrice } from "./Functions";
 import DateSelector from "./DateSelector";
+import { Link } from "react-router-dom";
 
 export default function Summary() {
   const patients = usePatients().patients;
@@ -59,7 +60,14 @@ export default function Summary() {
       <td>{displayFullDate(new Date(element.start))}</td>
       <td>{element.title}</td>
       <td>{appointmentTypes.find((x) => x.id === element.idType)?.type}</td>
-      <td>{patients.find((x) => x.id === element.patientId)?.fullname}</td>
+      <td>
+        <Link
+          to={"/CabinetSante/Nouveau-Patient/" + element.patientId}
+          className="link"
+        >
+          {patients.find((x) => x.id === element.patientId)?.fullname}
+        </Link>
+      </td>
       {console.log(element.price)}
       <td>{element.price ? displayPrice(element.price) + " €" : ""} </td>
     </tr>
