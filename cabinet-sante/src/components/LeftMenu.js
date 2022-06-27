@@ -82,6 +82,7 @@ function LeftMenu() {
                 marginTop: "20px",
                 marginLeft: "20px",
                 marginBottom: "10px",
+                autoComplete: "off",
               }}
               value={search}
               onChange={handleSearch}
