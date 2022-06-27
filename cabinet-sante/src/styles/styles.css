@@ -166,6 +166,16 @@ h2 {
   color: gray;
 }
 
+.red-link {
+  color: red;
+  text-decoration: inherit;
+}
+
+.red-link:hover {
+  color: #ff6b6b;
+  cursor: pointer;
+}
+
 .nav-patient {
   display: flex;
   flex-direction: row;

@@ -236,7 +236,10 @@ export default function Balance({ patientId, fullDisplay, warningDisplay }) {
             </Link>
           </td>
           <td>
-            <span style={{ color: balanceAsOfToday < 0 ? "red" : "inherit" }}>
+            <span
+              onClick={() => setOpened(true)}
+              className={balanceAsOfToday < 0 ? "red-link" : "link"}
+            >
               {displayPrice(balanceAsOfToday) + " €"}
             </span>
           </td>
