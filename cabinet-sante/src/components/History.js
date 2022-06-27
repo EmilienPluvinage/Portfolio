@@ -113,9 +113,9 @@ export default function History({ patientId }) {
           <tr>
             <th>Titre</th>
             <th>Date</th>
-            <th>Début</th>
-            <th>Fin</th>
-            <th>Type</th>
+            <th style={{ whiteSpace: "nowrap" }}>Début</th>
+            <th style={{ whiteSpace: "nowrap" }}>Fin</th>
+            <th style={{ whiteSpace: "nowrap" }}>Type</th>
             <th>Prix</th>
             <th>Détails</th>
           </tr>
@@ -127,10 +127,16 @@ export default function History({ patientId }) {
               style={event.missed ? { color: "red" } : { color: "black" }}
             >
               <td>{event.title}</td>
-              <td>{displayDate(new Date(event.start), true)}</td>
-              <td>{displayTime(new Date(event.start))}</td>
-              <td>{displayTime(new Date(event.end))}</td>
-              <td>
+              <td style={{ whiteSpace: "nowrap" }}>
+                {displayDate(new Date(event.start), true)}
+              </td>
+              <td style={{ whiteSpace: "nowrap" }}>
+                {displayTime(new Date(event.start))}
+              </td>
+              <td style={{ whiteSpace: "nowrap" }}>
+                {displayTime(new Date(event.end))}
+              </td>
+              <td style={{ whiteSpace: "nowrap" }}>
                 {appointmentTypes.find((e) => e.id === event.idType).type}
               </td>
               <td>
