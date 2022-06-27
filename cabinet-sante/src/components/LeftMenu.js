@@ -13,6 +13,7 @@ import {
   Settings,
   Search,
   ReportMedical,
+  Checkbox,
 } from "tabler-icons-react";
 import { Center, Select, Modal, Badge } from "@mantine/core";
 import { useState } from "react";
@@ -141,6 +142,12 @@ function LeftMenu() {
               >
                 <Calculator size={iconsSize} style={iconsStyle} />
                 Comptabilité
+              </li>
+            </Link>
+            <Link to="/CabinetSante/Resume" className="text-link">
+              <li className={path === "/CabinetSante/Resume" ? "clicked" : ""}>
+                <Checkbox size={iconsSize} style={iconsStyle} />
+                Résumé
               </li>
             </Link>
             <Link to="/CabinetSante/Statistiques" className="text-link">

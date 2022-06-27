@@ -10,6 +10,7 @@ import IncorrectPricesList from "./IncorrectPricesList";
 import Home from "./Home";
 import Statistics from "./Statistics";
 import Accountancy from "./Accountancy";
+import Summary from "./Summary";
 
 function Main({ menu }) {
   const loggedIn = useLogin().login;
@@ -54,6 +55,7 @@ function Main({ menu }) {
             path="/CabinetSante/Comptabilite"
             element={<Accountancy />}
           />
+          <Route exact path="/CabinetSante/Resume" element={<Summary />} />
           <Route
             exact
             path="/CabinetSante/Verifier-les-prix"
