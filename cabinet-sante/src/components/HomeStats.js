@@ -23,7 +23,7 @@ const months = [
 
 export default function HomeStats() {
   // data from context
-  const appointments = usePatients().appointments;
+  const appointments = usePatients().appointments.filter((e) => e.id !== null);
   const appointmentTypes = useConfig().appointmentTypes;
   const colors = appointmentTypes.map((e) => e.color);
 
