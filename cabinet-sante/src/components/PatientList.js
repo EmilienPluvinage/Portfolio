@@ -1,9 +1,9 @@
 import "../styles/styles.css";
 import { usePatients } from "./contexts/PatientsContext";
-import { Pagination, Table, Button, Center } from "@mantine/core";
+import { Pagination, Table, Button, Center, TextInput } from "@mantine/core";
 import { calculateAge, displayFullDate } from "./Functions";
 import { useState } from "react";
-import { User } from "tabler-icons-react";
+import { Search, User, X } from "tabler-icons-react";
 import { Link } from "react-router-dom";
 import Balance from "./Balance";
 import DeletePatient from "./DeletePatient";
@@ -14,11 +14,10 @@ export default function PatientList() {
   const [sort, setSort] = useState({ field: "lastname", direction: "down" });
   const patientsPerPage = 50;
   const patients = usePatients().patients;
-  const numberOfPages =
-    patients.length > 0
-      ? Math.floor((patients.length - 1) / patientsPerPage) + 1
-      : 1;
+
   const [activePage, setPage] = useState(1);
+  const [searchValue, setSearchValue] = useState("");
+  const [searchResult, setSearchResult] = useState("");
 
   function compareDate(a, b, n) {
     var x = new Date(a.start);
@@ -162,6 +161,19 @@ export default function PatientList() {
 
   var sortedPatients = patients.slice();
   sortedPatients.sort((a, b) => compare(a, b, sort.field, sort.direction));
+  // now we filter based on the search input, if indeed it was used
+
+  if (searchResult !== "") {
+    sortedPatients = sortedPatients.filter((patient) =>
+      patient.fullname.toLowerCase().includes(searchResult.toLowerCase())
+    );
+  }
+
+  const numberOfPages =
+    sortedPatients.length > 0
+      ? Math.floor((sortedPatients.length - 1) / patientsPerPage) + 1
+      : 1;
+
   const displayedPatients = sortedPatients.slice(
     (activePage - 1) * patientsPerPage,
     activePage * patientsPerPage
@@ -198,23 +210,80 @@ export default function PatientList() {
       </td>
     </tr>
   ));
+
+  function search(event) {
+    event.preventDefault();
+    setSearchResult(searchValue);
+  }
+
   return (
     <div>
       <h2>{patients.length > 0 && patients.length + " "}Patients</h2>
       <div className="main-content">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Pagination
+            page={activePage}
+            onChange={setPage}
+            total={numberOfPages}
+            size={"sm"}
+          />
+          <form onSubmit={search}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+              }}
+            >
+              <TextInput
+                autoComplete="off"
+                minLength={3}
+                size="xs"
+                style={{ marginRight: 10 }}
+                placeholder="Nom ou Prénom"
+                value={searchValue}
+                onChange={(event) => setSearchValue(event.currentTarget.value)}
+                rightSection={
+                  searchValue !== "" ? (
+                    <X
+                      style={{ cursor: "pointer" }}
+                      color="lightgray"
+                      size={15}
+                      onClick={() => {
+                        setSearchValue("");
+                        setSearchResult("");
+                      }}
+                    />
+                  ) : (
+                    " "
+                  )
+                }
+              />
+              <Button size="xs" type="submit">
+                <Search size={18} />
+              </Button>
+            </div>
+          </form>
+        </div>
+        <Table striped verticalSpacing="xs">
+          <thead>{ths}</thead>
+          <tbody>{rows}</tbody>
+        </Table>
         <Center>
           <Pagination
-            style={{ marginBottom: "20px" }}
+            style={{ margin: "20px" }}
             page={activePage}
             onChange={setPage}
             total={numberOfPages}
             size={"sm"}
           />
         </Center>
-        <Table striped verticalSpacing="xs">
-          <thead>{ths}</thead>
-          <tbody>{rows}</tbody>
-        </Table>
       </div>
     </div>
   );
