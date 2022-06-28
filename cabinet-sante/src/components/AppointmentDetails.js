@@ -37,6 +37,7 @@ import {
   ListSearch,
   Plus,
   MedicalCross,
+  ExclamationMark,
 } from "tabler-icons-react";
 import { useForm } from "@mantine/form";
 import { useEffect } from "react";
@@ -547,16 +548,21 @@ export default function AppointmentDetails({
       appointmentTypeId === null || appointmentTypeId === undefined
         ? 0
         : appointmentTypeId;
-
-    form.setFieldValue(
-      "price",
+    let newPrice =
       setAutomaticPrice(
         priceScheme,
         patientTypeId,
         appointmentTypeId,
         packageId
-      ) / 100
-    );
+      ) / 100;
+    if (newPrice !== form.values.price) {
+      showNotification({
+        title: "Prix modifié",
+        message: "Attention, le prix a été modifié automatiquement.",
+        icon: <ExclamationMark />,
+      });
+    }
+    form.setFieldValue("price", newPrice);
   }
   return (
     <>
