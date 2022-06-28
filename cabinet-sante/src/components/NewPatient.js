@@ -13,6 +13,7 @@ import {
   Check,
   ListSearch,
   ExclamationMark,
+  Trash,
 } from "tabler-icons-react";
 import { useNavigate } from "react-router-dom";
 
@@ -364,6 +365,44 @@ export default function NewPatient() {
     return { check: true };
   }
 
+  async function unsubscribe() {
+    try {
+      const fetchResponse = await fetch(
+        process.env.REACT_APP_API_DOMAIN + "/Unsubscribe",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: token,
+            patientId: id,
+          }),
+        }
+      );
+      const res = await fetchResponse.json();
+      if (res.success) {
+        await getPatients(token);
+        showNotification({
+          title: "Forfait supprimé",
+          message: "Le forfait du patient a bien été supprimé.",
+          color: "green",
+          icon: <Check />,
+        });
+      } else {
+        showNotification({
+          title: "Erreur",
+          message: res.error,
+          color: "red",
+          icon: <ExclamationMark />,
+        });
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
   return (
     <>
       {" "}
@@ -551,6 +590,19 @@ export default function NewPatient() {
                       )?.packageId
                   )?.package
                 }
+                {PatientList.find(
+                  (e) => e.id?.toString() === params.id?.toString()
+                )?.packageId && (
+                  <Button
+                    compact
+                    variant="outline"
+                    color="red"
+                    onClick={() => unsubscribe()}
+                    style={{ margin: "5px" }}
+                  >
+                    <Trash size={18} />
+                  </Button>
+                )}
               </Text>
             </div>
           </div>

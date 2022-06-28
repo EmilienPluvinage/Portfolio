@@ -766,4 +766,33 @@ router.post("/RemovePathology", (req, res, next) => {
   });
 });
 
+router.post("/Unsubscribe", (req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+    connection.query(
+      "SELECT userId FROM tokens WHERE token= ?",
+      req.body.token,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+        if (err) throw err;
+        if (rows.length === 1) {
+          var userId = rows[0].userId;
+          // belongs to that user
+          // Now connected and we have the user ID so we do the insert
+          connection.query(
+            "DELETE FROM hasSubscribed WHERE  userId=? AND patientId=?",
+            [userId, req.body.patientId],
+            (err, result) => {
+              res.status(201).json({ success: true, error: "" });
+            }
+          );
+        } else {
+          res.status(201).json({ success: false, error: "not connected" });
+        }
+      }
+    );
+  });
+});
+
 module.exports = router;
