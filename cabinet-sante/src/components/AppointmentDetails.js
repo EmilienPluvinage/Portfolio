@@ -538,7 +538,7 @@ export default function AppointmentDetails({
       (e) => e.type === appointmentType
     )?.id;
     var patientTypeId = patientTypes.find((e) => e.type === patientType)?.id;
-    var packageId = patients.find((e) => e.id === patientId)?.packageId;
+    var packageId = patients.find((e) => e.id === patient)?.packageId;
 
     packageId = packageId === null || packageId === undefined ? 0 : packageId;
     patientTypeId =
