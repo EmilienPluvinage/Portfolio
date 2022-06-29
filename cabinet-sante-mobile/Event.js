@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { Card, Avatar, Paragraph } from "react-native-paper";
+import { Card, Avatar, Paragraph, IconButton } from "react-native-paper";
 
 export default function Event() {
   return (
@@ -10,6 +10,14 @@ export default function Event() {
         title="9:00 - 10:00"
         subtitle="Respirez profondément"
         left={(props) => <Avatar.Text {...props} size={50} label="T" />}
+        right={(props) => (
+          <IconButton
+            {...props}
+            icon="dots-vertical"
+            color="#ffffff"
+            onPress={() => {}}
+          />
+        )}
       />
       <Card.Content style={styles.cardContent}>
         <Paragraph style={styles.paragrah}>

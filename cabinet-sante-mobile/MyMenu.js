@@ -27,7 +27,12 @@ export default function MyMenu() {
       visible={open}
       onDismiss={() => setOpen(false)}
       anchor={
-        <IconButton icon="menu" color="#22b8cf" onPress={() => setOpen(true)} />
+        <IconButton
+          icon="menu"
+          size={30}
+          color="#22b8cf"
+          onPress={() => setOpen(true)}
+        />
       }
     >
       <MenuItem page="Agenda" setPage={setPage} />

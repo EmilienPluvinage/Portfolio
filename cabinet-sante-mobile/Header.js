@@ -27,9 +27,10 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   title: {
+    paddingTop: 13,
     color: "#22b8cf",
     padding: 10,
     paddingRight: 20,
-    fontSize: 18,
+    fontSize: 22,
   },
 });
