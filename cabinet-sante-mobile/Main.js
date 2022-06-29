@@ -1,9 +1,17 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View, ScrollView } from "react-native";
+import Event from "./Event";
 
 export default function Main() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Ceci est la future App Cabinet Santé.</Text>
+      <ScrollView>
+        <Event />
+        <Event />
+        <Event />
+        <Event />
+        <Event />
+        <Event />
+      </ScrollView>
     </View>
   );
 }
@@ -12,10 +20,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "rgb(30,30,30)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  text: {
-    color: "white",
+    alignItems: "stretch",
+    justifyContent: "flex-start",
+    padding: 5,
   },
 });

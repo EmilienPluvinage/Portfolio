@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { Menu, IconButton, Divider } from "react-native-paper";
+import { Menu, IconButton } from "react-native-paper";
 import { useState } from "react";
 
 function MenuItem({ page, setPage }) {
