@@ -1,22 +1,21 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View, Text } from "react-native";
-import { IconButton } from "react-native-paper";
+import MyMenu from "./MyMenu";
 
 export default function Header() {
   return (
-    <View style={styles.header}>
-      <View>
-        <IconButton
-          icon="menu"
-          color="#22b8cf"
-          onPress={() => console.log("Pressed")}
-        />
-      </View>
-      <View>
-        <Text style={styles.title}>MON CABINET SANTÉ</Text>
-      </View>
+    <>
       <StatusBar style="light" />
-    </View>
+
+      <View style={styles.header}>
+        <View>
+          <MyMenu />
+        </View>
+        <View>
+          <Text style={styles.title}>MON CABINET SANTÉ</Text>
+        </View>
+      </View>
+    </>
   );
 }
 
