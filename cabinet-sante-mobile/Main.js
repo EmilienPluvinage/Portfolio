@@ -1,16 +1,12 @@
 import { StyleSheet, View, ScrollView } from "react-native";
-import Event from "./Event";
+
+import NewPatient from "./NewPatient";
 
 export default function Main() {
   return (
     <View style={styles.container}>
       <ScrollView>
-        <Event />
-        <Event />
-        <Event />
-        <Event />
-        <Event />
-        <Event />
+        <NewPatient />
       </ScrollView>
     </View>
   );

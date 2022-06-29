@@ -15,7 +15,7 @@ export default function Event() {
             {...props}
             icon="dots-vertical"
             color="#ffffff"
-            onPress={() => {}}
+            onPress={() => console.log("Open Event Details")}
           />
         )}
       />
