@@ -4,14 +4,14 @@ import { Card, Avatar, Paragraph } from "react-native-paper";
 export default function Event() {
   return (
     <Card style={styles.items}>
+      <Card.Title
+        titleStyle={styles.cardTitle}
+        subtitleStyle={styles.cardTitle}
+        title="9:00 - 10:00"
+        subtitle="Respirez profondément"
+        left={(props) => <Avatar.Text {...props} size={50} label="T" />}
+      />
       <Card.Content style={styles.cardContent}>
-        <Card.Title
-          titleStyle={styles.cardTitle}
-          subtitleStyle={styles.cardTitle}
-          title="9:00 - 10:00"
-          subtitle="Respirez profondément"
-          left={(props) => <Avatar.Text {...props} size={50} label="T" />}
-        />
         <Paragraph style={styles.paragrah}>
           Emilien Pluvinage, Florence Jacquet, Jean Pluvinage.
         </Paragraph>
@@ -23,7 +23,6 @@ export default function Event() {
 const styles = StyleSheet.create({
   cardContent: {
     alignItems: "flex-start",
-    justifyContent: "flex-start",
   },
   cardTitle: {
     marginLeft: 10,
