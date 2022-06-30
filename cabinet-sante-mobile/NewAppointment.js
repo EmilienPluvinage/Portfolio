@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { Title, TextInput, RadioButton, Button } from "react-native-paper";
 import DropDown from "react-native-paper-dropdown";
 import Patient from "./Patient";
+import PatientSearch from "./PatientSearch";
 
 export default function NewAppointment() {
   const [title, setTitle] = useState("");
@@ -68,19 +69,7 @@ export default function NewAppointment() {
           />
 
           <View style={styles.button}>
-            <Button
-              color="#1098AD"
-              mode="outlined"
-              onPress={() => addPatient()}
-              contentStyle={{
-                backgroundColor: "#E3FAFC",
-                borderWidth: 1,
-                borderRadius: 5,
-                borderColor: "#1098AD",
-              }}
-            >
-              ajouter un patient
-            </Button>
+            <PatientSearch />
           </View>
           <View style={styles.button}>
             <Button
