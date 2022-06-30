@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import NewPatient from "./NewPatient";
 import Main from "./Main";
-import { StatusBar } from "react-native";
+import { StatusBar, StyleSheet } from "react-native";
 const Drawer = createDrawerNavigator();
 
 export default function App() {
@@ -19,6 +19,7 @@ export default function App() {
             drawerActiveTintColor: "#ffffff",
             drawerActiveBackgroundColor: "#22b8cf",
             drawerStyle: { backgroundColor: "rgb(30,30,30)" },
+            sceneContainerStyle: styles.container,
           }}
         >
           <Drawer.Screen name="NewPatient" component={NewPatient} />
@@ -28,3 +29,13 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "rgb(30,30,30)",
+    alignItems: "stretch",
+    justifyContent: "flex-start",
+    padding: 5,
+  },
+});
