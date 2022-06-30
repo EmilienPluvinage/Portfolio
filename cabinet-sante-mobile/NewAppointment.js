@@ -6,6 +6,9 @@ import DropDown from "react-native-paper-dropdown";
 export default function NewAppointment() {
   const [title, setTitle] = useState("");
   const [type, setType] = useState("");
+  const [date, setDate] = useState("");
+  const [timeRange, setTimeRange] = useState("");
+
   const [showDropDown, setShowDropDown] = useState(false);
   const types = [
     { label: "Ostéopathie", value: "Ostéopathie" },
@@ -14,8 +17,11 @@ export default function NewAppointment() {
 
   function submitForm() {
     // add checks
-
     console.log("submitted");
+  }
+
+  function addPatient() {
+    console.log("nouveau patient");
   }
 
   return (
@@ -41,6 +47,38 @@ export default function NewAppointment() {
             list={types}
             activeColor="#1098AD"
           />
+        </View>
+        <TextInput
+          style={styles.textInput}
+          activeUnderlineColor="#1098AD"
+          label="Jour"
+          value={date}
+          onChangeText={(text) => setDate(text)}
+          type="outlined"
+        />
+        <TextInput
+          style={styles.textInput}
+          activeUnderlineColor="#1098AD"
+          label="Heure"
+          value={timeRange}
+          onChangeText={(text) => setTimeRange(text)}
+          type="outlined"
+        />
+
+        <View style={styles.button}>
+          <Button
+            color="#1098AD"
+            mode="outlined"
+            onPress={() => addPatient()}
+            contentStyle={{
+              backgroundColor: "#E3FAFC",
+              borderWidth: 1,
+              borderRadius: 5,
+              borderColor: "#1098AD",
+            }}
+          >
+            ajouter un patient
+          </Button>
         </View>
         <View style={styles.button}>
           <Button color="#1098AD" mode="contained" onPress={() => submitForm()}>
@@ -77,7 +115,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignContent: "center",
   },
-  button: { marginTop: 20, marginBottom: 10 },
+  button: { marginVertical: 10 },
   dropdown: {
     marginVertical: 10,
   },
