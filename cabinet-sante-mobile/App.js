@@ -16,7 +16,7 @@ export default function App() {
         <Drawer.Navigator
           initialRouteName="Main"
           screenOptions={{
-            drawerInactiveBackgroundColor: "rgb(60,60,60)",
+            drawerInactiveBackgroundColor: "rgb(30,30,30)",
             drawerInactiveTintColor: "#ffffff",
             drawerActiveTintColor: "#ffffff",
             drawerActiveBackgroundColor: "#1098AD",
