@@ -1797,6 +1797,32 @@
   "resolved" "https://registry.npmjs.org/@types/node/-/node-18.0.0.tgz"
   "version" "18.0.0"
 
+"@types/prop-types@*":
+  "integrity" "sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w=="
+  "resolved" "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.5.tgz"
+  "version" "15.7.5"
+
+"@types/react-native@*":
+  "integrity" "sha512-Vy8yvbR2bdUXTZ3u4DBFUGxo26h7p71Cdv7JtO6ZEXD4mpediuRMbRqyoWirlQB/p9Vh3lYVVViNyt8JK/05NA=="
+  "resolved" "https://registry.npmjs.org/@types/react-native/-/react-native-0.69.1.tgz"
+  "version" "0.69.1"
+  dependencies:
+    "@types/react" "*"
+
+"@types/react@*":
+  "integrity" "sha512-x4gGuASSiWmo0xjDLpm5mPb52syZHJx02VKbqUKdLmKtAwIh63XClGsiTI1K6DO5q7ox4xAsQrU+Gl3+gGXF9Q=="
+  "resolved" "https://registry.npmjs.org/@types/react/-/react-18.0.14.tgz"
+  "version" "18.0.14"
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    "csstype" "^3.0.2"
+
+"@types/scheduler@*":
+  "integrity" "sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew=="
+  "resolved" "https://registry.npmjs.org/@types/scheduler/-/scheduler-0.16.2.tgz"
+  "version" "0.16.2"
+
 "@types/yargs-parser@*":
   "integrity" "sha512-iO9ZQHkZxHn4mSakYV0vFHAVDyEOIJQrV2uZ06HxEPcx+mt8swXoZHIbaaJ2crJYFfErySgktuTZ3BeLz+XmFA=="
   "resolved" "https://registry.npmjs.org/@types/yargs-parser/-/yargs-parser-21.0.0.tgz"
@@ -2802,6 +2828,11 @@
   dependencies:
     "hyphenate-style-name" "^1.0.2"
     "isobject" "^3.0.1"
+
+"csstype@^3.0.2":
+  "integrity" "sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA=="
+  "resolved" "https://registry.npmjs.org/csstype/-/csstype-3.1.0.tgz"
+  "version" "3.1.0"
 
 "dag-map@~1.0.0":
   "integrity" "sha512-+LSAiGFwQ9dRnRdOeaj7g47ZFJcOUPukAP8J3A3fuZ1g9Y44BG+P1sgApjLXTQPOzC4+7S9Wr8kXsfpINM4jpw=="
@@ -5649,6 +5680,11 @@
   dependencies:
     "color" "^3.2.1"
 
+"react-native-paper-dropdown@^1.0.7":
+  "integrity" "sha512-St0rZFw5sC7mbXtFCOGsyEa0fIBaG6Cfz78RsjFNzTj+rKd1i9qlDY2O7eOa2zAUEnFlL+C7FXdXUY9RUNELNw=="
+  "resolved" "https://registry.npmjs.org/react-native-paper-dropdown/-/react-native-paper-dropdown-1.0.7.tgz"
+  "version" "1.0.7"
+
 "react-native-paper@*", "react-native-paper@^4.12.2":
   "integrity" "sha512-DDqds8E6IMbOFW7PwUgB0pP6qhFcwn/s0N+SOpqB1XYtGm0r9WMrmA8q026Mn7OCkWeMTjgnrILGJxJ7b2CRHw=="
   "resolved" "https://registry.npmjs.org/react-native-paper/-/react-native-paper-4.12.2.tgz"
@@ -6732,6 +6768,11 @@
   dependencies:
     "media-typer" "0.3.0"
     "mime-types" "~2.1.24"
+
+"typescript@*":
+  "integrity" "sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ=="
+  "resolved" "https://registry.npmjs.org/typescript/-/typescript-4.7.4.tgz"
+  "version" "4.7.4"
 
 "ua-parser-js@^0.7.30":
   "integrity" "sha512-qLK/Xe9E2uzmYI3qLeOmI0tEOt+TBBQyUIAh4aAgU05FVYzeZrKUdkAZfBNVGRaHVgV0TDkdEngJSw/SyQchkQ=="

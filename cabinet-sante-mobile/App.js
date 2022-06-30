@@ -2,6 +2,7 @@ import { Provider as PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import NewPatient from "./NewPatient";
+import NewAppointment from "./NewAppointment";
 import Main from "./Main";
 import { StatusBar, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -50,13 +51,24 @@ export default function App() {
               component={NewPatient}
               options={{
                 drawerLabel: "Nouveau Patient",
-                headerTitle: "Nouveau Patient",
+                headerTitle: "Patient",
                 drawerIcon: ({ color, size }) => (
                   <Ionicons
                     name="person-add-outline"
                     color={color}
                     size={size}
                   />
+                ),
+              }}
+            />
+            <Drawer.Screen
+              name="NewAppointment"
+              component={NewAppointment}
+              options={{
+                drawerLabel: "Consultation",
+                headerTitle: "Consultation",
+                drawerIcon: ({ color, size }) => (
+                  <Ionicons name="calendar-outline" color={color} size={size} />
                 ),
               }}
             />
