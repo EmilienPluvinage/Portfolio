@@ -1,6 +1,11 @@
 import { Provider as PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+  DrawerItem,
+} from "@react-navigation/drawer";
 import NewPatient from "./NewPatient";
 import NewAppointment from "./NewAppointment";
 import Main from "./Main";
@@ -8,6 +13,22 @@ import { StatusBar, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Login from "./Login";
 import { useState } from "react";
+
+function CustomDrawerContent(props) {
+  return (
+    <DrawerContentScrollView {...props}>
+      <DrawerItemList {...props} />
+      <DrawerItem
+        inactiveTintColor="#ffffff"
+        label="Déconnexion"
+        onPress={() => props.setLogin(false)}
+        icon={({ color, size }) => (
+          <Ionicons name="log-out-outline" color={color} size={size} />
+        )}
+      />
+    </DrawerContentScrollView>
+  );
+}
 
 const Drawer = createDrawerNavigator();
 
@@ -20,6 +41,9 @@ export default function App() {
       <PaperProvider>
         {login ? (
           <Drawer.Navigator
+            drawerContent={(props) => (
+              <CustomDrawerContent {...props} setLogin={setLogin} />
+            )}
             initialRouteName="Main"
             screenOptions={{
               drawerInactiveBackgroundColor: "rgb(30,30,30)",
