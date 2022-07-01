@@ -13,6 +13,7 @@ import { StatusBar, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Login from "./Login";
 import { useState } from "react";
+import { REACT_APP_API_DOMAIN } from "@env";
 
 function CustomDrawerContent(props) {
   return (
@@ -34,6 +35,7 @@ const Drawer = createDrawerNavigator();
 
 export default function App() {
   const [login, setLogin] = useState(false);
+  console.log(process.env.REACT_APP_API_DOMAIN);
 
   return (
     <NavigationContainer>

@@ -21,6 +21,7 @@
     "react-native": "0.68.2",
     "react-native-actions-sheet": "^0.7.2",
     "react-native-actions-sheet-picker": "^0.3.4",
+    "react-native-dotenv": "^3.3.1",
     "react-native-gesture-handler": "~2.2.1",
     "react-native-paper": "^4.12.2",
     "react-native-paper-dates": "^0.8.7",
