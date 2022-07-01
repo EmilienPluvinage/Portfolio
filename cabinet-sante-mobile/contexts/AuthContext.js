@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useUpdatePatients } from "./PatientsContext";
 import { useUpdateConfig } from "./ConfigContext";
+import { REACT_APP_API_DOMAIN } from "@env";
 
 const LoginContext = React.createContext();
 const LoggingContext = React.createContext();

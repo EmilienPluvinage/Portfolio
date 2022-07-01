@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import { calculateAge } from "../Functions/Functions";
+import { REACT_APP_API_DOMAIN } from "@env";
 
 const PatientsContext = React.createContext();
 const UpdatePatientsContext = React.createContext();

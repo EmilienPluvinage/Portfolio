@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { REACT_APP_API_DOMAIN } from "@env";
 
 const ConfigContext = React.createContext();
 const UpdateConfigContext = React.createContext();

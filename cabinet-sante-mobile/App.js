@@ -35,7 +35,6 @@ const Drawer = createDrawerNavigator();
 
 export default function App() {
   const [login, setLogin] = useState(false);
-  console.log(process.env.REACT_APP_API_DOMAIN);
 
   return (
     <NavigationContainer>
