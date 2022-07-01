@@ -6,6 +6,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import Patient from "./Patient";
 import PatientSearch from "./PatientSearch";
 import { displayTime } from "./Functions/Functions";
+import dayjs from "dayjs";
 
 export default function NewAppointment() {
   const [title, setTitle] = useState("");
@@ -15,7 +16,7 @@ export default function NewAppointment() {
   const [date, setDate] = useState(new Date());
   const [start, setStart] = useState(new Date());
   const [startPicker, setStartPicker] = useState(false);
-  const [end, setEnd] = useState(new Date());
+  const [end, setEnd] = useState(dayjs(start).add(60, "minutes").toDate());
   const [endPicker, setEndPicker] = useState(false);
   // list of patients being in that appointment. Empty if new appointment, otherwise initialized with context data.
   const [patientsInAppointment, setPatientsInAppointment] = useState([]);
@@ -67,6 +68,7 @@ export default function NewAppointment() {
 
   function onStartSelected(event, value) {
     setStart(value);
+    setEnd(dayjs(value).add(60, "minutes").toDate());
     setStartPicker(false);
   }
 
