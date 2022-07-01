@@ -8,7 +8,7 @@ import {
   Switch,
 } from "react-native-paper";
 
-export default function Patient({ patientId }) {
+export default function Patient({ patientId, fullname, removePatient }) {
   const [present, setPresent] = useState(true);
   const [payed, setPayed] = useState(false);
 
@@ -17,13 +17,13 @@ export default function Patient({ patientId }) {
       <Card.Title
         titleStyle={styles.cardTitle}
         subtitleStyle={styles.cardTitle}
-        title={`Patient ${patientId}`}
+        title={fullname}
         right={(props) => (
           <IconButton
             {...props}
             icon="delete"
             color="#ffffff"
-            onPress={() => console.log("Update Patient")}
+            onPress={() => removePatient(patientId)}
             style={{ backgroundColor: "rgb(80,80,80)" }}
           />
         )}

@@ -8,11 +8,32 @@ import {
   Card,
   IconButton,
   Searchbar,
+  Divider,
 } from "react-native-paper";
 
-export default function PatientSearch({ addPatient }) {
+export default function PatientSearch({ patientsList, addPatient }) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  if (searchQuery !== "") {
+    // we filter the data based on the search query
+    patientsList = patientsList.filter((patient) =>
+      patient.fullname.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }
+
+  function compare(a, b) {
+    if (a.fullname < b.fullname) {
+      return -1;
+    }
+    if (a.fullname > b.fullname) {
+      return 1;
+    }
+    return 0;
+  }
+
+  patientsList.sort(compare);
+  patientsList = patientsList.slice(0, 5);
 
   return (
     <>
@@ -40,19 +61,39 @@ export default function PatientSearch({ addPatient }) {
               right={(props) => (
                 <IconButton
                   {...props}
-                  icon="close-circle-outline"
+                  icon="close"
                   color="lightgray"
                   onPress={() => setOpen(false)}
                 />
               )}
             />
             <Card.Content style={styles.cardContent}>
-              <Searchbar
-                placeholder="Rechercher"
-                onChangeText={setSearchQuery}
-                value={searchQuery}
-                style={styles.searchBar}
-              />
+              <View style={styles.searchView}>
+                <Searchbar
+                  placeholder="Rechercher"
+                  onChangeText={setSearchQuery}
+                  value={searchQuery}
+                  style={styles.searchBar}
+                />
+              </View>
+              <View>
+                {patientsList.map((patient, index) => (
+                  <View key={"Search" + index}>
+                    <View style={styles.patientText}>
+                      <Text style={styles.text}>{patient.fullname}</Text>
+                      <IconButton
+                        icon="plus-circle"
+                        color="lightgray"
+                        size={26}
+                        onPress={() => addPatient(patient)}
+                      />
+                    </View>
+                    {index !== patientsList.length - 1 && (
+                      <Divider style={styles.divider} />
+                    )}
+                  </View>
+                ))}
+              </View>
             </Card.Content>
           </Card>
         </Modal>
@@ -62,7 +103,7 @@ export default function PatientSearch({ addPatient }) {
 }
 
 const styles = StyleSheet.create({
-  cardContent: {
+  searchView: {
     justifyContent: "center",
     flexDirection: "row",
   },
@@ -75,5 +116,17 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     flex: 1,
+  },
+  text: {
+    color: "white",
+    marginVertical: 15,
+    fontSize: 16,
+  },
+  divider: {
+    backgroundColor: "lightgray",
+  },
+  patientText: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });

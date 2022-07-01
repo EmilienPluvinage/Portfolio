@@ -10,6 +10,8 @@ export default function NewAppointment() {
   const [type, setType] = useState("");
   const [date, setDate] = useState("");
   const [timeRange, setTimeRange] = useState("");
+  // list of patients being in that appointment. Empty if new appointment, otherwise initialized with context data.
+  const [patientsInAppointment, setPatientsInAppointment] = useState([]);
 
   const [showDropDown, setShowDropDown] = useState(false);
   const types = [
@@ -17,13 +19,38 @@ export default function NewAppointment() {
     { label: "Cours Tapis", value: "Cours Tapis" },
   ];
 
+  const patientsList = [
+    { id: 1, fullname: "Emilien Pluvinage" },
+    { id: 2, fullname: "Raphael Pluvinage" },
+    { id: 3, fullname: "Mathieu Pluvinage" },
+    { id: 4, fullname: "Jean Pluvinage" },
+    { id: 5, fullname: "Elsa Theillet" },
+    { id: 6, fullname: "Flora Theillet" },
+    { id: 7, fullname: "Julia Theillet" },
+    { id: 8, fullname: "Chantal Escot" },
+    { id: 9, fullname: "Florence Jacquet" },
+    { id: 10, fullname: "Charles Theillet" },
+  ];
+
+  // list of patients to pass to the search modal. We exclude patients that have already been selected.
+  const patientSearchList = patientsList.filter(
+    (patient) =>
+      patientsInAppointment.findIndex((e) => e.id === patient.id) === -1
+  );
+
   function submitForm() {
     // add checks
     console.log("submitted");
   }
 
-  function addPatient() {
-    console.log("nouveau patient");
+  function addPatient(patient) {
+    setPatientsInAppointment((prev) => prev.concat([patient]));
+  }
+
+  function removePatient(patientId) {
+    setPatientsInAppointment((prev) =>
+      prev.filter((patient) => patient.id !== patientId)
+    );
   }
 
   return (
@@ -69,7 +96,10 @@ export default function NewAppointment() {
           />
 
           <View style={styles.button}>
-            <PatientSearch />
+            <PatientSearch
+              patientsList={patientSearchList}
+              addPatient={addPatient}
+            />
           </View>
           <View style={styles.button}>
             <Button
@@ -82,8 +112,14 @@ export default function NewAppointment() {
           </View>
         </View>
       </View>
-      <Patient patientId={1} />
-      <Patient patientId={2} />
+      {patientsInAppointment.map((patient) => (
+        <Patient
+          key={"Patient" + patient.id}
+          patientId={patient.id}
+          fullname={patient.fullname}
+          removePatient={removePatient}
+        />
+      ))}
     </ScrollView>
   );
 }
