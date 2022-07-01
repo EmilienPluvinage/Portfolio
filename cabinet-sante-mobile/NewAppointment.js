@@ -1,15 +1,22 @@
 import { useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { Title, TextInput, RadioButton, Button } from "react-native-paper";
 import DropDown from "react-native-paper-dropdown";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import Patient from "./Patient";
 import PatientSearch from "./PatientSearch";
+import { displayTime } from "./Functions/Functions";
 
 export default function NewAppointment() {
   const [title, setTitle] = useState("");
+
   const [type, setType] = useState("");
-  const [date, setDate] = useState("");
-  const [timeRange, setTimeRange] = useState("");
+  const [datePicker, setDatePicker] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [start, setStart] = useState(new Date());
+  const [startPicker, setStartPicker] = useState(false);
+  const [end, setEnd] = useState(new Date());
+  const [endPicker, setEndPicker] = useState(false);
   // list of patients being in that appointment. Empty if new appointment, otherwise initialized with context data.
   const [patientsInAppointment, setPatientsInAppointment] = useState([]);
 
@@ -53,6 +60,21 @@ export default function NewAppointment() {
     );
   }
 
+  function onDateSelected(event, value) {
+    setDate(value);
+    setDatePicker(false);
+  }
+
+  function onStartSelected(event, value) {
+    setStart(value);
+    setStartPicker(false);
+  }
+
+  function onEndSelected(event, value) {
+    setEnd(value);
+    setEndPicker(false);
+  }
+
   return (
     <ScrollView>
       <View style={styles.item}>
@@ -78,23 +100,71 @@ export default function NewAppointment() {
               activeColor="#1098AD"
             />
           </View>
-          <TextInput
-            style={styles.textInput}
-            activeUnderlineColor="#1098AD"
-            label="Jour"
-            value={date}
-            onChangeText={(text) => setDate(text)}
-            type="outlined"
-          />
-          <TextInput
-            style={styles.textInput}
-            activeUnderlineColor="#1098AD"
-            label="Heure"
-            value={timeRange}
-            onChangeText={(text) => setTimeRange(text)}
-            type="outlined"
-          />
+          <Pressable onPress={() => setDatePicker(true)}>
+            <View pointerEvents="none">
+              <TextInput
+                style={styles.textInput}
+                activeUnderlineColor="#1098AD"
+                value={date.toLocaleDateString("fr-FR")}
+                label="Jour"
+                type="outlined"
+              />
+            </View>
+          </Pressable>
+          {datePicker && (
+            <DateTimePicker
+              value={date}
+              mode={"date"}
+              display={"default"}
+              is24Hour={true}
+              onChange={onDateSelected}
+            />
+          )}
+          <View style={styles.timeRange}>
+            <Pressable onPress={() => setStartPicker(true)} style={{ flex: 1 }}>
+              <View pointerEvents="none" style={{ flex: 1 }}>
+                <TextInput
+                  style={{ ...styles.timeInput, marginRight: 5 }}
+                  activeUnderlineColor="#1098AD"
+                  value={displayTime(start)}
+                  label="Heure de début"
+                  type="outlined"
+                />
+              </View>
+            </Pressable>
 
+            {startPicker && (
+              <DateTimePicker
+                value={start}
+                mode={"time"}
+                display={"default"}
+                is24Hour={true}
+                onChange={onStartSelected}
+              />
+            )}
+
+            <Pressable onPress={() => setEndPicker(true)} style={{ flex: 1 }}>
+              <View pointerEvents="none" style={{ flex: 1 }}>
+                <TextInput
+                  style={{ ...styles.timeInput, marginLeft: 5 }}
+                  activeUnderlineColor="#1098AD"
+                  value={displayTime(end)}
+                  label="Heure de fin"
+                  type="outlined"
+                />
+              </View>
+            </Pressable>
+
+            {endPicker && (
+              <DateTimePicker
+                value={end}
+                mode={"time"}
+                display={"default"}
+                is24Hour={true}
+                onChange={onEndSelected}
+              />
+            )}
+          </View>
           <View style={styles.button}>
             <PatientSearch
               patientsList={patientSearchList}
@@ -125,6 +195,9 @@ export default function NewAppointment() {
 }
 
 const styles = StyleSheet.create({
+  timeRange: {
+    flexDirection: "row",
+  },
   item: {
     backgroundColor: "rgb(40, 40, 40)",
     marginVertical: 5,
@@ -138,6 +211,10 @@ const styles = StyleSheet.create({
   },
   textInput: {
     marginVertical: 10,
+  },
+  timeInput: {
+    marginVertical: 10,
+    flex: 1,
   },
   radioButtonGroup: {
     flexDirection: "row",
