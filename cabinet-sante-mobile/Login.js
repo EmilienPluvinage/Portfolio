@@ -6,49 +6,107 @@ import {
   RadioButton,
   Text,
   Button,
+  Snackbar,
 } from "react-native-paper";
+import { useLogin, useLogging } from "./contexts/AuthContext";
+import { REACT_APP_API_DOMAIN } from "@env";
 
 export default function Login({ login, setLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState("");
+  // const loggedIn = useLogin().login;
+  // const logging = useLogging();
 
-  function submitForm() {
-    setLogin(true);
+  async function postLogin(email, password) {
+    try {
+      const fetchResponse = await fetch(REACT_APP_API_DOMAIN + "/Login", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email, password: password }),
+      });
+      const data = await fetchResponse.json();
+      return data;
+    } catch (e) {
+      return e;
+    }
+  }
+
+  async function submitForm() {
+    try {
+      const data = await postLogin(username.toLowerCase(), password);
+      if (data.loggedIn) {
+        setError("");
+        setLogin(true);
+      } else {
+        switch (data.error) {
+          case "incorrect password":
+            setError("Mot de passe incorrect.");
+            break;
+          case "incorrect e-mail":
+            setError("Utilisateur non-reconnu.");
+            break;
+          default:
+            setError("Erreur de connexion.");
+            break;
+        }
+
+        setOpen(true);
+      }
+    } catch (e) {
+      return e;
+    }
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.item}>
-        <View style={styles.center}>
-          <Title style={styles.text}>Mon Cabinet Santé</Title>
+    <>
+      <View style={styles.container}>
+        <View style={styles.item}>
+          <View style={styles.center}>
+            <Title style={styles.text}>Mon Cabinet Santé</Title>
+          </View>
+          <TextInput
+            style={styles.textInput}
+            activeUnderlineColor="#1098AD"
+            label="Adresse e-mail"
+            value={username}
+            onChangeText={(text) => setUsername(text)}
+            type="outlined"
+          />
+          <TextInput
+            secureTextEntry={true}
+            style={styles.textInput}
+            activeUnderlineColor="#1098AD"
+            label="Mot de passe"
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+            type="outlined"
+          />
+          <Button
+            color="#1098AD"
+            mode="contained"
+            onPress={() => submitForm()}
+            style={styles.textInput}
+          >
+            Connexion
+          </Button>
         </View>
-        <TextInput
-          style={styles.textInput}
-          activeUnderlineColor="#1098AD"
-          label="Adresse e-mail"
-          value={username}
-          onChangeText={(text) => setUsername(text)}
-          type="outlined"
-        />
-        <TextInput
-          secureTextEntry={true}
-          style={styles.textInput}
-          activeUnderlineColor="#1098AD"
-          label="Mot de passe"
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-          type="outlined"
-        />
-        <Button
-          color="#1098AD"
-          mode="contained"
-          onPress={() => submitForm()}
-          style={styles.textInput}
-        >
-          Connexion
-        </Button>
       </View>
-    </View>
+      <Snackbar
+        visible={open}
+        onDismiss={() => setOpen(false)}
+        action={{
+          label: "OK",
+          onPress: () => setOpen(false),
+        }}
+      >
+        {error}
+      </Snackbar>
+    </>
   );
 }
 
