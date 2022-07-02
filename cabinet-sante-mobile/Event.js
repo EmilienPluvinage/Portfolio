@@ -2,35 +2,56 @@ import { StyleSheet, View } from "react-native";
 import { Card, Avatar, Paragraph, IconButton, Menu } from "react-native-paper";
 import { useConfig } from "./contexts/ConfigContext";
 import { useState } from "react";
+import Confirmation from "./Confirmation";
 
 function DropdownMenu({ appointmentId }) {
   const [visible, setVisible] = useState(false);
+  const [confirmation, setConfirmation] = useState(false);
+  const [callback, setCallback] = useState();
+
+  function updateAppointment(id) {
+    console.log("Modifier %i", id);
+    setVisible(false);
+  }
+
+  function deleteAppointment(id) {
+    setVisible(false);
+    setConfirmation(true);
+  }
+
   return (
-    <View style={styles.dropdownMenu}>
-      <Menu
-        visible={visible}
-        contentStyle={{ backgroundColor: "rgb(60,60,60)" }}
-        onDismiss={() => setVisible(false)}
-        anchor={
-          <IconButton
-            icon="dots-vertical"
-            color="#ffffff"
-            onPress={() => setVisible(true)}
+    <>
+      <Confirmation
+        open={confirmation}
+        setOpen={setConfirmation}
+        callback={callback}
+      />
+      <View style={styles.dropdownMenu}>
+        <Menu
+          visible={visible}
+          contentStyle={{ backgroundColor: "rgb(60,60,60)" }}
+          onDismiss={() => setVisible(false)}
+          anchor={
+            <IconButton
+              icon="dots-vertical"
+              color="#ffffff"
+              onPress={() => setVisible(true)}
+            />
+          }
+        >
+          <Menu.Item
+            titleStyle={{ color: "white" }}
+            onPress={() => updateAppointment(appointmentId)}
+            title="Modifier"
           />
-        }
-      >
-        <Menu.Item
-          titleStyle={{ color: "white" }}
-          onPress={() => console.log("Modifier %i", appointmentId)}
-          title="Modifier"
-        />
-        <Menu.Item
-          titleStyle={{ color: "white" }}
-          onPress={() => console.log("Supprimer %i", appointmentId)}
-          title="Supprimer"
-        />
-      </Menu>
-    </View>
+          <Menu.Item
+            titleStyle={{ color: "white" }}
+            onPress={() => deleteAppointment(appointmentId)}
+            title="Supprimer"
+          />
+        </Menu>
+      </View>
+    </>
   );
 }
 
