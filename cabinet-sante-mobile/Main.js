@@ -150,6 +150,7 @@ export default function Main() {
         {displayedData.map((event, index) => (
           <View key={event.appointmentId}>
             <Event
+              appointmentId={event.appointmentId}
               start={displayTime(new Date(event.start))}
               end={displayTime(new Date(event.end))}
               title={event.title}

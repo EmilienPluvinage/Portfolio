@@ -1,8 +1,41 @@
-import { StyleSheet } from "react-native";
-import { Card, Avatar, Paragraph, IconButton } from "react-native-paper";
+import { StyleSheet, View } from "react-native";
+import { Card, Avatar, Paragraph, IconButton, Menu } from "react-native-paper";
 import { useConfig } from "./contexts/ConfigContext";
+import { useState } from "react";
+
+function DropdownMenu({ appointmentId }) {
+  const [visible, setVisible] = useState(false);
+  return (
+    <View style={styles.dropdownMenu}>
+      <Menu
+        visible={visible}
+        contentStyle={{ backgroundColor: "rgb(60,60,60)" }}
+        onDismiss={() => setVisible(false)}
+        anchor={
+          <IconButton
+            icon="dots-vertical"
+            color="#ffffff"
+            onPress={() => setVisible(true)}
+          />
+        }
+      >
+        <Menu.Item
+          titleStyle={{ color: "white" }}
+          onPress={() => console.log("Modifier %i", appointmentId)}
+          title="Modifier"
+        />
+        <Menu.Item
+          titleStyle={{ color: "white" }}
+          onPress={() => console.log("Supprimer %i", appointmentId)}
+          title="Supprimer"
+        />
+      </Menu>
+    </View>
+  );
+}
 
 export default function Event({
+  appointmentId,
   start,
   end,
   title,
@@ -46,14 +79,7 @@ export default function Event({
             color="white"
           />
         )}
-        right={(props) => (
-          <IconButton
-            {...props}
-            icon="dots-vertical"
-            color="#ffffff"
-            onPress={() => console.log("Open Event Details")}
-          />
-        )}
+        right={(props) => <DropdownMenu appointmentId={appointmentId} />}
       />
       <Card.Content style={styles.cardContent}>
         <Paragraph style={styles.paragrah}>{patients}</Paragraph>
@@ -76,5 +102,10 @@ const styles = StyleSheet.create({
   },
   paragrah: {
     color: "#ffffff",
+  },
+  dropdownMenu: {
+    paddingTop: 50,
+    flexDirection: "row",
+    justifyContent: "center",
   },
 });
