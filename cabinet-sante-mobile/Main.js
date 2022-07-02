@@ -1,10 +1,64 @@
 import { useState } from "react";
 import { ScrollView, View, StyleSheet, Text } from "react-native";
-import { Divider } from "react-native-paper";
+import { Divider, Button } from "react-native-paper";
 import { usePatients } from "./contexts/PatientsContext";
-import { displayTime } from "./Functions/Functions";
-
+import { displayTime, displayFullDate } from "./Functions/Functions";
 import Event from "./Event";
+import { Ionicons } from "@expo/vector-icons";
+import dayjs from "dayjs";
+import DateTimePicker from "@react-native-community/datetimepicker";
+
+function DateSelector({ date, setDate }) {
+  const style = { backgroundColor: "#1098AD", marginHorizontal: 5 };
+  const [datePicker, setDatePicker] = useState(false);
+
+  function onDateSelected(event, value) {
+    setDate(value);
+    setDatePicker(false);
+  }
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "center",
+        marginBottom: 10,
+      }}
+    >
+      <Button
+        mode="contained"
+        style={style}
+        onPress={() =>
+          setDate((prev) => dayjs(prev).subtract(1, "day").toDate())
+        }
+      >
+        <Ionicons name="arrow-back-outline" color={"white"} size={18} />
+      </Button>
+      <Button
+        mode="contained"
+        style={style}
+        onPress={() => setDatePicker(true)}
+      >
+        {displayFullDate(date, true)}
+      </Button>
+      <Button
+        mode="contained"
+        style={style}
+        onPress={() => setDate((prev) => dayjs(prev).add(1, "day").toDate())}
+      >
+        <Ionicons name="arrow-forward-outline" color={"white"} size={18} />
+      </Button>
+      {datePicker && (
+        <DateTimePicker
+          value={date}
+          mode={"date"}
+          display={"default"}
+          is24Hour={true}
+          onChange={onDateSelected}
+        />
+      )}
+    </View>
+  );
+}
 
 export default function Main() {
   // Data from context
@@ -87,7 +141,10 @@ export default function Main() {
   return (
     <>
       <View style={styles.item}>
-        <Text style={styles.text}>{dailySummary}</Text>
+        <DateSelector date={date} setDate={setDate} />
+        <View style={{ flexDirection: "row", justifyContent: "center" }}>
+          <Text style={styles.text}>{dailySummary}</Text>
+        </View>
       </View>
       <ScrollView>
         {displayedData.map((event, index) => (
