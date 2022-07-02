@@ -1,14 +1,20 @@
 import { StyleSheet } from "react-native";
 import { Card, Avatar, Paragraph, IconButton } from "react-native-paper";
 
-export default function Event() {
+export default function Event({
+  start,
+  end,
+  title,
+  appointmentTypeId,
+  patients,
+}) {
   return (
     <Card style={styles.items}>
       <Card.Title
         titleStyle={styles.cardTitle}
         subtitleStyle={styles.cardTitle}
-        title="9:00 - 10:00"
-        subtitle="Respirez profondément"
+        title={`${start} - ${end}`}
+        subtitle={title}
         left={(props) => <Avatar.Text {...props} size={50} label="T" />}
         right={(props) => (
           <IconButton
@@ -20,9 +26,7 @@ export default function Event() {
         )}
       />
       <Card.Content style={styles.cardContent}>
-        <Paragraph style={styles.paragrah}>
-          Emilien Pluvinage, Florence Jacquet, Jean Pluvinage.
-        </Paragraph>
+        <Paragraph style={styles.paragrah}>{patients}</Paragraph>
       </Card.Content>
     </Card>
   );
