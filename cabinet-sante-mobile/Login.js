@@ -20,6 +20,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // if we're not logged in but there is an existing token in local storage
@@ -31,7 +32,9 @@ export default function Login() {
         AsyncStorage.getItem("rememberMe") === "true" &&
         l
       ) {
+        setLoading(true);
         await logging(true, currentToken);
+        setLoading(false);
       }
     }
     returning();
@@ -55,11 +58,14 @@ export default function Login() {
   }
 
   async function submitForm() {
+    setLoading(true);
     try {
       const data = await postLogin(username.toLowerCase(), password);
       if (data.loggedIn) {
         setError("");
+
         await logging(true, data.token);
+        setLoading(false);
         AsyncStorage.setItem("token", data.token);
         AsyncStorage.setItem("rememberMe", JSON.stringify(true));
       } else {
@@ -74,7 +80,7 @@ export default function Login() {
             setError("Erreur de connexion.");
             break;
         }
-
+        setLoading(false);
         setOpen(true);
       }
     } catch (e) {
@@ -111,6 +117,7 @@ export default function Login() {
             mode="contained"
             onPress={() => submitForm()}
             style={styles.textInput}
+            loading={loading}
           >
             Connexion
           </Button>
