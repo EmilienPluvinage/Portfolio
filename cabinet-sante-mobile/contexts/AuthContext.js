@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { useUpdatePatients } from "./PatientsContext";
 import { useUpdateConfig } from "./ConfigContext";
 import { REACT_APP_API_DOMAIN } from "@env";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginContext = React.createContext();
 const LoggingContext = React.createContext();
@@ -58,7 +59,7 @@ export function AuthProvider({ children }) {
       clearConfig();
       clearPatients();
       removeToken(token);
-      //localStorage.removeItem("token");
+      AsyncStorage.removeItem("token");
       setToken(null);
     }
     setLogin(bool);

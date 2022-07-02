@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import {
   Title,
@@ -10,14 +10,32 @@ import {
 } from "react-native-paper";
 import { useLogin, useLogging } from "./contexts/AuthContext";
 import { REACT_APP_API_DOMAIN } from "@env";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Login() {
+  const currentToken = AsyncStorage.getItem("token");
   const loggedIn = useLogin().login;
   const logging = useLogging();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    // if we're not logged in but there is an existing token in local storage
+    // it means the user is returning, so we log him in.
+    async function returning() {
+      if (
+        currentToken !== null &&
+        loggedIn === false &&
+        AsyncStorage.getItem("rememberMe") === "true" &&
+        l
+      ) {
+        await logging(true, currentToken);
+      }
+    }
+    returning();
+  }, [currentToken, loggedIn, logging]);
 
   async function postLogin(email, password) {
     try {
@@ -42,6 +60,8 @@ export default function Login() {
       if (data.loggedIn) {
         setError("");
         await logging(true, data.token);
+        AsyncStorage.setItem("token", data.token);
+        AsyncStorage.setItem("rememberMe", JSON.stringify(true));
       } else {
         switch (data.error) {
           case "incorrect password":
