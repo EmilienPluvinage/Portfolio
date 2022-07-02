@@ -37,17 +37,7 @@ export default function PatientSearch({ patientsList, addPatient }) {
 
   return (
     <>
-      <Button
-        color="#1098AD"
-        mode="outlined"
-        onPress={() => setOpen(true)}
-        contentStyle={{
-          backgroundColor: "#E3FAFC",
-          borderWidth: 1,
-          borderRadius: 5,
-          borderColor: "#1098AD",
-        }}
-      >
+      <Button color="#1098AD" mode="contained" onPress={() => setOpen(true)}>
         ajouter un patient
       </Button>
 

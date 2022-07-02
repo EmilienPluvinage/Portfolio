@@ -1,12 +1,45 @@
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
-import { Title, TextInput, RadioButton, Button } from "react-native-paper";
+import { Title, TextInput, Button, Text, IconButton } from "react-native-paper";
 import DropDown from "react-native-paper-dropdown";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Patient from "./Patient";
 import PatientSearch from "./PatientSearch";
 import { displayTime } from "./Functions/Functions";
 import dayjs from "dayjs";
+
+function BottomBar({ remove, duplicate, submitForm }) {
+  const size = 26;
+  const color = "white";
+  return (
+    <View style={styles.bottomBar}>
+      <View style={styles.bottomBarButton}>
+        <IconButton
+          icon="delete"
+          color={color}
+          size={size}
+          onPress={() => console.log("delete")}
+        />
+      </View>
+      <View style={styles.bottomBarButton}>
+        <IconButton
+          icon="content-copy"
+          color={color}
+          size={size}
+          onPress={() => console.log("copy")}
+        />
+      </View>
+      <View style={styles.bottomBarButton}>
+        <IconButton
+          icon="check"
+          color={color}
+          size={size}
+          onPress={() => submitForm()}
+        />
+      </View>
+    </View>
+  );
+}
 
 export default function NewAppointment() {
   const [title, setTitle] = useState("");
@@ -78,121 +111,118 @@ export default function NewAppointment() {
   }
 
   return (
-    <ScrollView>
-      <View style={styles.item}>
-        <Title style={styles.text}>Nouvelle Consultation</Title>
-        <View>
-          <TextInput
-            style={styles.textInput}
-            activeUnderlineColor="#1098AD"
-            label="Titre"
-            value={title}
-            onChangeText={(text) => setTitle(text)}
-            type="outlined"
-          />
-          <View style={styles.dropdown}>
-            <DropDown
-              mode={"outlined"}
-              visible={showDropDown}
-              showDropDown={() => setShowDropDown(true)}
-              onDismiss={() => setShowDropDown(false)}
-              value={type}
-              setValue={setType}
-              list={types}
-              activeColor="#1098AD"
+    <>
+      <ScrollView>
+        <View style={styles.item}>
+          <Title style={styles.text}>Nouvelle Consultation</Title>
+          <View>
+            <TextInput
+              style={styles.textInput}
+              activeUnderlineColor="#1098AD"
+              label="Titre"
+              value={title}
+              onChangeText={(text) => setTitle(text)}
+              type="outlined"
             />
-          </View>
-          <Pressable onPress={() => setDatePicker(true)}>
-            <View pointerEvents="none">
-              <TextInput
-                style={styles.textInput}
-                activeUnderlineColor="#1098AD"
-                value={date.toLocaleDateString("fr-FR")}
-                label="Jour"
-                type="outlined"
+            <View style={styles.dropdown}>
+              <DropDown
+                mode={"outlined"}
+                visible={showDropDown}
+                showDropDown={() => setShowDropDown(true)}
+                onDismiss={() => setShowDropDown(false)}
+                value={type}
+                setValue={setType}
+                list={types}
+                activeColor="#1098AD"
               />
             </View>
-          </Pressable>
-          {datePicker && (
-            <DateTimePicker
-              value={date}
-              mode={"date"}
-              display={"default"}
-              is24Hour={true}
-              onChange={onDateSelected}
-            />
-          )}
-          <View style={styles.timeRange}>
-            <Pressable onPress={() => setStartPicker(true)} style={{ flex: 1 }}>
-              <View pointerEvents="none" style={{ flex: 1 }}>
+            <Pressable onPress={() => setDatePicker(true)}>
+              <View pointerEvents="none">
                 <TextInput
-                  style={{ ...styles.timeInput, marginRight: 5 }}
+                  style={styles.textInput}
                   activeUnderlineColor="#1098AD"
-                  value={displayTime(start)}
-                  label="Heure de début"
+                  value={date.toLocaleDateString("fr-FR")}
+                  label="Jour"
                   type="outlined"
                 />
               </View>
             </Pressable>
-
-            {startPicker && (
+            {datePicker && (
               <DateTimePicker
-                value={start}
-                mode={"time"}
+                value={date}
+                mode={"date"}
                 display={"default"}
                 is24Hour={true}
-                onChange={onStartSelected}
+                onChange={onDateSelected}
               />
             )}
+            <View style={styles.timeRange}>
+              <Pressable
+                onPress={() => setStartPicker(true)}
+                style={{ flex: 1 }}
+              >
+                <View pointerEvents="none" style={{ flex: 1 }}>
+                  <TextInput
+                    style={{ ...styles.timeInput, marginRight: 5 }}
+                    activeUnderlineColor="#1098AD"
+                    value={displayTime(start)}
+                    label="Heure de début"
+                    type="outlined"
+                  />
+                </View>
+              </Pressable>
 
-            <Pressable onPress={() => setEndPicker(true)} style={{ flex: 1 }}>
-              <View pointerEvents="none" style={{ flex: 1 }}>
-                <TextInput
-                  style={{ ...styles.timeInput, marginLeft: 5 }}
-                  activeUnderlineColor="#1098AD"
-                  value={displayTime(end)}
-                  label="Heure de fin"
-                  type="outlined"
+              {startPicker && (
+                <DateTimePicker
+                  value={start}
+                  mode={"time"}
+                  display={"default"}
+                  is24Hour={true}
+                  onChange={onStartSelected}
                 />
-              </View>
-            </Pressable>
+              )}
 
-            {endPicker && (
-              <DateTimePicker
-                value={end}
-                mode={"time"}
-                display={"default"}
-                is24Hour={true}
-                onChange={onEndSelected}
+              <Pressable onPress={() => setEndPicker(true)} style={{ flex: 1 }}>
+                <View pointerEvents="none" style={{ flex: 1 }}>
+                  <TextInput
+                    style={{ ...styles.timeInput, marginLeft: 5 }}
+                    activeUnderlineColor="#1098AD"
+                    value={displayTime(end)}
+                    label="Heure de fin"
+                    type="outlined"
+                  />
+                </View>
+              </Pressable>
+
+              {endPicker && (
+                <DateTimePicker
+                  value={end}
+                  mode={"time"}
+                  display={"default"}
+                  is24Hour={true}
+                  onChange={onEndSelected}
+                />
+              )}
+            </View>
+            <View style={styles.button}>
+              <PatientSearch
+                patientsList={patientSearchList}
+                addPatient={addPatient}
               />
-            )}
-          </View>
-          <View style={styles.button}>
-            <PatientSearch
-              patientsList={patientSearchList}
-              addPatient={addPatient}
-            />
-          </View>
-          <View style={styles.button}>
-            <Button
-              color="#1098AD"
-              mode="contained"
-              onPress={() => submitForm()}
-            >
-              valider
-            </Button>
+            </View>
           </View>
         </View>
-      </View>
-      {patientsInAppointment.map((patient) => (
-        <Patient
-          key={"Patient" + patient.id}
-          patientId={patient.id}
-          fullname={patient.fullname}
-          removePatient={removePatient}
-        />
-      ))}
-    </ScrollView>
+        {patientsInAppointment.map((patient) => (
+          <Patient
+            key={"Patient" + patient.id}
+            patientId={patient.id}
+            fullname={patient.fullname}
+            removePatient={removePatient}
+          />
+        ))}
+      </ScrollView>
+      <BottomBar submitForm={submitForm} />
+    </>
   );
 }
 
@@ -231,5 +261,16 @@ const styles = StyleSheet.create({
   button: { marginVertical: 10 },
   dropdown: {
     marginVertical: 10,
+  },
+  bottomBar: {
+    backgroundColor: "#1098AD",
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  bottomBarButton: {
+    flex: 1,
+    backgroundColor: "#1098AD",
+    flexDirection: "row",
+    justifyContent: "center",
   },
 });
