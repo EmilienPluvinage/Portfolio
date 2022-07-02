@@ -60,7 +60,7 @@ function DateSelector({ date, setDate }) {
   );
 }
 
-export default function Main() {
+export default function Main({ navigation }) {
   // Data from context
   const appointments = usePatients().appointments;
   const patients = usePatients().patients;
@@ -156,6 +156,7 @@ export default function Main() {
               title={event.title}
               appointmentTypeId={event.idType}
               patients={event.patients}
+              navigation={navigation}
             />
             {index !== displayedData.length - 1 &&
               displayTime(new Date(event.end)) !==

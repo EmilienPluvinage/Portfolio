@@ -4,7 +4,7 @@ import { useConfig } from "./contexts/ConfigContext";
 import { useState } from "react";
 import Confirmation from "./Confirmation";
 
-function DropdownMenu({ appointmentId }) {
+function DropdownMenu({ appointmentId, navigation }) {
   const [visible, setVisible] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
   const [callback, setCallback] = useState();
@@ -12,6 +12,7 @@ function DropdownMenu({ appointmentId }) {
   function updateAppointment(id) {
     console.log("Modifier %i", id);
     setVisible(false);
+    navigation.navigate("NewAppointment", { appointmentId: appointmentId });
   }
 
   function deleteAppointment(id) {
@@ -62,6 +63,7 @@ export default function Event({
   title,
   appointmentTypeId,
   patients,
+  navigation,
 }) {
   const appointmentTypes = useConfig().appointmentTypes;
   const appointmentType = appointmentTypes.find(
@@ -100,7 +102,9 @@ export default function Event({
             color="white"
           />
         )}
-        right={(props) => <DropdownMenu appointmentId={appointmentId} />}
+        right={(props) => (
+          <DropdownMenu appointmentId={appointmentId} navigation={navigation} />
+        )}
       />
       <Card.Content style={styles.cardContent}>
         <Paragraph style={styles.paragrah}>{patients}</Paragraph>
