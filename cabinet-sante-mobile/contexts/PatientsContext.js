@@ -19,11 +19,10 @@ export function PatientsProvider({ children }) {
   const [missedAppointments, setMissedAppointments] = useState([]);
   const [payements, setPayements] = useState([]);
   const [sharedBalance, setSharedBalance] = useState([]);
-
   const [reminders, setReminders] = useState([]);
 
   async function initData(token) {
-    await Promise.allSettled([
+    await Promise.all([
       updatePatientsList(token),
       getData(token, "/GetHistory", setAppointments),
       getData(token, "/GetPayements", setPayements),
@@ -91,6 +90,7 @@ export function PatientsProvider({ children }) {
         }
       );
       const res = await fetchResponse.json();
+      console.log(res.success);
       callback(res.data);
     } catch (e) {
       return e;

@@ -49,15 +49,20 @@ export function AuthProvider({ children }) {
   async function logging(bool, newToken) {
     if (bool) {
       setToken(newToken);
-
-      await Promise.allSettled([getPatients(newToken), getConfig(newToken)]);
+      try {
+        console.log(`New Token ${newToken}`);
+        await Promise.all([getPatients(newToken), getConfig(newToken)]);
+      } catch (e) {
+        return e;
+      }
     } else {
       clearConfig();
       clearPatients();
       removeToken(token);
-      localStorage.removeItem("token");
+      //localStorage.removeItem("token");
       setToken(null);
     }
+    console.log("Test");
     setLogin(bool);
   }
   return (
