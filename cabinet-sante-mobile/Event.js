@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { Card, Avatar, Paragraph, IconButton } from "react-native-paper";
+import { useConfig } from "./contexts/ConfigContext";
 
 export default function Event({
   start,
@@ -8,6 +9,27 @@ export default function Event({
   appointmentTypeId,
   patients,
 }) {
+  const appointmentTypes = useConfig().appointmentTypes;
+  const appointmentType = appointmentTypes.find(
+    (type) => type.id === appointmentTypeId
+  )?.type;
+  const color = appointmentTypes.find(
+    (type) => type.id === appointmentTypeId
+  )?.color;
+  function capitalLetter(string) {
+    switch (string) {
+      case "Cours Duo":
+        return "D";
+      case "Cours Tapis":
+        return "T";
+      case "Cours Machine":
+        return "M";
+      case "Cours Privé":
+        return "P";
+      default:
+        return string[0];
+    }
+  }
   return (
     <Card style={styles.items}>
       <Card.Title
@@ -15,7 +37,15 @@ export default function Event({
         subtitleStyle={styles.cardTitle}
         title={`${start} - ${end}`}
         subtitle={title}
-        left={(props) => <Avatar.Text {...props} size={50} label="T" />}
+        left={(props) => (
+          <Avatar.Text
+            {...props}
+            size={50}
+            label={capitalLetter(appointmentType)}
+            style={{ backgroundColor: color }}
+            color="white"
+          />
+        )}
         right={(props) => (
           <IconButton
             {...props}
