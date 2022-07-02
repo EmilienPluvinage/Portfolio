@@ -14,6 +14,9 @@ import { Ionicons } from "@expo/vector-icons";
 import Login from "./Login";
 import { useState } from "react";
 import { REACT_APP_API_DOMAIN } from "@env";
+import { AuthProvider } from "./contexts/AuthContext";
+import { PatientsProvider } from "./contexts/PatientsContext";
+import { ConfigurationProvider } from "./contexts/ConfigContext";
 
 function CustomDrawerContent(props) {
   return (
@@ -40,67 +43,81 @@ export default function App() {
     <NavigationContainer>
       <StatusBar style="light" />
       <PaperProvider>
-        {login ? (
-          <Drawer.Navigator
-            drawerContent={(props) => (
-              <CustomDrawerContent {...props} setLogin={setLogin} />
-            )}
-            initialRouteName="Main"
-            screenOptions={{
-              drawerInactiveBackgroundColor: "rgb(30,30,30)",
-              drawerInactiveTintColor: "#ffffff",
-              drawerActiveTintColor: "#ffffff",
-              drawerActiveBackgroundColor: "#1098AD",
-              drawerStyle: { backgroundColor: "rgb(30,30,30)" },
-              sceneContainerStyle: styles.container,
-              headerTintColor: "#1098AD",
-              headerStyle: {
-                backgroundColor: "rgb(30,30,30)",
-                shadowColor: "transparent",
-              },
-            }}
-          >
-            <Drawer.Screen
-              name="Main"
-              component={Main}
-              options={{
-                drawerLabel: "Agenda",
-                headerTitle: "Mon Cabinet Santé",
-                drawerIcon: ({ color, size }) => (
-                  <Ionicons name="home-outline" color={color} size={size} />
-                ),
-              }}
-            />
-            <Drawer.Screen
-              name="NewPatient"
-              component={NewPatient}
-              options={{
-                drawerLabel: "Nouveau Patient",
-                headerTitle: "Patient",
-                drawerIcon: ({ color, size }) => (
-                  <Ionicons
-                    name="person-add-outline"
-                    color={color}
-                    size={size}
+        <ConfigurationProvider>
+          <PatientsProvider>
+            <AuthProvider>
+              {login ? (
+                <Drawer.Navigator
+                  drawerContent={(props) => (
+                    <CustomDrawerContent {...props} setLogin={setLogin} />
+                  )}
+                  initialRouteName="Main"
+                  screenOptions={{
+                    drawerInactiveBackgroundColor: "rgb(30,30,30)",
+                    drawerInactiveTintColor: "#ffffff",
+                    drawerActiveTintColor: "#ffffff",
+                    drawerActiveBackgroundColor: "#1098AD",
+                    drawerStyle: { backgroundColor: "rgb(30,30,30)" },
+                    sceneContainerStyle: styles.container,
+                    headerTintColor: "#1098AD",
+                    headerStyle: {
+                      backgroundColor: "rgb(30,30,30)",
+                      shadowColor: "transparent",
+                    },
+                  }}
+                >
+                  <Drawer.Screen
+                    name="Main"
+                    component={Main}
+                    options={{
+                      drawerLabel: "Agenda",
+                      headerTitle: "Mon Cabinet Santé",
+                      drawerIcon: ({ color, size }) => (
+                        <Ionicons
+                          name="home-outline"
+                          color={color}
+                          size={size}
+                        />
+                      ),
+                    }}
                   />
-                ),
-              }}
-            />
-            <Drawer.Screen
-              name="NewAppointment"
-              component={NewAppointment}
-              options={{
-                drawerLabel: "Consultation",
-                headerTitle: "Consultation",
-                drawerIcon: ({ color, size }) => (
-                  <Ionicons name="calendar-outline" color={color} size={size} />
-                ),
-              }}
-            />
-          </Drawer.Navigator>
-        ) : (
-          <Login login={login} setLogin={setLogin} />
-        )}
+                  <Drawer.Screen
+                    name="NewPatient"
+                    component={NewPatient}
+                    options={{
+                      drawerLabel: "Nouveau Patient",
+                      headerTitle: "Patient",
+                      drawerIcon: ({ color, size }) => (
+                        <Ionicons
+                          name="person-add-outline"
+                          color={color}
+                          size={size}
+                        />
+                      ),
+                    }}
+                  />
+                  <Drawer.Screen
+                    name="NewAppointment"
+                    component={NewAppointment}
+                    options={{
+                      drawerLabel: "Consultation",
+                      headerTitle: "Consultation",
+                      drawerIcon: ({ color, size }) => (
+                        <Ionicons
+                          name="calendar-outline"
+                          color={color}
+                          size={size}
+                        />
+                      ),
+                    }}
+                  />
+                </Drawer.Navigator>
+              ) : (
+                <Login login={login} setLogin={setLogin} />
+              )}
+            </AuthProvider>
+          </PatientsProvider>
+        </ConfigurationProvider>
       </PaperProvider>
     </NavigationContainer>
   );

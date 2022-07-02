@@ -12,6 +12,7 @@ import { useLogin, useLogging } from "./contexts/AuthContext";
 import { REACT_APP_API_DOMAIN } from "@env";
 
 export default function Login({ login, setLogin }) {
+  const loggedIn = useLogin().login;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);

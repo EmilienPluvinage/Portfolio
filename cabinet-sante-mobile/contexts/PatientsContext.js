@@ -105,14 +105,11 @@ export function PatientsProvider({ children }) {
         missedAppointments: missedAppointments,
         payements: payements,
         sharedBalance: sharedBalance,
-        relatives: relatives,
         reminders: reminders,
-        pathologies: pathologies,
-        historicalData: historicalData,
       }}
     >
       <UpdatePatientsContext.Provider
-        value={{ update: initData, check: checkPrices, clear: clear }}
+        value={{ update: initData, clear: clear }}
       >
         {children}
       </UpdatePatientsContext.Provider>
