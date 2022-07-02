@@ -18,15 +18,6 @@ export default function Patient({ patientId, fullname, removePatient }) {
         titleStyle={styles.cardTitle}
         subtitleStyle={styles.cardTitle}
         title={fullname}
-        right={(props) => (
-          <IconButton
-            {...props}
-            icon="delete"
-            color="#ffffff"
-            onPress={() => removePatient(patientId)}
-            style={{ backgroundColor: "rgb(80,80,80)" }}
-          />
-        )}
       />
       <Card.Content style={styles.cardContent}>
         <View style={styles.switchView}>
@@ -45,6 +36,11 @@ export default function Patient({ patientId, fullname, removePatient }) {
           />
           <Paragraph style={styles.paragrah}>Payé</Paragraph>
         </View>
+        <IconButton
+          icon="delete"
+          color="#ffffff"
+          onPress={() => removePatient(patientId)}
+        />
       </Card.Content>
     </Card>
   );
@@ -57,6 +53,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     color: "#ffffff",
+    fontSize: 16,
   },
   items: {
     backgroundColor: "rgb(40, 40, 40)",
