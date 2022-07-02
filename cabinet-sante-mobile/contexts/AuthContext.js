@@ -50,7 +50,6 @@ export function AuthProvider({ children }) {
     if (bool) {
       setToken(newToken);
       try {
-        console.log(`New Token ${newToken}`);
         await Promise.all([getPatients(newToken), getConfig(newToken)]);
       } catch (e) {
         return e;
@@ -62,7 +61,6 @@ export function AuthProvider({ children }) {
       //localStorage.removeItem("token");
       setToken(null);
     }
-    console.log("Test");
     setLogin(bool);
   }
   return (

@@ -90,7 +90,6 @@ export function PatientsProvider({ children }) {
         }
       );
       const res = await fetchResponse.json();
-      console.log(res.success);
       callback(res.data);
     } catch (e) {
       return e;

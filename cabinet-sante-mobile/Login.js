@@ -41,7 +41,6 @@ export default function Login() {
       const data = await postLogin(username.toLowerCase(), password);
       if (data.loggedIn) {
         setError("");
-        console.log(`Submit Form Token : ${data.token}`);
         await logging(true, data.token);
       } else {
         switch (data.error) {
