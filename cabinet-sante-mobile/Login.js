@@ -11,14 +11,13 @@ import {
 import { useLogin, useLogging } from "./contexts/AuthContext";
 import { REACT_APP_API_DOMAIN } from "@env";
 
-export default function Login({ login, setLogin }) {
+export default function Login() {
   const loggedIn = useLogin().login;
+  const logging = useLogging();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
-  // const loggedIn = useLogin().login;
-  // const logging = useLogging();
 
   async function postLogin(email, password) {
     try {
@@ -42,7 +41,8 @@ export default function Login({ login, setLogin }) {
       const data = await postLogin(username.toLowerCase(), password);
       if (data.loggedIn) {
         setError("");
-        setLogin(true);
+        console.log(`Submit Form Token : ${data.token}`);
+        await logging(true, data.token);
       } else {
         switch (data.error) {
           case "incorrect password":

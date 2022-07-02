@@ -11,7 +11,7 @@ import { StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Login from "./Login";
 
-import { useLogin } from "./contexts/AuthContext";
+import { useLogin, useLogging } from "./contexts/AuthContext";
 
 function CustomDrawerContent(props) {
   return (
@@ -33,13 +33,14 @@ const Drawer = createDrawerNavigator();
 
 export default function App() {
   const loggedIn = useLogin().login;
+  const logging = useLogging();
 
   return (
     <>
       {loggedIn ? (
         <Drawer.Navigator
           drawerContent={(props) => (
-            <CustomDrawerContent {...props} setLogin={setLogin} />
+            <CustomDrawerContent {...props} setLogin={logging} />
           )}
           initialRouteName="Main"
           screenOptions={{

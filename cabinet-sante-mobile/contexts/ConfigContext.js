@@ -25,16 +25,10 @@ export function ConfigurationProvider({ children }) {
     setPackages([]);
     setPriceScheme([]);
     setParameters([]);
-    setPathologies([]);
-    setRelationships([]);
   }
 
   async function initData(token) {
-    await Promise.allSettled([
-      updateAppointmentTypesList(token),
-      getPathologiesList(token),
-      getRelationshipsList(token),
-    ]);
+    await updateAppointmentTypesList(token);
   }
 
   async function updateAppointmentTypesList(token) {
