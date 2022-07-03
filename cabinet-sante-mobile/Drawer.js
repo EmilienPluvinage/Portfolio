@@ -7,11 +7,13 @@ import {
 import NewPatient from "./NewPatient";
 import NewAppointment from "./NewAppointment";
 import Main from "./Main";
-import { StyleSheet } from "react-native";
+import Reminders from "./Reminders";
+import { StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Login from "./Login";
-
+import { Badge } from "react-native-paper";
 import { useLogin, useLogging } from "./contexts/AuthContext";
+import { usePatients } from "./contexts/PatientsContext";
 
 function CustomDrawerContent(props) {
   return (
@@ -32,8 +34,10 @@ function CustomDrawerContent(props) {
 const Drawer = createDrawerNavigator();
 
 export default function App() {
+  // data from context
   const loggedIn = useLogin().login;
   const logging = useLogging();
+  const reminders = usePatients().reminders;
 
   return (
     <>
@@ -93,10 +97,41 @@ export default function App() {
               drawerItemPress: (e) => {
                 // Prevent default action
                 e.preventDefault();
-                // Redirect
+                // Redirect with appointmentId=0 which means it's a new appointment
                 navigation.navigate("NewAppointment", { appointmentId: 0 });
               },
             })}
+          />
+          <Drawer.Screen
+            name="Reminders"
+            component={Reminders}
+            options={{
+              drawerLabel: ({ focused }) => (
+                <View
+                  style={{
+                    backgroundColor: "transparent",
+                    flexDirection: "row",
+                  }}
+                >
+                  <Text style={styles.drawerLabelText}>Rappels</Text>
+                  <Badge
+                    style={{
+                      backgroundColor: !focused ? "#1098AD" : "rgb(30,30,30)",
+                    }}
+                  >
+                    {reminders.length}
+                  </Badge>
+                </View>
+              ),
+              headerTitle: "Rappels",
+              drawerIcon: ({ color, size }) => (
+                <Ionicons
+                  name="alert-circle-outline"
+                  color={color}
+                  size={size}
+                />
+              ),
+            }}
           />
         </Drawer.Navigator>
       ) : (
@@ -113,5 +148,10 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     justifyContent: "flex-start",
     padding: 5,
+  },
+  drawerLabelText: {
+    color: "white",
+    fontWeight: "500",
+    marginRight: 10,
   },
 });
