@@ -10,7 +10,6 @@ function DropdownMenu({ appointmentId, navigation }) {
   const [callback, setCallback] = useState();
 
   function updateAppointment(id) {
-    console.log("Modifier %i", id);
     setVisible(false);
     navigation.navigate("NewAppointment", { appointmentId: appointmentId });
   }

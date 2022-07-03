@@ -89,6 +89,14 @@ export default function App() {
                 <Ionicons name="calendar-outline" color={color} size={size} />
               ),
             }}
+            listeners={({ navigation, route }) => ({
+              drawerItemPress: (e) => {
+                // Prevent default action
+                e.preventDefault();
+                // Redirect
+                navigation.navigate("NewAppointment", { appointmentId: 0 });
+              },
+            })}
           />
         </Drawer.Navigator>
       ) : (
