@@ -3,20 +3,34 @@ import { Card, Avatar, Paragraph, IconButton, Menu } from "react-native-paper";
 import { useConfig } from "./contexts/ConfigContext";
 import { useState } from "react";
 import Confirmation from "./Confirmation";
+import { REACT_APP_API_DOMAIN } from "@env";
+import { deleteAppointment } from "./Functions/Functions";
+import { useLogin } from "./contexts/AuthContext";
+import { useUpdatePatients } from "./contexts/PatientsContext";
 
 function DropdownMenu({ appointmentId, navigation }) {
   const [visible, setVisible] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
   const [callback, setCallback] = useState();
+  const token = useLogin().token;
+  const updateContext = useUpdatePatients().update;
 
   function updateAppointment(id) {
     setVisible(false);
     navigation.navigate("NewAppointment", { appointmentId: appointmentId });
   }
 
-  function deleteAppointment(id) {
-    setVisible(false);
-    setConfirmation(true);
+  async function clickOnDeleteAppointment(id) {
+    try {
+      const result = await deleteAppointment(id, token, REACT_APP_API_DOMAIN);
+      setVisible(false);
+      if (result) {
+        setConfirmation(true);
+        await updateContext(token);
+      }
+    } catch (e) {
+      return e;
+    }
   }
 
   return (
@@ -46,7 +60,7 @@ function DropdownMenu({ appointmentId, navigation }) {
           />
           <Menu.Item
             titleStyle={{ color: "white" }}
-            onPress={() => deleteAppointment(appointmentId)}
+            onPress={() => clickOnDeleteAppointment(appointmentId)}
             title="Supprimer"
           />
         </Menu>

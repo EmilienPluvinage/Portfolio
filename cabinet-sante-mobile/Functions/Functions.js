@@ -365,3 +365,27 @@ export function BalanceByPatient(
     return 0;
   }
 }
+
+export async function deleteAppointment(id, token, apiDomain) {
+  console.log(id);
+  console.log(token);
+  console.log(apiDomain);
+  var link = apiDomain + "/DeleteEvent";
+  try {
+    const fetchResponse = await fetch(link, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+        token: token,
+      }),
+    });
+    const res = await fetchResponse.json();
+    return res.success;
+  } catch (e) {
+    return e;
+  }
+}
