@@ -14,13 +14,36 @@ import { Ionicons } from "@expo/vector-icons";
 import Login from "./Login";
 import { Badge } from "react-native-paper";
 import { useLogin, useLogging } from "./contexts/AuthContext";
-import { usePatients } from "./contexts/PatientsContext";
+import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { BalanceByPatient } from "./Functions/Functions";
+import { useState } from "react";
 
 function CustomDrawerContent(props) {
+  const token = useLogin().token;
+  const updateContext = useUpdatePatients().update;
+  const [label, setLabel] = useState("Mettre à jour");
+
+  async function refresh() {
+    try {
+      setLabel("Mettre à jour (en cours)");
+      await updateContext(token);
+      setLabel("Mettre à jour");
+    } catch (e) {
+      return e;
+    }
+  }
+
   return (
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} />
+      <DrawerItem
+        inactiveTintColor="#ffffff"
+        label={label}
+        onPress={() => refresh()}
+        icon={({ color, size }) => (
+          <Ionicons name="refresh-outline" color={color} size={size} />
+        )}
+      />
       <DrawerItem
         inactiveTintColor="#ffffff"
         label="Déconnexion"
