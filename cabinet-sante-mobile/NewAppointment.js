@@ -91,7 +91,7 @@ export default function NewAppointment({ route }) {
   });
   const patients = usePatients().patients;
   const patientsList = patients.map((e) => {
-    return { id: e.patientId, fullname: e.fullname };
+    return { id: e.id, fullname: e.fullname };
   });
   const appointments = usePatients().appointments;
 
