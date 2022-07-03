@@ -73,7 +73,8 @@ export default function Main({ navigation }) {
     (e) =>
       new Date(e.start).getFullYear() === date.getFullYear() &&
       new Date(e.start).getMonth() === date.getMonth() &&
-      new Date(e.start).getDay() === date.getDay()
+      new Date(e.start).getDay() === date.getDay() &&
+      e.id != null
   );
 
   // Now we start drafting our displayed Data by isolating all unique appointment Ids
