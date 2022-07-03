@@ -367,9 +367,6 @@ export function BalanceByPatient(
 }
 
 export async function deleteAppointment(id, token, apiDomain) {
-  console.log(id);
-  console.log(token);
-  console.log(apiDomain);
   var link = apiDomain + "/DeleteEvent";
   try {
     const fetchResponse = await fetch(link, {

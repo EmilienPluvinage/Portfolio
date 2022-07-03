@@ -8,11 +8,33 @@ import PatientSearch from "./PatientSearch";
 import { displayTime, displayFullDate } from "./Functions/Functions";
 import dayjs from "dayjs";
 import { useConfig } from "./contexts/ConfigContext";
-import { usePatients } from "./contexts/PatientsContext";
+import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
+import { REACT_APP_API_DOMAIN } from "@env";
+import { deleteAppointment } from "./Functions/Functions";
+import { useLogin } from "./contexts/AuthContext";
+import { useNavigation } from "@react-navigation/native";
 
-function BottomBar({ remove, duplicate, submitForm }) {
+function BottomBar({ appointmentId, submitForm }) {
   const size = 26;
   const color = "white";
+  const token = useLogin().token;
+  const navigation = useNavigation();
+  const updateContext = useUpdatePatients().update;
+
+  async function clickOnDeleteAppointment(id) {
+    try {
+      const result = await deleteAppointment(id, token, REACT_APP_API_DOMAIN);
+
+      if (result) {
+        navigation.navigate("NewAppointment", { appointmentId: 0 });
+        // add snackbar update
+        await updateContext(token);
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
   return (
     <View style={styles.bottomBar}>
       <View style={styles.bottomBarButton}>
@@ -20,7 +42,7 @@ function BottomBar({ remove, duplicate, submitForm }) {
           icon="delete"
           color={color}
           size={size}
-          onPress={() => console.log("delete")}
+          onPress={() => clickOnDeleteAppointment(appointmentId)}
         />
       </View>
       <View style={styles.bottomBarButton}>
@@ -268,7 +290,7 @@ export default function NewAppointment({ route }) {
           />
         ))}
       </ScrollView>
-      <BottomBar submitForm={submitForm} />
+      <BottomBar appointmentId={appointmentId} submitForm={submitForm} />
     </>
   );
 }
