@@ -103,8 +103,14 @@ router.post("/NewPatientSimplified", (req, res, next) => {
           var userId = rows[0].userId;
           // Now connected and we have the user ID so we do the insert
           connection.query(
-            "INSERT INTO patients(userId, firstname, lastname) VALUES (?,?,?)",
-            [userId, req.body.firstname, req.body.lastname],
+            "INSERT INTO patients(userId, firstname, lastname, birthday, sex) VALUES (?,?,?)",
+            [
+              userId,
+              req.body.firstname,
+              req.body.lastname,
+              birthday ? birthday : "",
+              sex ? sex : "autre",
+            ],
             (err, result) => {
               if (err) throw err;
 

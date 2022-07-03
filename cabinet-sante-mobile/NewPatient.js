@@ -7,17 +7,65 @@ import {
   Text,
   Button,
 } from "react-native-paper";
+import { REACT_APP_API_DOMAIN } from "@env";
+import { useLogin } from "./contexts/AuthContext";
+import { useUpdatePatients } from "./contexts/PatientsContext";
 
 export default function NewPatient() {
   const [name, setName] = useState("");
   const [firstname, setFirstname] = useState("");
   const [birthday, setBirthday] = useState("");
   const [sex, setSex] = useState();
+  const [loading, setLoading] = useState(false);
+  const token = useLogin().token;
+  const updateContext = useUpdatePatients().update;
 
-  function submitForm() {
+  async function submitForm() {
     // add checks
 
-    console.log(firstname + "  " + name + " " + birthday + " " + sex);
+    setLoading(true);
+    const result = await addNewPatient(firstname, name, birthday, sex);
+    if (result) {
+      // on confirme dans la snackbar
+
+      // on met à jour le state
+      setName("");
+      setFirstname("");
+      setBirthday("");
+      setSex();
+
+      // on met à jour le contexte
+      await updateContext(token);
+    } else {
+      // on met un message d'erreur dans la snackbar
+    }
+    setLoading(false);
+  }
+
+  async function addNewPatient(firstname, lastname, birthday, sex) {
+    try {
+      const fetchResponse = await fetch(
+        REACT_APP_API_DOMAIN + "/NewPatientSimplified",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            firstname: firstname,
+            lastname: lastname,
+            birthday: new Date(birthday),
+            sex: sex,
+            token: token,
+          }),
+        }
+      );
+      const res = await fetchResponse.json();
+      return res.success;
+    } catch (e) {
+      return e;
+    }
   }
 
   function handleBirthday(text) {
@@ -91,7 +139,12 @@ export default function NewPatient() {
             </View>
           </View>
         </RadioButton.Group>
-        <Button color="#1098AD" mode="contained" onPress={() => submitForm()}>
+        <Button
+          loading={loading}
+          color="#1098AD"
+          mode="contained"
+          onPress={() => submitForm()}
+        >
           AJOUTER
         </Button>
       </View>
