@@ -254,6 +254,7 @@ export default function NewAppointment({ route }) {
               <PatientSearch
                 patientsList={patientSearchList}
                 addPatient={addPatient}
+                multi={true}
               />
             </View>
           </View>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Pressable } from "react-native";
 import {
   Button,
   Modal,
@@ -9,9 +9,15 @@ import {
   IconButton,
   Searchbar,
   Divider,
+  TextInput,
 } from "react-native-paper";
 
-export default function PatientSearch({ patientsList, addPatient }) {
+export default function PatientSearch({
+  patientsList,
+  addPatient,
+  multi,
+  patientId,
+}) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -37,9 +43,22 @@ export default function PatientSearch({ patientsList, addPatient }) {
 
   return (
     <>
-      <Button color="#1098AD" mode="contained" onPress={() => setOpen(true)}>
-        ajouter un patient
-      </Button>
+      {multi ? (
+        <Button color="#1098AD" mode="contained" onPress={() => setOpen(true)}>
+          Ajouter un patient
+        </Button>
+      ) : (
+        <Pressable onPress={() => setOpen(true)}>
+          <View pointerEvents="none">
+            <TextInput
+              style={styles.formItem}
+              label="Choisir un patient"
+              value={patientsList.find((e) => e.id === patientId)?.fullname}
+              type="outlined"
+            />
+          </View>
+        </Pressable>
+      )}
 
       <Portal>
         <Modal visible={open} onDismiss={() => setOpen(false)}>
@@ -75,7 +94,13 @@ export default function PatientSearch({ patientsList, addPatient }) {
                         icon="plus-circle"
                         color="lightgray"
                         size={26}
-                        onPress={() => addPatient(patient)}
+                        onPress={() => {
+                          addPatient(patient);
+                          setSearchQuery("");
+                          if (!multi) {
+                            setOpen(false);
+                          }
+                        }}
                       />
                     </View>
                     {index !== patientsList.length - 1 && (
@@ -118,5 +143,8 @@ const styles = StyleSheet.create({
   patientText: {
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  formItem: {
+    marginVertical: 10,
   },
 });

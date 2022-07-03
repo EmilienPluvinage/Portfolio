@@ -5,13 +5,14 @@ import { useState } from "react";
 import DropDown from "react-native-paper-dropdown";
 import { REACT_APP_API_DOMAIN } from "@env";
 import { useLogin } from "./contexts/AuthContext";
+import PatientSearch from "./PatientSearch";
 
 export default function Reminders() {
   // Data from context
   const reminders = usePatients().reminders;
   const patients = usePatients().patients;
   const patientsList = patients.map((patient) => {
-    return { label: patient.fullname, value: patient.id };
+    return { fullname: patient.fullname, id: patient.id };
   });
   patientsList.sort((a, b) => a.label > b.label);
   const token = useLogin().token;
@@ -19,7 +20,6 @@ export default function Reminders() {
 
   // State
   const [description, setDescription] = useState("");
-  const [showDropDown, setShowDropDown] = useState(false);
   const [patient, setPatient] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -85,6 +85,10 @@ export default function Reminders() {
     }
   }
 
+  function selectPatient(patient) {
+    setPatient(patient.id);
+  }
+
   return (
     <>
       <ScrollView>
@@ -97,14 +101,11 @@ export default function Reminders() {
               onChangeText={(text) => setDescription(text)}
               type="outlined"
             />
-            <DropDown
-              mode={"outlined"}
-              visible={showDropDown}
-              showDropDown={() => setShowDropDown(true)}
-              onDismiss={() => setShowDropDown(false)}
-              value={patient}
-              setValue={setPatient}
-              list={patientsList}
+            <PatientSearch
+              patientsList={patientsList}
+              addPatient={selectPatient}
+              multi={false}
+              patientId={patient}
             />
             <Button
               style={{ marginTop: 15 }}
