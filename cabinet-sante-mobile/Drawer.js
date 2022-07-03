@@ -15,11 +15,7 @@ import Login from "./Login";
 import { Badge } from "react-native-paper";
 import { useLogin, useLogging } from "./contexts/AuthContext";
 import { usePatients } from "./contexts/PatientsContext";
-import {
-  insertPackageIntoArray,
-  calculateBalance,
-  getUniqueSharedPatients,
-} from "./Functions/Functions";
+import { BalanceByPatient } from "./Functions/Functions";
 
 function CustomDrawerContent(props) {
   return (
@@ -49,48 +45,11 @@ export default function App() {
   const appointments = usePatients().appointments;
   const sharedBalance = usePatients().sharedBalance;
 
-  // used to exclude future appointments into balance calculation
-  const today = new Date();
-
-  function BalanceByPatient(patientId) {
-    const sharedPatients = getUniqueSharedPatients(sharedBalance, patientId);
-    const FilteredAppointments = appointments.filter(
-      (e) => sharedPatients.findIndex((f) => f === e.patientId) !== -1
-    );
-    const FilteredPayements = payements.filter(
-      (e) => sharedPatients.findIndex((f) => f === e.patientId) !== -1
-    );
-    const packagesData = FilteredPayements.filter((e) => e.eventId === 0).map(
-      (obj) => ({
-        ...obj,
-        dataType: "package",
-      })
-    );
-
-    var data = FilteredAppointments.map((obj) => ({
-      ...obj,
-      dataType: "event",
-    }));
-
-    packagesData.forEach((e) => insertPackageIntoArray(data, e));
-
-    calculateBalance(data, payements);
-
-    const balanceAsOfToday = data.filter(
-      (element) =>
-        new Date(element?.date) <= today || new Date(element?.start) <= today
-    )[0]?.balance;
-
-    if (balanceAsOfToday) {
-      return balanceAsOfToday;
-    } else {
-      return 0;
-    }
-  }
-
   let count = 0;
   for (const patient of patients) {
-    if (BalanceByPatient(patient?.id) < 0) {
+    if (
+      BalanceByPatient(patient?.id, appointments, sharedBalance, payements) < 0
+    ) {
       count++;
     }
   }

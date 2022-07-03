@@ -321,3 +321,47 @@ export function insertPackageIntoArray(array, pack) {
     array.push(pack);
   }
 }
+
+export function BalanceByPatient(
+  patientId,
+  appointments,
+  sharedBalance,
+  payements
+) {
+  // used to exclude future appointments into balance calculation
+  const today = new Date();
+
+  const sharedPatients = getUniqueSharedPatients(sharedBalance, patientId);
+  const FilteredAppointments = appointments.filter(
+    (e) => sharedPatients.findIndex((f) => f === e.patientId) !== -1
+  );
+  const FilteredPayements = payements.filter(
+    (e) => sharedPatients.findIndex((f) => f === e.patientId) !== -1
+  );
+  const packagesData = FilteredPayements.filter((e) => e.eventId === 0).map(
+    (obj) => ({
+      ...obj,
+      dataType: "package",
+    })
+  );
+
+  var data = FilteredAppointments.map((obj) => ({
+    ...obj,
+    dataType: "event",
+  }));
+
+  packagesData.forEach((e) => insertPackageIntoArray(data, e));
+
+  calculateBalance(data, payements);
+
+  const balanceAsOfToday = data.filter(
+    (element) =>
+      new Date(element?.date) <= today || new Date(element?.start) <= today
+  )[0]?.balance;
+
+  if (balanceAsOfToday) {
+    return balanceAsOfToday;
+  } else {
+    return 0;
+  }
+}
