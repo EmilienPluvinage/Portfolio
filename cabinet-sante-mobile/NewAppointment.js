@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { Title, TextInput, Button, Text, IconButton } from "react-native-paper";
 import DropDown from "react-native-paper-dropdown";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Patient from "./Patient";
 import PatientSearch from "./PatientSearch";
-import { displayTime } from "./Functions/Functions";
+import { displayTime, displayFullDate } from "./Functions/Functions";
 import dayjs from "dayjs";
+import { useConfig } from "./contexts/ConfigContext";
+import { usePatients } from "./contexts/PatientsContext";
 
 function BottomBar({ remove, duplicate, submitForm }) {
   const size = 26;
@@ -41,37 +43,78 @@ function BottomBar({ remove, duplicate, submitForm }) {
   );
 }
 
-export default function NewAppointment() {
+export default function NewAppointment({ route }) {
+  // STATE
+  // Appointment Id passed as a parameter
+  const [appointmentId, setAppointmentId] = useState(0);
+  // Form values
   const [title, setTitle] = useState("");
-
   const [type, setType] = useState("");
+  // list of patients being in that appointment. Empty if new appointment, otherwise initialized with context data.
+  const [patientsInAppointment, setPatientsInAppointment] = useState([]);
+  const [showDropDown, setShowDropDown] = useState(false);
+  // date picker
   const [datePicker, setDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
+  // time pickers
   const [start, setStart] = useState(new Date());
   const [startPicker, setStartPicker] = useState(false);
   const [end, setEnd] = useState(dayjs(start).add(60, "minutes").toDate());
   const [endPicker, setEndPicker] = useState(false);
-  // list of patients being in that appointment. Empty if new appointment, otherwise initialized with context data.
-  const [patientsInAppointment, setPatientsInAppointment] = useState([]);
 
-  const [showDropDown, setShowDropDown] = useState(false);
-  const types = [
-    { label: "Ostéopathie", value: "Ostéopathie" },
-    { label: "Cours Tapis", value: "Cours Tapis" },
-  ];
+  // data from context
+  const appointmentTypes = useConfig().appointmentTypes;
+  const types = appointmentTypes.map((e) => {
+    return { label: e.type, value: e.type };
+  });
+  const patients = usePatients().patients;
+  const patientsList = patients.map((e) => {
+    return { id: e.patientId, fullname: e.fullname };
+  });
+  const appointments = usePatients().appointments;
 
-  const patientsList = [
-    { id: 1, fullname: "Emilien Pluvinage" },
-    { id: 2, fullname: "Raphael Pluvinage" },
-    { id: 3, fullname: "Mathieu Pluvinage" },
-    { id: 4, fullname: "Jean Pluvinage" },
-    { id: 5, fullname: "Elsa Theillet" },
-    { id: 6, fullname: "Flora Theillet" },
-    { id: 7, fullname: "Julia Theillet" },
-    { id: 8, fullname: "Chantal Escot" },
-    { id: 9, fullname: "Florence Jacquet" },
-    { id: 10, fullname: "Charles Theillet" },
-  ];
+  useEffect(() => {
+    if (appointmentId !== route.params.appointmentId) {
+      setAppointmentId(route.params.appointmentId);
+      // it means we're loading a new page
+      // either it's a creation and we'll make sure to empty all the fields to start with
+      // or it's a modification and we'll pre-fill the form with data from our contexts
+      if (route.params.appointmentId === 0) {
+        // create
+        setTitle("");
+        setType("");
+        setStart(new Date());
+        setEnd(dayjs(new Date()).add(60, "minutes").toDate());
+        setDate(new Date());
+        setPatientsInAppointment([]);
+      } else {
+        // update
+        const appointment = appointments.find(
+          (e) => e.appointmentId === route.params.appointmentId
+        );
+        setTitle(appointment.title);
+        setType(
+          appointmentTypes.find((e) => e.id === appointment.idType)?.type
+        );
+        setStart(new Date(appointment.start));
+        setEnd(new Date(appointment.end));
+        setDate(new Date(appointment.start));
+
+        // now we need to get the list of patients that are present in our appointment
+
+        let filteredPatients = appointments.filter(
+          (p) => p.appointmentId === route.params.appointmentId
+        );
+        filteredPatients = filteredPatients.map((patient) => {
+          const thisPatient = patients.find((e) => e.id === patient.patientId);
+          return { id: patient.patientId, fullname: thisPatient?.fullname };
+        });
+        setPatientsInAppointment(filteredPatients);
+      }
+    }
+  }, [route, appointmentId]);
+
+  console.log(patientsInAppointment);
 
   // list of patients to pass to the search modal. We exclude patients that have already been selected.
   const patientSearchList = patientsList.filter(
@@ -114,11 +157,14 @@ export default function NewAppointment() {
     <>
       <ScrollView>
         <View style={styles.item}>
-          <Title style={styles.text}>Nouvelle Consultation</Title>
+          <Title style={styles.text}>
+            {appointmentId === 0
+              ? "Nouvelle Consultation"
+              : "Modifier une Consultation"}
+          </Title>
           <View>
             <TextInput
               style={styles.textInput}
-              activeUnderlineColor="#1098AD"
               label="Titre"
               value={title}
               onChangeText={(text) => setTitle(text)}
@@ -141,7 +187,7 @@ export default function NewAppointment() {
                 <TextInput
                   style={styles.textInput}
                   activeUnderlineColor="#1098AD"
-                  value={date.toLocaleDateString("fr-FR")}
+                  value={displayFullDate(date)}
                   label="Jour"
                   type="outlined"
                 />
