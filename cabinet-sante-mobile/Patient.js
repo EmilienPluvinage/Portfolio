@@ -16,20 +16,17 @@ export default function Patient({ patient, setPatient, removePatient, multi }) {
   // state
   const [showDropDown, setShowDropDown] = useState(false);
   const [showDropDown2, setShowDropDown2] = useState(false);
-  const [patientType, setPatientType] = useState("");
-  const [price, setPrice] = useState("");
-  const [payementMethod, setPayementMethod] = useState("");
 
   // data from context
   const patientTypes = useConfig().patientTypes;
   const types = patientTypes.map((e) => {
-    return { label: e.type, value: e.type };
+    return { label: e.type, value: e.id };
   });
   const payementMethods = useConfig().parameters.filter(
     (e) => e.name === "payementMethod"
   );
   const payementMethodsList = payementMethods.map((e) => {
-    return { label: e.value, value: e.value };
+    return { label: e.value, value: e.id };
   });
 
   function setPresent(bool) {
@@ -38,6 +35,18 @@ export default function Patient({ patient, setPatient, removePatient, multi }) {
 
   function setPayed(bool) {
     setPatient({ ...patient, payed: bool });
+  }
+
+  function setPatientType(value) {
+    setPatient({ ...patient, patientType: value });
+  }
+
+  function setPrice(value) {
+    setPatient({ ...patient, price: value });
+  }
+
+  function setPayementMethod(value) {
+    setPatient({ ...patient, payementMethod: value });
   }
 
   return (
@@ -79,7 +88,7 @@ export default function Patient({ patient, setPatient, removePatient, multi }) {
                 visible={showDropDown}
                 showDropDown={() => setShowDropDown(true)}
                 onDismiss={() => setShowDropDown(false)}
-                value={patientType}
+                value={patient.patientType}
                 setValue={setPatientType}
                 list={types}
               />
@@ -87,7 +96,7 @@ export default function Patient({ patient, setPatient, removePatient, multi }) {
             <View style={{ flex: 1, marginLeft: 20 }}>
               <TextInput
                 label="Prix (€)"
-                value={price}
+                value={patient.price}
                 onChangeText={(text) => setPrice(text)}
                 type="outlined"
                 style={styles.priceInput}
@@ -104,7 +113,7 @@ export default function Patient({ patient, setPatient, removePatient, multi }) {
               visible={showDropDown2}
               showDropDown={() => setShowDropDown2(true)}
               onDismiss={() => setShowDropDown2(false)}
-              value={payementMethod}
+              value={patient.payementMethod}
               setValue={setPayementMethod}
               list={payementMethodsList}
             />
