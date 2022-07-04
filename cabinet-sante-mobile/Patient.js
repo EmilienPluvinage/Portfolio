@@ -12,10 +12,8 @@ import {
 import DropDown from "react-native-paper-dropdown";
 import { useConfig } from "./contexts/ConfigContext";
 
-export default function Patient({ patientId, fullname, removePatient, multi }) {
+export default function Patient({ patient, setPatient, removePatient, multi }) {
   // state
-  const [present, setPresent] = useState(true);
-  const [payed, setPayed] = useState(false);
   const [showDropDown, setShowDropDown] = useState(false);
   const [showDropDown2, setShowDropDown2] = useState(false);
   const [patientType, setPatientType] = useState("");
@@ -34,17 +32,25 @@ export default function Patient({ patientId, fullname, removePatient, multi }) {
     return { label: e.value, value: e.value };
   });
 
+  function setPresent(bool) {
+    setPatient({ ...patient, present: bool });
+  }
+
+  function setPayed(bool) {
+    setPatient({ ...patient, payed: bool });
+  }
+
   return (
     <Card style={styles.items}>
       <Card.Title
         titleStyle={styles.cardTitle}
         subtitleStyle={styles.cardTitle}
-        title={fullname}
+        title={patient.fullname}
       />
       <Card.Content style={styles.cardContent}>
         <View style={styles.switchView}>
           <Switch
-            value={present}
+            value={patient.present}
             onValueChange={setPresent}
             color={styles.switchColor.color}
           />
@@ -52,7 +58,7 @@ export default function Patient({ patientId, fullname, removePatient, multi }) {
         </View>
         <View style={styles.switchView}>
           <Switch
-            value={payed}
+            value={patient.payed}
             onValueChange={setPayed}
             color={styles.switchColor.color}
           />
@@ -61,7 +67,7 @@ export default function Patient({ patientId, fullname, removePatient, multi }) {
         <IconButton
           icon="delete"
           color="#ffffff"
-          onPress={() => removePatient(patientId)}
+          onPress={() => removePatient(patient.id)}
         />
       </Card.Content>
       {!multi && ( // If it's a solo appointment, we require some extra information on the patient : patientType, price, and payement method (if payed)
@@ -90,7 +96,7 @@ export default function Patient({ patientId, fullname, removePatient, multi }) {
           </View>
         </Card.Content>
       )}
-      {payed && !multi && (
+      {patient.payed && !multi && (
         <Card.Content style={styles.cardContent}>
           <View style={{ flex: 1, marginTop: 10 }}>
             <DropDown

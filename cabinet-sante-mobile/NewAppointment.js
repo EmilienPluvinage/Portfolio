@@ -153,12 +153,36 @@ export default function NewAppointment({ route }) {
   );
 
   function submitForm() {
-    // add checks
-    console.log("submitted");
+    // check that:
+    // appointment type exists
+    // end is after start
+
+    if (appointmentTypes.find((e) => e.type === type)?.multi === 0) {
+      // it's a solo appointment
+      console.log("solo");
+      // check that there is only one patient in appointment
+      console.log(title);
+      console.log(type);
+      console.log(date);
+      console.log(start);
+      console.log(end);
+      // now since this a solo appointment
+    } else {
+      // it's a group appointment
+      console.log("group");
+      console.log(title);
+      console.log(type);
+      console.log(date);
+      console.log(start);
+      console.log(end);
+      console.log(patientsInAppointment);
+    }
   }
 
   function addPatient(patient) {
-    setPatientsInAppointment((prev) => prev.concat([patient]));
+    setPatientsInAppointment((prev) =>
+      prev.concat([{ ...patient, present: true, payed: false }])
+    );
   }
 
   function removePatient(patientId) {
@@ -188,6 +212,19 @@ export default function NewAppointment({ route }) {
     // also, we check if the new type is a solo appointment type
     if (appointmentTypes.find((e) => e.type === value)?.multi === 0) {
       setPatientsInAppointment((prev) => prev.slice(0, 1));
+    }
+  }
+
+  function setPatient(thisPatient) {
+    const index = patientsInAppointment.findIndex(
+      (e) => e.id === thisPatient.id
+    );
+    if (index !== -1) {
+      const tempArray = patientsInAppointment.slice();
+      tempArray[index] = thisPatient;
+      setPatientsInAppointment(tempArray);
+    } else {
+      console.error("Patient ID does not exist.");
     }
   }
 
@@ -303,8 +340,8 @@ export default function NewAppointment({ route }) {
         {patientsInAppointment.map((patient) => (
           <Patient
             key={"Patient" + patient.id}
-            patientId={patient.id}
-            fullname={patient.fullname}
+            patient={patient}
+            setPatient={setPatient}
             removePatient={removePatient}
             multi={appointmentTypes.find((e) => e.type === type)?.multi !== 0}
           />
