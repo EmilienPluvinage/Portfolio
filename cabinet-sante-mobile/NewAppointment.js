@@ -152,36 +152,87 @@ export default function NewAppointment({ route }) {
       patientsInAppointment.findIndex((e) => e.id === patient.id) === -1
   );
 
-  function submitForm() {
-    // check that:
-    // appointment type exists
-    // end is after start
-
+  function createNewAppointment(title, type, date, start, end, patients) {
+    console.log(patients);
     if (appointmentTypes.find((e) => e.type === type)?.multi === 0) {
       // it's a solo appointment
-      console.log("solo");
-      // check that there is only one patient in appointment
-      console.log(title);
-      console.log(type);
-      console.log(date);
-      console.log(start);
-      console.log(end);
-      // now since this a solo appointment
     } else {
-      // it's a group appointment
-      console.log("group");
-      console.log(title);
-      console.log(type);
-      console.log(date);
-      console.log(start);
-      console.log(end);
-      console.log(patientsInAppointment);
+      // it's a multi appoitment
+    }
+  }
+
+  function updateAppointment(title, type, date, start, end, patients) {
+    console.log(patients);
+    if (appointmentTypes.find((e) => e.type === type)?.multi === 0) {
+      // it's a solo appointment
+    } else {
+      // it's a multi appoitment
+    }
+  }
+
+  function checkValues() {
+    // check that:
+    // appointment type exists
+    if (appointmentTypes.findIndex((e) => e.type === type) === -1) {
+      return {
+        error: true,
+        message: "Merci de sélectionner le type de consultation.",
+      };
+    }
+    // end is after start
+    if (end < start) {
+      return {
+        error: true,
+        message:
+          "La date de fin du rendez-vous doit être antérieure à la date de début.",
+      };
+    }
+    // patient.length is not zero
+    if (patientsInAppointment.length === 0) {
+      return {
+        error: true,
+        message: "Merci de sélectionner au moins un patient",
+      };
+    }
+
+    return { error: false };
+  }
+
+  function submitForm() {
+    const check = checkValues();
+    if (check.error) {
+      // we display the error in the snackbar
+      setSnackbarMsg(check.message);
+      setShowSnackbar(true);
+    } else {
+      // No errors, we carry on.
+      if (appointmentId === 0) {
+        createNewAppointment(
+          title,
+          type,
+          date,
+          start,
+          end,
+          patientsInAppointment
+        );
+      } else {
+        updateAppointment(title, type, date, start, end, patientsInAppointment);
+      }
     }
   }
 
   function addPatient(patient) {
     setPatientsInAppointment((prev) =>
-      prev.concat([{ ...patient, present: true, payed: false }])
+      prev.concat([
+        {
+          ...patient,
+          present: true,
+          payed: false,
+          patientType: 0,
+          price: "",
+          payementMethod: 0,
+        },
+      ])
     );
   }
 
@@ -216,6 +267,7 @@ export default function NewAppointment({ route }) {
   }
 
   function setPatient(thisPatient) {
+    // that function is passed to the Patient component so that it can update the patients that have been selected.
     const index = patientsInAppointment.findIndex(
       (e) => e.id === thisPatient.id
     );
