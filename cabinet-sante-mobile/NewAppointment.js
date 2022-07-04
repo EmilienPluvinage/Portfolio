@@ -136,8 +136,6 @@ export default function NewAppointment({ route }) {
     }
   }, [route, appointmentId]);
 
-  console.log(patientsInAppointment);
-
   // list of patients to pass to the search modal. We exclude patients that have already been selected.
   const patientSearchList = patientsList.filter(
     (patient) =>

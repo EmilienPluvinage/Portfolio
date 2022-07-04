@@ -17,6 +17,7 @@ export default function PatientSearch({
   addPatient,
   multi,
   patientId,
+  patients,
 }) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -53,7 +54,7 @@ export default function PatientSearch({
             <TextInput
               style={styles.formItem}
               label="Choisir un patient"
-              value={patientsList.find((e) => e.id === patientId)?.fullname}
+              value={patients.find((e) => e.id === patientId)?.fullname}
               type="outlined"
             />
           </View>

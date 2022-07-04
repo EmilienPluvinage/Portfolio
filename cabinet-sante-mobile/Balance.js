@@ -56,6 +56,7 @@ export default function Balance() {
                 addPatient={selectPatient}
                 multi={false}
                 patientId={patient}
+                patients={patients}
               />
             </View>
             <Text
