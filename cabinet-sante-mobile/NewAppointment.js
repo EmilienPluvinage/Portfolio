@@ -17,7 +17,11 @@ import dayjs from "dayjs";
 import { useConfig } from "./contexts/ConfigContext";
 import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { REACT_APP_API_DOMAIN } from "@env";
-import { deleteAppointment } from "./Functions/Functions";
+import {
+  deleteAppointment,
+  concatenateDateTime,
+  setAutomaticPrice,
+} from "./Functions/Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 
@@ -95,6 +99,8 @@ export default function NewAppointment({ route }) {
   const [showSnackbar, setShowSnackbar] = useState(false);
 
   // data from context
+  const token = useLogin().token;
+  const priceScheme = useConfig().priceScheme;
   const appointmentTypes = useConfig().appointmentTypes;
   const types = appointmentTypes.map((e) => {
     return { label: e.type, value: e.type };
@@ -152,18 +158,172 @@ export default function NewAppointment({ route }) {
       patientsInAppointment.findIndex((e) => e.id === patient.id) === -1
   );
 
-  function createNewAppointment(title, type, date, start, end, patients) {
-    console.log(patients);
-    if (appointmentTypes.find((e) => e.type === type)?.multi === 0) {
-      // it's a solo appointment
-    } else {
-      // it's a multi appoitment
+  async function createNewAppointment(
+    title,
+    appointmentTypeId,
+    start,
+    end,
+    patientsInAppointment
+  ) {
+    try {
+      const fetchResponse = await fetch(REACT_APP_API_DOMAIN + "/NewEvent", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          important: false,
+          start: new Date(start),
+          end: new Date(end),
+          title: title,
+          comments: "",
+          idType: appointmentTypeId,
+          token: token,
+        }),
+      });
+      const res = await fetchResponse.json();
+      if (res.success) {
+        const eventId = res.id;
+        // Now that the event has been created, we need to add all the participants
+        const findPackage = (x) => patients.find((e) => e.id === x)?.packageId;
+
+        // we loop through all the patients in our appointment (at least 1)
+        for (const element of patientsInAppointment) {
+          let priceSetByUser = true;
+          const index = patientsInAppointment.findIndex(
+            (e) => e.id === element.id
+          );
+          let packageId = findPackage(element.id);
+          packageId =
+            packageId === null || packageId === undefined ? 0 : packageId;
+
+          if (
+            appointmentTypes.find((e) => e.id === appointmentTypeId)?.multi !==
+            0
+          ) {
+            // it's a multi appointment, which means we have to calculate the price automatically since there was no input for it
+            priceSetByUser = false;
+            patientsInAppointment[index].price = setAutomaticPrice(
+              priceScheme,
+              element.patientType,
+              appointmentTypeId,
+              packageId
+            );
+          }
+        }
+
+        // then we add all our participants (or non-participants)
+        let queries = [];
+        for (let i = 0; i < patientsInAppointment.length; i++) {
+          queries.push(
+            newParticipant(
+              patientsInAppointment[i],
+              eventId,
+              priceSetByUser,
+              start,
+              patientsInAppointment[i].present
+            )
+          );
+        }
+
+        await Promise.all(queries);
+
+        return { success: true, eventId: eventId };
+      } else {
+        return { success: false };
+      }
+    } catch (e) {
+      return e;
     }
   }
 
-  function updateAppointment(title, type, date, start, end, patients) {
+  async function newParticipant(
+    thisPatient,
+    eventId,
+    priceSetByUser,
+    date,
+    present
+  ) {
+    const fetchResponse = await fetch(
+      REACT_APP_API_DOMAIN + preset ? "/NewParticipant" : "/NewAbsent",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          patientId: thisPatient.id,
+          appointmentId: eventId,
+          size: 0,
+          weight: 0,
+          EVAbefore: 0,
+          EVAafter: 0,
+          reasonDetails: "",
+          tests: "",
+          treatment: "",
+          remarks: "",
+          drawing: "",
+          patientType: thisPatient.patientType,
+          token: token,
+          price: thisPatient.price * 100,
+          priceSetByUser: priceSetByUser,
+          payed: thisPatient.payed,
+        }),
+      }
+    );
+    const res = await fetchResponse.json();
+    if (res.success) {
+      // now either it's been payed, which means we need to add a new payement
+      if (thisPatient.payed) {
+        const res2 = await newPayement(
+          eventId,
+          thisPatient.payementMethod,
+          thisPatient.price,
+          date,
+          thisPatient.id
+        );
+        return res2;
+      } else {
+        // or we can just return success
+        return { success: true };
+      }
+    }
+  }
+
+  async function newPayement(eventId, method, price, date, patientId) {
+    const fetchResponse = await fetch(
+      REACT_APP_API_DOMAIN + "/AddNewPayement",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: token,
+          eventId: eventId,
+          method: method,
+          amount: price * 100,
+          date: dayjs(date).add(12, "hours").toDate(),
+          patientId: patientId,
+        }),
+      }
+    );
+    const res = await fetchResponse.json();
+    return res;
+  }
+
+  async function updateAppointment(
+    title,
+    appointmentTypeId,
+    start,
+    end,
+    patients
+  ) {
     console.log(patients);
-    if (appointmentTypes.find((e) => e.type === type)?.multi === 0) {
+    if (appointmentTypes.find((e) => e.id === appointmentTypeId)?.multi === 0) {
       // it's a solo appointment
     } else {
       // it's a multi appoitment
@@ -198,7 +358,7 @@ export default function NewAppointment({ route }) {
     return { error: false };
   }
 
-  function submitForm() {
+  async function submitForm() {
     const check = checkValues();
     if (check.error) {
       // we display the error in the snackbar
@@ -206,17 +366,27 @@ export default function NewAppointment({ route }) {
       setShowSnackbar(true);
     } else {
       // No errors, we carry on.
+      const eventStart = concatenateDateTime(date, start);
+      const eventEnd = concatenateDateTime(date, end);
+      const appointmentTypeId = appointmentTypes.find(
+        (e) => e.type === type
+      ).id;
       if (appointmentId === 0) {
-        createNewAppointment(
+        await createNewAppointment(
           title,
-          type,
-          date,
-          start,
-          end,
+          appointmentTypeId,
+          eventStart,
+          eventEnd,
           patientsInAppointment
         );
       } else {
-        updateAppointment(title, type, date, start, end, patientsInAppointment);
+        await updateAppointment(
+          title,
+          appointmentTypeId,
+          eventStart,
+          eventEnd,
+          patientsInAppointment
+        );
       }
     }
   }
