@@ -1,7 +1,7 @@
 import "../styles/styles.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useLogin, useLogging } from "./contexts/AuthContext";
-import { usePatients } from "./contexts/PatientsContext";
+import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import {
   List,
   UserPlus,
@@ -14,6 +14,7 @@ import {
   Search,
   ReportMedical,
   Checkbox,
+  Refresh,
 } from "tabler-icons-react";
 import { Center, Select, Modal, Badge } from "@mantine/core";
 import { useState } from "react";
@@ -27,7 +28,8 @@ function LeftMenu() {
     .map((e) => {
       return e.fullname;
     });
-
+  const updateContext = useUpdatePatients().update;
+  const token = useLogin().token;
   const [opened, setOpened] = useState(false);
   const [search, setSearch] = useState("");
   const path = useLocation().pathname;
@@ -168,7 +170,10 @@ function LeftMenu() {
                 Paramètres
               </li>
             </Link>
-
+            <li onClick={() => updateContext(token)}>
+              <Refresh size={iconsSize} style={iconsStyle} />
+              Rafraïchir
+            </li>
             <li onClick={() => logging(false)}>
               <Logout size={iconsSize} style={iconsStyle} />
               Déconnexion
