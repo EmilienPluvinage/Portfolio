@@ -183,6 +183,14 @@ export default function NewAppointment({ route }) {
     setEndPicker(false);
   }
 
+  function changeType(value) {
+    setType(value);
+    // also, we check if the new type is a solo appointment type
+    if (appointmentTypes.find((e) => e.type === value)?.multi === 0) {
+      setPatientsInAppointment((prev) => prev.slice(0, 1));
+    }
+  }
+
   return (
     <>
       <ScrollView>
@@ -207,7 +215,7 @@ export default function NewAppointment({ route }) {
                 showDropDown={() => setShowDropDown(true)}
                 onDismiss={() => setShowDropDown(false)}
                 value={type}
-                setValue={setType}
+                setValue={changeType}
                 list={types}
                 activeColor="#1098AD"
               />
@@ -281,15 +289,15 @@ export default function NewAppointment({ route }) {
               )}
             </View>
             <View style={styles.button}>
-              <PatientSearch
-                patientsList={patientSearchList}
-                addPatient={addPatient}
-                multi={true}
-              />
+              {(patientsInAppointment.length === 0 ||
+                appointmentTypes.find((e) => e.type === type)?.multi !== 0) && (
+                <PatientSearch
+                  patientsList={patientSearchList}
+                  addPatient={addPatient}
+                  multi={true}
+                />
+              )}
             </View>
-            <Button mode="contained" onPress={() => setShowSnackbar(true)}>
-              Show snackbar
-            </Button>
           </View>
         </View>
         {patientsInAppointment.map((patient) => (
@@ -298,6 +306,7 @@ export default function NewAppointment({ route }) {
             patientId={patient.id}
             fullname={patient.fullname}
             removePatient={removePatient}
+            multi={appointmentTypes.find((e) => e.type === type)?.multi !== 0}
           />
         ))}
       </ScrollView>
