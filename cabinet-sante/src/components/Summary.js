@@ -73,9 +73,8 @@ export default function Summary() {
     </tr>
   ));
 
-  console.log(appointments);
-  console.log(filteredAppointments);
-  console.log(rows);
+  // calculating overall total
+  const total = filteredAppointments.reduce((acc, item) => acc + item.price, 0);
 
   return (
     <>
@@ -84,7 +83,15 @@ export default function Summary() {
         <DateSelector value={value} setValue={setValue} />
         <Table striped verticalSpacing="xs">
           <thead>{ths}</thead>
-          <tbody>{rows}</tbody>
+          <tbody>
+            {rows}
+            <tr>
+              <td colSpan={4} style={{ textAlign: "right" }}>
+                Total :
+              </td>
+              <td>{displayPrice(total)} €</td>
+            </tr>
+          </tbody>
         </Table>
       </div>
     </>
