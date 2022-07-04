@@ -106,6 +106,7 @@ export default function Reminders() {
               addPatient={selectPatient}
               multi={false}
               patientId={patient}
+              patients={patients}
             />
             <Button
               style={{ marginTop: 15 }}
