@@ -73,7 +73,7 @@ export default function Main({ navigation }) {
     (e) =>
       new Date(e.start).getFullYear() === date.getFullYear() &&
       new Date(e.start).getMonth() === date.getMonth() &&
-      new Date(e.start).getDay() === date.getDay() &&
+      new Date(e.start).getDate() === date.getDate() &&
       e.id != null
   );
 
@@ -138,6 +138,8 @@ export default function Main({ navigation }) {
         )} - ${displayTime(
           new Date(displayedData[displayedData.length - 1].end)
         )}`;
+
+  console.log(displayedData);
 
   return (
     <>
