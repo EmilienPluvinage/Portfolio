@@ -172,7 +172,7 @@ function LeftMenu() {
             </Link>
             <li onClick={() => updateContext(token)}>
               <Refresh size={iconsSize} style={iconsStyle} />
-              Rafraïchir
+              Rafraîchir
             </li>
             <li onClick={() => logging(false)}>
               <Logout size={iconsSize} style={iconsStyle} />
