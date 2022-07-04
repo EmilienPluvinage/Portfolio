@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
-import { Title, TextInput, Button, Text, IconButton } from "react-native-paper";
+import {
+  Title,
+  TextInput,
+  Button,
+  Text,
+  IconButton,
+  Snackbar,
+} from "react-native-paper";
 import DropDown from "react-native-paper-dropdown";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Patient from "./Patient";
@@ -83,6 +90,9 @@ export default function NewAppointment({ route }) {
   const [startPicker, setStartPicker] = useState(false);
   const [end, setEnd] = useState(dayjs(start).add(60, "minutes").toDate());
   const [endPicker, setEndPicker] = useState(false);
+  // snackbar
+  const [snackbarMsg, setSnackbarMsg] = useState("Test");
+  const [showSnackbar, setShowSnackbar] = useState(false);
 
   // data from context
   const appointmentTypes = useConfig().appointmentTypes;
@@ -277,6 +287,9 @@ export default function NewAppointment({ route }) {
                 multi={true}
               />
             </View>
+            <Button mode="contained" onPress={() => setShowSnackbar(true)}>
+              Show snackbar
+            </Button>
           </View>
         </View>
         {patientsInAppointment.map((patient) => (
@@ -288,7 +301,21 @@ export default function NewAppointment({ route }) {
           />
         ))}
       </ScrollView>
-      <BottomBar appointmentId={appointmentId} submitForm={submitForm} />
+      <View>
+        <View>
+          <Snackbar
+            visible={showSnackbar}
+            onDismiss={() => setShowSnackbar(false)}
+            duration={5000}
+            style={{ backgroundColor: "#E3FAFC" }}
+          >
+            <Text style={{ color: "black" }}>{snackbarMsg}</Text>
+          </Snackbar>
+        </View>
+        <View>
+          <BottomBar appointmentId={appointmentId} submitForm={submitForm} />
+        </View>
+      </View>
     </>
   );
 }
