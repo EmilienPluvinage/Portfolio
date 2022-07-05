@@ -21,6 +21,7 @@ import {
   deleteAppointment,
   concatenateDateTime,
   setAutomaticPrice,
+  datePlusTime,
 } from "./Functions/Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { useNavigation } from "@react-navigation/native";
@@ -42,7 +43,7 @@ function BottomBar({ appointmentId, submitForm }) {
         await updateContext(token);
       }
     } catch (e) {
-      return e;
+      console.error(e);
     }
   }
 
@@ -165,77 +166,79 @@ export default function NewAppointment({ route }) {
     end,
     patientsInAppointment
   ) {
-    try {
-      const fetchResponse = await fetch(REACT_APP_API_DOMAIN + "/NewEvent", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          important: false,
-          start: new Date(start),
-          end: new Date(end),
-          title: title,
-          comments: "",
-          idType: appointmentTypeId,
-          token: token,
-        }),
-      });
-      const res = await fetchResponse.json();
-      if (res.success) {
-        const eventId = res.id;
-        // Now that the event has been created, we need to add all the participants
-        const findPackage = (x) => patients.find((e) => e.id === x)?.packageId;
+    console.log(start);
+    console.log(end);
+    // try {
+    //   const fetchResponse = await fetch(REACT_APP_API_DOMAIN + "/NewEvent", {
+    //     method: "POST",
+    //     headers: {
+    //       Accept: "application/json",
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       important: false,
+    //       start: new Date(start),
+    //       end: new Date(end),
+    //       title: title,
+    //       comments: "",
+    //       idType: appointmentTypeId,
+    //       token: token,
+    //     }),
+    //   });
+    //   const res = await fetchResponse.json();
+    //   if (res.success) {
+    //     const eventId = res.id;
+    //     // Now that the event has been created, we need to add all the participants
+    //     const findPackage = (x) => patients.find((e) => e.id === x)?.packageId;
 
-        // we loop through all the patients in our appointment (at least 1)
-        for (const element of patientsInAppointment) {
-          let priceSetByUser = true;
-          const index = patientsInAppointment.findIndex(
-            (e) => e.id === element.id
-          );
-          let packageId = findPackage(element.id);
-          packageId =
-            packageId === null || packageId === undefined ? 0 : packageId;
+    //     // we loop through all the patients in our appointment (at least 1)
+    //     for (const element of patientsInAppointment) {
+    //       let priceSetByUser = true;
+    //       const index = patientsInAppointment.findIndex(
+    //         (e) => e.id === element.id
+    //       );
+    //       let packageId = findPackage(element.id);
+    //       packageId =
+    //         packageId === null || packageId === undefined ? 0 : packageId;
 
-          if (
-            appointmentTypes.find((e) => e.id === appointmentTypeId)?.multi !==
-            0
-          ) {
-            // it's a multi appointment, which means we have to calculate the price automatically since there was no input for it
-            priceSetByUser = false;
-            patientsInAppointment[index].price = setAutomaticPrice(
-              priceScheme,
-              element.patientType,
-              appointmentTypeId,
-              packageId
-            );
-          }
-        }
+    //       if (
+    //         appointmentTypes.find((e) => e.id === appointmentTypeId)?.multi !==
+    //         0
+    //       ) {
+    //         // it's a multi appointment, which means we have to calculate the price automatically since there was no input for it
+    //         priceSetByUser = false;
+    //         patientsInAppointment[index].price = setAutomaticPrice(
+    //           priceScheme,
+    //           element.patientType,
+    //           appointmentTypeId,
+    //           packageId
+    //         );
+    //       }
+    //     }
 
-        // then we add all our participants (or non-participants)
-        let queries = [];
-        for (let i = 0; i < patientsInAppointment.length; i++) {
-          queries.push(
-            newParticipant(
-              patientsInAppointment[i],
-              eventId,
-              priceSetByUser,
-              start,
-              patientsInAppointment[i].present
-            )
-          );
-        }
+    //     // then we add all our participants (or non-participants)
+    //     let queries = [];
+    //     for (let i = 0; i < patientsInAppointment.length; i++) {
+    //       queries.push(
+    //         newParticipant(
+    //           patientsInAppointment[i],
+    //           eventId,
+    //           priceSetByUser,
+    //           start,
+    //           patientsInAppointment[i].present
+    //         )
+    //       );
+    //     }
 
-        await Promise.all(queries);
+    //     await Promise.all(queries);
 
-        return { success: true, eventId: eventId };
-      } else {
-        return { success: false };
-      }
-    } catch (e) {
-      return e;
-    }
+    //     return { success: true, eventId: eventId };
+    //   } else {
+    //     return { success: false };
+    //   }
+    // } catch (e) {
+    //   console.error(e);
+    // }
   }
 
   async function newParticipant(
@@ -366,8 +369,8 @@ export default function NewAppointment({ route }) {
       setShowSnackbar(true);
     } else {
       // No errors, we carry on.
-      const eventStart = concatenateDateTime(date, start);
-      const eventEnd = concatenateDateTime(date, end);
+      const eventStart = datePlusTime(date, start);
+      const eventEnd = datePlusTime(date, end);
       const appointmentTypeId = appointmentTypes.find(
         (e) => e.type === type
       ).id;

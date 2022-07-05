@@ -143,6 +143,9 @@ export function moveToFirst(array, value) {
 }
 export function concatenateDateTime(date, time) {
   var month = date.getMonth() + 1;
+  var hours = time.getHours();
+  var minutes = time.getMinutes();
+
   return (
     date.getFullYear() +
     "-" +
@@ -150,12 +153,23 @@ export function concatenateDateTime(date, time) {
     "-" +
     date.getDate() +
     " " +
-    time.getHours() +
+    (hours.toString().length === 1 ? "0" + hours : hours) +
     ":" +
-    time.getMinutes() +
+    (minutes.toString().length === 1 ? "0" + minutes : minutes) +
     ":00"
   );
 }
+
+export function datePlusTime(date, time) {
+  return new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    time.getHours(),
+    time.getMinutes()
+  );
+}
+
 export function dateOnly(str) {
   var date = new Date(str);
   return new Date(
