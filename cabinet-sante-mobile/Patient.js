@@ -105,7 +105,7 @@ export default function Patient({ patient, setPatient, removePatient, multi }) {
           </View>
         </Card.Content>
       )}
-      {patient.payed && !multi && (
+      {patient.payed && (
         <Card.Content style={styles.cardContent}>
           <View style={{ flex: 1, marginTop: 10 }}>
             <DropDown
