@@ -9,6 +9,7 @@ import NewAppointment from "./NewAppointment";
 import Main from "./Main";
 import Reminders from "./Reminders";
 import Balance from "./Balance";
+import NewPayement from "./NewPayement";
 import { StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Login from "./Login";
@@ -35,6 +36,12 @@ function CustomDrawerContent(props) {
 
   return (
     <DrawerContentScrollView {...props}>
+      <View style={{ padding: 15 }}>
+        <Text style={{ color: "#1098AD", marginLeft: 58 }}>
+          Mon Cabinet Santé
+        </Text>
+      </View>
+
       <DrawerItemList {...props} />
       <DrawerItem
         inactiveTintColor="#ffffff"
@@ -138,6 +145,17 @@ export default function App() {
                 navigation.navigate("NewAppointment", { appointmentId: 0 });
               },
             })}
+          />
+          <Drawer.Screen
+            name="NewPayement"
+            component={NewPayement}
+            options={{
+              drawerLabel: "Paiement",
+              headerTitle: "Paiement",
+              drawerIcon: ({ color, size }) => (
+                <Ionicons name="logo-euro" color={color} size={size} />
+              ),
+            }}
           />
           <Drawer.Screen
             name="Reminders"
