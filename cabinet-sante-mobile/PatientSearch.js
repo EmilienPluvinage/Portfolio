@@ -11,14 +11,15 @@ import {
   Divider,
   TextInput,
 } from "react-native-paper";
+import { usePatients } from "./contexts/PatientsContext";
 
 export default function PatientSearch({
   patientsList,
   addPatient,
   multi,
   patientId,
-  patients,
 }) {
+  const patients = usePatients().patients;
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
