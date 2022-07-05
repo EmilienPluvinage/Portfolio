@@ -1,3 +1,6 @@
+import dayjs from "dayjs";
+import { REACT_APP_API_DOMAIN } from "@env";
+
 const mois = [
   "Janvier",
   "Février",
@@ -399,4 +402,31 @@ export async function deleteAppointment(id, token, apiDomain) {
   } catch (e) {
     return e;
   }
+}
+
+export async function newPayement(
+  eventId,
+  method,
+  price,
+  date,
+  patientId,
+  token
+) {
+  const fetchResponse = await fetch(REACT_APP_API_DOMAIN + "/AddNewPayement", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      token: token,
+      eventId: eventId,
+      method: method,
+      amount: price * 100,
+      date: dayjs(date).add(12, "hours").toDate(),
+      patientId: patientId,
+    }),
+  });
+  const res = await fetchResponse.json();
+  return res;
 }
