@@ -7,6 +7,9 @@ import {
   Text,
   IconButton,
   Snackbar,
+  Portal,
+  Modal,
+  ActivityIndicator,
 } from "react-native-paper";
 import DropDown from "react-native-paper-dropdown";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -25,6 +28,22 @@ import {
 } from "./Functions/Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { useNavigation } from "@react-navigation/native";
+
+function Loader({ visible }) {
+  const containerStyle = {
+    backgroundColor: "transparent",
+    padding: 20,
+    flex: 1,
+  };
+
+  return (
+    <Portal>
+      <Modal visible={visible} contentContainerStyle={containerStyle}>
+        <ActivityIndicator animating={visible} size={100} />
+      </Modal>
+    </Portal>
+  );
+}
 
 function BottomBar({ appointmentId, submitForm }) {
   const size = 26;
@@ -77,13 +96,14 @@ function BottomBar({ appointmentId, submitForm }) {
   );
 }
 
-export default function NewAppointment({ route }) {
+export default function NewAppointment({ route, navigation }) {
   // STATE
   // Appointment Id passed as a parameter
   const [appointmentId, setAppointmentId] = useState(0);
   // Form values
   const [title, setTitle] = useState("");
   const [type, setType] = useState("");
+  const [loader, setLoader] = useState(false);
 
   // list of patients being in that appointment. Empty if new appointment, otherwise initialized with context data.
   const [patientsInAppointment, setPatientsInAppointment] = useState([]);
@@ -105,6 +125,7 @@ export default function NewAppointment({ route }) {
     (e) => e.name === "payementMethod"
   );
   const token = useLogin().token;
+  const updateContext = useUpdatePatients().update;
   const priceScheme = useConfig().priceScheme;
   const appointmentTypes = useConfig().appointmentTypes;
   const appointmentTypeId = appointmentTypes.find((e) => e.type === type)?.id;
@@ -347,6 +368,9 @@ export default function NewAppointment({ route }) {
       setSnackbarMsg(check.message);
       setShowSnackbar(true);
     } else {
+      setLoader(true);
+      let message = "";
+
       // No errors, we carry on.
       const eventStart = datePlusTime(date, start);
       const eventEnd = datePlusTime(date, end);
@@ -361,6 +385,7 @@ export default function NewAppointment({ route }) {
           eventEnd,
           patientsInAppointment
         );
+        message = "Le rendez-vous a bien été ajouté.";
       } else {
         await updateAppointment(
           title,
@@ -369,7 +394,13 @@ export default function NewAppointment({ route }) {
           eventEnd,
           patientsInAppointment
         );
+        message = "Le rendez-vous a bien été modifié.";
       }
+      await updateContext(token);
+      setLoader(false);
+      setSnackbarMsg(message);
+      setShowSnackbar(true);
+      navigation.navigate("NewAppointment", { appointmentId: 0 });
     }
   }
 
@@ -430,29 +461,33 @@ export default function NewAppointment({ route }) {
 
     // also, we check if the new type is a solo appointment type
     if (appointmentTypes.find((e) => e.type === value)?.multi === 0) {
-      let appointmentTypeId = appointmentTypes.find(
-        (e) => e.type === value
-      )?.id;
-      let patientType = patientsInAppointment[0]?.patientType;
-      let packageId = patients.find(
-        (e) => e.id === patientsInAppointment[0]?.id
-      )?.packageId;
-      packageId = packageId === null || packageId === undefined ? 0 : packageId;
-      let price = (
-        setAutomaticPrice(
-          priceScheme,
-          patientType,
-          appointmentTypeId,
-          packageId
-        ) / 100
-      ).toString();
-      // we remove all other patients, and add a price
-      setPatientsInAppointment((prev) => [{ ...prev[0], price: price }]);
+      if (patientsInAppointment.length > 0) {
+        let appointmentTypeId = appointmentTypes.find(
+          (e) => e.type === value
+        )?.id;
+        let patientType = patientsInAppointment[0]?.patientType;
+        let packageId = patients.find(
+          (e) => e.id === patientsInAppointment[0]?.id
+        )?.packageId;
+        packageId =
+          packageId === null || packageId === undefined ? 0 : packageId;
+        let price = (
+          setAutomaticPrice(
+            priceScheme,
+            patientType,
+            appointmentTypeId,
+            packageId
+          ) / 100
+        ).toString();
+        // we remove all other patients, and add a price
+        setPatientsInAppointment((prev) => [{ ...prev[0], price: price }]);
+      }
     }
   }
 
   return (
     <>
+      <Loader visible={loader} />
       <ScrollView>
         <View style={styles.item}>
           <Title style={styles.text}>
