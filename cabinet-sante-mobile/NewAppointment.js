@@ -22,7 +22,6 @@ import {
   newPayement,
   setAutomaticPrice,
   datePlusTime,
-  deepCopy,
 } from "./Functions/Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { useNavigation } from "@react-navigation/native";
@@ -85,6 +84,7 @@ export default function NewAppointment({ route }) {
   // Form values
   const [title, setTitle] = useState("");
   const [type, setType] = useState("");
+
   // list of patients being in that appointment. Empty if new appointment, otherwise initialized with context data.
   const [patientsInAppointment, setPatientsInAppointment] = useState([]);
   const [showDropDown, setShowDropDown] = useState(false);
@@ -107,6 +107,7 @@ export default function NewAppointment({ route }) {
   const token = useLogin().token;
   const priceScheme = useConfig().priceScheme;
   const appointmentTypes = useConfig().appointmentTypes;
+  const appointmentTypeId = appointmentTypes.find((e) => e.type === type)?.id;
   const types = appointmentTypes.map((e) => {
     return { label: e.type, value: e.type };
   });
@@ -373,6 +374,21 @@ export default function NewAppointment({ route }) {
   }
 
   function addPatient(patient) {
+    // if multi is 0, we also set a price
+    let price = "0";
+    if (appointmentTypes.find((e) => e.type === type)?.multi === 0) {
+      let packageId = patients.find((e) => e.id === patient.id)?.packageId;
+      packageId = packageId === null || packageId === undefined ? 0 : packageId;
+      price = (
+        setAutomaticPrice(
+          priceScheme,
+          patient.patientType,
+          appointmentTypeId,
+          packageId
+        ) / 100
+      ).toString();
+    }
+    // and then we add our patient to the list
     setPatientsInAppointment((prev) =>
       prev.concat([
         {
@@ -380,7 +396,7 @@ export default function NewAppointment({ route }) {
           present: true,
           payed: false,
           patientType: 0,
-          price: "",
+          price: price,
           payementMethod: 0,
         },
       ])
@@ -411,9 +427,27 @@ export default function NewAppointment({ route }) {
 
   function changeType(value) {
     setType(value);
+
     // also, we check if the new type is a solo appointment type
     if (appointmentTypes.find((e) => e.type === value)?.multi === 0) {
-      setPatientsInAppointment((prev) => prev.slice(0, 1));
+      let appointmentTypeId = appointmentTypes.find(
+        (e) => e.type === value
+      )?.id;
+      let patientType = patientsInAppointment[0]?.patientType;
+      let packageId = patients.find(
+        (e) => e.id === patientsInAppointment[0]?.id
+      )?.packageId;
+      packageId = packageId === null || packageId === undefined ? 0 : packageId;
+      let price = (
+        setAutomaticPrice(
+          priceScheme,
+          patientType,
+          appointmentTypeId,
+          packageId
+        ) / 100
+      ).toString();
+      // we remove all other patients, and add a price
+      setPatientsInAppointment((prev) => [{ ...prev[0], price: price }]);
     }
   }
 
@@ -533,6 +567,7 @@ export default function NewAppointment({ route }) {
             setPatientsInAppointment={setPatientsInAppointment}
             removePatient={removePatient}
             multi={appointmentTypes.find((e) => e.type === type)?.multi !== 0}
+            appointmentTypeId={appointmentTypeId}
           />
         ))}
       </ScrollView>

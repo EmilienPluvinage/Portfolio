@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import {
   Card,
@@ -11,19 +11,23 @@ import {
 } from "react-native-paper";
 import DropDown from "react-native-paper-dropdown";
 import { useConfig } from "./contexts/ConfigContext";
-import { deepCopy } from "./Functions/Functions";
+import { usePatients } from "./contexts/PatientsContext";
+import { setAutomaticPrice } from "./Functions/Functions";
 
 export default function Patient({
   patient,
   setPatientsInAppointment,
   removePatient,
   multi,
+  appointmentTypeId,
 }) {
   // state
   const [showDropDown, setShowDropDown] = useState(false);
   const [showDropDown2, setShowDropDown2] = useState(false);
 
   // data from context
+  const priceScheme = useConfig().priceScheme;
+  const patients = usePatients().patients;
   const patientTypes = useConfig().patientTypes;
   const types = patientTypes.map((e) => {
     return { label: e.type, value: e.id };
@@ -34,6 +38,9 @@ export default function Patient({
   const payementMethodsList = payementMethods.map((e) => {
     return { label: e.value, value: e.id };
   });
+
+  let packageId = patients.find((e) => e.id === patient.id)?.packageId;
+  packageId = packageId === null || packageId === undefined ? 0 : packageId;
 
   function setPresent(value) {
     setPatientsInAppointment((prev) =>
@@ -56,10 +63,21 @@ export default function Patient({
   }
 
   function setPatientType(value) {
+    // when the patient type changes we also update the price.
+    const price = setAutomaticPrice(
+      priceScheme,
+      value,
+      appointmentTypeId,
+      packageId
+    );
     setPatientsInAppointment((prev) =>
       prev.map((thisPatient) =>
         patient.id === thisPatient.id
-          ? { ...thisPatient, patientType: value }
+          ? {
+              ...thisPatient,
+              patientType: value,
+              price: (price / 100).toString(),
+            }
           : thisPatient
       )
     );
