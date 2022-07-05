@@ -431,7 +431,7 @@ export async function newPayement(
   return res;
 }
 
-function deepCopy(array) {
+export function deepCopy(array) {
   // deep copy of an array of objects
   const outputArray = [];
   for (let i = 0; i < array.length; i++) {
