@@ -100,6 +100,9 @@ export default function NewAppointment({ route }) {
   const [showSnackbar, setShowSnackbar] = useState(false);
 
   // data from context
+  const payementMethods = useConfig().parameters.filter(
+    (e) => e.name === "payementMethod"
+  );
   const token = useLogin().token;
   const priceScheme = useConfig().priceScheme;
   const appointmentTypes = useConfig().appointmentTypes;
@@ -278,7 +281,8 @@ export default function NewAppointment({ route }) {
       if (thisPatient.payed) {
         const res2 = await newPayement(
           eventId,
-          thisPatient.payementMethod,
+          payementMethods.find((e) => e.id === thisPatient.payementMethod)
+            ?.value,
           thisPatient.price,
           date,
           thisPatient.id,
