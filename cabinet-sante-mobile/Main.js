@@ -139,8 +139,6 @@ export default function Main({ navigation }) {
           new Date(displayedData[displayedData.length - 1].end)
         )}`;
 
-  console.log(displayedData);
-
   return (
     <>
       <View style={styles.item}>

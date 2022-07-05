@@ -213,6 +213,7 @@ export default function NewAppointment({ route }) {
             );
           } else {
             patientsInAppointment[index].priceSetByUser = true;
+            patientsInAppointment[index].price *= 100;
           }
         }
 
@@ -265,7 +266,7 @@ export default function NewAppointment({ route }) {
           drawing: "",
           patientType: thisPatient.patientType,
           token: token,
-          price: thisPatient.price * 100,
+          price: thisPatient.price,
           priceSetByUser: thisPatient.priceSetByUser,
           payed: thisPatient.payed,
         }),

@@ -422,7 +422,7 @@ export async function newPayement(
       token: token,
       eventId: eventId,
       method: method,
-      amount: price * 100,
+      amount: price,
       date: dayjs(date).add(12, "hours").toDate(),
       patientId: patientId,
     }),
