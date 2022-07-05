@@ -22,6 +22,7 @@ import {
   newPayement,
   setAutomaticPrice,
   datePlusTime,
+  deepCopy,
 } from "./Functions/Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { useNavigation } from "@react-navigation/native";
@@ -422,7 +423,7 @@ export default function NewAppointment({ route }) {
       (e) => e.id === thisPatient.id
     );
     if (index !== -1) {
-      const tempArray = patientsInAppointment.slice();
+      const tempArray = deepCopy(patientsInAppointment);
       tempArray[index] = thisPatient;
       setPatientsInAppointment(tempArray);
     } else {

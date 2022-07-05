@@ -430,3 +430,12 @@ export async function newPayement(
   const res = await fetchResponse.json();
   return res;
 }
+
+function deepCopy(array) {
+  // deep copy of an array of objects
+  const outputArray = [];
+  for (let i = 0; i < array.length; i++) {
+    outputArray[i] = { ...array[i] };
+  }
+  return outputArray;
+}
