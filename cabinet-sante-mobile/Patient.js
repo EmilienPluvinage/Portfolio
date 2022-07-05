@@ -11,8 +11,14 @@ import {
 } from "react-native-paper";
 import DropDown from "react-native-paper-dropdown";
 import { useConfig } from "./contexts/ConfigContext";
+import { deepCopy } from "./Functions/Functions";
 
-export default function Patient({ patient, setPatient, removePatient, multi }) {
+export default function Patient({
+  patient,
+  setPatientsInAppointment,
+  removePatient,
+  multi,
+}) {
   // state
   const [showDropDown, setShowDropDown] = useState(false);
   const [showDropDown2, setShowDropDown2] = useState(false);
@@ -29,24 +35,54 @@ export default function Patient({ patient, setPatient, removePatient, multi }) {
     return { label: e.value, value: e.id };
   });
 
-  function setPresent(bool) {
-    setPatient({ ...patient, present: bool });
+  function setPresent(value) {
+    setPatientsInAppointment((prev) =>
+      prev.map((thisPatient) =>
+        patient.id === thisPatient.id
+          ? { ...thisPatient, present: value }
+          : thisPatient
+      )
+    );
   }
 
-  function setPayed(bool) {
-    setPatient({ ...patient, payed: bool });
+  function setPayed(value) {
+    setPatientsInAppointment((prev) =>
+      prev.map((thisPatient) =>
+        patient.id === thisPatient.id
+          ? { ...thisPatient, payed: value }
+          : thisPatient
+      )
+    );
   }
 
   function setPatientType(value) {
-    setPatient({ ...patient, patientType: value });
+    setPatientsInAppointment((prev) =>
+      prev.map((thisPatient) =>
+        patient.id === thisPatient.id
+          ? { ...thisPatient, patientType: value }
+          : thisPatient
+      )
+    );
   }
 
   function setPrice(value) {
-    setPatient({ ...patient, price: value });
+    setPatientsInAppointment((prev) =>
+      prev.map((thisPatient) =>
+        patient.id === thisPatient.id
+          ? { ...thisPatient, price: value }
+          : thisPatient
+      )
+    );
   }
 
   function setPayementMethod(value) {
-    setPatient({ ...patient, payementMethod: value });
+    setPatientsInAppointment((prev) =>
+      prev.map((thisPatient) =>
+        patient.id === thisPatient.id
+          ? { ...thisPatient, payementMethod: value }
+          : thisPatient
+      )
+    );
   }
 
   return (

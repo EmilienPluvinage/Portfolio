@@ -417,20 +417,6 @@ export default function NewAppointment({ route }) {
     }
   }
 
-  function setPatient(thisPatient) {
-    // that function is passed to the Patient component so that it can update the patients that have been selected.
-    const index = patientsInAppointment.findIndex(
-      (e) => e.id === thisPatient.id
-    );
-    if (index !== -1) {
-      const tempArray = deepCopy(patientsInAppointment);
-      tempArray[index] = thisPatient;
-      setPatientsInAppointment(tempArray);
-    } else {
-      console.error("Patient ID does not exist.");
-    }
-  }
-
   return (
     <>
       <ScrollView>
@@ -544,7 +530,7 @@ export default function NewAppointment({ route }) {
           <Patient
             key={"Patient" + patient.id}
             patient={patient}
-            setPatient={setPatient}
+            setPatientsInAppointment={setPatientsInAppointment}
             removePatient={removePatient}
             multi={appointmentTypes.find((e) => e.type === type)?.multi !== 0}
           />
