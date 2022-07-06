@@ -7,7 +7,12 @@ import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { useConfig } from "./contexts/ConfigContext";
 import PatientSearch from "./PatientSearch";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { displayFullDate, displayDateInFrench } from "./Functions/Functions";
+import {
+  displayFullDate,
+  displayDateInFrench,
+  newPayement,
+  newSubscription,
+} from "./Functions/Functions";
 import DropDown from "react-native-paper-dropdown";
 
 export default function NewPatient() {
@@ -66,36 +71,36 @@ export default function NewPatient() {
   const others = [
     { value: "Autre", defaultValue: "", type: "other", payed: 0 },
   ];
-  const reasonOptions = others.concat(
-    packages
-      .map((e) => {
-        return {
-          payed: 0,
-          value: e.package,
-          defaultValue: e.price,
-          type: "package",
-          packageId: e.id,
-        };
-      })
-      .concat(
-        myAppointments.map((e) => {
+  const reasonOptions = others
+    .concat(
+      packages
+        .map((e) => {
           return {
-            payed: e.payed,
-            appointmentId: e.id,
-            value: e.value,
-            defaultValue: e.defaultValue,
-            defaultDate: e.defaultDate,
-            type: "appointment",
+            payed: 0,
+            value: e.package,
+            defaultValue: e.price,
+            type: "package",
+            packageId: e.id,
           };
         })
-      )
-      .map((element, index) => ({ ...element, id: index }))
-  );
+        .concat(
+          myAppointments.map((e) => {
+            return {
+              payed: e.payed,
+              appointmentId: e.id,
+              value: e.value,
+              defaultValue: e.defaultValue,
+              defaultDate: e.defaultDate,
+              type: "appointment",
+            };
+          })
+        )
+    )
+    .map((element, index) => ({ ...element, index: index }));
 
   const reasonOptionsList = reasonOptions
     .filter((e) => e.payed === 0)
-    .map((e) => ({ label: e.value, id: e.id }));
-  console.log(reasonOptionsList);
+    .map((e) => ({ label: e.value, value: e.index }));
 
   function selectPatient(patient) {
     setPatient(patient.id);
@@ -107,21 +112,72 @@ export default function NewPatient() {
   }
 
   function checkValues(values) {
+    if (values.reason === undefined) {
+      return {
+        check: false,
+        message: "Merci de sélectionner un motif pour le paiement.",
+      };
+    }
+    if (!values.amount || parseInt(values.amount) === 0) {
+      return {
+        check: false,
+        message: "Merci choisir une valeur valide pour le montant",
+      };
+    }
+
     return { check: true, message: "OK" };
   }
-
   async function submitForm() {
     // add checks
-    const check = checkValues();
+    const check = checkValues({ reason: reason, amount: amount });
     if (check.check) {
       setLoading(true);
+      // we verify whether the reason is an event or a package
+      // if it's other or an event
+      const option = reasonOptions.find((e) => e.index === reason);
+      const method = payementMethods.find(
+        (e) => e.id === payementMethod
+      )?.value;
+      let result = "";
+      if (reason === 0 || option?.type === "appointment") {
+        result = await newPayement(
+          option.appointmentId ? option.appointmentId : 0,
+          method,
+          amount * 100,
+          date,
+          patient,
+          token
+        );
+      } else {
+        // it's a package
+        result = await newSubscription(
+          option.packageId,
+          method,
+          amount * 100,
+          date,
+          patient,
+          token
+        );
+      }
+      if (result.success) {
+        await updateContext(token);
+        setPatient(0);
+        setReason("");
+        setAmount("");
+        setPayementMethod("");
+        setDate(new Date());
+        setSnackbarMsg("Payement ajouté.");
+        setShowSnackbar(true);
+      } else {
+        setSnackbarMsg(result.error);
+        setShowSnackbar(true);
+      }
     } else {
       setSnackbarMsg(check.message);
       setShowSnackbar(true);
     }
     setLoading(false);
   }
-
   return (
     <>
       <View style={styles.item}>
