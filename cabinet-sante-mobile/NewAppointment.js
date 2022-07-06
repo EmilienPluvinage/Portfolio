@@ -128,10 +128,12 @@ export default function NewAppointment({ route, navigation }) {
     (e) => e.name === "payementMethod"
   );
   const token = useLogin().token;
+  const payements = usePatients().payements;
   const updateContext = useUpdatePatients().update;
   const priceScheme = useConfig().priceScheme;
   const appointmentTypes = useConfig().appointmentTypes;
   const appointmentTypeId = appointmentTypes.find((e) => e.type === type)?.id;
+  const patientTypes = useConfig().patientTypes;
   const types = appointmentTypes.map((e) => {
     return { label: e.type, value: e.type };
   });
@@ -140,6 +142,7 @@ export default function NewAppointment({ route, navigation }) {
     return { id: e.id, fullname: e.fullname };
   });
   const appointments = usePatients().appointments;
+  const missedAppointments = usePatients().missedAppointments;
 
   useEffect(() => {
     if (appointmentId !== route.params.appointmentId) {
@@ -169,14 +172,42 @@ export default function NewAppointment({ route, navigation }) {
         setDate(new Date(appointment.start));
 
         // now we need to get the list of patients that are present in our appointment
-
-        let filteredPatients = appointments.filter(
-          (p) => p.appointmentId === route.params.appointmentId
-        );
-        filteredPatients = filteredPatients.map((patient) => {
-          const thisPatient = patients.find((e) => e.id === patient.patientId);
-          return { id: patient.patientId, fullname: thisPatient?.fullname };
-        });
+        let filteredPatients = appointments
+          .filter((p) => p.appointmentId === route.params.appointmentId)
+          .map((element) => {
+            return { ...element, present: true };
+          });
+        // then the list of patients that were absent
+        let missedPatients = missedAppointments
+          .filter((p) => p.appointmentId === route.params.appointmentId)
+          .map((element) => {
+            return { ...element, present: false };
+          });
+        // then we concat both and use the data to update patients in appointments state array
+        filteredPatients = filteredPatients
+          .concat(missedPatients)
+          .map((patient) => {
+            const fullname = patients.find(
+              (e) => e.id === patient.patientId
+            )?.fullname;
+            const payementMethod = payements.find(
+              (e) => e.eventId === patient.id
+            )?.method;
+            const payementMethodId = payementMethods.find(
+              (e) => e.value === payementMethod
+            )?.id;
+            return {
+              id: patient.patientId,
+              fullname: fullname,
+              payed: patient.payed === 1,
+              price: (patient.price / 100).toString(),
+              present: patient.present,
+              payementMethod: payementMethodId,
+              patientType: patientTypes.find(
+                (f) => f.id === patient.patientType
+              )?.type,
+            };
+          });
         setPatientsInAppointment(filteredPatients);
       }
     }
