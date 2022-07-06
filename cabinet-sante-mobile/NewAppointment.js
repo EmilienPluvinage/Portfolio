@@ -28,6 +28,7 @@ import {
 } from "./Functions/Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { useNavigation } from "@react-navigation/native";
+import Duplicate from "./Duplicate";
 
 function Loader({ visible }) {
   const containerStyle = {
@@ -45,12 +46,18 @@ function Loader({ visible }) {
   );
 }
 
-function BottomBar({ appointmentId, submitForm }) {
+function BottomBar({
+  appointmentId,
+  submitForm,
+  setSnackbarMsg,
+  setShowSnackbar,
+}) {
   const size = 26;
   const color = "white";
   const token = useLogin().token;
   const navigation = useNavigation();
   const updateContext = useUpdatePatients().update;
+  const [duplicate, setDuplicate] = useState(false);
 
   async function clickOnDeleteAppointment(id) {
     try {
@@ -70,32 +77,44 @@ function BottomBar({ appointmentId, submitForm }) {
   }
 
   return (
-    <View style={styles.bottomBar}>
-      <View style={styles.bottomBarButton}>
-        <IconButton
-          icon="delete"
-          color={color}
-          size={size}
-          onPress={() => clickOnDeleteAppointment(appointmentId)}
+    <>
+      {appointmentId !== 0 && (
+        <Duplicate
+          appointmentId={appointmentId}
+          open={duplicate}
+          setOpen={setDuplicate}
+          setParentSnackBar={setSnackbarMsg}
+          showParentSnackbar={setShowSnackbar}
         />
+      )}
+
+      <View style={styles.bottomBar}>
+        <View style={styles.bottomBarButton}>
+          <IconButton
+            icon="delete"
+            color={color}
+            size={size}
+            onPress={() => clickOnDeleteAppointment(appointmentId)}
+          />
+        </View>
+        <View style={styles.bottomBarButton}>
+          <IconButton
+            icon="content-copy"
+            color={color}
+            size={size}
+            onPress={() => setDuplicate(true)}
+          />
+        </View>
+        <View style={styles.bottomBarButton}>
+          <IconButton
+            icon="check"
+            color={color}
+            size={size}
+            onPress={() => submitForm()}
+          />
+        </View>
       </View>
-      <View style={styles.bottomBarButton}>
-        <IconButton
-          icon="content-copy"
-          color={color}
-          size={size}
-          onPress={() => console.log("copy")}
-        />
-      </View>
-      <View style={styles.bottomBarButton}>
-        <IconButton
-          icon="check"
-          color={color}
-          size={size}
-          onPress={() => submitForm()}
-        />
-      </View>
-    </View>
+    </>
   );
 }
 
@@ -653,7 +672,12 @@ export default function NewAppointment({ route, navigation }) {
           </Snackbar>
         </View>
         <View>
-          <BottomBar appointmentId={appointmentId} submitForm={submitForm} />
+          <BottomBar
+            appointmentId={appointmentId}
+            submitForm={submitForm}
+            setSnackbarMsg={setSnackbarMsg}
+            setShowSnackbar={setShowSnackbar}
+          />
         </View>
       </View>
     </>

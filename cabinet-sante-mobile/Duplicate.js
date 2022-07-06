@@ -23,7 +23,13 @@ import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { useConfig } from "./contexts/ConfigContext";
 import { useLogin } from "./contexts/AuthContext";
 
-export default function Duplicate({ appointmentId, open, setOpen }) {
+export default function Duplicate({
+  appointmentId,
+  open,
+  setOpen,
+  setParentSnackBar,
+  showParentSnackbar,
+}) {
   // context
   const appointments = usePatients().appointments.filter(
     (app) => app.appointmentId === appointmentId
@@ -71,13 +77,25 @@ export default function Duplicate({ appointmentId, open, setOpen }) {
     setEnd(value);
   }
 
+  function displayMessage(message) {
+    if (typeof setParentSnackBar == "function") {
+      console.log("parent");
+      setParentSnackBar(message);
+      showParentSnackbar(true);
+    } else {
+      console.log("child");
+      setSnackbarMsg(message);
+      setShowSnackbar(true);
+    }
+  }
+
   async function submitForm() {
     const check = checkValues();
     setLoading(true);
     if (check.error) {
       // we display the error in the snackbar
-      setSnackbarMsg(check.message);
-      setShowSnackbar(true);
+
+      displayMessage(check.message);
     } else {
       const eventStart = datePlusTime(date, start);
       const eventEnd = datePlusTime(date, end);
@@ -89,11 +107,9 @@ export default function Duplicate({ appointmentId, open, setOpen }) {
       );
       if (result.success) {
         await updateContext(token);
-        setSnackbarMsg("Le rendez-vous a bien été dupliqué.");
-        setShowSnackbar(true);
+        displayMessage("Le rendez-vous a bien été dupliqué.");
       } else {
-        setSnackbarMsg(result.error);
-        setShowSnackbar(true);
+        displayMessage(result.error);
       }
     }
     setLoading(false);
