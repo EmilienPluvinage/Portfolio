@@ -100,7 +100,8 @@ export default function NewPatient() {
 
   const reasonOptionsList = reasonOptions
     .filter((e) => e.payed === 0)
-    .map((e) => ({ label: e.value, value: e.index }));
+    .map((e) => ({ label: e.value, value: e.index }))
+    .slice(0, 20);
 
   function selectPatient(patient) {
     setPatient(patient.id);
