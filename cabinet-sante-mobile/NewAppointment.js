@@ -510,6 +510,7 @@ export default function NewAppointment({ route, navigation }) {
               <DropDown
                 mode={"outlined"}
                 visible={showDropDown}
+                placeholder={"Type de Consultation"}
                 showDropDown={() => setShowDropDown(true)}
                 onDismiss={() => setShowDropDown(false)}
                 value={type}

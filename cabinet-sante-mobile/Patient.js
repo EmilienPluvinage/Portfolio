@@ -140,6 +140,7 @@ export default function Patient({
               <DropDown
                 mode={"outlined"}
                 visible={showDropDown}
+                placeholder={"Type de Patient"}
                 showDropDown={() => setShowDropDown(true)}
                 onDismiss={() => setShowDropDown(false)}
                 value={patient.patientType}
@@ -165,6 +166,7 @@ export default function Patient({
             <DropDown
               mode={"outlined"}
               visible={showDropDown2}
+              placeholder={"Moyen de Paiement"}
               showDropDown={() => setShowDropDown2(true)}
               onDismiss={() => setShowDropDown2(false)}
               value={patient.payementMethod}
