@@ -16,9 +16,12 @@ import {
   displayDateInFrench,
   displayFullDate,
   displayTime,
+  datePlusTime,
+  duplicateAppointment,
 } from "./Functions/Functions";
-import { usePatients } from "./contexts/PatientsContext";
+import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { useConfig } from "./contexts/ConfigContext";
+import { useLogin } from "./contexts/AuthContext";
 
 export default function Duplicate({ appointmentId, open, setOpen }) {
   // context
@@ -26,6 +29,8 @@ export default function Duplicate({ appointmentId, open, setOpen }) {
     (app) => app.appointmentId === appointmentId
   );
   const appointmentTypes = useConfig().appointmentTypes;
+  const token = useLogin().token;
+  const updateContext = useUpdatePatients().update;
 
   const thisAppointment = appointments[0];
   const appointmentType = appointmentTypes.find(
@@ -66,16 +71,33 @@ export default function Duplicate({ appointmentId, open, setOpen }) {
     setEnd(value);
   }
 
-  function submitForm() {
+  async function submitForm() {
     const check = checkValues();
+    setLoading(true);
     if (check.error) {
       // we display the error in the snackbar
       setSnackbarMsg(check.message);
       setShowSnackbar(true);
     } else {
-      setLoading(true);
+      const eventStart = datePlusTime(date, start);
+      const eventEnd = datePlusTime(date, end);
+      const result = await duplicateAppointment(
+        appointmentId,
+        eventStart,
+        eventEnd,
+        token
+      );
+      if (result.success) {
+        await updateContext(token);
+        setSnackbarMsg("Le rendez-vous a bien été dupliqué.");
+        setShowSnackbar(true);
+      } else {
+        setSnackbarMsg(result.error);
+        setShowSnackbar(true);
+      }
     }
     setLoading(false);
+    setOpen(false);
   }
 
   function checkValues() {

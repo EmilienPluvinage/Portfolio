@@ -462,6 +462,31 @@ export async function newSubscription(
   return res;
 }
 
+export async function duplicateAppointment(appointmentId, start, end, token) {
+  try {
+    const fetchResponse = await fetch(
+      process.env.REACT_APP_API_DOMAIN + "/DuplicateEvent",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          start: new Date(start),
+          end: new Date(end),
+          appointmentId: appointmentId,
+          token: token,
+        }),
+      }
+    );
+    const res = await fetchResponse.json();
+    return res;
+  } catch (e) {
+    return e;
+  }
+}
+
 export function deepCopy(array) {
   // deep copy of an array of objects
   const outputArray = [];
