@@ -79,11 +79,9 @@ export default function Duplicate({
 
   function displayMessage(message) {
     if (typeof setParentSnackBar == "function") {
-      console.log("parent");
       setParentSnackBar(message);
       showParentSnackbar(true);
     } else {
-      console.log("child");
       setSnackbarMsg(message);
       setShowSnackbar(true);
     }
