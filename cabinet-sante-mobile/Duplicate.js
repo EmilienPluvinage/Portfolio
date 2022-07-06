@@ -7,6 +7,8 @@ import {
   IconButton,
   TextInput,
   Button,
+  Snackbar,
+  Text,
 } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import dayjs from "dayjs";
@@ -30,10 +32,16 @@ export default function Duplicate({ appointmentId, open, setOpen }) {
     (e) => e.id === thisAppointment.idType
   )?.type;
 
+  // state
+  const [loading, setLoading] = useState(false);
   // date picker
   const [datePicker, setDatePicker] = useState(false);
-  const [date, setDate] = useState(new Date());
-
+  const [date, setDate] = useState(
+    dayjs(thisAppointment.start).add(7, "days").toDate()
+  );
+  // snackbar
+  const [snackbarMsg, setSnackbarMsg] = useState("Test");
+  const [showSnackbar, setShowSnackbar] = useState(false);
   // start picker
   const [startPicker, setStartPicker] = useState(false);
   const [start, setStart] = useState(new Date(thisAppointment.start));
@@ -59,8 +67,32 @@ export default function Duplicate({ appointmentId, open, setOpen }) {
   }
 
   function submitForm() {
-    console.log("confirmer");
+    const check = checkValues();
+    if (check.error) {
+      // we display the error in the snackbar
+      setSnackbarMsg(check.message);
+      setShowSnackbar(true);
+    } else {
+      setLoading(true);
+    }
+    setLoading(false);
   }
+
+  function checkValues() {
+    // check that:
+
+    // end is after start
+    if (end < start) {
+      return {
+        error: true,
+        message:
+          "La date de fin du rendez-vous doit être antérieure à la date de début.",
+      };
+    }
+
+    return { error: false };
+  }
+
   return (
     <>
       <Portal>
@@ -156,6 +188,7 @@ export default function Duplicate({ appointmentId, open, setOpen }) {
                 )}
               </View>
               <Button
+                loading={loading}
                 mode="contained"
                 onPress={submitForm}
                 style={{ marginTop: 10 }}
@@ -165,6 +198,15 @@ export default function Duplicate({ appointmentId, open, setOpen }) {
             </Card.Content>
           </Card>
         </Modal>
+        <Snackbar
+          visible={showSnackbar}
+          onDismiss={() => setShowSnackbar(false)}
+          duration={5000}
+          style={{ backgroundColor: "#E3FAFC" }}
+        >
+          {" "}
+          <Text style={{ color: "black" }}>{snackbarMsg}</Text>
+        </Snackbar>
       </Portal>
     </>
   );
