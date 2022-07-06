@@ -178,6 +178,18 @@ export default function NewPatient() {
     }
     setLoading(false);
   }
+
+  function changeReason(value) {
+    const option = reasonOptions.find((e) => e.index === value);
+    if (value !== 0) {
+      setAmount((option.defaultValue / 100).toString());
+      if (option.type === "appointment") {
+        // we also update the date
+        setDate(new Date(option.defaultDate));
+      }
+      setReason(value);
+    }
+  }
   return (
     <>
       <View style={styles.item}>
@@ -198,7 +210,7 @@ export default function NewPatient() {
                 onDismiss={() => setShowDropDown(false)}
                 value={reason}
                 placeholder={"Motif du paiement"}
-                setValue={setReason}
+                setValue={changeReason}
                 list={reasonOptionsList}
               />
             </View>
