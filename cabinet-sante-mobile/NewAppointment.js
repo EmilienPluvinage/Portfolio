@@ -59,6 +59,9 @@ function BottomBar({ appointmentId, submitForm }) {
       if (result) {
         navigation.navigate("NewAppointment", { appointmentId: 0 });
         // add snackbar update
+        setSnackbarMsg("Rendez-vous supprimé.");
+        setShowSnackbar(true);
+
         await updateContext(token);
       }
     } catch (e) {
@@ -441,19 +444,19 @@ export default function NewAppointment({ route, navigation }) {
   }
 
   function onDateSelected(event, value) {
-    setDate(value);
     setDatePicker(false);
+    setDate(value);
   }
 
   function onStartSelected(event, value) {
+    setStartPicker(false);
     setStart(value);
     setEnd(dayjs(value).add(60, "minutes").toDate());
-    setStartPicker(false);
   }
 
   function onEndSelected(event, value) {
-    setEnd(value);
     setEndPicker(false);
+    setEnd(value);
   }
 
   function changeType(value) {
