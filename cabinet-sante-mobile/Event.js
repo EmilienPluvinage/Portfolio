@@ -7,8 +7,10 @@ import { REACT_APP_API_DOMAIN } from "@env";
 import { deleteAppointment } from "./Functions/Functions";
 import { useLogin } from "./contexts/AuthContext";
 import { useUpdatePatients } from "./contexts/PatientsContext";
+import Duplicate from "./Duplicate";
 
 function DropdownMenu({ appointmentId, navigation }) {
+  const [duplicate, setDuplicate] = useState(false);
   const [visible, setVisible] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
   const [callback, setCallback] = useState();
@@ -35,6 +37,11 @@ function DropdownMenu({ appointmentId, navigation }) {
 
   return (
     <>
+      <Duplicate
+        appointmentId={appointmentId}
+        open={duplicate}
+        setOpen={setDuplicate}
+      />
       <Confirmation
         open={confirmation}
         setOpen={setConfirmation}
@@ -55,9 +62,20 @@ function DropdownMenu({ appointmentId, navigation }) {
         >
           <Menu.Item
             titleStyle={{ color: "white" }}
-            onPress={() => updateAppointment(appointmentId)}
             title="Modifier"
+            onPress={() => {
+              updateAppointment(appointmentId);
+            }}
           />
+          <Menu.Item
+            titleStyle={{ color: "white" }}
+            title="Dupliquer"
+            onPress={() => {
+              setVisible(false);
+              setDuplicate(true);
+            }}
+          />
+
           <Menu.Item
             titleStyle={{ color: "white" }}
             onPress={() => clickOnDeleteAppointment(appointmentId)}
