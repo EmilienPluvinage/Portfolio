@@ -6,6 +6,7 @@ import DropDown from "react-native-paper-dropdown";
 import { REACT_APP_API_DOMAIN } from "@env";
 import { useLogin } from "./contexts/AuthContext";
 import PatientSearch from "./PatientSearch";
+import Confirmation from "./Confirmation";
 
 export default function Reminders() {
   // Data from context
@@ -22,6 +23,8 @@ export default function Reminders() {
   const [description, setDescription] = useState("");
   const [patient, setPatient] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [confirmation, setConfirmation] = useState(false);
+  const [callback, setCallback] = useState();
 
   async function addReminder() {
     if (patient !== 0 && description !== "") {
@@ -58,6 +61,11 @@ export default function Reminders() {
     }
   }
 
+  async function clickRemove(reminderId) {
+    setCallback(() => removeReminder(reminderId));
+    setConfirmation(true);
+  }
+
   async function removeReminder(reminderId) {
     try {
       const fetchResponse = await fetch(
@@ -91,6 +99,11 @@ export default function Reminders() {
 
   return (
     <>
+      <Confirmation
+        open={confirmation}
+        setOpen={setConfirmation}
+        callback={callback}
+      />
       <ScrollView>
         <View style={styles.item}>
           <View style={styles.addReminder}>
@@ -132,7 +145,7 @@ export default function Reminders() {
             <IconButton
               icon="delete"
               color="#ffffff"
-              onPress={() => removeReminder(reminder.id)}
+              onPress={() => clickRemove(reminder.id)}
             />
           </View>
         ))}
