@@ -47,7 +47,6 @@ export default function Reminders() {
           }
         );
         const res = await fetchResponse.json();
-        console.log(res);
         if (res.success) {
           // we clear the form, update the context and display a notification
           await updateContext(token);
