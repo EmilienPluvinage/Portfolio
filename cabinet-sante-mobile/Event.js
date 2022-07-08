@@ -23,11 +23,16 @@ function DropdownMenu({ appointmentId, navigation }) {
   }
 
   async function clickOnDeleteAppointment(id) {
+    setVisible(false);
+    setCallback(() => () => removeAppointment(id));
+    setConfirmation(true);
+  }
+
+  async function removeAppointment(id) {
     try {
       const result = await deleteAppointment(id, token, REACT_APP_API_DOMAIN);
-      setVisible(false);
+
       if (result) {
-        setConfirmation(true);
         await updateContext(token);
       }
     } catch (e) {

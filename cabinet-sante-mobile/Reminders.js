@@ -62,7 +62,7 @@ export default function Reminders() {
   }
 
   async function clickRemove(reminderId) {
-    setCallback(() => removeReminder(reminderId));
+    setCallback(() => () => removeReminder(reminderId));
     setConfirmation(true);
   }
 
