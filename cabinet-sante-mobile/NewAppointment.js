@@ -29,6 +29,7 @@ import {
 import { useLogin } from "./contexts/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import Duplicate from "./Duplicate";
+import Confirmation from "./Confirmation";
 
 function Loader({ visible }) {
   const containerStyle = {
@@ -58,8 +59,10 @@ function BottomBar({
   const navigation = useNavigation();
   const updateContext = useUpdatePatients().update;
   const [duplicate, setDuplicate] = useState(false);
+  const [confirmation, setConfirmation] = useState(false);
+  const [callback, setCallback] = useState();
 
-  async function clickOnDeleteAppointment(id) {
+  async function removeAppointment(id) {
     try {
       const result = await deleteAppointment(id, token, REACT_APP_API_DOMAIN);
 
@@ -76,6 +79,10 @@ function BottomBar({
     }
   }
 
+  function clickOnDeleteAppointment(id) {
+    setCallback(() => () => removeAppointment(id));
+    setConfirmation(true);
+  }
   return (
     <>
       {appointmentId !== 0 && (
@@ -87,6 +94,11 @@ function BottomBar({
           showParentSnackbar={setShowSnackbar}
         />
       )}
+      <Confirmation
+        open={confirmation}
+        setOpen={setConfirmation}
+        callback={callback}
+      />
 
       <View style={styles.bottomBar}>
         <View style={styles.bottomBarButton}>
