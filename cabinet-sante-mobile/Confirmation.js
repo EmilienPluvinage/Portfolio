@@ -12,8 +12,12 @@ import {
 } from "react-native-paper";
 
 export default function Confirmation({ open, setOpen, callback }) {
+  const [loading, setLoading] = useState(false);
+
   async function click() {
+    // setLoading(true);
     await callback();
+    // setLoading(false);
     setOpen(false);
   }
   return (
@@ -35,7 +39,7 @@ export default function Confirmation({ open, setOpen, callback }) {
                 >
                   Non
                 </Button>
-                <Button mode="contained" onPress={click}>
+                <Button mode="contained" onPress={click} loading={loading}>
                   Oui
                 </Button>
               </View>
