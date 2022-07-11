@@ -168,6 +168,7 @@ export default function NewAppointment({ route, navigation }) {
   const types = appointmentTypes.map((e) => {
     return { label: e.type, value: e.type };
   });
+
   const patients = usePatients().patients;
   const patientsList = patients.map((e) => {
     return { id: e.id, fullname: e.fullname };
@@ -175,72 +176,81 @@ export default function NewAppointment({ route, navigation }) {
   const appointments = usePatients().appointments;
   const missedAppointments = usePatients().missedAppointments;
 
-  useEffect(() => {
-    if (appointmentId !== route.params.appointmentId) {
-      setAppointmentId(route.params.appointmentId);
-      // it means we're loading a new page
-      // either it's a creation and we'll make sure to empty all the fields to start with
-      // or it's a modification and we'll pre-fill the form with data from our contexts
-      if (route.params.appointmentId === 0) {
-        // create
-        setTitle("");
-        setType("");
-        setStart(new Date());
-        setEnd(dayjs(new Date()).add(60, "minutes").toDate());
-        setDate(new Date());
-        setPatientsInAppointment([]);
-      } else {
-        // update
-        const appointment = appointments.find(
-          (e) => e.appointmentId === route.params.appointmentId
-        );
-        setTitle(appointment.title);
-        setType(
-          appointmentTypes.find((e) => e.id === appointment.idType)?.type
-        );
-        setStart(new Date(appointment.start));
-        setEnd(new Date(appointment.end));
-        setDate(new Date(appointment.start));
+  function resetForm() {
+    setTitle("");
+    setStart(new Date());
+    setEnd(dayjs(new Date()).add(60, "minutes").toDate());
+    setDate(new Date());
+    setPatientsInAppointment([]);
+  }
 
-        // now we need to get the list of patients that are present in our appointment
-        let filteredPatients = appointments
-          .filter((p) => p.appointmentId === route.params.appointmentId)
-          .map((element) => {
-            return { ...element, present: true };
-          });
-        // then the list of patients that were absent
-        let missedPatients = missedAppointments
-          .filter((p) => p.appointmentId === route.params.appointmentId)
-          .map((element) => {
-            return { ...element, present: false };
-          });
-        // then we concat both and use the data to update patients in appointments state array
-        filteredPatients = filteredPatients
-          .concat(missedPatients)
-          .map((patient) => {
-            const fullname = patients.find(
-              (e) => e.id === patient.patientId
-            )?.fullname;
-            const payementMethod = payements.find(
-              (e) => e.eventId === patient.id
-            )?.method;
-            const payementMethodId = payementMethods.find(
-              (e) => e.value === payementMethod
-            )?.id;
-            return {
-              id: patient.patientId,
-              fullname: fullname,
-              payed: patient.payed === 1,
-              price: (patient.price / 100).toString(),
-              present: patient.present,
-              payementMethod: payementMethodId,
-              patientType: patientTypes.find(
-                (f) => f.id === patient.patientType
-              )?.type,
-            };
-          });
-        setPatientsInAppointment(filteredPatients);
-      }
+  function prefillForm(thisId) {
+    setAppointmentId(thisId);
+    // update
+    const appointment = appointments.find((e) => e.appointmentId === thisId);
+    setTitle(appointment.title);
+    setType(appointmentTypes.find((e) => e.id === appointment.idType)?.type);
+    setStart(new Date(appointment.start));
+    setEnd(new Date(appointment.end));
+    setDate(new Date(appointment.start));
+
+    // now we need to get the list of patients that are present in our appointment
+    let filteredPatients = appointments
+      .filter((p) => p.appointmentId === thisId)
+      .map((element) => {
+        return { ...element, present: true };
+      });
+    // then the list of patients that were absent
+    let missedPatients = missedAppointments
+      .filter((p) => p.appointmentId === thisId)
+      .map((element) => {
+        return { ...element, present: false };
+      });
+    // then we concat both and use the data to update patients in appointments state array
+    filteredPatients = filteredPatients
+      .concat(missedPatients)
+      .map((patient) => {
+        const fullname = patients.find(
+          (e) => e.id === patient.patientId
+        )?.fullname;
+        const payementMethod = payements.find(
+          (e) => e.eventId === patient.id
+        )?.method;
+        const payementMethodId = payementMethods.find(
+          (e) => e.value === payementMethod
+        )?.id;
+        return {
+          id: patient.patientId,
+          fullname: fullname,
+          payed: patient.payed === 1,
+          price: (patient.price / 100).toString(),
+          present: patient.present,
+          payementMethod: payementMethodId,
+          patientType: patientTypes.find((f) => f.id === patient.patientType)
+            ?.type,
+        };
+      });
+    setPatientsInAppointment(filteredPatients);
+  }
+
+  // re-setting form whenever someone loads the page by click on the item in the drawer
+  useEffect(() => {
+    const click = navigation.addListener("drawerItemPress", (e) => {
+      // Prevent default behavior!
+      e.preventDefault();
+      // resets form
+      resetForm();
+    });
+
+    return click;
+  }, [navigation]);
+
+  // loading data based on route.params.appointmentId
+  useEffect(() => {
+    console.log(route.params.appointmentId);
+    // it's a modification and we'll pre-fill the form with data from our contexts
+    if (route.params.appointmentId !== 0) {
+      prefillForm(route.params.appointmentId);
     }
   }, [route, appointmentId]);
 
@@ -465,7 +475,7 @@ export default function NewAppointment({ route, navigation }) {
       setLoader(false);
       setSnackbarMsg(message);
       setShowSnackbar(true);
-      navigation.navigate("NewAppointment", { appointmentId: 0 });
+      resetForm();
     }
   }
 
