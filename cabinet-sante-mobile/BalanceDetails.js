@@ -1,4 +1,4 @@
-import { ScrollView, View, StyleSheet, Text } from "react-native";
+import { ScrollView, View, StyleSheet, Text, SafeAreaView } from "react-native";
 import {
   Button,
   Modal,
@@ -18,6 +18,7 @@ import {
   insertPackageIntoArray,
   BalanceByPatient,
 } from "./Functions/Functions";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function BalanceDetails({ patientId }) {
   // data from context
@@ -62,6 +63,8 @@ export default function BalanceDetails({ patientId }) {
 
   // navigation
   const [open, setOpen] = useState(false);
+  const rowsPerPage = 8;
+  const [activePage, setPage] = useState(1);
 
   // used to exclude future appointments into balance calculation
   const today = new Date();
@@ -79,7 +82,13 @@ export default function BalanceDetails({ patientId }) {
 
   calculateBalance(data, payements);
 
-  const displayedData = data.slice();
+  const numberOfPages =
+    data.length > 0 ? Math.ceil(data.length / rowsPerPage) : 1;
+
+  const displayedData = data.slice(
+    (activePage - 1) * rowsPerPage,
+    activePage * rowsPerPage
+  );
 
   return (
     <>
@@ -113,6 +122,7 @@ export default function BalanceDetails({ patientId }) {
                       Solde
                     </DataTable.Title>
                   </DataTable.Header>
+
                   {displayedData.map(
                     (row) =>
                       (row.dataType === "package" || row.payed === 0) && (
@@ -143,6 +153,52 @@ export default function BalanceDetails({ patientId }) {
                     // or a scroll view but with smart display becauseit can be massive...
                   }
                 </DataTable>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    marginBottom: 10,
+                  }}
+                >
+                  <Button
+                    mode="contained"
+                    color="gray"
+                    compact={true}
+                    onPress={() =>
+                      setPage((prev) => (prev > 1 ? prev - 1 : prev))
+                    }
+                  >
+                    <Ionicons
+                      name="arrow-back-outline"
+                      color={"white"}
+                      size={18}
+                    />
+                  </Button>
+                  <Button
+                    mode="contained"
+                    color="gray"
+                    compact={true}
+                    style={{ marginHorizontal: 5 }}
+                  >
+                    <Text style={{ color: "white" }}>{activePage}</Text>
+                  </Button>
+                  <Button
+                    mode="contained"
+                    color="gray"
+                    compact={true}
+                    onPress={() =>
+                      setPage((prev) =>
+                        prev < numberOfPages ? prev + 1 : prev
+                      )
+                    }
+                  >
+                    <Ionicons
+                      name="arrow-forward-outline"
+                      color={"white"}
+                      size={18}
+                    />
+                  </Button>
+                </View>
               </Card.Content>
             </Card>
           </Modal>
