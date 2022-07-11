@@ -177,6 +177,7 @@ export default function NewAppointment({ route, navigation }) {
   const missedAppointments = usePatients().missedAppointments;
 
   function resetForm() {
+    setAppointmentId(0);
     setTitle("");
     setStart(new Date());
     setEnd(dayjs(new Date()).add(60, "minutes").toDate());
@@ -247,7 +248,6 @@ export default function NewAppointment({ route, navigation }) {
 
   // loading data based on route.params.appointmentId
   useEffect(() => {
-    console.log(route.params.appointmentId);
     // it's a modification and we'll pre-fill the form with data from our contexts
     if (route.params.appointmentId !== 0) {
       prefillForm(route.params.appointmentId);
@@ -399,12 +399,104 @@ export default function NewAppointment({ route, navigation }) {
     appointmentTypeId,
     start,
     end,
-    patients
+    patientsInAppointment
   ) {
-    if (appointmentTypes.find((e) => e.id === appointmentTypeId)?.multi === 0) {
-      // it's a solo appointment
-    } else {
-      // it's a multi appoitment
+    console.log("appointmentId");
+    console.log(appointmentId);
+    try {
+      const fetchResponse = await fetch(REACT_APP_API_DOMAIN + "/UpdateEvent", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          important: false,
+          start: new Date(start),
+          end: new Date(end),
+          title: title,
+          comments: "",
+          idType: appointmentTypeId,
+          token: token,
+          appointmentId: appointmentId,
+        }),
+      });
+      const res = await fetchResponse.json();
+      if (res.success) {
+        // we start by deleting all participants
+        const fetchResponse2 = await fetch(
+          REACT_APP_API_DOMAIN + "/DeleteAllParticipants",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              important: false,
+              start: new Date(start),
+              end: new Date(end),
+              title: title,
+              comments: "",
+              idType: appointmentTypeId,
+              token: token,
+              appointmentId: appointmentId,
+            }),
+          }
+        );
+        const res2 = await fetchResponse2.json();
+
+        // Now that the event has been updated, we need to add all the participants
+        const findPackage = (x) => patients.find((e) => e.id === x)?.packageId;
+
+        // we loop through all the patients in our appointment (at least 1)
+        for (const element of patientsInAppointment) {
+          const index = patientsInAppointment.findIndex(
+            (e) => e.id === element.id
+          );
+          let packageId = findPackage(element.id);
+          packageId =
+            packageId === null || packageId === undefined ? 0 : packageId;
+
+          if (
+            appointmentTypes.find((e) => e.id === appointmentTypeId)?.multi !==
+            0
+          ) {
+            // it's a multi appointment, which means we have to calculate the price automatically since there was no input for it
+            patientsInAppointment[index].priceSetByUser = false;
+            patientsInAppointment[index].price = setAutomaticPrice(
+              priceScheme,
+              element.patientType,
+              appointmentTypeId,
+              packageId
+            );
+          } else {
+            patientsInAppointment[index].priceSetByUser = true;
+            patientsInAppointment[index].price *= 100;
+          }
+        }
+
+        // then we add all our participants (or non-participants)
+        let queries = [];
+        for (let i = 0; i < patientsInAppointment.length; i++) {
+          queries.push(
+            newParticipant(
+              patientsInAppointment[i],
+              appointmentId,
+
+              start
+            )
+          );
+        }
+
+        await Promise.all(queries);
+
+        return { success: true };
+      } else {
+        return { success: false };
+      }
+    } catch (e) {
+      console.error(e);
     }
   }
 
@@ -475,6 +567,8 @@ export default function NewAppointment({ route, navigation }) {
       setLoader(false);
       setSnackbarMsg(message);
       setShowSnackbar(true);
+
+      navigation.navigate("NewAppointment", { appointmentId: 0 });
       resetForm();
     }
   }

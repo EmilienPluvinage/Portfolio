@@ -40,7 +40,7 @@ export default function Duplicate({
 
   const thisAppointment = appointments[0];
   const appointmentType = appointmentTypes.find(
-    (e) => e.id === thisAppointment.idType
+    (e) => e.id === thisAppointment?.idType
   )?.type;
 
   // state
@@ -48,18 +48,18 @@ export default function Duplicate({
   // date picker
   const [datePicker, setDatePicker] = useState(false);
   const [date, setDate] = useState(
-    dayjs(thisAppointment.start).add(7, "days").toDate()
+    dayjs(thisAppointment?.start).add(7, "days").toDate()
   );
   // snackbar
   const [snackbarMsg, setSnackbarMsg] = useState("Test");
   const [showSnackbar, setShowSnackbar] = useState(false);
   // start picker
   const [startPicker, setStartPicker] = useState(false);
-  const [start, setStart] = useState(new Date(thisAppointment.start));
+  const [start, setStart] = useState(new Date(thisAppointment?.start));
 
   // end picker
   const [endPicker, setEndPicker] = useState(false);
-  const [end, setEnd] = useState(new Date(thisAppointment.end));
+  const [end, setEnd] = useState(new Date(thisAppointment?.end));
 
   function onDateSelected(event, value) {
     setDatePicker(false);
@@ -139,7 +139,7 @@ export default function Duplicate({
               subtitleStyle={styles.cardTitle}
               title={`Dupliquer`}
               subtitle={`${appointmentType} du ${displayDateInFrench(
-                thisAppointment.start
+                thisAppointment?.start
               )}`}
               right={(props) => (
                 <IconButton
