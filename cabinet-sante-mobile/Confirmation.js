@@ -15,10 +15,8 @@ export default function Confirmation({ open, setOpen, callback }) {
   const [loading, setLoading] = useState(false);
 
   async function click() {
-    // setLoading(true);
-    await callback();
-    // setLoading(false);
-    setOpen(false);
+    setLoading(true);
+    callback();
   }
   return (
     <>
