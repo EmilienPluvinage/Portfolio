@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import {
   Button,
@@ -13,6 +13,9 @@ import {
 
 export default function Confirmation({ open, setOpen, callback }) {
   const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    setLoading(false);
+  }, [open]);
 
   async function click() {
     setLoading(true);
