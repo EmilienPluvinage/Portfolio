@@ -690,7 +690,6 @@ export default function NewAppointment({
       >
         <MultiSelect
           required
-          dropdownPosition="top"
           name="patients"
           icon={<UserPlus size={16} />}
           data={data}
