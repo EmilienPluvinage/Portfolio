@@ -60,14 +60,7 @@ export default function Balance() {
                 patients={patients}
               />
             </View>
-            <Text
-              style={{
-                ...styles.text,
-                color: balance < 0 ? "#FA5252" : "white",
-              }}
-            >
-              {patient !== 0 && `${balance / 100} €`}
-            </Text>
+
             {patient !== 0 && <BalanceDetails patientId={patient} />}
           </View>
         </View>
@@ -78,9 +71,6 @@ export default function Balance() {
             </View>
 
             <View>
-              <Text style={{ ...styles.text, color: "#FA5252" }}>
-                {row.balance / 100} €
-              </Text>
               <BalanceDetails patientId={row.id} />
             </View>
           </View>
@@ -98,7 +88,7 @@ const styles = StyleSheet.create({
   },
   patientSearch: {
     flex: 1,
-    marginRight: 20,
+    marginRight: 10,
   },
   formItem: {
     marginVertical: 10,

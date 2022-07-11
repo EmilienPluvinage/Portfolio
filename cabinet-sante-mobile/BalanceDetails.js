@@ -8,18 +8,78 @@ import {
   DataTable,
 } from "react-native-paper";
 import { usePatients } from "./contexts/PatientsContext";
+import { useConfig } from "./contexts/ConfigContext";
 import { useState, useEffect } from "react";
-import { BalanceByPatient } from "./Functions/Functions";
+import {
+  calculateBalance,
+  displayDate,
+  displayPrice,
+  getUniqueSharedPatients,
+  insertPackageIntoArray,
+  BalanceByPatient,
+} from "./Functions/Functions";
 
 export default function BalanceDetails({ patientId }) {
   // data from context
-  const patients = usePatients().patients;
-  const payements = usePatients().payements;
-  const appointments = usePatients().appointments;
   const sharedBalance = usePatients().sharedBalance;
+  const sharedPatients = getUniqueSharedPatients(sharedBalance, patientId);
+  const payements = usePatients().payements.filter(
+    (e) => sharedPatients.findIndex((f) => f === e.patientId) !== -1
+  );
+  let notMissedAppointments = usePatients().appointments;
+  let missedAppointments = usePatients().missedAppointments;
+  for (const element of notMissedAppointments) {
+    element.missed = false;
+  }
+  for (const element of missedAppointments) {
+    element.missed = true;
+  }
+  const balance = BalanceByPatient(
+    patientId,
+    notMissedAppointments,
+    sharedBalance,
+    payements
+  );
 
-  // state
+  let appointments = notMissedAppointments
+    .concat(missedAppointments)
+    .filter((e) => sharedPatients.findIndex((f) => f === e.patientId) !== -1);
+
+  function compareDate(a, b) {
+    let x = new Date(a.start);
+    let y = new Date(b.start);
+
+    if (x < y) {
+      return 1;
+    }
+    if (x > y) {
+      return -1;
+    }
+    return 0;
+  }
+
+  appointments.sort((a, b) => compareDate(a, b));
+
+  // navigation
   const [open, setOpen] = useState(false);
+
+  // used to exclude future appointments into balance calculation
+  const today = new Date();
+
+  const packagesData = payements
+    .filter((e) => e.eventId === 0)
+    .map((obj) => ({
+      ...obj,
+      dataType: "package",
+    }));
+
+  var data = appointments.map((obj) => ({ ...obj, dataType: "event" }));
+
+  packagesData.forEach((e) => insertPackageIntoArray(data, e));
+
+  calculateBalance(data, payements);
+
+  const displayedData = data.slice();
 
   return (
     <>
@@ -53,40 +113,31 @@ export default function BalanceDetails({ patientId }) {
                       Solde
                     </DataTable.Title>
                   </DataTable.Header>
+                  {displayedData.map(
+                    (row) =>
+                      (row.dataType === "package" || row.payed === 0) && (
+                        <DataTable.Row key={row.id}>
+                          <DataTable.Cell textStyle={styles.dataTableText}>
+                            {displayDate(
+                              new Date(
+                                row.dataType === "event" ? row.start : row.date
+                              )
+                            )}
+                          </DataTable.Cell>
+                          <DataTable.Cell textStyle={styles.dataTableText}>
+                            -{" "}
+                            {displayPrice(
+                              row.dataType === "event" ? row.price : row.amount
+                            )}{" "}
+                            €
+                          </DataTable.Cell>
+                          <DataTable.Cell textStyle={styles.dataTableText}>
+                            {displayPrice(row.balance)} €
+                          </DataTable.Cell>
+                        </DataTable.Row>
+                      )
+                  )}
 
-                  <DataTable.Row>
-                    <DataTable.Cell textStyle={styles.dataTableText}>
-                      10/06
-                    </DataTable.Cell>
-                    <DataTable.Cell textStyle={styles.dataTableText}>
-                      - 15 €
-                    </DataTable.Cell>
-                    <DataTable.Cell textStyle={styles.dataTableText}>
-                      400 €
-                    </DataTable.Cell>
-                  </DataTable.Row>
-                  <DataTable.Row>
-                    <DataTable.Cell textStyle={styles.dataTableText}>
-                      10/06
-                    </DataTable.Cell>
-                    <DataTable.Cell textStyle={styles.dataTableText}>
-                      - 15 €
-                    </DataTable.Cell>
-                    <DataTable.Cell textStyle={styles.dataTableText}>
-                      400 €
-                    </DataTable.Cell>
-                  </DataTable.Row>
-                  <DataTable.Row>
-                    <DataTable.Cell textStyle={styles.dataTableText}>
-                      10/06
-                    </DataTable.Cell>
-                    <DataTable.Cell textStyle={styles.dataTableText}>
-                      - 15 €
-                    </DataTable.Cell>
-                    <DataTable.Cell textStyle={styles.dataTableText}>
-                      400 €
-                    </DataTable.Cell>
-                  </DataTable.Row>
                   {
                     // Add my own paginiation
                     // or a scroll view but with smart display becauseit can be massive...
@@ -97,7 +148,14 @@ export default function BalanceDetails({ patientId }) {
           </Modal>
         </Portal>
       )}
-      <Button onPress={() => setOpen(true)}>Open</Button>
+
+      <Button
+        color={balance < 0 ? "#FA5252" : "white"}
+        onPress={() => setOpen(true)}
+        compact={true}
+      >
+        {displayPrice(balance)} €
+      </Button>
     </>
   );
 }
