@@ -3,6 +3,7 @@ import { usePatients } from "./contexts/PatientsContext";
 import { useState } from "react";
 import { BalanceByPatient } from "./Functions/Functions";
 import PatientSearch from "./PatientSearch";
+import BalanceDetails from "./BalanceDetails";
 
 export default function Balance() {
   // data from context
@@ -67,6 +68,7 @@ export default function Balance() {
             >
               {patient !== 0 && `${balance / 100} €`}
             </Text>
+            {patient !== 0 && <BalanceDetails patientId={patient} />}
           </View>
         </View>
         {dataToDisplay.map((row) => (
@@ -79,6 +81,7 @@ export default function Balance() {
               <Text style={{ ...styles.text, color: "#FA5252" }}>
                 {row.balance / 100} €
               </Text>
+              <BalanceDetails patientId={row.id} />
             </View>
           </View>
         ))}
