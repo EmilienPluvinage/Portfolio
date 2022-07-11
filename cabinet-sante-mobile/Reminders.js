@@ -1,8 +1,7 @@
 import { ScrollView, View, StyleSheet, Text } from "react-native";
-import { IconButton, Button, TextInput } from "react-native-paper";
+import { IconButton, Button, TextInput, Snackbar } from "react-native-paper";
 import { usePatients, useUpdatePatients } from "./contexts/PatientsContext";
 import { useState } from "react";
-import DropDown from "react-native-paper-dropdown";
 import { REACT_APP_API_DOMAIN } from "@env";
 import { useLogin } from "./contexts/AuthContext";
 import PatientSearch from "./PatientSearch";
@@ -25,6 +24,8 @@ export default function Reminders() {
   const [loading, setLoading] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
   const [callback, setCallback] = useState();
+  const [snackbarMsg, setSnackbarMsg] = useState("");
+  const [showSnackbar, setShowSnackbar] = useState(false);
 
   async function addReminder() {
     if (patient !== 0 && description !== "") {
@@ -51,8 +52,9 @@ export default function Reminders() {
           // we clear the form, update the context and display a notification
           await updateContext(token);
           setDescription("");
-
           setLoading(false);
+          setSnackbarMsg("Le rappel a bien été ajouté.");
+          setShowSnackbar(true);
         }
       } catch (e) {
         return e;
@@ -84,6 +86,9 @@ export default function Reminders() {
       const res = await fetchResponse.json();
       if (res.success) {
         await updateContext(token);
+        setSnackbarMsg("Le rappel a bien été supprimé.");
+        setShowSnackbar(true);
+        setConfirmation(false);
       } else {
         console.error(res.error);
       }
@@ -149,6 +154,16 @@ export default function Reminders() {
           </View>
         ))}
       </ScrollView>
+      <Snackbar
+        visible={showSnackbar}
+        onDismiss={() => setShowSnackbar(false)}
+        duration={5000}
+        style={{
+          backgroundColor: "#E3FAFC",
+        }}
+      >
+        <Text style={{ color: "black" }}>{snackbarMsg}</Text>
+      </Snackbar>
     </>
   );
 }
