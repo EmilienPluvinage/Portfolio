@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ScrollView, View, StyleSheet, Text } from "react-native";
-import { Divider, Button } from "react-native-paper";
+import { Divider, Button, Snackbar } from "react-native-paper";
 import { usePatients } from "./contexts/PatientsContext";
 import { displayTime, displayFullDate } from "./Functions/Functions";
 import Event from "./Event";
@@ -67,6 +67,8 @@ export default function Main({ navigation }) {
 
   // State
   const [date, setDate] = useState(new Date());
+  const [snackbarMsg, setSnackbarMsg] = useState("");
+  const [showSnackbar, setShowSnackbar] = useState(false);
 
   // Filtering data based on selected date
   const filteredAppointments = appointments.filter(
@@ -158,6 +160,8 @@ export default function Main({ navigation }) {
               appointmentTypeId={event.idType}
               patients={event.patients}
               navigation={navigation}
+              setSnackbarMsg={setSnackbarMsg}
+              setShowSnackbar={setShowSnackbar}
             />
             {index !== displayedData.length - 1 &&
               displayTime(new Date(event.end)) !==
@@ -167,6 +171,16 @@ export default function Main({ navigation }) {
           </View>
         ))}
       </ScrollView>
+      <Snackbar
+        visible={showSnackbar}
+        onDismiss={() => setShowSnackbar(false)}
+        duration={5000}
+        style={{
+          backgroundColor: "#E3FAFC",
+        }}
+      >
+        <Text style={{ color: "black" }}>{snackbarMsg}</Text>
+      </Snackbar>
     </>
   );
 }

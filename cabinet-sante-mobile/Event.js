@@ -9,7 +9,12 @@ import { useLogin } from "./contexts/AuthContext";
 import { useUpdatePatients } from "./contexts/PatientsContext";
 import Duplicate from "./Duplicate";
 
-function DropdownMenu({ appointmentId, navigation }) {
+function DropdownMenu({
+  appointmentId,
+  navigation,
+  setSnackbarMsg,
+  setShowSnackbar,
+}) {
   const [duplicate, setDuplicate] = useState(false);
   const [visible, setVisible] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
@@ -34,6 +39,8 @@ function DropdownMenu({ appointmentId, navigation }) {
 
       if (result) {
         await updateContext(token);
+        setSnackbarMsg("Le rendez-vous a bien été supprimé.");
+        setShowSnackbar(true);
       }
     } catch (e) {
       return e;
@@ -100,6 +107,8 @@ export default function Event({
   appointmentTypeId,
   patients,
   navigation,
+  setSnackbarMsg,
+  setShowSnackbar,
 }) {
   const appointmentTypes = useConfig().appointmentTypes;
   const appointmentType = appointmentTypes.find(
@@ -139,7 +148,12 @@ export default function Event({
           />
         )}
         right={(props) => (
-          <DropdownMenu appointmentId={appointmentId} navigation={navigation} />
+          <DropdownMenu
+            appointmentId={appointmentId}
+            navigation={navigation}
+            setSnackbarMsg={setSnackbarMsg}
+            setShowSnackbar={setShowSnackbar}
+          />
         )}
       />
       <Card.Content style={styles.cardContent}>
