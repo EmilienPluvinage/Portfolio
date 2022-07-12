@@ -664,7 +664,7 @@ export default function NewAppointment({ route, navigation }) {
     <>
       <Loader visible={loader} />
       <ScrollView>
-        <KeyboardAvoidingView>
+        <KeyboardAvoidingView behavior="position">
           <View style={styles.item}>
             <Title style={styles.text}>
               {appointmentId === 0
